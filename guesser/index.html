@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Genshin Guesser — 原神キャラ推測ゲーム</title>
+  <meta name="description" content="ヒントを元に原神のキャラクターを当てる推測ゲームです。デイリーモードとエンドレスモードを搭載。">
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap">
+</head>
+<body>
+
+  <!-- ヘッダー -->
+  <header class="app-header">
+    <h1 class="app-title">⚔ Genshin Guesser</h1>
+    <nav class="header-actions">
+      <a href="../index.html" class="back-link icon-btn" aria-label="縛りルーレットへ戻る">← ルーレット</a>
+      <button class="icon-btn" id="settingsBtn" aria-label="設定を開く">⚙ 設定</button>
+    </nav>
+  </header>
+
+  <!-- メインコンテンツ -->
+  <main class="app-main" role="main">
+
+    <!-- モード切替 -->
+    <section aria-label="ゲームモード選択">
+      <div class="mode-switcher" role="group" aria-label="モード切替">
+        <button class="mode-btn active" data-mode="daily"   aria-pressed="true">📅 デイリー</button>
+        <button class="mode-btn"        data-mode="endless" aria-pressed="false">🔁 エンドレス</button>
+      </div>
+    </section>
+
+    <!-- モードラベル -->
+    <p class="mode-label" id="modeLabel" aria-live="polite">デイリーモード</p>
+
+    <!-- 入力エリア -->
+    <section class="input-area" aria-label="回答入力">
+      <div class="input-wrapper">
+        <label for="guessInput" class="hidden">キャラクター名を入力</label>
+        <input
+          type="text"
+          id="guessInput"
+          placeholder="キャラクター名を入力…"
+          autocomplete="off"
+          autocorrect="off"
+          autocapitalize="off"
+          spellcheck="false"
+          aria-label="キャラクター名"
+          aria-autocomplete="list"
+          aria-controls="suggestList"
+        >
+        <button class="submit-btn" id="submitBtn" aria-label="回答を送信">送信</button>
+        <!-- サジェストリスト（入力欄の直下に表示） -->
+        <div id="suggestList" class="hidden" role="listbox" aria-label="候補一覧"></div>
+      </div>
+      <p class="input-error hidden" id="inputError" role="alert" aria-live="assertive"></p>
+    </section>
+
+    <!-- 結果バナー -->
+    <div id="resultBanner" class="result-banner hidden" role="status" aria-live="polite"></div>
+
+    <!-- アクションボタン -->
+    <div class="action-row">
+      <button class="icon-btn share-btn hidden" id="shareBtn" aria-label="結果をコピー">📋 結果をコピー</button>
+      <button class="icon-btn hidden" id="resetBtn" aria-label="新しい問題を始める">🔄 次の問題</button>
+    </div>
+
+    <!-- 回答履歴 -->
+    <section aria-label="回答履歴">
+      <div id="guessHistory" role="list" aria-label="これまでの回答"></div>
+    </section>
+
+  </main>
+
+  <!-- フッター -->
+  <footer class="app-footer">
+    <p>Genshin Guesser — ファンメイド。原神は miHoYo / HoYoverse の登録商標です。</p>
+    <p style="margin-top:.3rem;"><a href="../index.html">縛りルーレットへ戻る</a></p>
+  </footer>
+
+  <!-- 設定オーバーレイ -->
+  <div class="overlay hidden" id="settingsOverlay" aria-hidden="true"></div>
+
+  <!-- 設定モーダル -->
+  <div class="modal hidden" id="settingsModal" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
+    <div class="modal-header">
+      <h2 class="modal-title" id="settingsTitle">⚙ ヒント項目の設定</h2>
+      <button class="modal-close" id="settingsClose" aria-label="設定を閉じる">✕</button>
+    </div>
+    <p style="font-size:.82rem; color:var(--text-muted); margin-bottom:.75rem;">
+      ONにした項目が判定・表示・共有に使われます。
+    </p>
+    <div class="settings-list" id="settingsList" role="group" aria-label="ヒント項目一覧"></div>
+    <button class="settings-save-btn" id="settingsSaveBtn">保存して閉じる</button>
+  </div>
+
+  <!-- データ・ロジック -->
+  <script src="data.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
