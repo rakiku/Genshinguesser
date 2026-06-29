@@ -51,7 +51,7 @@ const LOCAL_SPECIALTY_GROUPS = {
   '蒲公英の種': 'mondstadt', 'セシリアの花': 'mondstadt', '風車アスター': 'mondstadt',
   'イグサ': 'mondstadt', 'ヴァルベリー': 'mondstadt', '慕風のマッシュルーム': 'mondstadt',
   'ドドリアン': 'mondstadt', 'ググプラム': 'mondstadt', 'フロストランプ': 'mondstadt',
-  'フェザーモス': 'mondstadt', 'ヴィンテル草': 'mondstadt',
+  'フェザーモス': 'mondstadt', 
   // 璃月
   '夜泊石': 'liyue', '清心': 'liyue', '石珀': 'liyue', '瑠璃百合': 'liyue',
   '霓裳花': 'liyue', '絶雲の唐辛子': 'liyue', '瑠璃袋': 'liyue',
@@ -73,7 +73,7 @@ const LOCAL_SPECIALTY_GROUPS = {
   '蛍光ツノキノコ': 'natlan', 'サウリアンサキュレント': 'natlan', 'ケネパベリー': 'natlan',
   '岩裂の花': 'natlan', 'シャクギク': 'natlan',
   // ナドクライ
-  '月落銀': 'khaenriah', '携行型ベアリング': 'khaenriah', '琥珀香': 'khaenriah',
+  '月落銀': 'khaenriah', '携行型ベアリング': 'khaenriah', '琥珀香': 'khaenriah','ヴィンテル草': 'khaenriah',
 };
 
 /** 突破ステータスグループ（同系統） */
