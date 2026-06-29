@@ -26,23 +26,20 @@ const TALENT_BOOK_GROUPS = {
 
 /** 週ボス素材グループ（同一週ボスからのドロップ） */
 const WEEKLY_BOSS_GROUPS = {
-  '東風の吐息': 'dvalin',   '東風の爪': 'dvalin',     '東風の羽根': 'dvalin',
-  '北風のしっぽ': 'wolf',   '北風のリング': 'wolf',   '北風の魂箱': 'wolf',
-  '魔王の刃・残片': 'childe',
-  '吞天の鯨・只角': 'azhdaha', '龍王の冠': 'azhdaha',
-  '血玉の枝': 'signora', '獄炎の蝶': 'signora', '武煉の魂・孤影': 'signora',
-  '溶滅の刻': 'raiden', '万劫の真意': 'raiden', '凶将の手眼': 'raiden',
-  '禍神の禊涙': 'scaramouche', '鍍金の鱗': 'scaramouche', '灰燼の心': 'scaramouche',
-  '傀儡の糸': 'apep', '空行の虚鈴': 'apep',
-  '原初のオアシスの初咲き': 'setekh_wenut',
-  '無心の淵鏡': 'guardian_apep',
-  '太古の樹海の一瞬': 'fontaine_boss1', '天地に映える蕨': 'fontaine_boss1',
-  '光なき一塊': 'fontaine_boss2', '光なき糸': 'fontaine_boss2', '光なき渦の眼': 'fontaine_boss2',
-  '残火の灯燭': 'natlan_boss1', '絹織りの羽': 'natlan_boss1',
-  '否定と裁決': 'natlan_boss2',
-  '昇揚のサンプル「ルーク」': 'kh_boss1', '昇揚のサンプル「ナイト」': 'kh_boss1', '昇揚のサンプル「王族」': 'kh_boss1',
-  '蝕滅の羽鱗': 'kh_boss2', '蝕滅の陽炎': 'kh_boss2', '蝕滅の焔角': 'kh_boss2',
-  '偽りの樹脂': 'newer1', '賢医の仮面': 'newer2', '異端の薬瓶': 'newer3',
+  '東風の吐息': 'Stormterror', '東風の爪': 'Stormterror', '東風の羽根': 'Stormterror',
+  '北風のしっぽ': 'Boreas', '北風のリング': 'Boreas', '北風の魂箱': 'Boreas',
+  '魔王の刃・残片': 'childe','吞天の鯨・只角': 'Childe', '武煉の魂・孤影': 'Childe',
+  '龍王の冠': 'azhdaha','血玉の枝': 'Azhdaha','鍍金の鱗': 'Azhdaha',
+  '獄炎の蝶': 'La Signora', '溶滅の刻': 'La Signora','灰燼の心': 'La Signora',
+  '万劫の真意': 'raiden', '凶将の手眼': 'raiden','禍神の禊涙': 'raiden',  
+  '傀儡の糸': 'Shouki no Kami', '空行の虚鈴': 'Shouki no Kami', '無心の淵鏡': 'Shouki no Kami',
+  '原初のオアシスの初咲き': 'Apep', '太古の樹海の一瞬': 'Apep', '天地に映える蕨': 'Apep',
+  '光なき一塊': 'All-Devouring Narwhal', '光なき糸': 'All-Devouring Narwhal', '光なき渦の眼': 'All-Devouring Narwhal',
+  '残火の灯燭': 'The Knave', '絹織りの羽': 'The Knave', '否定と裁決': 'The Knave',
+  '昇揚のサンプル「ルーク」': 'The Game Before the Gate', '昇揚のサンプル「ナイト」': 'The Game Before the Gate', '昇揚のサンプル「王族」': 'The Game Before the Gate',
+  '蝕滅の羽鱗': 'Lord of Eroded Primal Fire', '蝕滅の陽炎': 'Lord of Eroded Primal Fire', '蝕滅の焔角': 'Lord of Eroded Primal Fire',
+  '狂人の誓約': 'The Doctor', '賢医の仮面': 'The Doctor', '異端の薬瓶': 'The Doctor',
+  '偽りの樹脂': 'Il Dottore', '歪曲した枯れ枝': 'Il Dottore', '冒涜の新芽': 'Il Dottore',
 };
 
 /** 特産品グループ（同じ国の特産品）— 国名をキー */
@@ -79,7 +76,8 @@ const LOCAL_SPECIALTY_GROUPS = {
 /** 突破ステータスグループ（同系統） */
 const ASCENSION_STAT_GROUPS = {
   '会心率': 'crit', '会心ダメージ': 'crit',
-  '攻撃力': 'atk', '物理ダメージ': 'atk',
+  '攻撃力': 'atk', 
+  '物理ダメージ': 'physical_damage',
   'HP': 'hp',
   '防御力': 'def',
   '元素熟知': 'em',
@@ -362,9 +360,9 @@ const HINT_FIELDS = [
   { key: 'ascensionStat',     label: '突破ステ',      type: 'group',   group: 'ascensionStatGroup', defaultOn: true  },
   { key: 'specialDish',       label: '特殊料理',      type: 'exact',   defaultOn: false },
   { key: 'distributed',       label: '配布',         type: 'exact',   defaultOn: true  },
-  { key: 'costume',           label: '衣装',         type: 'exact',   defaultOn: false },
-  { key: 'trace',             label: 'トレース',      type: 'exact',   defaultOn: false },
-  { key: 'trainingRoad',      label: '育成ルート',    type: 'exact',   defaultOn: false },
+  { key: 'costume',           label: '別衣装',         type: 'exact',   defaultOn: false },
+  { key: 'trace',             label: '軌跡',      type: 'exact',   defaultOn: false },
+  { key: 'trainingRoad',      label: '鍛錬の道',    type: 'exact',   defaultOn: false },
   { key: 'enemyMaterial',     label: '敵素材',        type: 'exact',   defaultOn: false },
 ];
 
