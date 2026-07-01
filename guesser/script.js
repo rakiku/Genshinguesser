@@ -498,6 +498,7 @@ function onGiveUp(animate) {
 
 function giveUpGame() {
   if (gameEnded) return;
+  if (!window.confirm('ギブアップしますか？ 正解を表示してこの問題を終了します。')) return;
   gaveUp = true;
   solved = false;
   if (gameMode === 'endless') {
