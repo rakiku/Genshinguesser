@@ -395,27 +395,36 @@ function getDisplayValue(key, value, char) {
 // 武器突破素材グループ（🟨判定）
 // ---------------------------------------------------------------------------
 const WEAPON_BREAK_GROUPS = {
-  '今昔劇画の鬼人': '今昔劇画',
-  '凛風奔狼の郷愁': '凛風奔狼',
-  '孤雲寒林の神体': '孤雲寒林',
-  '漆黒の隕鉄の塊': '漆黒隕鉄',
-  '獅牙戦士の理想': '獅牙戦士',
-  '遠海夷地の金枝': '遠海夷地',
-  '霧海雲間の転還': '霧海雲間',
-  '高塔の王の砕けた夢': '高塔の王',
-  '鳴神御霊の勇武': '鳴神御霊',
-  '烈日権威の往日': '烈日権威',
-  '静謐な森のしずくの金符': '静謐の森',
-  'オアシスガーデンの真諦': 'オアシス',
-  '無垢な海の金盃': '無垢な海',
-  '悠久の弦の響き': '悠久の弦',
-  '純聖な雫の精髄': '純聖な雫',
-  '灼心を捧げる栄光': '灼心の栄光',
-  '狂乱の聖主の神面': '狂乱の聖主',
-  '神秘なる煙の啓示': '神秘の煙',
-  '奇妙な装置の宿願': '奇妙な装置',
-  '長夜の灯火の輝光': '長夜の灯火',
-  '極北の末裔の煌光': '極北の末裔',
+  '今昔劇画の鬼人': '稲妻',
+  '凛風奔狼の郷愁': 'モンド',
+  '孤雲寒林の神体': '璃月',
+  '漆黒の隕鉄の塊': '璃月',
+  '獅牙戦士の理想': 'モンド',
+  '遠海夷地の金枝': '稲妻',
+  '霧海雲間の転還': '璃月',
+  '高塔の王の砕けた夢': 'モンド',
+  '鳴神御霊の勇武': '稲妻',
+  '烈日権威の往日': 'スメール',
+  '静謐な森のしずくの金符': 'スメール',
+  'オアシスガーデンの真諦': 'スメール',
+  '無垢な海の金盃': 'フォンテーヌ',
+  '悠久の弦の響き': 'フォンテーヌ',
+  '純聖な雫の精髄': 'フォンテーヌ',
+  '灼心を捧げる栄光': 'ナタ',
+  '狂乱の聖主の神面': 'ナタ',
+  '神秘なる煙の啓示': 'ナタ',
+  '奇妙な装置の宿願': 'ナドクライ',
+  '長夜の灯火の輝光': 'ナドクライ',
+  '極北の末裔の煌光': 'ナドクライ',
+};
+
+const WEAPON_NAME_ALIASES = {
+  '龍殺しの英雄譚': '龍殺しの英傑譚',
+  '旧貴族の長弓': '旧貴族長弓',
+  '誓いの明導': '誓いの明瞳',
+  '黒岩の大剣': '黒岩の斬刀',
+  '塵と光と七つの誓約': '塵と光の七つの誓約',
+  '旧貴族長槍': '旧貴族猟槍',
 };
 
 // 武器→突破素材マッピング（spec の素材グループ定義より）
@@ -744,22 +753,26 @@ const WEAPON_ATTRS = {
 // 武器生データ — 上記マッピングから自動生成
 // ---------------------------------------------------------------------------
 function buildWeaponBase() {
+  const canonical = name => WEAPON_NAME_ALIASES[name] || name;
+  const canonicalEntries = Object.entries(WEAPON_NAME_ALIASES).map(([legacy, current]) => [current, legacy]);
+  const canonicalToLegacy = Object.fromEntries(canonicalEntries);
   const allNames = new Set([
-    ...Object.keys(WEAPON_TO_BREAK_MAT),
-    ...Object.keys(WEAPON_BASE_ATK).flatMap(k => WEAPON_BASE_ATK[k]),
-    ...Object.keys(WEAPON_ATTRS),
+    ...Object.keys(WEAPON_TO_BREAK_MAT).map(canonical),
+    ...Object.keys(WEAPON_BASE_ATK).flatMap(k => WEAPON_BASE_ATK[k]).map(canonical),
+    ...Object.keys(WEAPON_ATTRS).map(canonical),
   ]);
 
   // base attack reverse map
   const nameToAtk = {};
   for (const [atk, names] of Object.entries(WEAPON_BASE_ATK)) {
-    for (const n of names) nameToAtk[n] = parseInt(atk, 10);
+    for (const n of names) nameToAtk[canonical(n)] = parseInt(atk, 10);
   }
 
   const weapons = [];
   for (const name of allNames) {
-    const attrs = WEAPON_ATTRS[name] || {};
-    const breakMat = WEAPON_TO_BREAK_MAT[name] || '';
+    const legacyName = canonicalToLegacy[name] || name;
+    const attrs = WEAPON_ATTRS[name] || WEAPON_ATTRS[legacyName] || {};
+    const breakMat = WEAPON_TO_BREAK_MAT[name] || WEAPON_TO_BREAK_MAT[legacyName] || '';
     const baseAtk = nameToAtk[name] || 0;
     if (!attrs.rarity || !attrs.weaponType) continue; // skip incomplete entries
     weapons.push({
@@ -779,12 +792,23 @@ function buildWeaponBase() {
 // 正規化済み武器リスト
 // ---------------------------------------------------------------------------
 const RAW_WEAPONS = buildWeaponBase();
+const allWeapons = RAW_WEAPONS.reduce((acc, weapon) => {
+  const type = weapon.weaponType;
+  if (!acc[type]) acc[type] = [];
+  acc[type].push(weapon);
+  return acc;
+}, {});
+const weaponReleaseVersionMap = RAW_WEAPONS.reduce((acc, weapon) => {
+  acc[weapon.name] = weapon.releaseVersion || '';
+  return acc;
+}, {});
 
 function normalizeWeapon(raw) {
+  const aliases = Object.keys(WEAPON_NAME_ALIASES).filter(legacy => WEAPON_NAME_ALIASES[legacy] === raw.name);
   return {
     id: raw.name,
     name: raw.name,
-    displayNames: [raw.name],
+    displayNames: [raw.name, ...aliases],
     rarity: raw.rarity,
     weaponType: raw.weaponType,
     baseAtk: raw.baseAtk,
@@ -796,7 +820,10 @@ function normalizeWeapon(raw) {
   };
 }
 
-const WEAPONS = RAW_WEAPONS.map(normalizeWeapon);
+const WEAPONS = Object.values(allWeapons).flat().map(weapon => {
+  const releaseVersion = weaponReleaseVersionMap[weapon.name] || '';
+  return normalizeWeapon({ ...weapon, releaseVersion });
+});
 
 // ---------------------------------------------------------------------------
 // 武器ヒント項目定義

@@ -33,6 +33,16 @@
         <button class="mode-btn" data-mode="endless"   aria-pressed="false">�� エンドレス</button>
         <button class="mode-btn" data-mode="challenge" aria-pressed="false">🏆 チャレンジ</button>
       </div>
+
+      <div class="overlay hidden" id="settingsOverlay" aria-hidden="true"></div>
+      <div class="modal hidden" id="settingsModal" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
+        <div class="modal-header">
+          <h2 class="modal-title" id="settingsTitle">使うヒント設定</h2>
+          <button class="modal-close" id="settingsClose" aria-label="閉じる">✕</button>
+        </div>
+        <div class="settings-list" id="settingsList"></div>
+        <button class="settings-save-btn" id="settingsSaveBtn">設定を保存</button>
+      </div>
     </section>
 
     <!-- モードラベル -->
@@ -89,6 +99,8 @@
     <div class="action-row">
       <button class="icon-btn share-btn hidden" id="shareBtn" aria-label="Xで共有">𝕏 X で共有</button>
       <button class="icon-btn copy-btn hidden" id="copyBtn" aria-label="結果をコピー">📋 コピー</button>
+      <button class="icon-btn" id="settingsBtn" aria-label="ヒント設定">⚙ 設定</button>
+      <button class="icon-btn" id="giveUpBtn" aria-label="ギブアップ">🏳️ ギブアップ</button>
       <button class="icon-btn hidden" id="resetBtn" aria-label="次の問題">🔄 次の問題</button>
     </div>
 

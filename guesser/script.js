@@ -14,6 +14,8 @@ let rarityFilter = 'all';       // 'all' | '5' | '4' | '45'
 let answer     = null;          // 正規化済み対象
 let guesses    = [];            // { item, results }[] — 回答履歴
 let solved     = false;
+let gameEnded  = false;
+let gaveUp     = false;
 let attempts   = 0;
 let streak     = 0;             // エンドレス連勝数
 let bestStreak = 0;
@@ -81,6 +83,11 @@ function bindEvents() {
   // 共有ボタン
   document.getElementById('shareBtn')?.addEventListener('click', shareToX);
   document.getElementById('copyBtn')?.addEventListener('click', copyResult);
+  document.getElementById('settingsBtn')?.addEventListener('click', openSettingsModal);
+  document.getElementById('settingsClose')?.addEventListener('click', closeSettingsModal);
+  document.getElementById('settingsOverlay')?.addEventListener('click', closeSettingsModal);
+  document.getElementById('settingsSaveBtn')?.addEventListener('click', saveSettingsFromModal);
+  document.getElementById('giveUpBtn')?.addEventListener('click', giveUpGame);
 
   // リセット
   document.getElementById('resetBtn')?.addEventListener('click', () => {
@@ -121,6 +128,8 @@ function initMode(mode) {
   gameMode = mode;
   guesses  = [];
   solved   = false;
+  gameEnded = false;
+  gaveUp = false;
   attempts = 0;
   challengeRemain = CHALLENGE_MAX_WRONG;
   currentScore    = 0;
@@ -128,6 +137,7 @@ function initMode(mode) {
   clearGuessHistory();
   closeWinOverlay();
   updateShareBtns(false);
+  updateGiveUpBtn(true);
 
   // モード切替ボタン更新
   document.querySelectorAll('.mode-btn').forEach(btn => {
@@ -244,6 +254,8 @@ function saveDailyState() {
     answerId: answer.id,
     guesses: guesses.map(g => g.item.id),
     solved,
+    gameEnded,
+    gaveUp,
     attempts,
   };
   localStorage.setItem(LS_DAILY_KEY, JSON.stringify(data));
@@ -260,11 +272,14 @@ function restoreDailyState() {
     const pool = genre === 'weapon' ? WEAPONS : CHARACTERS;
     data.guesses.forEach(id => {
       const item = pool.find(c => c.id === id);
-      if (item) processGuess(item, false);
+      if (item) processGuess(item, false, { animateSolve: false });
     });
     solved   = data.solved;
+    gaveUp = Boolean(data.gaveUp);
+    gameEnded = Boolean(data.gameEnded || data.solved || data.gaveUp);
     attempts = data.attempts;
     if (solved) onSolve(false);
+    else if (gaveUp) onGiveUp(false);
   } catch (e) { /* ignore */ }
 }
 
@@ -383,7 +398,7 @@ function selectSuggestItem(item) {
 // 回答送信
 // ---------------------------------------------------------------------------
 function submitGuess() {
-  if (solved) return;
+  if (gameEnded) return;
   const input = document.getElementById('guessInput');
   const name = input.value.trim();
   if (!name) return;
@@ -412,7 +427,8 @@ function submitGuess() {
   processGuess(item, true);
 }
 
-function processGuess(item, save = true) {
+function processGuess(item, save = true, options = {}) {
+  const animateSolve = options.animateSolve !== false;
   attempts++;
   const fields = getCurrentHintFields();
   const results = compareItem(item, answer, fields);
@@ -422,7 +438,8 @@ function processGuess(item, save = true) {
 
   if (item.id === answer.id) {
     solved = true;
-    onSolve(true);
+    gaveUp = false;
+    onSolve(animateSolve);
   } else {
     // チャレンジモード: 誤答カウント
     if (gameMode === 'challenge') {
@@ -436,8 +453,10 @@ function processGuess(item, save = true) {
 }
 
 function onSolve(animate) {
+  gameEnded = true;
   setInputEnabled(false);
   updateShareBtns(true);
+  updateGiveUpBtn(false);
 
   if (gameMode === 'endless') {
     streak++;
@@ -454,8 +473,10 @@ function onSolve(animate) {
 }
 
 function onChallengeOver() {
+  gameEnded = true;
   setInputEnabled(false);
   updateShareBtns(true);
+  updateGiveUpBtn(false);
   const prevBest = parseInt(localStorage.getItem(LS_CHALLENGE_BEST) || '0', 10);
   const isNew = currentScore > prevBest;
   if (isNew) localStorage.setItem(LS_CHALLENGE_BEST, String(currentScore));
@@ -465,6 +486,31 @@ function onChallengeOver() {
     'fail',
     true
   );
+}
+
+function onGiveUp(animate) {
+  gameEnded = true;
+  setInputEnabled(false);
+  updateShareBtns(true);
+  updateGiveUpBtn(false);
+  showResultBanner(`🏳️ ギブアップ… 正解は「${answer.name}」でした。`, 'fail', animate);
+}
+
+function giveUpGame() {
+  if (gameEnded) return;
+  if (!window.confirm('ギブアップしますか？ 正解を表示してこの問題を終了します。')) return;
+  gaveUp = true;
+  solved = false;
+  if (gameMode === 'endless') {
+    streak = 0;
+    saveStreakData();
+    updateStreakUI();
+  } else if (gameMode === 'challenge') {
+    challengeRemain = 0;
+    updateChallengeInfo();
+  }
+  onGiveUp(true);
+  if (gameMode === 'daily') saveDailyState();
 }
 
 // エンドレス: 不正解で次へ進む機能は resetBtn から呼び出す
@@ -747,6 +793,10 @@ function updateShareBtns(show) {
   document.getElementById('copyBtn')?.classList.toggle('hidden', !show);
 }
 
+function updateGiveUpBtn(show) {
+  document.getElementById('giveUpBtn')?.classList.toggle('hidden', !show);
+}
+
 // ---------------------------------------------------------------------------
 // 設定
 // ---------------------------------------------------------------------------
@@ -759,6 +809,63 @@ function loadSettings() {
   [...HINT_FIELDS, ...WEAPON_HINT_FIELDS].forEach(f => {
     if (settings[f.key] === undefined) settings[f.key] = f.defaultOn;
   });
+}
+
+function saveSettings() {
+  localStorage.setItem(LS_SETTINGS_KEY, JSON.stringify(settings));
+}
+
+function openSettingsModal() {
+  renderSettingsModal();
+  document.getElementById('settingsModal')?.classList.remove('hidden');
+  document.getElementById('settingsOverlay')?.classList.remove('hidden');
+}
+
+function closeSettingsModal() {
+  document.getElementById('settingsModal')?.classList.add('hidden');
+  document.getElementById('settingsOverlay')?.classList.add('hidden');
+}
+
+function renderSettingsModal() {
+  const list = document.getElementById('settingsList');
+  if (!list) return;
+  list.innerHTML = '';
+  getCurrentHintFields().forEach(field => {
+    const row = document.createElement('label');
+    row.className = 'settings-row';
+
+    const toggle = document.createElement('input');
+    toggle.type = 'checkbox';
+    toggle.className = 'settings-toggle';
+    toggle.dataset.key = field.key;
+    toggle.checked = settings[field.key] !== false;
+
+    const text = document.createElement('span');
+    text.textContent = field.label;
+
+    row.appendChild(toggle);
+    row.appendChild(text);
+    list.appendChild(row);
+  });
+}
+
+function saveSettingsFromModal() {
+  const toggles = Array.from(document.querySelectorAll('#settingsList .settings-toggle'));
+  if (toggles.length > 0 && toggles.every(toggle => !toggle.checked)) {
+    alert('ヒントは1つ以上ONにしてください。');
+    return;
+  }
+  toggles.forEach(toggle => {
+    settings[toggle.dataset.key] = toggle.checked;
+  });
+  saveSettings();
+  rerenderGuessHistory();
+  closeSettingsModal();
+}
+
+function rerenderGuessHistory() {
+  clearGuessHistory();
+  [...guesses].reverse().forEach((entry, index) => renderGuessRow(entry, index));
 }
 
 // ---------------------------------------------------------------------------

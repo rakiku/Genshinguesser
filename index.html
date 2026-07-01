@@ -20,7 +20,7 @@
         <button class="nav-btn" id="howToBtn">遊び方</button>
         <button class="nav-btn" id="aboutBtn">このサイトについて</button>
       </nav>
-      <!-- 更新情報ログ右上の隠しエリア -->
+      <!-- 更新情報ログ右上の管理導線 -->
       <div id="adminTrigger" style="position:absolute;right:0;top:0;width:20px;height:20px;cursor:default;"></div>
     </div>
   </header>
@@ -93,7 +93,9 @@
     <div class="news-section">
       <div class="news-header">
         <h2 class="news-title">📢 更新情報</h2>
-        <div id="newsAdminArea"></div>
+        <div id="newsAdminArea">
+          <button class="nav-btn" id="openNewsAdminBtn">更新を追加</button>
+        </div>
       </div>
       <div class="news-box" id="newsList">
         <div class="news-item">
@@ -118,9 +120,10 @@
     <!-- YouTube動画セクション -->
     <section class="video-section">
       <h2 class="video-title">▶ 原神 Guesserの遊び方はコチラから</h2>
+      <p class="video-note">管理者向け: ここにYoutubeのURLを貼ると、遊び方動画を差し替えられます（index.html の iframe の src を更新）。</p>
       <div class="video-wrapper">
         <iframe
-          src="https://www.youtube.com/watch?v=WmiI5VWamdc"
+          src="https://www.youtube.com/embed/WmiI5VWamdc"
           title="Genshin Guesser 遊び方動画"
           frameborder="0"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"

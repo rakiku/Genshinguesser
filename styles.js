@@ -123,6 +123,7 @@ function closeModal(name) {
 // Admin hidden feature
 // ---------------------------------------------------------------------------
 function bindAdminTrigger() {
+  document.getElementById('openNewsAdminBtn')?.addEventListener('click', openAdminAuth);
   const trigger = document.getElementById('adminTrigger');
   if (!trigger) return;
   trigger.addEventListener('click', () => {
