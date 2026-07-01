@@ -53,6 +53,15 @@
     .db-detail-item { font-size:.82rem; }
     .db-detail-item b { color:#fff; display:block; margin-bottom:.15rem; font-weight:700; }
     .db-detail-item span { color:#fff; }
+    .query-input {
+      flex:1;
+      min-width:180px;
+      padding:.35rem .6rem;
+      border:1px solid var(--border);
+      border-radius:8px;
+      background:var(--bg-card);
+      color:#fff;
+    }
     @media (max-width: 560px) {
       .db-modal { left:.8rem; right:.8rem; width:auto; transform:translate(0,-50%); }
     }
@@ -105,7 +114,7 @@
       </div>
       <div class="filter-row">
         <span style="font-size:.75rem;color:var(--text-muted);align-self:center;">全要素:</span>
-        <input id="charQuery" type="text" placeholder="全項目を対象に検索" style="flex:1;min-width:180px;padding:.35rem .6rem;border:1px solid var(--border);border-radius:8px;background:var(--bg-card);color:#fff;">
+        <input id="charQuery" class="query-input" type="text" placeholder="全項目を対象に検索">
       </div>
     </div>
 
@@ -131,7 +140,7 @@
       </div>
       <div class="filter-row">
         <span style="font-size:.75rem;color:var(--text-muted);align-self:center;">全要素:</span>
-        <input id="weaponQuery" type="text" placeholder="全項目を対象に検索" style="flex:1;min-width:180px;padding:.35rem .6rem;border:1px solid var(--border);border-radius:8px;background:var(--bg-card);color:#fff;">
+        <input id="weaponQuery" class="query-input" type="text" placeholder="全項目を対象に検索">
       </div>
     </div>
 
@@ -164,6 +173,8 @@
     'use strict';
     let currentTab = 'character';
     const activeFilters = { element:'all', weaponType:'all', charRarity:'all', wType:'all', wRarity:'all', charQuery:'', wQuery:'' };
+    const QUERY_DEBOUNCE_MS = 120;
+    let queryDebounceTimer = null;
 
     document.addEventListener('DOMContentLoaded', () => {
       bindTabs();
@@ -199,12 +210,20 @@
       });
       document.getElementById('charQuery')?.addEventListener('input', e => {
         activeFilters.charQuery = e.target.value.trim().toLowerCase();
-        renderGrid();
+        scheduleRenderGrid();
       });
       document.getElementById('weaponQuery')?.addEventListener('input', e => {
         activeFilters.wQuery = e.target.value.trim().toLowerCase();
-        renderGrid();
+        scheduleRenderGrid();
       });
+    }
+
+    function scheduleRenderGrid() {
+      if (queryDebounceTimer) clearTimeout(queryDebounceTimer);
+      queryDebounceTimer = setTimeout(() => {
+        queryDebounceTimer = null;
+        renderGrid();
+      }, QUERY_DEBOUNCE_MS);
     }
 
     function renderGrid() {
@@ -328,12 +347,24 @@
 
     function matchesAllFields(item, query) {
       if (!query) return true;
-      const values = Object.values(item).flatMap(value => {
-        if (Array.isArray(value)) return value;
-        if (typeof value === 'boolean') return [value ? 'あり' : 'なし', value ? 'true' : 'false'];
-        return [value];
-      }).filter(v => v !== null && v !== undefined).map(v => String(v).toLowerCase());
-      return values.some(v => v.includes(query));
+      const values = Object.values(item);
+      for (const value of values) {
+        if (value === null || value === undefined) continue;
+        if (Array.isArray(value)) {
+          for (const part of value) {
+            if (part === null || part === undefined) continue;
+            if (String(part).toLowerCase().includes(query)) return true;
+          }
+          continue;
+        }
+        if (typeof value === 'boolean') {
+          if ((value ? 'あり' : 'なし').includes(query)) return true;
+          if ((value ? 'true' : 'false').includes(query)) return true;
+          continue;
+        }
+        if (String(value).toLowerCase().includes(query)) return true;
+      }
+      return false;
     }
 
     function bindDetailModal() {

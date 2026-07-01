@@ -290,6 +290,15 @@ function updateVersusInfo() {
   if (current) current.textContent = `${versusPlayers[versusTurnIndex] || 'プレイヤー1'} のターン`;
 }
 
+function nextVersusTurn() {
+  versusTurnIndex = (versusTurnIndex + 1) % 2;
+  updateVersusInfo();
+}
+
+function getOpponentIndex() {
+  return (versusTurnIndex + 1) % 2;
+}
+
 function getRandomItem(pool, exclude = null) {
   const filtered = exclude ? pool.filter(x => x.id !== exclude.id) : pool;
   const src = filtered.length > 0 ? filtered : pool;
@@ -499,8 +508,7 @@ function processGuess(item, save = true, options = {}) {
       updateChallengeInfo();
       if (challengeRemain <= 0) onChallengeOver();
     } else if (gameMode === 'versus') {
-      versusTurnIndex = (versusTurnIndex + 1) % 2;
-      updateVersusInfo();
+      nextVersusTurn();
       showResultBanner(`不正解。次は ${versusPlayers[versusTurnIndex]} のターン`, 'fail', false);
     }
   }
@@ -554,7 +562,7 @@ function onGiveUp(animate) {
   updateShareBtns(true);
   updateGiveUpBtn(false);
   if (gameMode === 'versus') {
-    const winner = versusPlayers[(versusTurnIndex + 1) % 2];
+    const winner = versusPlayers[getOpponentIndex()];
     showResultBanner(`🏳️ ギブアップ… ${winner} の勝利！ 正解は「${answer.name}」でした。`, 'fail', animate);
     return;
   }
@@ -573,8 +581,6 @@ function giveUpGame() {
   } else if (gameMode === 'challenge') {
     challengeRemain = 0;
     updateChallengeInfo();
-  } else if (gameMode === 'versus') {
-    versusTurnIndex = (versusTurnIndex + 1) % 2;
   }
   onGiveUp(true);
   if (gameMode === 'daily') saveDailyState();
@@ -813,7 +819,7 @@ function buildShareText() {
   } else if (gameMode === 'endless') {
     lines.push(`#GenshinGuesser エンドレス [${genreLabel}] 🔥${streak}連勝`);
   } else if (gameMode === 'versus') {
-    const winner = solved ? versusPlayers[versusTurnIndex] : versusPlayers[(versusTurnIndex + 1) % 2];
+    const winner = solved ? versusPlayers[versusTurnIndex] : versusPlayers[getOpponentIndex()];
     lines.push(`#GenshinGuesser 対戦 [${genreLabel}] 勝者:${winner}`);
   } else {
     lines.push(`#GenshinGuesser チャレンジ [${genreLabel}] スコア:${currentScore}`);
