@@ -318,16 +318,16 @@ function waitForDataChannelOpen(channel, timeoutMs = DATA_CHANNEL_TIMEOUT_MS) {
   });
 }
 
+function generateRoomCode() {
+  const bytes = new Uint8Array(4);
+  window.crypto.getRandomValues(bytes);
+  return Array.from(bytes, b => b.toString(16).padStart(2, '0')).join('');
+}
+
 function clearVersusConnection() {
   versusClosing = true;
   if (versusConnection?.channel) {
     try { versusConnection.channel.close(); } catch (e) { /* noop */ }
-  }
-
-  function generateRoomCode() {
-    const bytes = new Uint8Array(4);
-    window.crypto.getRandomValues(bytes);
-    return Array.from(bytes, b => b.toString(16).padStart(2, '0')).join('');
   }
   if (versusConnection?.pc) {
     try { versusConnection.pc.close(); } catch (e) { /* noop */ }
