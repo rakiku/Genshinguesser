@@ -559,6 +559,13 @@ a:hover { text-decoration: underline; }
 .copy-btn {
   background: var(--accent);
 }
+#giveUpBtn {
+  border-color: #b33a3a;
+  color: #ff9c9c;
+}
+#giveUpBtn:hover {
+  background: #3a1f1f;
+}
 
 /* --- 素材アイコン --- */
 .mat-icon {

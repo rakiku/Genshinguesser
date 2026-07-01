@@ -24,15 +24,21 @@
     .filter-chip.element-氷.active { background:#66bbdd; border-color:#66bbdd; }
     .filter-chip.element-岩.active { background:#ccaa33; border-color:#ccaa33; }
     .filter-chip.element-草.active { background:#66bb55; border-color:#66bb55; }
-    .db-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(130px,1fr)); gap:.6rem; }
-    .db-card { background:var(--bg-card); border:1.5px solid var(--border); border-radius:10px; padding:.7rem .5rem; text-align:center; cursor:pointer; transition:border-color .15s; }
-    .db-card:hover { border-color:var(--accent); }
-    .db-card img { width:72px; height:72px; object-fit:contain; border-radius:6px; }
-    .db-card .card-name { font-size:.8rem; margin-top:.35rem; color:var(--text-primary); }
-    .db-card .card-meta { font-size:.72rem; color:var(--text-muted); }
+    .db-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(170px,1fr)); gap:.5rem; }
+    .db-card { background:var(--bg-card); border:1.5px solid var(--border); border-radius:10px; padding:.55rem .7rem; text-align:left; cursor:pointer; transition:border-color .15s; font-size:.88rem; }
+    .db-card:hover, .db-card.active { border-color:var(--accent); }
+    .db-card .card-name { color:var(--text-primary); }
     .rarity-5 { border-color:#e8a030; }
     .rarity-4 { border-color:#9966cc; }
+    .rarity-3 { border-color:#4da3ff; color:#8fc2ff; }
+    .rarity-2 { border-color:#3aaa5a; color:#8ee0a8; }
+    .rarity-1 { border-color:#f5f7fb; color:#fff; text-shadow:0 0 1px #000, 0 0 2px #000; }
     .empty-msg { text-align:center; color:var(--text-muted); padding:2rem; }
+    .db-detail { margin-top:1rem; border:1px solid var(--border); border-radius:10px; background:var(--bg-card); padding:1rem; }
+    .db-detail-title { font-size:1rem; margin-bottom:.7rem; color:var(--accent); }
+    .db-detail-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); gap:.5rem .8rem; }
+    .db-detail-item { font-size:.82rem; }
+    .db-detail-item b { color:var(--text-muted); display:block; margin-bottom:.15rem; font-weight:700; }
   </style>
 </head>
 <body>
@@ -104,6 +110,10 @@
 
     <!-- グリッド表示 -->
     <div class="db-grid" id="dbGrid"></div>
+    <section class="db-detail" id="dbDetail">
+      <h2 class="db-detail-title">項目を選択すると詳細が表示されます</h2>
+      <div class="db-detail-grid" id="dbDetailGrid"></div>
+    </section>
 
   </main>
 
@@ -152,7 +162,11 @@
 
     function renderGrid() {
       const grid = document.getElementById('dbGrid');
+      const detailTitle = document.getElementById('dbDetail').querySelector('.db-detail-title');
+      const detailGrid = document.getElementById('dbDetailGrid');
       grid.innerHTML = '';
+      detailGrid.innerHTML = '';
+      detailTitle.textContent = '項目を選択すると詳細が表示されます';
       let items = [];
       if (currentTab === 'character') {
         items = CHARACTERS.filter(c => {
@@ -177,28 +191,49 @@
       items.forEach(item => {
         const card = document.createElement('div');
         card.className = 'db-card rarity-' + item.rarity;
-
-        const img = document.createElement('img');
-        img.src = item.iconUrl;
-        img.alt = item.name;
-        img.onerror = () => { img.style.opacity = '.3'; };
+        card.setAttribute('role', 'button');
+        card.setAttribute('tabindex', '0');
 
         const name = document.createElement('div');
         name.className = 'card-name';
         name.textContent = item.name;
 
-        const meta = document.createElement('div');
-        meta.className = 'card-meta';
-        if (currentTab === 'character') {
-          meta.textContent = `★${item.rarity} ${item.element} ${item.weapon}`;
-        } else {
-          meta.textContent = `★${item.rarity} ${item.weaponType}`;
-        }
-
-        card.appendChild(img);
         card.appendChild(name);
-        card.appendChild(meta);
+        card.addEventListener('click', () => showDetail(item, card));
+        card.addEventListener('keydown', e => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            showDetail(item, card);
+          }
+        });
         grid.appendChild(card);
+      });
+    }
+
+    function showDetail(item, selectedCard) {
+      document.querySelectorAll('.db-card').forEach(card => card.classList.toggle('active', card === selectedCard));
+      const detailTitle = document.getElementById('dbDetail').querySelector('.db-detail-title');
+      const detailGrid = document.getElementById('dbDetailGrid');
+      detailTitle.textContent = item.name + ' の詳細';
+      detailGrid.innerHTML = '';
+
+      const entries = currentTab === 'character'
+        ? [
+            ['名前', item.name], ['レアリティ', `★${item.rarity}`], ['元素', item.element], ['武器種', item.weapon],
+            ['所属', item.country], ['誕生日', item.birthday], ['元素エネルギー', item.energy], ['突破ステータス', item.ascensionStat],
+            ['育成素材(突破ボス)', item.talentBoss], ['天賦本', item.talentBook], ['週ボス素材', item.talentWeekly], ['敵素材', item.enemyMaterial]
+          ]
+        : [
+            ['名前', item.name], ['レアリティ', `★${item.rarity}`], ['武器種', item.weaponType], ['基礎攻撃力', item.baseAtk],
+            ['武器突破素材', item.weaponBreakMaterial], ['敵素材', item.enemyMaterial]
+          ];
+
+      entries.forEach(([label, value]) => {
+        if (value === undefined || value === null || value === '') return;
+        const box = document.createElement('div');
+        box.className = 'db-detail-item';
+        box.innerHTML = `<b>${label}</b><span>${value}</span>`;
+        detailGrid.appendChild(box);
       });
     }
   </script>

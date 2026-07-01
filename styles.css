@@ -269,6 +269,12 @@ body {
   color: var(--mint-light);
   margin-bottom: .7rem;
 }
+.video-note {
+  font-size: .82rem;
+  color: var(--text-muted);
+  margin-bottom: .6rem;
+  line-height: 1.5;
+}
 .video-wrapper {
   position: relative;
   padding-bottom: 56.25%; /* 16:9 */
