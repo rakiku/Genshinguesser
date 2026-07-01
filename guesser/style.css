@@ -500,3 +500,127 @@ a:hover { text-decoration: underline; }
 ::-webkit-scrollbar-track { background: var(--bg); }
 ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--accent-dim); }
+
+/* ============================================================
+   追加スタイル — v2 (weapon mode, challenge, win overlay, etc.)
+   ============================================================ */
+
+/* --- ジャンルインジケーター --- */
+.genre-indicator {
+  text-align: center;
+  font-size: .85rem;
+  color: var(--text-muted);
+  margin-bottom: .4rem;
+  font-weight: 700;
+  letter-spacing: .05em;
+}
+
+/* --- モード切替 3ボタン --- */
+.mode-switcher {
+  display: flex;
+  gap: .4rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: .5rem;
+}
+.mode-btn {
+  padding: .4rem .9rem;
+  font-size: .82rem;
+}
+
+/* --- チャレンジ情報バー --- */
+.challenge-info, .streak-info {
+  text-align: center;
+  font-size: .85rem;
+  color: var(--text-muted);
+  margin-bottom: .4rem;
+}
+.challenge-info strong, .streak-info strong {
+  color: var(--text-primary);
+}
+.sep { margin: 0 .4rem; }
+
+/* --- アクション行 --- */
+.action-row {
+  display: flex;
+  gap: .5rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: .8rem;
+}
+
+/* --- 共有ボタン --- */
+.share-btn {
+  background: #1d9bf0;
+  border-color: #1d9bf0;
+  color: #fff;
+}
+.share-btn:hover { background: #1a8cd8; }
+.copy-btn {
+  background: var(--accent);
+}
+
+/* --- 素材アイコン --- */
+.mat-icon {
+  width: 20px;
+  height: 20px;
+  vertical-align: middle;
+  margin-right: 4px;
+  border-radius: 3px;
+}
+
+/* --- 正解演出オーバーレイ (Req 7) --- */
+.win-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 500;
+  cursor: pointer;
+}
+.win-overlay.hidden { display: none !important; }
+
+.win-card {
+  text-align: center;
+  background: var(--bg-card);
+  border: 3px solid var(--result-green);
+  border-radius: 16px;
+  padding: 2rem;
+  max-width: 320px;
+  width: 90%;
+  animation: winPop .4s cubic-bezier(.34,1.56,.64,1);
+}
+
+@keyframes winPop {
+  from { transform: scale(0.5) rotate(-5deg); opacity: 0; }
+  to   { transform: scale(1) rotate(0);      opacity: 1; }
+}
+
+.win-image {
+  width: 180px;
+  height: 180px;
+  object-fit: contain;
+  border-radius: 10px;
+  margin-bottom: .8rem;
+}
+
+.win-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--result-green);
+}
+
+/* --- 結果バナー 複数行対応 --- */
+.result-banner {
+  white-space: pre-line;
+}
+
+/* --- 詳細パネル 初期展開 --- */
+.guess-detail {
+  /* hidden クラスなしで初期表示 */
+}
+.guess-detail.hidden {
+  display: none !important;
+}

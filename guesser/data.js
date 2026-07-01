@@ -166,7 +166,7 @@ const RAW_CHARACTERS = [
   { name: "キャンディス", country: "スメール", weapon: "長柄武器", element: "水", birth_month: "５月", birthday: "5月3日", rarity: ['☆４'], body: "長身女性", role: ["オフフィールドサポーター"], energy: 60, talent_boss: "半永久統制マトリックス", local_specialty: "赤念の実", ascension_stat: "HP", distributed: true, talent_book: "忠言", talent_weekly: "禍神の禊涙", special_dish: "スタミナ回復系", trace: false, costume: false, enemy_material: ["色褪せた赤い絹"], training_road: false, release_version: "3.1" },
   { name: "ニィロウ", country: "スメール", weapon: "片手剣", element: "水", birth_month: "１２月", birthday: "12月3日", rarity: ['☆５'], body: "中身女性", role: ["オフフィールドアタッカー", "オフフィールドサポーター"], energy: 70, talent_boss: "兆載永劫ドレイク", local_specialty: "パティサラ", ascension_stat: "HP", distributed: false, talent_book: "篤行", talent_weekly: "禍神の禊涙", special_dish: "スタミナ軽減系", trace: false, costume: true, enemy_material: ["キノコンの胞子"], training_road: true, release_version: "3.1" },
   { name: "ナヒーダ", country: "スメール", weapon: "法器", element: "草", birth_month: "１０月", birthday: "10月27日", rarity: ['☆５'], body: "ロリ", role: ["オフフィールドアタッカー", "オフフィールドサポーター"], energy: 50, talent_boss: "無相の草", local_specialty: "カルパラタ蓮", ascension_stat: "元素熟知", distributed: false, talent_book: "創意", talent_weekly: "傀儡の糸", special_dish: "防御系", trace: true, costume: false, enemy_material: ["キノコンの胞子"], training_road: false, release_version: "3.2" },
-  { name: "レイラ", country: "スメール", weapon: "片手剣", element: "氷", birth_month: "１２月", birthday: "12月19日", rarity: ['☆４'], body: "中身女性", role: ["オフフィールドライフキーパー"], energy: 40, talent_boss: "兆載永劫ドレイク", local_specialty: "サウマラタ蓮", ascension_stat: "HP", distributed: true, talent_book: "創意", talent_weekly: "無心の淵鏡", special_dish: "継続回復系", trace: false, costume: false, enemy_material: ["占いの絵巻"], training_road: false, release_version: "3.2" },
+  { name: "レイラ", country: "スメール", weapon: "片手剣", element: "氷", birth_month: "１２月", birthday: "12月19日", rarity: ['☆４'], body: "中身女性", role: ["オフフィールドライフキーパー"], energy: 40, talent_boss: "兆載永劫ドレイク", local_specialty: "サウマラタ蓮", ascension_stat: "HP", distributed: false, talent_book: "創意", talent_weekly: "無心の淵鏡", special_dish: "継続回復系", trace: false, costume: false, enemy_material: ["占いの絵巻"], training_road: false, release_version: "3.2" },
   { name: "放浪者", country: "スメール", weapon: "法器", element: "風", birth_month: "１月", birthday: "1月3日", rarity: ['☆５'], body: "中身男性", role: ["オンフィールドアタッカー"], energy: 60, talent_boss: "兆載永劫ドレイク", local_specialty: "ルッカデヴァータダケ", ascension_stat: "会心率", distributed: false, talent_book: "篤行", talent_weekly: "空行の虚鈴", special_dish: "治療効果系", trace: false, costume: false, enemy_material: ["古びた鍔"], training_road: true, release_version: "3.3" },
   { name: "ファルザン", country: "スメール", weapon: "弓", element: "風", birth_month: "８月", birthday: "8月20日", rarity: ['☆４'], body: "中身女性", role: ["オフフィールドサポーター"], energy: 80, talent_boss: "半永久統制マトリックス", local_specialty: "赤念の実", ascension_stat: "攻撃力", distributed: true, talent_book: "忠言", talent_weekly: "傀儡の糸", special_dish: "復活系", trace: false, costume: false, enemy_material: ["色褪せた赤い絹"], training_road: false, release_version: "3.3" },
   { name: "アルハイゼン", country: "スメール", weapon: "片手剣", element: "草", birth_month: "２月", birthday: "2月11日", rarity: ['☆５'], body: "長身男性", role: ["オンフィールドアタッカー"], energy: 70, talent_boss: "風食ウェネト", local_specialty: "砂脂蛹", ascension_stat: "草元素ダメージ", distributed: false, talent_book: "創意", talent_weekly: "無心の淵鏡", special_dish: "回復系", trace: false, costume: false, enemy_material: ["色褪せた赤い絹"], training_road: false, release_version: "3.4" },
@@ -208,7 +208,6 @@ const RAW_CHARACTERS = [
   { name: "コロンビーナ", country: "ナドクライ", weapon: "法器", element: "水", birth_month: "１月", birthday: "1月14日", rarity: ['☆５'], body: "中身女性", role: ["オフフィールドサポーター"], energy: 60, talent_boss: "霜夜の空を巡る霊主", local_specialty: "ヴィンテル草", ascension_stat: "会心率", distributed: false, talent_book: "月光", talent_weekly: "賢医の仮面", special_dish: "HP強化系", trace: false, costume: false, enemy_material: ["スライムの液体"], training_road: false, release_version: "Luna IV (6.3)" },
   { name: "イルーガ", country: "ナドクライ", weapon: "長柄武器", element: "岩", birth_month: "１２月", birthday: "12月23日", rarity: ['☆４'], body: "中身男性", role: ["オフフィールドサポーター"], energy: 60, talent_boss: "重量級陸巡艦「バトルシップ」", local_specialty: "琥珀香", ascension_stat: "元素熟知", distributed: false, talent_book: "楽園", talent_weekly: "蝕滅の焔角", special_dish: "回復系", trace: false, costume: false, enemy_material: ["破損した駆動軸"], training_road: false, release_version: "Luna IV (6.3)" },
   { name: "リンネア", country: "ナドクライ", weapon: "弓", element: "岩", birth_month: "５月", birthday: "5月23日", rarity: ['☆５'], body: "中身女性", role: ["オフフィールドアタッカー", "オフフィールドライフキーパー"], energy: 60, talent_boss: "守護者・堕天", local_specialty: "フェザーモス", ascension_stat: "会心率", distributed: false, talent_book: "流浪", talent_weekly: "異端の薬瓶", special_dish: "スタミナ回復系", trace: false, costume: false, enemy_material: ["破損した徽章"], training_road: false, release_version: "Luna VI (6.5)" },
-  { name: "ドゥリン", country: "モンド", weapon: "片手剣", element: "炎", birth_month: "３月", birthday: "3月14日", rarity: ['☆５'], body: "中身男性", role: ["オフフィールドサポーター", "オフフィールドアタッカー"], energy: 70, talent_boss: "重量級陸巡艦「バトルシップ」", local_specialty: "フロストランプ", ascension_stat: "会心ダメージ", distributed: false, talent_book: "詩文", talent_weekly: "蝕滅の陽炎", special_dish: "回復系", trace: false, costume: true, enemy_material: ["破損した徽章"], training_road: false, release_version: "Luna III (6.2)" },
   { name: "ニコ", country: "例外", weapon: "法器", element: "炎", birth_month: "９月", birthday: "9月29日", rarity: ['☆５'], body: "中身女性", role: ["オフフィールドサポーター", "オフフィールドライフキーパー"], energy: 60, talent_boss: "昏き魘夢の主", local_specialty: "琥珀香", ascension_stat: "攻撃力", distributed: false, talent_book: "楽園", talent_weekly: "偽りの樹脂", special_dish: "スタミナ回復系", trace: false, costume: false, enemy_material: ["破損した徽章"], training_road: false, release_version: "Luna VII (6.6)" },
   { name: "サンドローネ", country: "スネージナヤ", weapon: "両手剣", element: "氷", birth_month: "１月", birthday: "1月13日", version: "n.0", rarity: ['☆５'], body: "中身女性", role: ["オンフィールドアタッカー"], energy: 60, talent_boss: "守護者・堕天", local_specialty: "探測ユニット・子機", ascension_stat: "会心率", distributed: false, talent_book: "流浪", talent_weekly: "狂人の誓約", special_dish: "スタミナ軽減系", trace: false, costume: false, enemy_material: ["破損した駆動軸"], training_road: false, release_version: "Luna VIII (6.7)" }, 
   // 旅人（特殊：出題対象外）
@@ -348,7 +347,6 @@ const HINT_FIELDS = [
   { key: 'element',           label: '元素',         type: 'exact',   defaultOn: true  },
   { key: 'weapon',            label: '武器種',        type: 'exact',   defaultOn: true  },
   { key: 'rarity',            label: 'レアリティ',    type: 'exact',   defaultOn: true  },
-  { key: 'bannerType',        label: 'バナー種',      type: 'exact',   defaultOn: true  },
   { key: 'country',           label: '国',           type: 'exact',   defaultOn: true  },
   { key: 'body',              label: '体型',         type: 'exact',   defaultOn: true  },
   { key: 'releaseVersionNum', label: '実装Ver',       type: 'numeric', defaultOn: true  },
@@ -356,10 +354,10 @@ const HINT_FIELDS = [
   { key: 'birthMonth',        label: '誕生月',        type: 'exact',   defaultOn: false },
   { key: 'talentBook',        label: '天賦本',        type: 'group',   group: 'talentBookGroup', defaultOn: true  },
   { key: 'talentWeekly',      label: '週ボス素材',    type: 'group',   group: 'weeklyBossGroup', defaultOn: true  },
-  { key: 'talentBoss',        label: '天賦ボス',      type: 'exact',   defaultOn: false },
+  { key: 'talentBoss',        label: '突破ボス',      type: 'exact',   defaultOn: false },
   { key: 'localSpecialty',    label: '特産品',        type: 'group',   group: 'localSpecialtyGroup', defaultOn: true  },
   { key: 'ascensionStat',     label: '突破ステ',      type: 'group',   group: 'ascensionStatGroup', defaultOn: true  },
-  { key: 'specialDish',       label: '特殊料理',      type: 'exact',   defaultOn: false },
+  { key: 'specialDish',       label: 'オリジナル料理',      type: 'exact',   defaultOn: false },
   { key: 'distributed',       label: '配布',         type: 'exact',   defaultOn: true  },
   { key: 'costume',           label: '別衣装',         type: 'exact',   defaultOn: false },
   { key: 'trace',             label: '軌跡',      type: 'exact',   defaultOn: false },
@@ -386,5 +384,438 @@ function getDisplayValue(key, value, char) {
     case 'trainingRoad': return value ? 'あり' : 'なし';
     case 'releaseVersionNum': return char.releaseVersionLabel || String(value);
     default:             return String(value);
+  }
+}
+
+// ===========================================================================
+// 武器モード データ
+// ===========================================================================
+
+// ---------------------------------------------------------------------------
+// 武器突破素材グループ（🟨判定）
+// ---------------------------------------------------------------------------
+const WEAPON_BREAK_GROUPS = {
+  '今昔劇画の鬼人': '今昔劇画',
+  '凛風奔狼の郷愁': '凛風奔狼',
+  '孤雲寒林の神体': '孤雲寒林',
+  '漆黒の隕鉄の塊': '漆黒隕鉄',
+  '獅牙戦士の理想': '獅牙戦士',
+  '遠海夷地の金枝': '遠海夷地',
+  '霧海雲間の転還': '霧海雲間',
+  '高塔の王の砕けた夢': '高塔の王',
+  '鳴神御霊の勇武': '鳴神御霊',
+  '烈日権威の往日': '烈日権威',
+  '静謐な森のしずくの金符': '静謐の森',
+  'オアシスガーデンの真諦': 'オアシス',
+  '無垢な海の金盃': '無垢な海',
+  '悠久の弦の響き': '悠久の弦',
+  '純聖な雫の精髄': '純聖な雫',
+  '灼心を捧げる栄光': '灼心の栄光',
+  '狂乱の聖主の神面': '狂乱の聖主',
+  '神秘なる煙の啓示': '神秘の煙',
+  '奇妙な装置の宿願': '奇妙な装置',
+  '長夜の灯火の輝光': '長夜の灯火',
+  '極北の末裔の煌光': '極北の末裔',
+};
+
+// 武器→突破素材マッピング（spec の素材グループ定義より）
+const WEAPON_TO_BREAK_MAT = {
+  // 今昔劇画の鬼人
+  '籠釣瓶一心': '今昔劇画の鬼人', '草薙の稲光': '今昔劇画の鬼人', '斬波のひれ長': '今昔劇画の鬼人',
+  '「漁獲」': '今昔劇画の鬼人', '喜多院十文字槍': '今昔劇画の鬼人', '玉響停の御噺': '今昔劇画の鬼人',
+  '神楽の真意': '今昔劇画の鬼人', '冬極の白星': '今昔劇画の鬼人',
+  // 凛風奔狼の郷愁
+  '降臨の剣': '凛風奔狼の郷愁', '笛の剣': '凛風奔狼の郷愁', '黒剣': '凛風奔狼の郷愁',
+  '天空の刃': '凛風奔狼の郷愁', '黎明の神剣': '凛風奔狼の郷愁', '龍血を浴びた剣': '凛風奔狼の郷愁',
+  '訓練用大剣': '凛風奔狼の郷愁', '傭兵の重剣': '凛風奔狼の郷愁', '天空の傲': '凛風奔狼の郷愁',
+  '祭礼の大剣': '凛風奔狼の郷愁', '狼の武勲詩': '凛風奔狼の郷愁', '風信の矛': '凛風奔狼の郷愁',
+  'ドラゴンスピア': '凛風奔狼の郷愁', '死闘の槍': '凛風奔狼の郷愁', 'ドドコの物語': '凛風奔狼の郷愁',
+  'ダークアレイの酒と詩': '凛風奔狼の郷愁', '龍殺しの英雄譚': '凛風奔狼の郷愁', '流浪楽章': '凛風奔狼の郷愁',
+  '天空の巻': '凛風奔狼の郷愁', '果てなき紺碧の唄': '凛風奔狼の郷愁', '終焉を嘆く詩': '凛風奔狼の郷愁',
+  '狩猟弓': '凛風奔狼の郷愁', 'シャープシューターの誓い': '凛風奔狼の郷愁', '天空の翼': '凛風奔狼の郷愁',
+  '祭礼の弓': '凛風奔狼の郷愁', '歴戦の狩猟弓': '凛風奔狼の郷愁',
+  // 孤雲寒林の神体
+  '匣中龍吟': '孤雲寒林の神体', '暗鉄剣': '孤雲寒林の神体', '黒岩の斬刀': '孤雲寒林の神体',
+  '白影の剣': '孤雲寒林の神体', '斬山の刃': '孤雲寒林の神体', '千岩古剣': '孤雲寒林の神体',
+  '流月の針': '孤雲寒林の神体', '和璞鳶': '孤雲寒林の神体', '碧落の瓏': '孤雲寒林の神体',
+  '翡玉法珠': '孤雲寒林の神体', '黒岩の緋玉': '孤雲寒林の神体', '匣中日月': '孤雲寒林の神体',
+  '古祠の瓏': '孤雲寒林の神体', '弾弓': '孤雲寒林の神体', '弓蔵': '孤雲寒林の神体',
+  '黒岩の戦弓': '孤雲寒林の神体', '若水': '孤雲寒林の神体', '白纓槍': '孤雲寒林の神体',
+  // 漆黒の隕鉄の塊
+  '飛天御剣': '漆黒の隕鉄の塊', '鉄蜂の刺し': '漆黒の隕鉄の塊', '三日月の含光': '漆黒の隕鉄の塊',
+  '古華・試作': '漆黒の隕鉄の塊', '螭龍の剣': '漆黒の隕鉄の塊', '飛天大御剣': '漆黒の隕鉄の塊',
+  '銜玉の海皇': '漆黒の隕鉄の塊', '黒纓槍': '漆黒の隕鉄の塊', '破天の槍': '漆黒の隕鉄の塊',
+  '護摩の杖': '漆黒の隕鉄の塊', '星鎌・試作': '漆黒の隕鉄の塊', '千岩長槍': '漆黒の隕鉄の塊',
+  '万国諸海の図譜': '漆黒の隕鉄の塊', '浮世の錠': '漆黒の隕鉄の塊', 'リングボウ': '漆黒の隕鉄の塊',
+  '落霞': '漆黒の隕鉄の塊', '築雲': '漆黒の隕鉄の塊',
+  // 獅牙戦士の理想
+  '蒼古なる自由への誓い': '獅牙戦士の理想', '腐食の剣': '獅牙戦士の理想', '旅道の剣': '獅牙戦士の理想',
+  '祭礼の剣': '獅牙戦士の理想', '西風大剣': '獅牙戦士の理想', '旧貴族大剣': '獅牙戦士の理想',
+  '狼の末路': '獅牙戦士の理想', '鉄彩の花': '獅牙戦士の理想', '白鉄の大剣': '獅牙戦士の理想',
+  '西風長槍': '獅牙戦士の理想', '鉄尖槍': '獅牙戦士の理想', '天空の脊': '獅牙戦士の理想',
+  '新米の長槍': '獅牙戦士の理想', '冬忍びの実': '獅牙戦士の理想', '四風原典': '獅牙戦士の理想',
+  '祭礼の断片': '獅牙戦士の理想', '異世界旅行記': '獅牙戦士の理想', '風花の頌歌': '獅牙戦士の理想',
+  'ダークアレイの狩人': '獅牙戦士の理想', 'アモスの弓': '獅牙戦士の理想', '旧貴族の長弓': '獅牙戦士の理想',
+  '西風猟弓': '獅牙戦士の理想', 'リカーブボウ': '獅牙戦士の理想', '暁を告げる歴史': '獅牙戦士の理想',
+  // 遠海夷地の金枝
+  '霧切の廻光': '遠海夷地の金枝', '天目影打': '遠海夷地の金枝', '有楽御簾切': '遠海夷地の金枝',
+  '惡王丸': '遠海夷地の金枝', '不滅の月華': '遠海夷地の金枝', '白辰の輪': '遠海夷地の金枝',
+  '誓いの明導': '遠海夷地の金枝',
+  // 霧海雲間の転還
+  '盤岩結緑': '霧海雲間の転還', '斬岩・試作': '霧海雲間の転還', 'チ虎魚の刀': '霧海雲間の転還',
+  '無工の剣': '霧海雲間の転還', '雨裁': '霧海雲間の転還', '理屈責め': '霧海雲間の転還',
+  '黒岩の大剣': '霧海雲間の転還', '鉾槍': '霧海雲間の転還', '旧貴族猟槍': '霧海雲間の転還',
+  '黒岩の突槍': '霧海雲間の転還', '匣中滅龍': '霧海雲間の転還', '息災': '霧海雲間の転還',
+  '昭心': '霧海雲間の転還', '特級の宝玉': '霧海雲間の転還', '金珀・試作': '霧海雲間の転還',
+  '鶴鳴の余韻': '霧海雲間の転還', '文使い': '霧海雲間の転還', '澹月・試作': '霧海雲間の転還',
+  // 高塔の王の砕けた夢
+  '西風剣': '高塔の王の砕けた夢', '旧貴族長剣': '高塔の王の砕けた夢', '鉄影段平': '高塔の王の砕けた夢',
+  '銀の剣': '高塔の王の砕けた夢', '無鋒の剣': '高塔の王の砕けた夢', 'ダークアレイの閃光': '高塔の王の砕けた夢',
+  'シナバースピンドル': '高塔の王の砕けた夢', '風鷹剣': '高塔の王の砕けた夢', '狼牙': '高塔の王の砕けた夢',
+  '黒蝕': '高塔の王の砕けた夢', '鐘の剣': '高塔の王の砕けた夢', '松韻の響く頃': '高塔の王の砕けた夢',
+  '雪葬の星銀': '高塔の王の砕けた夢', '災憾': '高塔の王の砕けた夢', '魔導緒論': '高塔の王の砕けた夢',
+  '西風秘典': '高塔の王の砕けた夢', '旧貴族秘法録': '高塔の王の砕けた夢', 'ポケット魔導書': '高塔の王の砕けた夢',
+  '生徒ノート': '高塔の王の砕けた夢', '絶弦': '高塔の王の砕けた夢', '蒼翠の狩猟弓': '高塔の王の砕けた夢',
+  '幽夜のワルツ': '高塔の王の砕けた夢', '鴉羽の弓': '高塔の王の砕けた夢',
+  // 鳴神御霊の勇武
+  '波乱月白経津': '鳴神御霊の勇武', '東花坊時雨': '鳴神御霊の勇武', '桂木斬長正': '鳴神御霊の勇武',
+  '赤角石塵滅砕': '鳴神御霊の勇武', '寝正月の初晴': '鳴神御霊の勇武', '飛来の鳴弦': '鳴神御霊の勇武',
+  '破魔の弓': '鳴神御霊の勇武', 'プレデター': '鳴神御霊の勇武', '曚雲の月': '鳴神御霊の勇武',
+  // 烈日権威の往日
+  'マカイラの水色': '烈日権威の往日', '葦海の標': '烈日権威の往日', 'トゥライトゥーラの記憶': '烈日権威の往日',
+  '王の近侍': '烈日権威の往日', '狩人の道': '烈日権威の往日', '烈日の後嗣': '烈日権威の往日',
+  // 静謐な森のしずくの金符
+  '原木刀': '静謐な森のしずくの金符', 'サイフォスの月明かり': '静謐な森のしずくの金符',
+  '聖顕の鍵': '静謐な森のしずくの金符', '翠光の裁葉': '静謐な森のしずくの金符',
+  '森林のレガリア': '静謐な森のしずくの金符', '砂中の賢者達の問答': '静謐な森のしずくの金符',
+  'トキの嘴': '静謐な森のしずくの金符',
+  // オアシスガーデンの真諦
+  '話死合い棒': 'オアシスガーデンの真諦', 'ムーンピアサー': 'オアシスガーデンの真諦',
+  '赤砂の杖': 'オアシスガーデンの真諦', '満悦の実': 'オアシスガーデンの真諦',
+  '彷徨える星': 'オアシスガーデンの真諦', '千夜に浮かぶ夢': 'オアシスガーデンの真諦',
+  '真言の匣': 'オアシスガーデンの真諦',
+  // 無垢な海の金盃
+  'タイダル・シャドー': '無垢な海の金盃', '携帯型チェンソー': '無垢な海の金盃',
+  '「スーパーアルティメット覇王魔剣」': '無垢な海の金盃', '正義の報酬': '無垢な海の金盃',
+  'フィヨルドの歌': '無垢な海の金盃', '赤月のシルエット': '無垢な海の金盃',
+  'ルミドゥースの挽歌': '無垢な海の金盃', '凛流の監視者': '無垢な海の金盃',
+  // 悠久の弦の響き
+  'サーンドルの渡し守': '悠久の弦の響き', '水仙十字の剣': '悠久の弦の響き',
+  '赦罪': '悠久の弦の響き', '裁断': '悠久の弦の響き', 'プロスペクタードリル': '悠久の弦の響き',
+  '始まりの大魔術': '悠久の弦の響き', '静寂の唄': '悠久の弦の響き',
+  'レンジゲージ': '悠久の弦の響き', '冷寂の音': '悠久の弦の響き',
+  // 純聖な雫の精髄
+  '海淵のフィナーレ': '純聖な雫の精髄', '船渠剣': '純聖な雫の精髄',
+  '静水流転の輝き': '純聖な雫の精髄', '香りのシンフォニスト': '純聖な雫の精髄',
+  '純水流華': '純聖な雫の精髄', '久遠流転の大典': '純聖な雫の精髄',
+  '白雨心弦': '純聖な雫の精髄',
+  // 灼心を捧げる栄光
+  'エズピツァルの笛': '灼心を捧げる栄光', 'ストロングボーン': '灼心を捧げる栄光',
+  'アースシェイカー': '灼心を捧げる栄光', '千烈の日輪': '灼心を捧げる栄光',
+  '砕け散る光輪': '灼心を捧げる栄光', 'サーフィンタイム': '灼心を捧げる栄光',
+  '波乗りの旋回': '灼心を捧げる栄光',
+  // 狂乱の聖主の神面
+  '山の王の長牙': '狂乱の聖主の神面', '知恵の溶炎': '狂乱の聖主の神面',
+  '虹の行方': '狂乱の聖主の神面', '鎮山の釘': '狂乱の聖主の神面',
+  'ヤシュチェの環': '狂乱の聖主の神面', '祭星者の眺め': '狂乱の聖主の神面',
+  'ヴィヴィッド・ハート': '狂乱の聖主の神面', '厄水の災い': '狂乱の聖主の神面',
+  // 神秘なる煙の啓示
+  '岩峰を巡る歌': '神秘なる煙の啓示', '蒼耀': '神秘なる煙の啓示',
+  '蒼紋の角杯': '神秘なる煙の啓示', 'チェーンブレイカー': '神秘なる煙の啓示',
+  '星鷲の紅き羽': '神秘なる煙の啓示', '花飾りの羽': '神秘なる煙の啓示',
+  '虹蛇の雨弦': '神秘なる煙の啓示',
+  // 奇妙な装置の宿願
+  '静謐の笛': '奇妙な装置の宿願', '夜を紡ぐ天鏡': '奇妙な装置の宿願',
+  '烏髄の孤灯': '奇妙な装置の宿願', '霜辰': '奇妙な装置の宿願',
+  '塵と光と七つの誓約': '奇妙な装置の宿願',
+  // 長夜の灯火の輝光
+  '金掘りのシャベル': '長夜の灯火の輝光', '血染めの荒れ地': '長夜の灯火の輝光',
+  '聖祭者の輝杖': '長夜の灯火の輝光', '羅網の針': '長夜の灯火の輝光',
+  '霜契の金枝': '長夜の灯火の輝光',
+  // 極北の末裔の煌光
+  '万能の鍵': '極北の末裔の煌光', '超越の鍵': '極北の末裔の煌光',
+  '天光のリュート': '極北の末裔の煌光', '帳の夜曲': '極北の末裔の煌光',
+  '月紡ぎの曙光': '極北の末裔の煌光',
+};
+
+// 基礎攻撃力（MAX）マッピング（specより）
+const WEAPON_BASE_ATK = {
+  741: ['千烈の日輪','山の王の長牙','松韻の響く頃','息災','鶴鳴の余韻','塵と光と七つの誓約'],
+  674: ['赦罪','風鷹剣','蒼耀','霧切の廻光','天空の傲','裁断','血染めの荒れ地','赤月のシルエット','和璞鳶','天空の脊','天空の翼','暁を告げる歴史','凛流の監視者','天空の巻','トゥライトゥーラの記憶','ヴィヴィッド・ハート','災憾','万能の鍵'],
+  620: ['ダークアレイの閃光','聖祭者の輝杖','斬波のひれ長'],
+  608: ['黒蝕','蒼古なる自由への誓い','波乱月白経津','天空の刃','斬山の刃','葦海の標','狼の武勲詩','無工の剣','狼の末路','草薙の稲光','砕け散る光輪','ルミドゥースの挽歌','護摩の杖','香りのシンフォニスト','破天の槍','アモスの弓','星鷲の紅き羽','終焉を嘆く詩','冬極の白星','始まりの大魔術','飛来の鳴弦','不滅の月華','碧落の瓏','神楽の真意','四風原典','浮世の錠'],
+  565: ['黒岩の長剣','厄水の災い','海淵のフィナーレ','月紡ぎの曙光','斬岩・試作','王の近侍','ストロングボーン','「スーパーアルティメット覇王魔剣」','アースシェイカー','森林のレガリア','実りの鉤鉈','鉄彩の花','古華・試作','祭礼の大剣','雪葬の星銀','話死合い棒','旧貴族大剣','流月の針','西風長槍','喜多院十文字槍','千岩長槍','ムーンピアサー','鎮山の釘','プロスペクタードリル','正義の報酬','旧貴族長槍','玉響停の御噺','ダークアレイの狩人','黒岩の戦弓','落霞','トキの嘴','曚雲の月','チェーンブレイカー','レンジゲージ','祭礼の弓','烈日の後嗣','果てなき紺碧の唄','純水流華','白辰の輪','万国諸海の図譜','誓いの明導','旧貴族秘法録','ダークアレイの酒と詩'],
+  542: ['聖顕の鍵','翠光の裁葉','三日月の含光','岩峰を巡る歌','盤岩結緑','静水流転の輝き','有楽御簾切','赤角石塵滅砕','赤砂の杖','若水','霜契の金枝','狩人の道','白雨心弦','千夜に浮かぶ夢','帳の夜曲','真言の匣','祭星者の眺め','寝正月の初晴','サーフィンタイム','久遠流転の大典','夜を紡ぐ天鏡'],
+  510: ['腐食の剣','サーンドルの渡し守','鉄蜂の刺し','籠釣瓶一心','匣中龍吟','旧貴族長剣','水仙十字の剣','黒剣','船渠剣','笛の剣','東花坊時雨','降臨の剣','サイフォスの月明かり','惡王丸','黒岩の斬刀','知恵の溶炎','桂木斬長正','千岩古剣','マカイラの水色','雨裁','螭龍の剣','鐘の剣','タイダル・シャドー','白影の剣','狼牙','「漁獲」','黒岩の突槍','フィヨルドの歌','砂中の賢者達の問答','虹の行方','風信の矛','金掘りのシャベル','星鎌・試作','築雲','竭沢','花飾りの羽','幽夜のワルツ','プレデター','澹月・試作','虹蛇の雨弦','旧貴族長弓','弓蔵','冷寂の音','絶弦','蒼翠の狩猟弓','風花の頌歌','静寂の唄','蒼紋の角杯','黒岩の緋玉','霜辰','天光のリュート','西風秘典','冬忍びの実','金珀・試作','ヤシュチェの環','匣中日月','流浪楽章','彷徨える星','満悦の実'],
+  454: ['天目影打','シナバースピンドル','西風剣','エズピツァルの笛','祭礼の剣','静謐の笛','西風大剣','銜玉の海皇','携帯型チェンソー','死闘の槍','匣中滅龍','ドラゴンスピア','リングボウ','西風猟弓','破魔の弓','羅網の針','烏髄の孤灯','ドドコの物語','昭心','祭礼の断片','古祠の瓏','波乗りの旋回'],
+  448: ['旅道の剣','鉾槍','文使い','シャープシューターの誓い','翡玉法珠','特級の宝玉'],
+  440: ['降臨の剣'],
+  401: ['冷刃','暗鉄剣','チ虎魚の刀','黎明の神剣','理屈責め','鉄影段平','飛天大御剣','白鉄の大剣','白纓槍','鴉羽の弓','異世界旅行記','龍殺しの英雄譚'],
+  354: ['飛天御剣','龍血を浴びた剣','黒纓槍','リカーブボウ','弾弓','魔導緒論'],
+  243: ['銀の剣','鉄尖槍','ポケット魔導書','歴戦の狩猟弓','傭兵の重剣'],
+  185: ['訓練用大剣','狩猟弓','無鋒の剣','新米の長槍','生徒ノート'],
+};
+
+// 武器の属性（タイプ・レアリティ・敵素材）
+const WEAPON_ATTRS = {
+  // ★5 片手剣
+  '草薙の稲光':      { rarity:5, weaponType:'片手剣', enemyMaterial:'古びた鍔' },
+  '霧切の廻光':      { rarity:5, weaponType:'片手剣', enemyMaterial:'古びた鍔' },
+  '誓いの明導':      { rarity:5, weaponType:'片手剣', enemyMaterial:'フライムの乾核' },
+  '天空の刃':        { rarity:5, weaponType:'片手剣', enemyMaterial:'新兵の記章' },
+  '冬極の白星':      { rarity:5, weaponType:'片手剣', enemyMaterial:'古びた鍔' },
+  '波乱月白経津':    { rarity:5, weaponType:'片手剣', enemyMaterial:'古びた鍔' },
+  '静水流転の輝き':  { rarity:5, weaponType:'片手剣', enemyMaterial:'異海の露' },
+  '赦罪':            { rarity:5, weaponType:'片手剣', enemyMaterial:'異海の露' },
+  '水仙十字の剣':    { rarity:5, weaponType:'片手剣', enemyMaterial:'異海の露' },
+  'サーンドルの渡し守': { rarity:5, weaponType:'片手剣', enemyMaterial:'宝探しの鴉マーク' },
+  '風鷹剣':          { rarity:5, weaponType:'片手剣', enemyMaterial:'破損した仮面' },
+  '黒蝕':            { rarity:5, weaponType:'片手剣', enemyMaterial:'新兵の記章' },
+  // ★5 両手剣
+  '斬波のひれ長':    { rarity:5, weaponType:'両手剣', enemyMaterial:'古びた鍔' },
+  '赤角石塵滅砕':    { rarity:5, weaponType:'両手剣', enemyMaterial:'古びた鍔' },
+  '松韻の響く頃':    { rarity:5, weaponType:'両手剣', enemyMaterial:'スライムの液体' },
+  '蒼古なる自由への誓い': { rarity:5, weaponType:'両手剣', enemyMaterial:'破損した仮面' },
+  '天空の傲':        { rarity:5, weaponType:'両手剣', enemyMaterial:'新兵の記章' },
+  '狼の武勲詩':      { rarity:5, weaponType:'両手剣', enemyMaterial:'破損した仮面' },
+  '狼の末路':        { rarity:5, weaponType:'両手剣', enemyMaterial:'破損した仮面' },
+  '雪葬の星銀':      { rarity:5, weaponType:'両手剣', enemyMaterial:'古びた鍔' },
+  'タイダル・シャドー': { rarity:5, weaponType:'両手剣', enemyMaterial:'異海の露' },
+  '携帯型チェンソー': { rarity:5, weaponType:'両手剣', enemyMaterial:'異海の露' },
+  'ストロングボーン': { rarity:5, weaponType:'両手剣', enemyMaterial:'波乱の幹材' },
+  'アースシェイカー': { rarity:5, weaponType:'両手剣', enemyMaterial:'波乱の幹材' },
+  '千烈の日輪':      { rarity:5, weaponType:'両手剣', enemyMaterial:'波乱の幹材' },
+  '山の王の長牙':    { rarity:5, weaponType:'両手剣', enemyMaterial:'従戦士の木笛' },
+  // ★5 長柄武器
+  '和璞鳶':          { rarity:5, weaponType:'長柄武器', enemyMaterial:'色褪せた赤い絹' },
+  '天空の脊':        { rarity:5, weaponType:'長柄武器', enemyMaterial:'新兵の記章' },
+  '護摩の杖':        { rarity:5, weaponType:'長柄武器', enemyMaterial:'新兵の記章' },
+  '息災':            { rarity:5, weaponType:'長柄武器', enemyMaterial:'色褪せた赤い絹' },
+  '鶴鳴の余韻':      { rarity:5, weaponType:'長柄武器', enemyMaterial:'色褪せた赤い絹' },
+  '不滅の月華':      { rarity:5, weaponType:'長柄武器', enemyMaterial:'古びた鍔' },
+  'トゥライトゥーラの記憶': { rarity:5, weaponType:'長柄武器', enemyMaterial:'波乱の幹材' },
+  '葦海の標':        { rarity:5, weaponType:'長柄武器', enemyMaterial:'色褪せた赤い絹' },
+  'ムーンピアサー':  { rarity:5, weaponType:'長柄武器', enemyMaterial:'キノコンの胞子' },
+  '純水流華':        { rarity:5, weaponType:'長柄武器', enemyMaterial:'異海の露' },
+  '裁断':            { rarity:5, weaponType:'長柄武器', enemyMaterial:'異海の露' },
+  '岩峰を巡る歌':    { rarity:5, weaponType:'長柄武器', enemyMaterial:'従戦士の木笛' },
+  // ★5 弓
+  '天空の翼':        { rarity:5, weaponType:'弓', enemyMaterial:'新兵の記章' },
+  '終焉を嘆く詩':    { rarity:5, weaponType:'弓', enemyMaterial:'新兵の記章' },
+  'アモスの弓':      { rarity:5, weaponType:'弓', enemyMaterial:'牢固な矢先' },
+  '暁を告げる歴史':  { rarity:5, weaponType:'弓', enemyMaterial:'牢固な矢先' },
+  '飛来の鳴弦':      { rarity:5, weaponType:'弓', enemyMaterial:'古びた鍔' },
+  '赤月のシルエット': { rarity:5, weaponType:'弓', enemyMaterial:'異海の露' },
+  '白雨心弦':        { rarity:5, weaponType:'弓', enemyMaterial:'異海の露' },
+  '星鷲の紅き羽':    { rarity:5, weaponType:'弓', enemyMaterial:'従戦士の木笛' },
+  'ヴィヴィッド・ハート': { rarity:5, weaponType:'弓', enemyMaterial:'従戦士の木笛' },
+  '凛流の監視者':    { rarity:5, weaponType:'弓', enemyMaterial:'異海の露' },
+  // ★5 法器
+  '神楽の真意':      { rarity:5, weaponType:'法器', enemyMaterial:'古びた鍔' },
+  '天空の巻':        { rarity:5, weaponType:'法器', enemyMaterial:'新兵の記章' },
+  '四風原典':        { rarity:5, weaponType:'法器', enemyMaterial:'新兵の記章' },
+  '碧落の瓏':        { rarity:5, weaponType:'法器', enemyMaterial:'色褪せた赤い絹' },
+  '浮世の錠':        { rarity:5, weaponType:'法器', enemyMaterial:'古びた鍔' },
+  '真言の匣':        { rarity:5, weaponType:'法器', enemyMaterial:'色褪せた赤い絹' },
+  '始まりの大魔術':  { rarity:5, weaponType:'法器', enemyMaterial:'宝探しの鴉マーク' },
+  '海淵のフィナーレ': { rarity:5, weaponType:'法器', enemyMaterial:'異海の露' },
+  '久遠流転の大典':  { rarity:5, weaponType:'法器', enemyMaterial:'異海の露' },
+  '蒼耀':            { rarity:5, weaponType:'法器', enemyMaterial:'従戦士の木笛' },
+  '塵と光と七つの誓約': { rarity:5, weaponType:'法器', enemyMaterial:'破損した駆動軸' },
+  '夜を紡ぐ天鏡':    { rarity:5, weaponType:'法器', enemyMaterial:'破損した駆動軸' },
+  // ★4 片手剣
+  '籠釣瓶一心':      { rarity:4, weaponType:'片手剣', enemyMaterial:'古びた鍔' },
+  '玉響停の御噺':    { rarity:4, weaponType:'片手剣', enemyMaterial:'古びた鍔' },
+  '東花坊時雨':      { rarity:4, weaponType:'片手剣', enemyMaterial:'古びた鍔' },
+  '西風剣':          { rarity:4, weaponType:'片手剣', enemyMaterial:'新兵の記章' },
+  '旧貴族長剣':      { rarity:4, weaponType:'片手剣', enemyMaterial:'新兵の記章' },
+  '祭礼の剣':        { rarity:4, weaponType:'片手剣', enemyMaterial:'新兵の記章' },
+  '黒剣':            { rarity:4, weaponType:'片手剣', enemyMaterial:'新兵の記章' },
+  '千岩古剣':        { rarity:4, weaponType:'片手剣', enemyMaterial:'色褪せた赤い絹' },
+  '腐食の剣':        { rarity:4, weaponType:'片手剣', enemyMaterial:'牢固な矢先' },
+  '笛の剣':          { rarity:4, weaponType:'片手剣', enemyMaterial:'新兵の記章' },
+  '降臨の剣':        { rarity:4, weaponType:'片手剣', enemyMaterial:'新兵の記章' },
+  '旅道の剣':        { rarity:4, weaponType:'片手剣', enemyMaterial:'新兵の記章' },
+  'シナバースピンドル': { rarity:4, weaponType:'片手剣', enemyMaterial:'古びた鍔' },
+  '匣中龍吟':        { rarity:4, weaponType:'片手剣', enemyMaterial:'色褪せた赤い絹' },
+  '鐘の剣':          { rarity:4, weaponType:'片手剣', enemyMaterial:'破損した仮面' },
+  '天目影打':        { rarity:4, weaponType:'片手剣', enemyMaterial:'古びた鍔' },
+  '船渠剣':          { rarity:4, weaponType:'片手剣', enemyMaterial:'異海の露' },
+  'サイフォスの月明かり': { rarity:4, weaponType:'片手剣', enemyMaterial:'キノコンの胞子' },
+  'マカイラの水色':  { rarity:4, weaponType:'片手剣', enemyMaterial:'色褪せた赤い絹' },
+  'タイダル・シャドー': { rarity:4, weaponType:'片手剣', enemyMaterial:'異海の露' },
+  '狼牙':            { rarity:4, weaponType:'片手剣', enemyMaterial:'破損した仮面' },
+  // ★4 両手剣
+  '有楽御簾切':      { rarity:4, weaponType:'両手剣', enemyMaterial:'古びた鍔' },
+  '惡王丸':          { rarity:4, weaponType:'両手剣', enemyMaterial:'古びた鍔' },
+  '桂木斬長正':      { rarity:4, weaponType:'両手剣', enemyMaterial:'古びた鍔' },
+  '祭礼の大剣':      { rarity:4, weaponType:'両手剣', enemyMaterial:'新兵の記章' },
+  '旧貴族大剣':      { rarity:4, weaponType:'両手剣', enemyMaterial:'新兵の記章' },
+  '西風大剣':        { rarity:4, weaponType:'両手剣', enemyMaterial:'牢固な矢先' },
+  '鉄影段平':        { rarity:4, weaponType:'両手剣', enemyMaterial:'破損した仮面' },
+  '黒岩の大剣':      { rarity:4, weaponType:'両手剣', enemyMaterial:'色褪せた赤い絹' },
+  '銜玉の海皇':      { rarity:4, weaponType:'両手剣', enemyMaterial:'フライムの乾核' },
+  '鉄彩の花':        { rarity:4, weaponType:'両手剣', enemyMaterial:'牢固な矢先' },
+  '赤角石塵滅砕':    { rarity:4, weaponType:'両手剣', enemyMaterial:'古びた鍔' },
+  '知恵の溶炎':      { rarity:4, weaponType:'両手剣', enemyMaterial:'従戦士の木笛' },
+  // ★4 長柄武器
+  '喜多院十文字槍':  { rarity:4, weaponType:'長柄武器', enemyMaterial:'古びた鍔' },
+  '寝正月の初晴':    { rarity:4, weaponType:'長柄武器', enemyMaterial:'古びた鍔' },
+  '千岩長槍':        { rarity:4, weaponType:'長柄武器', enemyMaterial:'色褪せた赤い絹' },
+  '西風長槍':        { rarity:4, weaponType:'長柄武器', enemyMaterial:'牢固な矢先' },
+  '旧貴族長槍':      { rarity:4, weaponType:'長柄武器', enemyMaterial:'新兵の記章' },
+  '流月の針':        { rarity:4, weaponType:'長柄武器', enemyMaterial:'色褪せた赤い絹' },
+  '「漁獲」':        { rarity:4, weaponType:'長柄武器', enemyMaterial:'古びた鍔' },
+  '黒岩の突槍':      { rarity:4, weaponType:'長柄武器', enemyMaterial:'色褪せた赤い絹' },
+  '鉾槍':            { rarity:4, weaponType:'長柄武器', enemyMaterial:'新兵の記章' },
+  '王の近侍':        { rarity:4, weaponType:'長柄武器', enemyMaterial:'色褪せた赤い絹' },
+  '話死合い棒':      { rarity:4, weaponType:'長柄武器', enemyMaterial:'キノコンの胞子' },
+  'ムーンピアサー':  { rarity:4, weaponType:'長柄武器', enemyMaterial:'キノコンの胞子' },
+  '鎮山の釘':        { rarity:4, weaponType:'長柄武器', enemyMaterial:'従戦士の木笛' },
+  'プロスペクタードリル': { rarity:4, weaponType:'長柄武器', enemyMaterial:'異海の露' },
+  // ★4 弓
+  '「漁獲」':        { rarity:4, weaponType:'長柄武器', enemyMaterial:'古びた鍔' },
+  '祭礼の弓':        { rarity:4, weaponType:'弓', enemyMaterial:'新兵の記章' },
+  'ダークアレイの狩人': { rarity:4, weaponType:'弓', enemyMaterial:'牢固な矢先' },
+  '旧貴族の長弓':    { rarity:4, weaponType:'弓', enemyMaterial:'新兵の記章' },
+  '西風猟弓':        { rarity:4, weaponType:'弓', enemyMaterial:'牢固な矢先' },
+  '弓蔵':            { rarity:4, weaponType:'弓', enemyMaterial:'色褪せた赤い絹' },
+  '黒岩の戦弓':      { rarity:4, weaponType:'弓', enemyMaterial:'色褪せた赤い絹' },
+  '破魔の弓':        { rarity:4, weaponType:'弓', enemyMaterial:'古びた鍔' },
+  '曚雲の月':        { rarity:4, weaponType:'弓', enemyMaterial:'古びた鍔' },
+  '烈日の後嗣':      { rarity:4, weaponType:'弓', enemyMaterial:'色褪せた赤い絹' },
+  'レンジゲージ':    { rarity:4, weaponType:'弓', enemyMaterial:'異海の露' },
+  '冷寂の音':        { rarity:4, weaponType:'弓', enemyMaterial:'宝探しの鴉マーク' },
+  '虹蛇の雨弦':      { rarity:4, weaponType:'弓', enemyMaterial:'従戦士の木笛' },
+  // ★4 法器
+  '祭礼の断片':      { rarity:4, weaponType:'法器', enemyMaterial:'新兵の記章' },
+  '旧貴族秘法録':    { rarity:4, weaponType:'法器', enemyMaterial:'新兵の記章' },
+  '西風秘典':        { rarity:4, weaponType:'法器', enemyMaterial:'破損した仮面' },
+  '翡玉法珠':        { rarity:4, weaponType:'法器', enemyMaterial:'色褪せた赤い絹' },
+  '黒岩の緋玉':      { rarity:4, weaponType:'法器', enemyMaterial:'色褪せた赤い絹' },
+  '匣中日月':        { rarity:4, weaponType:'法器', enemyMaterial:'色褪せた赤い絹' },
+  '千夜に浮かぶ夢':  { rarity:4, weaponType:'法器', enemyMaterial:'色褪せた赤い絹' },
+  '赤砂の杖':        { rarity:4, weaponType:'法器', enemyMaterial:'色褪せた赤い絹' },
+  '砂中の賢者達の問答': { rarity:4, weaponType:'法器', enemyMaterial:'色褪せた赤い絹' },
+  '彷徨える星':      { rarity:4, weaponType:'法器', enemyMaterial:'色褪せた赤い絹' },
+  '昭心':            { rarity:4, weaponType:'法器', enemyMaterial:'スライムの液体' },
+  'ヤシュチェの環':  { rarity:4, weaponType:'法器', enemyMaterial:'従戦士の木笛' },
+  '蒼紋の角杯':      { rarity:4, weaponType:'法器', enemyMaterial:'従戦士の木笛' },
+  '流浪楽章':        { rarity:4, weaponType:'法器', enemyMaterial:'新兵の記章' },
+  '果てなき紺碧の唄': { rarity:4, weaponType:'法器', enemyMaterial:'新兵の記章' },
+  // ★3 片手剣
+  '暗鉄剣':          { rarity:3, weaponType:'片手剣', enemyMaterial:'破損した仮面' },
+  '白影の剣':        { rarity:3, weaponType:'片手剣', enemyMaterial:'新兵の記章' },
+  '腐食の剣':        { rarity:3, weaponType:'片手剣', enemyMaterial:'牢固な矢先' },
+  '冷刃':            { rarity:3, weaponType:'片手剣', enemyMaterial:'新兵の記章' },
+  '銀の剣':          { rarity:3, weaponType:'片手剣', enemyMaterial:'破損した仮面' },
+  '旅道の剣':        { rarity:3, weaponType:'片手剣', enemyMaterial:'新兵の記章' },
+  '飛天御剣':        { rarity:3, weaponType:'片手剣', enemyMaterial:'スライムの液体' },
+  '鉄蜂の刺し':      { rarity:3, weaponType:'片手剣', enemyMaterial:'牢固な矢先' },
+  '三日月の含光':    { rarity:3, weaponType:'片手剣', enemyMaterial:'宝探しの鴉マーク' },
+  '無鋒の剣':        { rarity:3, weaponType:'片手剣', enemyMaterial:'破損した仮面' },
+  // ★3 両手剣
+  '訓練用大剣':      { rarity:3, weaponType:'両手剣', enemyMaterial:'スライムの液体' },
+  '傭兵の重剣':      { rarity:3, weaponType:'両手剣', enemyMaterial:'スライムの液体' },
+  '白鉄の大剣':      { rarity:3, weaponType:'両手剣', enemyMaterial:'新兵の記章' },
+  '飛天大御剣':      { rarity:3, weaponType:'両手剣', enemyMaterial:'スライムの液体' },
+  '魔王の刃':        { rarity:3, weaponType:'両手剣', enemyMaterial:'スライムの液体' },
+  // ★3 長柄武器
+  '新米の長槍':      { rarity:3, weaponType:'長柄武器', enemyMaterial:'スライムの液体' },
+  '鉄尖槍':          { rarity:3, weaponType:'長柄武器', enemyMaterial:'新兵の記章' },
+  '白纓槍':          { rarity:3, weaponType:'長柄武器', enemyMaterial:'色褪せた赤い絹' },
+  '黒纓槍':          { rarity:3, weaponType:'長柄武器', enemyMaterial:'スライムの液体' },
+  // ★3 弓
+  '狩猟弓':          { rarity:3, weaponType:'弓', enemyMaterial:'スライムの液体' },
+  'リカーブボウ':    { rarity:3, weaponType:'弓', enemyMaterial:'牢固な矢先' },
+  '弾弓':            { rarity:3, weaponType:'弓', enemyMaterial:'色褪せた赤い絹' },
+  '歴戦の狩猟弓':    { rarity:3, weaponType:'弓', enemyMaterial:'スライムの液体' },
+  '鴉羽の弓':        { rarity:3, weaponType:'弓', enemyMaterial:'新兵の記章' },
+  // ★3 法器
+  '魔導緒論':        { rarity:3, weaponType:'法器', enemyMaterial:'スライムの液体' },
+  '生徒ノート':      { rarity:3, weaponType:'法器', enemyMaterial:'新兵の記章' },
+  'ポケット魔導書':  { rarity:3, weaponType:'法器', enemyMaterial:'破損した仮面' },
+  '異世界旅行記':    { rarity:3, weaponType:'法器', enemyMaterial:'牢固な矢先' },
+  '龍殺しの英雄譚':  { rarity:3, weaponType:'法器', enemyMaterial:'破損した仮面' },
+  '龍血を浴びた剣':  { rarity:3, weaponType:'片手剣', enemyMaterial:'スライムの液体' },
+};
+
+// ---------------------------------------------------------------------------
+// 武器生データ — 上記マッピングから自動生成
+// ---------------------------------------------------------------------------
+function buildWeaponBase() {
+  const allNames = new Set([
+    ...Object.keys(WEAPON_TO_BREAK_MAT),
+    ...Object.keys(WEAPON_BASE_ATK).flatMap(k => WEAPON_BASE_ATK[k]),
+    ...Object.keys(WEAPON_ATTRS),
+  ]);
+
+  // base attack reverse map
+  const nameToAtk = {};
+  for (const [atk, names] of Object.entries(WEAPON_BASE_ATK)) {
+    for (const n of names) nameToAtk[n] = parseInt(atk, 10);
+  }
+
+  const weapons = [];
+  for (const name of allNames) {
+    const attrs = WEAPON_ATTRS[name] || {};
+    const breakMat = WEAPON_TO_BREAK_MAT[name] || '';
+    const baseAtk = nameToAtk[name] || 0;
+    if (!attrs.rarity || !attrs.weaponType) continue; // skip incomplete entries
+    weapons.push({
+      name,
+      rarity: attrs.rarity,
+      weaponType: attrs.weaponType,
+      baseAtk,
+      weaponBreakMaterial: breakMat,
+      weaponBreakMaterialGroup: WEAPON_BREAK_GROUPS[breakMat] || breakMat,
+      enemyMaterial: attrs.enemyMaterial || '',
+    });
+  }
+  return weapons;
+}
+
+// ---------------------------------------------------------------------------
+// 正規化済み武器リスト
+// ---------------------------------------------------------------------------
+const RAW_WEAPONS = buildWeaponBase();
+
+function normalizeWeapon(raw) {
+  return {
+    id: raw.name,
+    name: raw.name,
+    displayNames: [raw.name],
+    rarity: raw.rarity,
+    weaponType: raw.weaponType,
+    baseAtk: raw.baseAtk,
+    weaponBreakMaterial: raw.weaponBreakMaterial,
+    weaponBreakMaterialGroup: raw.weaponBreakMaterialGroup,
+    enemyMaterial: raw.enemyMaterial,
+    iconUrl: `${IMAGE_BASE}/weapons/${encodeURIComponent(raw.name)}.png`,
+    enabled: true,
+  };
+}
+
+const WEAPONS = RAW_WEAPONS.map(normalizeWeapon);
+
+// ---------------------------------------------------------------------------
+// 武器ヒント項目定義
+// ---------------------------------------------------------------------------
+const WEAPON_HINT_FIELDS = [
+  { key: 'rarity',                 label: 'レア度',       type: 'numeric', defaultOn: true },
+  { key: 'weaponType',             label: '武器種',       type: 'exact',   defaultOn: true },
+  { key: 'baseAtk',                label: '基礎攻撃力',   type: 'numeric', defaultOn: true },
+  { key: 'weaponBreakMaterial',    label: '武器突破素材', type: 'group', group: 'weaponBreakMaterialGroup', defaultOn: true },
+  { key: 'enemyMaterial',          label: '敵素材',       type: 'exact',   defaultOn: true },
+];
+
+/**
+ * 武器フィールドの表示用ラベル変換
+ */
+function getWeaponDisplayValue(key, value) {
+  if (value === null || value === undefined || value === '') return '—';
+  switch (key) {
+    case 'rarity': return `★${value}`;
+    default: return String(value);
   }
 }
