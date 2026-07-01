@@ -356,7 +356,7 @@ const CHARACTER_BASE_STATS = CHARACTER_BASE_STATS_TEXT
 
 function parseBaseStatValue(raw) {
   if (raw === null || raw === undefined || raw === '') return null;
-  // 入力データは "13.348" のようにドット区切り表記のため、数値比較用に削除して扱う。
+  // 入力データは "13.348" のようにドット区切り表記のため、数値比較用にドットを取り除いて扱う。
   const normalized = String(raw).replace(/\./g, '');
   const num = Number(normalized);
   return Number.isFinite(num) ? num : null;

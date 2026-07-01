@@ -27,7 +27,6 @@ let versusPlayers   = ['プレイヤー1', 'プレイヤー2'];
 let versusSelfIndex = 0;
 let versusConnection = null;
 let versusReady = false;
-let versusClosing = false;
 
 // ---------------------------------------------------------------------------
 // 定数
@@ -325,8 +324,9 @@ function generateRoomCode() {
 }
 
 function clearVersusConnection() {
-  versusClosing = true;
   if (versusConnection?.channel) {
+    versusConnection.channel.removeEventListener('close', handleVersusDisconnect);
+    versusConnection.channel.removeEventListener('error', handleVersusDisconnect);
     try { versusConnection.channel.close(); } catch (e) { /* noop */ }
   }
   if (versusConnection?.pc) {
@@ -334,11 +334,9 @@ function clearVersusConnection() {
   }
   versusConnection = null;
   versusReady = false;
-  setTimeout(() => { versusClosing = false; }, 0);
 }
 
 function handleVersusDisconnect() {
-  if (versusClosing) return;
   if (gameMode !== 'versus') return;
   showResultBanner('⚠️ 接続が切断されました。再接続するにはモード選択からオンライン対戦を開始してください。', 'fail', false);
   setInputEnabled(false);
@@ -401,8 +399,8 @@ async function setupVersusSession(pool) {
   const mode = window.prompt('オンライン対戦: ルーム作成は create、参加は join を入力', 'create');
   if (mode === null) return false;
 
-  const normalizedAction = mode.trim().toLowerCase();
-  const action = normalizedAction === '作成' ? 'create' : normalizedAction === '参加' ? 'join' : normalizedAction;
+  const rawAction = mode.trim();
+  const action = rawAction === '作成' ? 'create' : rawAction === '参加' ? 'join' : rawAction.toLowerCase();
   if (action !== 'create' && action !== 'join') return false;
 
   if (action === 'create') {
