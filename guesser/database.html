@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Genshin Guesser — データベース</title>
+  <meta name="description" content="原神キャラクター・武器データベース。元素、武器種、レア度で絞り込み可能。">
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap">
+  <style>
+    /* ---- Database extra styles ---- */
+    .db-header { display:flex; align-items:center; gap:.6rem; margin-bottom:1rem; flex-wrap:wrap; }
+    .db-tab { padding:.35rem .9rem; border:2px solid var(--border); border-radius:6px; background:transparent; color:var(--text-muted); font-family:inherit; font-size:.85rem; cursor:pointer; }
+    .db-tab.active { background:var(--accent); border-color:var(--accent); color:#fff; }
+    .filter-row { display:flex; flex-wrap:wrap; gap:.4rem; margin-bottom:.8rem; }
+    .filter-chip { padding:.25rem .7rem; border:1.5px solid var(--border); border-radius:20px; background:transparent; color:var(--text-muted); font-family:inherit; font-size:.8rem; cursor:pointer; }
+    .filter-chip.active { background:var(--accent); border-color:var(--accent); color:#fff; }
+    .filter-chip.element-炎.active { background:#e86030; border-color:#e86030; }
+    .filter-chip.element-水.active { background:#3399cc; border-color:#3399cc; }
+    .filter-chip.element-風.active { background:#55cc99; border-color:#55cc99; }
+    .filter-chip.element-雷.active { background:#9966cc; border-color:#9966cc; }
+    .filter-chip.element-氷.active { background:#66bbdd; border-color:#66bbdd; }
+    .filter-chip.element-岩.active { background:#ccaa33; border-color:#ccaa33; }
+    .filter-chip.element-草.active { background:#66bb55; border-color:#66bb55; }
+    .db-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(130px,1fr)); gap:.6rem; }
+    .db-card { background:var(--bg-card); border:1.5px solid var(--border); border-radius:10px; padding:.7rem .5rem; text-align:center; cursor:pointer; transition:border-color .15s; }
+    .db-card:hover { border-color:var(--accent); }
+    .db-card img { width:72px; height:72px; object-fit:contain; border-radius:6px; }
+    .db-card .card-name { font-size:.8rem; margin-top:.35rem; color:var(--text-primary); }
+    .db-card .card-meta { font-size:.72rem; color:var(--text-muted); }
+    .rarity-5 { border-color:#e8a030; }
+    .rarity-4 { border-color:#9966cc; }
+    .empty-msg { text-align:center; color:var(--text-muted); padding:2rem; }
+  </style>
+</head>
+<body>
+
+  <header class="app-header">
+    <h1 class="app-title">📚 データベース</h1>
+    <nav class="header-actions">
+      <a href="../index.html" class="back-link icon-btn">← メニュー</a>
+    </nav>
+  </header>
+
+  <main class="app-main" role="main">
+
+    <!-- タブ切替 -->
+    <div class="db-header">
+      <button class="db-tab active" data-tab="character">👤 キャラクター</button>
+      <button class="db-tab" data-tab="weapon">⚔ 武器</button>
+    </div>
+
+    <!-- キャラクターフィルタ -->
+    <div id="charFilters">
+      <div class="filter-row" id="elementFilter">
+        <span style="font-size:.75rem;color:var(--text-muted);align-self:center;">元素:</span>
+        <button class="filter-chip active" data-filter-type="element" data-value="all">すべて</button>
+        <button class="filter-chip element-炎" data-filter-type="element" data-value="炎">炎</button>
+        <button class="filter-chip element-水" data-filter-type="element" data-value="水">水</button>
+        <button class="filter-chip element-風" data-filter-type="element" data-value="風">風</button>
+        <button class="filter-chip element-雷" data-filter-type="element" data-value="雷">雷</button>
+        <button class="filter-chip element-氷" data-filter-type="element" data-value="氷">氷</button>
+        <button class="filter-chip element-岩" data-filter-type="element" data-value="岩">岩</button>
+        <button class="filter-chip element-草" data-filter-type="element" data-value="草">草</button>
+      </div>
+      <div class="filter-row" id="weaponTypeFilter">
+        <span style="font-size:.75rem;color:var(--text-muted);align-self:center;">武器種:</span>
+        <button class="filter-chip active" data-filter-type="weaponType" data-value="all">すべて</button>
+        <button class="filter-chip" data-filter-type="weaponType" data-value="片手剣">片手剣</button>
+        <button class="filter-chip" data-filter-type="weaponType" data-value="両手剣">両手剣</button>
+        <button class="filter-chip" data-filter-type="weaponType" data-value="長柄武器">長柄武器</button>
+        <button class="filter-chip" data-filter-type="weaponType" data-value="弓">弓</button>
+        <button class="filter-chip" data-filter-type="weaponType" data-value="法器">法器</button>
+      </div>
+      <div class="filter-row" id="charRarityFilter">
+        <span style="font-size:.75rem;color:var(--text-muted);align-self:center;">レア度:</span>
+        <button class="filter-chip active" data-filter-type="charRarity" data-value="all">すべて</button>
+        <button class="filter-chip" data-filter-type="charRarity" data-value="5">★5</button>
+        <button class="filter-chip" data-filter-type="charRarity" data-value="4">★4</button>
+      </div>
+    </div>
+
+    <!-- 武器フィルタ -->
+    <div id="weaponFilters" style="display:none;">
+      <div class="filter-row">
+        <span style="font-size:.75rem;color:var(--text-muted);align-self:center;">武器種:</span>
+        <button class="filter-chip active" data-filter-type="wType" data-value="all">すべて</button>
+        <button class="filter-chip" data-filter-type="wType" data-value="片手剣">片手剣</button>
+        <button class="filter-chip" data-filter-type="wType" data-value="両手剣">両手剣</button>
+        <button class="filter-chip" data-filter-type="wType" data-value="長柄武器">長柄武器</button>
+        <button class="filter-chip" data-filter-type="wType" data-value="弓">弓</button>
+        <button class="filter-chip" data-filter-type="wType" data-value="法器">法器</button>
+      </div>
+      <div class="filter-row">
+        <span style="font-size:.75rem;color:var(--text-muted);align-self:center;">レア度:</span>
+        <button class="filter-chip active" data-filter-type="wRarity" data-value="all">すべて</button>
+        <button class="filter-chip" data-filter-type="wRarity" data-value="5">★5</button>
+        <button class="filter-chip" data-filter-type="wRarity" data-value="4">★4</button>
+        <button class="filter-chip" data-filter-type="wRarity" data-value="3">★3</button>
+      </div>
+    </div>
+
+    <!-- グリッド表示 -->
+    <div class="db-grid" id="dbGrid"></div>
+
+  </main>
+
+  <footer class="app-footer">
+    <p><a href="../index.html">← メニューへ戻る</a></p>
+  </footer>
+
+  <script src="data.js"></script>
+  <script>
+    'use strict';
+    let currentTab = 'character';
+    const activeFilters = { element:'all', weaponType:'all', charRarity:'all', wType:'all', wRarity:'all' };
+
+    document.addEventListener('DOMContentLoaded', () => {
+      bindTabs();
+      bindFilters();
+      renderGrid();
+    });
+
+    function bindTabs() {
+      document.querySelectorAll('.db-tab').forEach(btn => {
+        btn.addEventListener('click', () => {
+          currentTab = btn.dataset.tab;
+          document.querySelectorAll('.db-tab').forEach(b => b.classList.toggle('active', b.dataset.tab === currentTab));
+          document.getElementById('charFilters').style.display = currentTab === 'character' ? '' : 'none';
+          document.getElementById('weaponFilters').style.display = currentTab === 'weapon' ? '' : 'none';
+          renderGrid();
+        });
+      });
+    }
+
+    function bindFilters() {
+      document.querySelectorAll('.filter-chip').forEach(chip => {
+        chip.addEventListener('click', () => {
+          const type = chip.dataset.filterType;
+          const value = chip.dataset.value;
+          activeFilters[type] = value;
+          // Update active class within same filter group
+          chip.closest('.filter-row').querySelectorAll('.filter-chip[data-filter-type="' + type + '"]').forEach(c => {
+            c.classList.toggle('active', c.dataset.value === value);
+          });
+          renderGrid();
+        });
+      });
+    }
+
+    function renderGrid() {
+      const grid = document.getElementById('dbGrid');
+      grid.innerHTML = '';
+      let items = [];
+      if (currentTab === 'character') {
+        items = CHARACTERS.filter(c => {
+          if (activeFilters.element !== 'all' && c.element !== activeFilters.element) return false;
+          if (activeFilters.weaponType !== 'all' && c.weapon !== activeFilters.weaponType) return false;
+          if (activeFilters.charRarity !== 'all' && String(c.rarity) !== activeFilters.charRarity) return false;
+          return true;
+        });
+      } else {
+        items = WEAPONS.filter(w => {
+          if (activeFilters.wType !== 'all' && w.weaponType !== activeFilters.wType) return false;
+          if (activeFilters.wRarity !== 'all' && String(w.rarity) !== activeFilters.wRarity) return false;
+          return true;
+        });
+      }
+
+      if (items.length === 0) {
+        grid.innerHTML = '<p class="empty-msg">該当するデータがありません。</p>';
+        return;
+      }
+
+      items.forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'db-card rarity-' + item.rarity;
+
+        const img = document.createElement('img');
+        img.src = item.iconUrl;
+        img.alt = item.name;
+        img.onerror = () => { img.style.opacity = '.3'; };
+
+        const name = document.createElement('div');
+        name.className = 'card-name';
+        name.textContent = item.name;
+
+        const meta = document.createElement('div');
+        meta.className = 'card-meta';
+        if (currentTab === 'character') {
+          meta.textContent = `★${item.rarity} ${item.element} ${item.weapon}`;
+        } else {
+          meta.textContent = `★${item.rarity} ${item.weaponType}`;
+        }
+
+        card.appendChild(img);
+        card.appendChild(name);
+        card.appendChild(meta);
+        grid.appendChild(card);
+      });
+    }
+  </script>
+</body>
+</html>

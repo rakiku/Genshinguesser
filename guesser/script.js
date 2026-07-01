@@ -1,6 +1,6 @@
 /**
  * script.js — Genshin Guesser ゲームロジック
- * Daily / Endless モード、判定、サジェスト、設定、共有を管理する。
+ * Daily / Endless / Challenge モード、キャラクター/武器ジャンル、判定、サジェスト、共有を管理。
  */
 
 'use strict';
@@ -8,28 +8,50 @@
 // ---------------------------------------------------------------------------
 // ゲーム状態
 // ---------------------------------------------------------------------------
-let gameMode = 'daily';      // 'daily' | 'endless'
-let answer = null;           // 正規化済みキャラクター
-let guesses = [];            // { char, results }[] — 回答履歴
-let settings = {};           // { [fieldKey]: boolean }
-let solved = false;
-let attempts = 0;
+let gameMode   = 'daily';       // 'daily' | 'endless' | 'challenge'
+let genre      = 'character';   // 'character' | 'weapon'
+let rarityFilter = 'all';       // 'all' | '5' | '4' | '45'
+let answer     = null;          // 正規化済み対象
+let guesses    = [];            // { item, results }[] — 回答履歴
+let solved     = false;
+let attempts   = 0;
+let streak     = 0;             // エンドレス連勝数
+let bestStreak = 0;
+let challengeRemain = 10;       // チャレンジ残り回数
+let currentScore    = 0;        // チャレンジスコア
 
 // ---------------------------------------------------------------------------
 // 定数
 // ---------------------------------------------------------------------------
-const MAX_GUESSES = 10;
-const LS_SETTINGS_KEY = 'genshin-guesser-settings';
-const LS_DAILY_KEY    = 'genshin-guesser-daily';
+const CHALLENGE_MAX_WRONG = 10;
+const LS_SETTINGS_KEY     = 'genshin-guesser-settings';
+const LS_DAILY_KEY        = 'genshin-guesser-daily-v2';
+const LS_STREAK_KEY       = 'genshin-guesser-streak';
+const LS_BEST_STREAK_KEY  = 'genshin-guesser-best-streak';
+const LS_CHALLENGE_BEST   = 'genshin-guesser-challenge-best';
+
+let settings = {};
 
 // ---------------------------------------------------------------------------
 // 初期化
 // ---------------------------------------------------------------------------
 document.addEventListener('DOMContentLoaded', () => {
+  parseUrlParams();
   loadSettings();
-  initMode(gameMode);
+  loadStreakData();
   bindEvents();
+  initMode(gameMode);
 });
+
+function parseUrlParams() {
+  const params = new URLSearchParams(location.search);
+  const m = params.get('mode');
+  if (m === 'daily' || m === 'endless' || m === 'challenge') gameMode = m;
+  const g = params.get('genre');
+  if (g === 'character' || g === 'weapon') genre = g;
+  const r = params.get('rarity');
+  if (r === '5' || r === '4' || r === '45') rarityFilter = r;
+}
 
 /** イベントバインド */
 function bindEvents() {
@@ -49,25 +71,25 @@ function bindEvents() {
   }
 
   // 送信ボタン
-  const submitBtn = document.getElementById('submitBtn');
-  if (submitBtn) submitBtn.addEventListener('click', submitGuess);
+  document.getElementById('submitBtn')?.addEventListener('click', submitGuess);
 
   // サジェスト外クリックで閉じる
-  document.addEventListener('click', (e) => {
+  document.addEventListener('click', e => {
     if (!e.target.closest('.input-wrapper')) closeSuggest();
   });
 
-  // 設定ボタン
-  document.getElementById('settingsBtn')?.addEventListener('click', openSettings);
-  document.getElementById('settingsClose')?.addEventListener('click', closeSettings);
-  document.getElementById('settingsOverlay')?.addEventListener('click', closeSettings);
-  document.getElementById('settingsSaveBtn')?.addEventListener('click', saveSettings);
-
   // 共有ボタン
-  document.getElementById('shareBtn')?.addEventListener('click', shareResult);
+  document.getElementById('shareBtn')?.addEventListener('click', shareToX);
+  document.getElementById('copyBtn')?.addEventListener('click', copyResult);
 
-  // リセットボタン（Endless用）
-  document.getElementById('resetBtn')?.addEventListener('click', () => initMode('endless'));
+  // リセット
+  document.getElementById('resetBtn')?.addEventListener('click', () => {
+    if (gameMode === 'endless') initMode('endless');
+    else if (gameMode === 'challenge') initMode('challenge');
+  });
+
+  // 正解演出クリックで閉じる
+  document.getElementById('winOverlay')?.addEventListener('click', closeWinOverlay);
 }
 
 // ---------------------------------------------------------------------------
@@ -75,80 +97,141 @@ function bindEvents() {
 // ---------------------------------------------------------------------------
 function switchMode(mode) {
   gameMode = mode;
-  document.querySelectorAll('.mode-btn').forEach(btn =>
-    btn.classList.toggle('active', btn.dataset.mode === mode)
-  );
   initMode(mode);
 }
 
+function getPool() {
+  if (genre === 'weapon') {
+    return WEAPONS.filter(w => {
+      if (!w.enabled) return false;
+      if (rarityFilter === '5')  return w.rarity === 5;
+      if (rarityFilter === '4')  return w.rarity === 4;
+      if (rarityFilter === '45') return w.rarity >= 4;
+      return true;
+    });
+  }
+  return CHARACTERS.filter(c => c.enabled);
+}
+
+function getCurrentHintFields() {
+  return genre === 'weapon' ? WEAPON_HINT_FIELDS : HINT_FIELDS;
+}
+
 function initMode(mode) {
-  guesses = [];
-  solved = false;
+  gameMode = mode;
+  guesses  = [];
+  solved   = false;
   attempts = 0;
+  challengeRemain = CHALLENGE_MAX_WRONG;
+  currentScore    = 0;
 
   clearGuessHistory();
-  updateShareBtn(false);
+  closeWinOverlay();
+  updateShareBtns(false);
 
-  const pool = CHARACTERS.filter(c => c.enabled);
+  // モード切替ボタン更新
+  document.querySelectorAll('.mode-btn').forEach(btn => {
+    const isActive = btn.dataset.mode === mode;
+    btn.classList.toggle('active', isActive);
+    btn.setAttribute('aria-pressed', String(isActive));
+  });
+
+  // UI更新
+  updateGenreIndicator();
+  updateModeLabel(mode);
+  updateChallengeInfo();
+  updateStreakUI();
+
+  const pool = getPool();
   if (pool.length === 0) {
-    showError('出題できるキャラクターがいません。');
+    showError('出題できるデータがありません。');
     return;
   }
 
   if (mode === 'daily') {
-    answer = getDailyCharacter(pool);
+    answer = getDailyItem(pool);
     document.getElementById('resetBtn')?.classList.add('hidden');
+    restoreDailyState();
   } else {
-    answer = getRandomCharacter(pool);
+    answer = getRandomItem(pool, answer);
     document.getElementById('resetBtn')?.classList.remove('hidden');
   }
 
   setInputEnabled(true);
-  document.getElementById('guessInput').value = '';
-  document.getElementById('guessInput').focus();
+  const input = document.getElementById('guessInput');
+  if (input) { input.value = ''; input.focus(); }
+  document.getElementById('resultBanner')?.classList.add('hidden');
+}
 
-  const modeLabel = mode === 'daily' ? 'デイリーモード' : 'エンドレスモード';
-  document.getElementById('modeLabel').textContent = modeLabel;
+function updateGenreIndicator() {
+  const el = document.getElementById('genreIndicator');
+  if (!el) return;
+  const genreLabel = genre === 'weapon' ? '⚔ 武器モード' : '👤 キャラクターモード';
+  let rarityLabel = '';
+  if (genre === 'weapon' && rarityFilter !== 'all') {
+    rarityLabel = { '5':'★5のみ', '4':'★4のみ', '45':'★5+★4' }[rarityFilter] || '';
+    rarityLabel = ` (${rarityLabel})`;
+  }
+  el.textContent = genreLabel + rarityLabel;
+}
 
-  // Dailyセーブデータ復元
-  if (mode === 'daily') restoreDailyState();
+function updateModeLabel(mode) {
+  const labels = { daily: '📅 デイリーモード', endless: '🔁 エンドレスモード', challenge: '🏆 チャレンジモード（10ミス終了）' };
+  const el = document.getElementById('modeLabel');
+  if (el) el.textContent = labels[mode] || '';
+
+  // チャレンジ情報バー
+  const ci = document.getElementById('challengeInfo');
+  if (ci) ci.classList.toggle('hidden', mode !== 'challenge');
+
+  // ストリーク情報バー
+  const si = document.getElementById('streakInfo');
+  if (si) si.classList.toggle('hidden', mode !== 'endless');
+
+  // リセットボタン表示
+  const resetBtn = document.getElementById('resetBtn');
+  if (resetBtn) resetBtn.classList.toggle('hidden', mode === 'daily');
+}
+
+function updateChallengeInfo() {
+  const rc = document.getElementById('remainCount');
+  if (rc) rc.textContent = challengeRemain;
+  const sc = document.getElementById('currentScore');
+  if (sc) sc.textContent = currentScore;
+}
+
+function updateStreakUI() {
+  const sc = document.getElementById('streakCount');
+  if (sc) sc.textContent = streak;
+  const bs = document.getElementById('bestStreakCount');
+  if (bs) bs.textContent = bestStreak;
 }
 
 // ---------------------------------------------------------------------------
 // Daily seed ロジック
 // ---------------------------------------------------------------------------
-
-/**
- * YYYY-MM-DD 文字列から安定した擬似乱数インデックスを生成する。
- * @param {string} dateStr
- * @param {number} max
- * @returns {number}
- */
 function seededIndex(dateStr, max) {
-  // 簡易 djb2 ハッシュ
   let hash = 5381;
   for (let i = 0; i < dateStr.length; i++) {
     hash = ((hash << 5) + hash) ^ dateStr.charCodeAt(i);
-    hash = hash >>> 0; // 32bit unsigned
+    hash = hash >>> 0;
   }
   return hash % max;
 }
 
 function getTodayString() {
   const now = new Date();
-  const y = now.getFullYear();
-  const m = String(now.getMonth() + 1).padStart(2, '0');
-  const d = String(now.getDate()).padStart(2, '0');
-  return `${y}-${m}-${d}`;
+  return `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
 }
 
-function getDailyCharacter(pool) {
-  const idx = seededIndex(getTodayString(), pool.length);
-  return pool[idx];
+function getDailyItem(pool) {
+  return pool[seededIndex(getTodayString() + genre, pool.length)];
 }
 
-function getRandomCharacter(pool) {
-  return pool[Math.floor(Math.random() * pool.length)];
+function getRandomItem(pool, exclude = null) {
+  const filtered = exclude ? pool.filter(x => x.id !== exclude.id) : pool;
+  const src = filtered.length > 0 ? filtered : pool;
+  return src[Math.floor(Math.random() * src.length)];
 }
 
 // ---------------------------------------------------------------------------
@@ -157,8 +240,9 @@ function getRandomCharacter(pool) {
 function saveDailyState() {
   const data = {
     date: getTodayString(),
+    genre,
     answerId: answer.id,
-    guesses: guesses.map(g => g.char.id),
+    guesses: guesses.map(g => g.item.id),
     solved,
     attempts,
   };
@@ -171,17 +255,32 @@ function restoreDailyState() {
     if (!raw) return;
     const data = JSON.parse(raw);
     if (data.date !== getTodayString()) return;
+    if (data.genre !== genre) return;
     if (data.answerId !== answer.id) return;
-
+    const pool = genre === 'weapon' ? WEAPONS : CHARACTERS;
     data.guesses.forEach(id => {
-      const char = CHARACTERS.find(c => c.id === id);
-      if (char) processGuess(char, /* save= */ false);
+      const item = pool.find(c => c.id === id);
+      if (item) processGuess(item, false);
     });
-    solved = data.solved;
+    solved   = data.solved;
     attempts = data.attempts;
     if (solved) onSolve(false);
-  } catch (e) {
-    // 破損データは無視
+  } catch (e) { /* ignore */ }
+}
+
+// ---------------------------------------------------------------------------
+// Streak データ
+// ---------------------------------------------------------------------------
+function loadStreakData() {
+  streak     = parseInt(localStorage.getItem(LS_STREAK_KEY) || '0', 10);
+  bestStreak = parseInt(localStorage.getItem(LS_BEST_STREAK_KEY) || '0', 10);
+}
+
+function saveStreakData() {
+  localStorage.setItem(LS_STREAK_KEY, String(streak));
+  if (streak > bestStreak) {
+    bestStreak = streak;
+    localStorage.setItem(LS_BEST_STREAK_KEY, String(bestStreak));
   }
 }
 
@@ -194,8 +293,7 @@ let currentSuggestions = [];
 function onInputChange() {
   const q = document.getElementById('guessInput').value.trim();
   if (!q) { closeSuggest(); return; }
-  const results = searchCharacters(q);
-  showSuggest(results);
+  showSuggest(searchItems(q));
 }
 
 function onInputKeydown(e) {
@@ -225,17 +323,13 @@ function onInputKeydown(e) {
   }
 }
 
-/**
- * 名前・displayNames で部分一致検索する。
- * @param {string} query
- * @returns {object[]}
- */
-function searchCharacters(query) {
+function searchItems(query) {
   const q = query.toLowerCase();
-  const guessedIds = new Set(guesses.map(g => g.char.id));
-  return CHARACTERS.filter(c => {
-    if (guessedIds.has(c.id)) return false;
-    return c.displayNames.some(name => name.toLowerCase().includes(q));
+  const guessedIds = new Set(guesses.map(g => g.item.id));
+  const pool = getPool();
+  return pool.filter(item => {
+    if (guessedIds.has(item.id)) return false;
+    return item.displayNames.some(name => name.toLowerCase().includes(q));
   }).slice(0, 8);
 }
 
@@ -244,39 +338,33 @@ function showSuggest(results) {
   if (!list) return;
   currentSuggestions = results;
   suggestSelected = -1;
-
   if (results.length === 0) { closeSuggest(); return; }
 
   list.innerHTML = '';
-  results.forEach((char, i) => {
-    const item = document.createElement('div');
-    item.className = 'suggest-item';
-    item.dataset.index = i;
+  results.forEach((item, i) => {
+    const el = document.createElement('div');
+    el.className = 'suggest-item';
+    el.dataset.index = i;
 
     const img = document.createElement('img');
-    img.src = char.iconUrl;
-    img.alt = char.name;
+    img.src = item.iconUrl;
+    img.alt = item.name;
     img.className = 'suggest-icon';
     img.onerror = () => { img.style.display = 'none'; };
 
     const span = document.createElement('span');
-    span.textContent = char.name;
+    span.textContent = item.name;
 
-    item.appendChild(img);
-    item.appendChild(span);
-    item.addEventListener('mousedown', (e) => {
-      e.preventDefault();
-      selectSuggestItem(char);
-    });
-    list.appendChild(item);
+    el.appendChild(img);
+    el.appendChild(span);
+    el.addEventListener('mousedown', e => { e.preventDefault(); selectSuggestItem(item); });
+    list.appendChild(el);
   });
-
   list.classList.remove('hidden');
 }
 
 function closeSuggest() {
-  const list = document.getElementById('suggestList');
-  if (list) list.classList.add('hidden');
+  document.getElementById('suggestList')?.classList.add('hidden');
   suggestSelected = -1;
 }
 
@@ -285,8 +373,8 @@ function updateSuggestHighlight(items) {
   if (suggestSelected >= 0) items[suggestSelected]?.scrollIntoView({ block: 'nearest' });
 }
 
-function selectSuggestItem(char) {
-  document.getElementById('guessInput').value = char.name;
+function selectSuggestItem(item) {
+  document.getElementById('guessInput').value = item.name;
   closeSuggest();
   submitGuess();
 }
@@ -300,40 +388,48 @@ function submitGuess() {
   const name = input.value.trim();
   if (!name) return;
 
-  const char = CHARACTERS.find(c =>
-    c.displayNames.some(n => n === name)
+  const pool = genre === 'weapon' ? WEAPONS : CHARACTERS;
+  const item = pool.find(x =>
+    x.displayNames.some(n => n === name)
   );
-  if (!char) {
-    showInputError('キャラクターが見つかりません。');
+
+  if (!item) {
+    showInputError('見つかりません。サジェストから選んでください。');
     return;
   }
-  if (guesses.some(g => g.char.id === char.id)) {
+  if (!getPool().some(x => x.id === item.id)) {
+    showInputError('現在の出題範囲外です。');
+    return;
+  }
+  if (guesses.some(g => g.item.id === item.id)) {
     showInputError('すでに入力済みです。');
     return;
   }
 
-  input.value = '';
+  input.value = '';   // ← 決定後にクリア (Req 5)
+  closeSuggest();
   clearInputError();
-  processGuess(char, /* save= */ true);
+  processGuess(item, true);
 }
 
-/**
- * キャラクターを比較して結果を表示する。
- * @param {object} char - 推測キャラクター
- * @param {boolean} save - Daily セーブするか
- */
-function processGuess(char, save = true) {
+function processGuess(item, save = true) {
   attempts++;
-  const results = compareCharacter(char, answer);
-  guesses.unshift({ char, results }); // 新しい回答を先頭に
+  const fields = getCurrentHintFields();
+  const results = compareItem(item, answer, fields);
+  guesses.unshift({ item, results });
 
-  renderGuessRow({ char, results }, guesses.length - 1);
+  renderGuessRow({ item, results }, guesses.length - 1);
 
-  if (char.id === answer.id) {
+  if (item.id === answer.id) {
     solved = true;
     onSolve(true);
-  } else if (attempts >= MAX_GUESSES) {
-    onGameOver();
+  } else {
+    // チャレンジモード: 誤答カウント
+    if (gameMode === 'challenge') {
+      challengeRemain--;
+      updateChallengeInfo();
+      if (challengeRemain <= 0) onChallengeOver();
+    }
   }
 
   if (gameMode === 'daily' && save) saveDailyState();
@@ -341,41 +437,50 @@ function processGuess(char, save = true) {
 
 function onSolve(animate) {
   setInputEnabled(false);
-  updateShareBtn(true);
+  updateShareBtns(true);
+
+  if (gameMode === 'endless') {
+    streak++;
+    saveStreakData();
+    updateStreakUI();
+    currentScore++;
+  } else if (gameMode === 'challenge') {
+    currentScore++;
+    updateChallengeInfo();
+  }
+
   showResultBanner('🎉 正解！ ' + answer.name, 'success', animate);
+  if (animate) showWinOverlay(answer);
 }
 
-function onGameOver() {
+function onChallengeOver() {
   setInputEnabled(false);
-  updateShareBtn(true);
-  showResultBanner('😭 残念... 正解は「' + answer.name + '」でした。', 'fail', true);
+  updateShareBtns(true);
+  const prevBest = parseInt(localStorage.getItem(LS_CHALLENGE_BEST) || '0', 10);
+  const isNew = currentScore > prevBest;
+  if (isNew) localStorage.setItem(LS_CHALLENGE_BEST, String(currentScore));
+  const hintCount = attempts - guesses.filter(g => g.item.id === answer.id).length;
+  showResultBanner(
+    `😭 ゲームオーバー！ 正解は「${answer.name}」でした。\nスコア: ${currentScore}${isNew ? ' 🏆 新記録！' : ''} / 最高: ${Math.max(currentScore, prevBest)} / 総ヒント数: ${attempts}`,
+    'fail',
+    true
+  );
 }
+
+// エンドレス: 不正解で次へ進む機能は resetBtn から呼び出す
+// （エンドレスは誤答でも継続できるが、次の問題へ進むにはリセットボタンを押す）
 
 // ---------------------------------------------------------------------------
 // 判定ロジック
 // ---------------------------------------------------------------------------
-
-/**
- * 推測キャラクターを正解と全フィールドで比較する。
- * @param {object} guess
- * @param {object} ans
- * @returns {object} key→{result:'green'|'yellow'|'gray', arrow?:'up'|'down'}
- */
-function compareCharacter(guess, ans) {
+function compareItem(guess, ans, fields) {
   const out = {};
-  HINT_FIELDS.forEach(field => {
+  fields.forEach(field => {
     out[field.key] = compareField(field, guess, ans);
   });
   return out;
 }
 
-/**
- * 1フィールドを比較して判定を返す。
- * @param {object} field - HINT_FIELDS の要素
- * @param {object} guess
- * @param {object} ans
- * @returns {{ result: string, arrow?: string }}
- */
 function compareField(field, guess, ans) {
   const gVal = guess[field.key];
   const aVal = ans[field.key];
@@ -404,57 +509,42 @@ function compareField(field, guess, ans) {
 }
 
 // ---------------------------------------------------------------------------
-// 結果表示（1行サマリ + 展開詳細）
+// 結果表示（展開状態で追加 — Req 6）
 // ---------------------------------------------------------------------------
-
-/** 有効化されている上位3フィールドのキー一覧（サマリ用） */
-function getSummaryFields() {
-  return HINT_FIELDS.filter(f => settings[f.key] !== false).slice(0, 4);
-}
-
-/**
- * 1件分の回答行を履歴に追加する。
- * @param {{ char, results }} entry
- * @param {number} rowIndex
- */
 function renderGuessRow(entry, rowIndex) {
   const history = document.getElementById('guessHistory');
   if (!history) return;
+  const { item, results } = entry;
+  const fields = getCurrentHintFields();
+  const enabledFields = fields.filter(f => settings[f.key] !== false);
 
-  const { char, results } = entry;
-  const enabledFields = HINT_FIELDS.filter(f => settings[f.key] !== false);
-
-  // --- ラッパー ---
   const wrapper = document.createElement('div');
   wrapper.className = 'guess-row';
   wrapper.dataset.index = rowIndex;
 
-  // --- 1行サマリ ---
+  // --- サマリ（ヘッダー）— 初期: 展開アイコン ▲（展開済み表示）---
   const summary = document.createElement('div');
   summary.className = 'guess-summary';
   summary.setAttribute('role', 'button');
   summary.setAttribute('tabindex', '0');
-  summary.setAttribute('aria-expanded', 'false');
-  summary.setAttribute('aria-label', char.name + ' の詳細を表示');
+  summary.setAttribute('aria-expanded', 'true');
+  summary.setAttribute('aria-label', item.name + ' の詳細を表示');
 
-  // キャラ画像
   const img = document.createElement('img');
-  img.src = char.iconUrl;
-  img.alt = char.name;
+  img.src = item.iconUrl;
+  img.alt = item.name;
   img.className = 'guess-icon';
   img.onerror = () => { img.style.display = 'none'; };
   summary.appendChild(img);
 
-  // キャラ名
   const nameSpan = document.createElement('span');
   nameSpan.className = 'guess-name';
-  nameSpan.textContent = char.name;
+  nameSpan.textContent = item.name;
   summary.appendChild(nameSpan);
 
-  // サマリ判定ドット（上位4項目）
   const dotWrap = document.createElement('div');
   dotWrap.className = 'summary-dots';
-  getSummaryFields().forEach(f => {
+  enabledFields.slice(0, 4).forEach(f => {
     const r = results[f.key];
     const dot = document.createElement('span');
     dot.className = `dot dot-${r ? r.result : 'gray'}`;
@@ -463,18 +553,17 @@ function renderGuessRow(entry, rowIndex) {
   });
   summary.appendChild(dotWrap);
 
-  // 展開アイコン
   const chevron = document.createElement('span');
   chevron.className = 'chevron';
-  chevron.textContent = '▼';
+  chevron.textContent = '▲';  // 初期: 展開済みなので▲
   chevron.setAttribute('aria-hidden', 'true');
   summary.appendChild(chevron);
 
-  // --- 詳細パネル（最初は非表示）---
+  // --- 詳細パネル（初期: 展開 — Req 6）---
   const detail = document.createElement('div');
-  detail.className = 'guess-detail hidden';
+  detail.className = 'guess-detail';   // hidden クラス無し → 初期展開
   detail.setAttribute('role', 'region');
-  detail.setAttribute('aria-label', char.name + ' の詳細判定');
+  detail.setAttribute('aria-label', item.name + ' の詳細判定');
 
   const grid = document.createElement('div');
   grid.className = 'detail-grid';
@@ -491,12 +580,18 @@ function renderGuessRow(entry, rowIndex) {
 
     const val = document.createElement('div');
     val.className = 'cell-value';
-    val.textContent = getDisplayValue(field.key, char[field.key], char);
+
+    // 素材アイコン表示 (Req 6)
+    const iconEl = buildMaterialIcon(field.key, item);
+    if (iconEl) val.appendChild(iconEl);
+
+    const textNode = document.createTextNode(getDisplayValue(field.key, item[field.key], item));
+    val.appendChild(textNode);
 
     if (r.arrow) {
       const arrow = document.createElement('span');
       arrow.className = `arrow arrow-${r.arrow}`;
-      arrow.textContent = r.arrow === 'up' ? ' ↑' : ' ↓';
+      arrow.textContent = r.arrow === 'up' ? ' ▲' : ' ▼';
       arrow.setAttribute('aria-label', r.arrow === 'up' ? '正解より低い' : '正解より高い');
       val.appendChild(arrow);
     }
@@ -508,7 +603,7 @@ function renderGuessRow(entry, rowIndex) {
 
   detail.appendChild(grid);
 
-  // トグル処理
+  // ヘッダータップで折りたたみ (Req 6)
   function toggleDetail() {
     const isOpen = !detail.classList.contains('hidden');
     detail.classList.toggle('hidden', isOpen);
@@ -517,15 +612,38 @@ function renderGuessRow(entry, rowIndex) {
   }
 
   summary.addEventListener('click', toggleDetail);
-  summary.addEventListener('keydown', (e) => {
+  summary.addEventListener('keydown', e => {
     if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleDetail(); }
   });
 
   wrapper.appendChild(summary);
   wrapper.appendChild(detail);
-
-  // 最新回答が一番上
   history.insertBefore(wrapper, history.firstChild);
+}
+
+/**
+ * 素材アイコン要素を生成する（対象項目のみ）
+ * キャラ: 突破ボス, 週ボス素材, 敵素材, 天賦本
+ * 武器: 武器突破素材, 敵素材
+ */
+function buildMaterialIcon(fieldKey, item) {
+  const matKeys = {
+    // キャラ
+    talentBoss:   () => `${IMAGE_BASE}/materials/boss/${encodeURIComponent(item.talentBoss)}.png`,
+    talentWeekly: () => `${IMAGE_BASE}/materials/weekly/${encodeURIComponent(item.talentWeekly)}.png`,
+    talentBook:   () => `${IMAGE_BASE}/materials/talent/${encodeURIComponent(item.talentBook)}.png`,
+    enemyMaterial: () => `${IMAGE_BASE}/materials/enemy/${encodeURIComponent(item.enemyMaterial)}.png`,
+    // 武器
+    weaponBreakMaterial: () => `${IMAGE_BASE}/materials/weapon_break/${encodeURIComponent(item.weaponBreakMaterial)}.png`,
+  };
+  if (!matKeys[fieldKey]) return null;
+
+  const img = document.createElement('img');
+  img.src = matKeys[fieldKey]();
+  img.alt = '';
+  img.className = 'mat-icon';
+  img.onerror = () => { img.remove(); };
+  return img;
 }
 
 function clearGuessHistory() {
@@ -549,117 +667,98 @@ function showResultBanner(msg, cls, animate) {
 }
 
 // ---------------------------------------------------------------------------
-// 共有機能
+// 正解演出 (Req 7)
 // ---------------------------------------------------------------------------
+function showWinOverlay(item) {
+  const overlay = document.getElementById('winOverlay');
+  if (!overlay) return;
+  const img = document.getElementById('winImage');
+  if (img) { img.src = item.iconUrl; img.alt = item.name; }
+  const title = document.getElementById('winTitle');
+  if (title) title.textContent = '🎉 ' + item.name + ' 正解！';
+  overlay.classList.remove('hidden');
+  overlay.setAttribute('aria-hidden', 'false');
+}
 
-/**
- * 現在の結果を絵文字グリッドに変換してクリップボードにコピーする。
- */
-function shareResult() {
+function closeWinOverlay() {
+  const overlay = document.getElementById('winOverlay');
+  overlay?.classList.add('hidden');
+  overlay?.setAttribute('aria-hidden', 'true');
+}
+
+// ---------------------------------------------------------------------------
+// 共有機能 (Req 7)
+// ---------------------------------------------------------------------------
+function buildShareText() {
+  const fields = getCurrentHintFields().filter(f => settings[f.key] !== false);
   const lines = [];
-  const modeStr = gameMode === 'daily' ? `#GenshinGuesser デイリー ${getTodayString()}` : '#GenshinGuesser エンドレス';
-  lines.push(modeStr);
-  lines.push(solved ? `✅ ${attempts}回で正解！` : `❌ ${MAX_GUESSES}回不正解`);
+  const today = getTodayString();
+  const genreLabel = genre === 'weapon' ? '武器' : 'キャラ';
+
+  if (gameMode === 'daily') {
+    lines.push(`#GenshinGuesser デイリー ${today} [${genreLabel}]`);
+  } else if (gameMode === 'endless') {
+    lines.push(`#GenshinGuesser エンドレス [${genreLabel}] 🔥${streak}連勝`);
+  } else {
+    lines.push(`#GenshinGuesser チャレンジ [${genreLabel}] スコア:${currentScore}`);
+  }
+
+  if (solved) {
+    lines.push(`✅ ${attempts}回で正解！`);
+  } else {
+    lines.push(`❌ 失敗... 正解は「${answer.name}」`);
+  }
   lines.push('');
 
-  const enabledFields = HINT_FIELDS.filter(f => settings[f.key] !== false);
-
-  // 逆順（古い回答→新しい回答）で表示
   [...guesses].reverse().forEach(({ results }) => {
-    const row = enabledFields.map(f => {
+    const row = fields.map(f => {
       const r = results[f.key];
       if (!r) return '⬜';
-      switch (r.result) {
-        case 'green':  return '🟩';
-        case 'yellow': return '🟨';
-        default:       return '⬜';
-      }
+      return r.result === 'green' ? '🟩' : r.result === 'yellow' ? '🟨' : '⬜';
     }).join('');
     lines.push(row);
   });
 
   lines.push('');
   lines.push('https://rakiku.github.io/Genshinguesser/guesser/');
+  return lines.join('\n');
+}
 
-  const text = lines.join('\n');
+function shareToX() {
+  const text = buildShareText();
+  const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`;
+  window.open(url, '_blank', 'noopener,noreferrer');
+}
+
+function copyResult() {
+  const text = buildShareText();
   navigator.clipboard.writeText(text).then(() => {
-    const btn = document.getElementById('shareBtn');
+    const btn = document.getElementById('copyBtn');
     if (btn) {
       const orig = btn.textContent;
       btn.textContent = 'コピーしました！';
       setTimeout(() => { btn.textContent = orig; }, 2000);
     }
-  }).catch(() => {
-    alert('クリップボードへのコピーに失敗しました。\n\n' + text);
-  });
+  }).catch(() => alert('コピーに失敗しました。\n\n' + text));
 }
 
-function updateShareBtn(show) {
-  const btn = document.getElementById('shareBtn');
-  if (btn) btn.classList.toggle('hidden', !show);
+function updateShareBtns(show) {
+  document.getElementById('shareBtn')?.classList.toggle('hidden', !show);
+  document.getElementById('copyBtn')?.classList.toggle('hidden', !show);
 }
 
 // ---------------------------------------------------------------------------
 // 設定
 // ---------------------------------------------------------------------------
-
-/** LocalStorage から設定を読み込み、デフォルトで埋める */
 function loadSettings() {
   try {
     const raw = localStorage.getItem(LS_SETTINGS_KEY);
     if (raw) settings = JSON.parse(raw);
   } catch (e) { settings = {}; }
 
-  HINT_FIELDS.forEach(f => {
+  [...HINT_FIELDS, ...WEAPON_HINT_FIELDS].forEach(f => {
     if (settings[f.key] === undefined) settings[f.key] = f.defaultOn;
   });
-}
-
-function saveSettings() {
-  // モーダル内のチェック状態を読み取って settings に反映
-  document.querySelectorAll('.settings-toggle').forEach(cb => {
-    settings[cb.dataset.key] = cb.checked;
-  });
-  localStorage.setItem(LS_SETTINGS_KEY, JSON.stringify(settings));
-  closeSettings();
-}
-
-function openSettings() {
-  const modal = document.getElementById('settingsModal');
-  if (!modal) return;
-
-  const list = document.getElementById('settingsList');
-  if (list) {
-    list.innerHTML = '';
-    HINT_FIELDS.forEach(f => {
-      const row = document.createElement('label');
-      row.className = 'settings-row';
-
-      const cb = document.createElement('input');
-      cb.type = 'checkbox';
-      cb.className = 'settings-toggle';
-      cb.dataset.key = f.key;
-      cb.checked = settings[f.key] !== false;
-      cb.id = `setting-${f.key}`;
-
-      const lbl = document.createElement('span');
-      lbl.textContent = f.label;
-      lbl.setAttribute('for', cb.id);
-
-      row.appendChild(cb);
-      row.appendChild(lbl);
-      list.appendChild(row);
-    });
-  }
-
-  modal.classList.remove('hidden');
-  document.getElementById('settingsOverlay')?.classList.remove('hidden');
-  document.getElementById('settingsClose')?.focus();
-}
-
-function closeSettings() {
-  document.getElementById('settingsModal')?.classList.add('hidden');
-  document.getElementById('settingsOverlay')?.classList.add('hidden');
 }
 
 // ---------------------------------------------------------------------------
@@ -684,4 +783,19 @@ function clearInputError() {
 
 function showError(msg) {
   showResultBanner(msg, 'fail', false);
+}
+
+function getDisplayValue(key, value, item) {
+  if (value === null || value === undefined || value === '') return '—';
+  switch (key) {
+    case 'rarity':       return `★${value}`;
+    case 'bannerType':   return { limited:'限定', standard:'恒常', distributed:'配布', pool:'ガチャ' }[value] || value;
+    case 'body':         return (item && item.bodyLabel) || value;
+    case 'distributed':  return value ? 'あり' : 'なし';
+    case 'costume':      return value ? 'あり' : 'なし';
+    case 'trace':        return value ? 'あり' : 'なし';
+    case 'trainingRoad': return value ? 'あり' : 'なし';
+    case 'releaseVersionNum': return (item && item.releaseVersionLabel) || String(value);
+    default:             return String(value);
+  }
 }
