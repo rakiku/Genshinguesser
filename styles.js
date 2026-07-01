@@ -11,8 +11,9 @@ let selectedGenre = 'character';
 let selectedRarity = 'all';
 let adminClickCount = 0;
 let adminClickTimer = null;
-const ADMIN_CLICK_THRESHOLD = 3;
-const ADMIN_CLICK_WINDOW = 2000; // ms
+let newsItems = [];
+const ADMIN_CLICK_THRESHOLD = 10;
+const ADMIN_CLICK_WINDOW = 10000; // ms
 
 // ---------------------------------------------------------------------------
 // Init
@@ -108,6 +109,8 @@ function bindModalButtons() {
   document.getElementById('adminLogClose')?.addEventListener('click', () => closeModal('adminLog'));
   document.getElementById('adminLogOverlay')?.addEventListener('click', () => closeModal('adminLog'));
   document.getElementById('adminLogSaveBtn')?.addEventListener('click', handleAdminLogSave);
+  document.getElementById('adminLogCancelBtn')?.addEventListener('click', resetAdminLogForm);
+  document.getElementById('adminNewsList')?.addEventListener('click', handleAdminNewsAction);
 }
 
 function openModal(name) {
@@ -123,7 +126,6 @@ function closeModal(name) {
 // Admin hidden feature
 // ---------------------------------------------------------------------------
 function bindAdminTrigger() {
-  document.getElementById('openNewsAdminBtn')?.addEventListener('click', openAdminAuth);
   const trigger = document.getElementById('adminTrigger');
   if (!trigger) return;
   trigger.addEventListener('click', () => {
@@ -161,6 +163,13 @@ function handleAdminAuth() {
 }
 
 function openAdminLogModal() {
+  resetAdminLogForm();
+  renderAdminNewsList();
+  openModal('adminLog');
+}
+
+function resetAdminLogForm() {
+  const editIndex = document.getElementById('adminLogEditIndex');
   const dateInput = document.getElementById('adminLogDate');
   if (dateInput) {
     const today = new Date().toISOString().slice(0, 10);
@@ -168,65 +177,155 @@ function openAdminLogModal() {
   }
   const content = document.getElementById('adminLogContent');
   if (content) content.value = '';
-  openModal('adminLog');
+  if (editIndex) editIndex.value = '';
+  document.getElementById('adminLogSaveBtn').textContent = '追加する';
+  document.getElementById('adminLogCancelBtn')?.classList.add('hidden');
 }
 
 function handleAdminLogSave() {
+  const editIndex = document.getElementById('adminLogEditIndex');
   const dateInput = document.getElementById('adminLogDate');
   const contentInput = document.getElementById('adminLogContent');
-  if (!dateInput || !contentInput) return;
+  if (!editIndex || !dateInput || !contentInput) return;
   const date = dateInput.value.trim();
   const text = contentInput.value.trim();
   if (!date || !text) {
     alert('日付と内容を入力してください。');
     return;
   }
-  addNewsItem(date, text);
+  if (editIndex.value !== '') {
+    updateNewsItem(Number(editIndex.value), date, text);
+  } else {
+    addNewsItem(date, text);
+  }
   saveNewsToStorage();
-  closeModal('adminLog');
+  resetAdminLogForm();
+  renderAdminNewsList();
+}
+
+function handleAdminNewsAction(event) {
+  const button = event.target.closest('[data-action]');
+  if (!button) return;
+  const index = Number(button.dataset.index);
+  if (Number.isNaN(index) || !newsItems[index]) return;
+
+  if (button.dataset.action === 'edit') {
+    const item = newsItems[index];
+    document.getElementById('adminLogEditIndex').value = String(index);
+    document.getElementById('adminLogDate').value = item.date;
+    document.getElementById('adminLogContent').value = item.text;
+    document.getElementById('adminLogSaveBtn').textContent = '更新する';
+    document.getElementById('adminLogCancelBtn')?.classList.remove('hidden');
+    document.getElementById('adminLogContent')?.focus();
+    return;
+  }
+
+  if (button.dataset.action === 'delete' && window.confirm('この更新情報を削除しますか？')) {
+    deleteNewsItem(index);
+    saveNewsToStorage();
+    resetAdminLogForm();
+    renderAdminNewsList();
+  }
 }
 
 // ---------------------------------------------------------------------------
 // News log
 // ---------------------------------------------------------------------------
 const LS_NEWS_KEY = 'genshin-guesser-news';
+const DEFAULT_NEWS_ITEMS = [
+  { date: '2025-07-01', text: 'Genshin Guesser 公開！ キャラクター・武器の推測ゲームを楽しめます。' },
+];
 
 function loadNewsFromStorage() {
   try {
     const raw = localStorage.getItem(LS_NEWS_KEY);
-    if (!raw) return;
-    const items = JSON.parse(raw);
-    if (!Array.isArray(items)) return;
-    items.forEach(item => addNewsItem(item.date, item.text, false));
+    const items = raw ? JSON.parse(raw) : DEFAULT_NEWS_ITEMS;
+    if (!Array.isArray(items) || items.length === 0) {
+      newsItems = [...DEFAULT_NEWS_ITEMS];
+    } else {
+      newsItems = items
+        .filter(item => item && item.date && item.text)
+        .map(item => ({ date: item.date, text: item.text }));
+    }
   } catch (e) { /* ignore */ }
+  if (newsItems.length === 0) newsItems = [...DEFAULT_NEWS_ITEMS];
+  renderNewsList();
 }
 
 function saveNewsToStorage() {
-  const list = document.getElementById('newsList');
-  if (!list) return;
-  const items = Array.from(list.querySelectorAll('.news-item')).map(el => ({
-    date: el.querySelector('.news-date')?.textContent || '',
-    text: el.querySelector('.news-text')?.textContent || '',
-  }));
-  localStorage.setItem(LS_NEWS_KEY, JSON.stringify(items));
+  localStorage.setItem(LS_NEWS_KEY, JSON.stringify(newsItems));
+  renderNewsList();
 }
 
 function addNewsItem(date, text, prepend = true) {
+  if (prepend) newsItems.unshift({ date, text });
+  else newsItems.push({ date, text });
+  renderNewsList();
+}
+
+function updateNewsItem(index, date, text) {
+  if (!newsItems[index]) return;
+  newsItems[index] = { date, text };
+  renderNewsList();
+}
+
+function deleteNewsItem(index) {
+  newsItems.splice(index, 1);
+  if (newsItems.length === 0) newsItems = [...DEFAULT_NEWS_ITEMS];
+  renderNewsList();
+}
+
+function renderNewsList() {
   const list = document.getElementById('newsList');
   if (!list) return;
-  const item = document.createElement('div');
-  item.className = 'news-item';
-  const dateSpan = document.createElement('span');
-  dateSpan.className = 'news-date';
-  dateSpan.textContent = date;
-  const textSpan = document.createElement('span');
-  textSpan.className = 'news-text';
-  textSpan.textContent = text;
-  item.appendChild(dateSpan);
-  item.appendChild(textSpan);
-  if (prepend) {
-    list.insertBefore(item, list.firstChild);
-  } else {
-    list.appendChild(item);
+  list.innerHTML = '';
+  newsItems.forEach(item => {
+    const row = document.createElement('div');
+    row.className = 'news-item';
+    const dateSpan = document.createElement('span');
+    dateSpan.className = 'news-date';
+    dateSpan.textContent = item.date;
+    const textSpan = document.createElement('span');
+    textSpan.className = 'news-text';
+    textSpan.textContent = item.text;
+    row.appendChild(dateSpan);
+    row.appendChild(textSpan);
+    list.appendChild(row);
+  });
+  list.classList.toggle('is-scrollable', newsItems.length > 4);
+}
+
+function renderAdminNewsList() {
+  const list = document.getElementById('adminNewsList');
+  if (!list) return;
+  list.innerHTML = '';
+
+  if (newsItems.length === 0) {
+    list.innerHTML = '<p class="admin-news-empty">更新情報はありません。</p>';
+    return;
   }
+
+  newsItems.forEach((item, index) => {
+    const row = document.createElement('div');
+    row.className = 'admin-news-item';
+    const meta = document.createElement('div');
+    meta.className = 'admin-news-meta';
+    meta.textContent = item.date;
+    const text = document.createElement('div');
+    text.className = 'admin-news-text';
+    text.textContent = item.text;
+    const actions = document.createElement('div');
+    actions.className = 'admin-news-actions';
+    ['edit', 'delete'].forEach(action => {
+      const button = document.createElement('button');
+      button.className = 'admin-news-btn';
+      button.type = 'button';
+      button.dataset.action = action;
+      button.dataset.index = String(index);
+      button.textContent = action === 'edit' ? '編集' : '削除';
+      actions.appendChild(button);
+    });
+    row.append(meta, text, actions);
+    list.appendChild(row);
+  });
 }
