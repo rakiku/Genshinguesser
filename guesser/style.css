@@ -10,7 +10,7 @@
   --surface2:    #1f2733;
   --border:      #30363d;
   --text:        #e6edf3;
-  --text-muted:  #8b949e;
+  --text-muted:  #ffffff;
   --accent:      #c9a96e;     /* 原神ゴールド */
   --accent-dim:  #7a6040;
   --green:       #2ea043;
@@ -39,7 +39,7 @@ body {
 }
 
 /* --- リンク --- */
-a { color: var(--accent); text-decoration: none; }
+a { color: #ffffff; text-decoration: none; }
 a:hover { text-decoration: underline; }
 
 /* --- ユーティリティ --- */
@@ -59,7 +59,7 @@ a:hover { text-decoration: underline; }
 .app-title {
   font-size: 1.25rem;
   font-weight: 700;
-  color: var(--accent);
+  color: #ffffff;
   letter-spacing: .05em;
   flex: 1;
 }
@@ -111,7 +111,7 @@ a:hover { text-decoration: underline; }
 .mode-btn.active {
   border-color: var(--accent);
   background: var(--surface2);
-  color: var(--accent);
+  color: #ffffff;
   font-weight: 700;
 }
 

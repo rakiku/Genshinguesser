@@ -12,10 +12,10 @@
   <style>
     /* ---- Database extra styles ---- */
     .db-header { display:flex; align-items:center; gap:.6rem; margin-bottom:1rem; flex-wrap:wrap; }
-    .db-tab { padding:.35rem .9rem; border:2px solid var(--border); border-radius:6px; background:transparent; color:var(--text-muted); font-family:inherit; font-size:.85rem; cursor:pointer; }
+    .db-tab { padding:.35rem .9rem; border:2px solid var(--border); border-radius:6px; background:transparent; color:#fff; font-family:inherit; font-size:.85rem; cursor:pointer; }
     .db-tab.active { background:var(--accent); border-color:var(--accent); color:#fff; }
     .filter-row { display:flex; flex-wrap:wrap; gap:.4rem; margin-bottom:.8rem; }
-    .filter-chip { padding:.25rem .7rem; border:1.5px solid var(--border); border-radius:20px; background:transparent; color:var(--text-muted); font-family:inherit; font-size:.8rem; cursor:pointer; }
+    .filter-chip { padding:.25rem .7rem; border:1.5px solid var(--border); border-radius:20px; background:transparent; color:#fff; font-family:inherit; font-size:.8rem; cursor:pointer; }
     .filter-chip.active { background:var(--accent); border-color:var(--accent); color:#fff; }
     .filter-chip.element-炎.active { background:#e86030; border-color:#e86030; }
     .filter-chip.element-水.active { background:#3399cc; border-color:#3399cc; }
@@ -24,21 +24,38 @@
     .filter-chip.element-氷.active { background:#66bbdd; border-color:#66bbdd; }
     .filter-chip.element-岩.active { background:#ccaa33; border-color:#ccaa33; }
     .filter-chip.element-草.active { background:#66bb55; border-color:#66bb55; }
-    .db-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(170px,1fr)); gap:.5rem; }
-    .db-card { background:var(--bg-card); border:1.5px solid var(--border); border-radius:10px; padding:.55rem .7rem; text-align:left; cursor:pointer; transition:border-color .15s; font-size:.88rem; }
+    .db-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(170px,1fr)); gap:.75rem; }
+    .db-card { background:var(--bg-card); border:1.5px solid var(--border); border-radius:10px; padding:.7rem; text-align:left; cursor:pointer; transition:border-color .15s; font-size:.88rem; color:#fff; display:flex; flex-direction:column; gap:.55rem; }
     .db-card:hover, .db-card.active { border-color:var(--accent); }
-    .db-card .card-name { color:var(--text-primary); }
+    .db-card .card-thumb-wrap { aspect-ratio:1/1; border-radius:8px; background:rgba(255,255,255,.05); display:flex; align-items:center; justify-content:center; overflow:hidden; }
+    .db-card .card-thumb { width:100%; height:100%; object-fit:cover; }
+    .db-card .card-thumb-fallback { color:#fff; font-size:2rem; }
+    .db-card .card-name { color:#fff; font-weight:700; line-height:1.4; }
     .rarity-5 { border-color:#e8a030; }
     .rarity-4 { border-color:#9966cc; }
-    .rarity-3 { border-color:#4da3ff; color:#8fc2ff; }
-    .rarity-2 { border-color:#3aaa5a; color:#8ee0a8; }
-    .rarity-1 { border-color:#f5f7fb; color:#fff; text-shadow:0 0 1px #000, 0 0 2px #000; }
-    .empty-msg { text-align:center; color:var(--text-muted); padding:2rem; }
-    .db-detail { margin-top:1rem; border:1px solid var(--border); border-radius:10px; background:var(--bg-card); padding:1rem; }
-    .db-detail-title { font-size:1rem; margin-bottom:.7rem; color:var(--accent); }
+    .rarity-3 { border-color:#4da3ff; }
+    .rarity-2 { border-color:#3aaa5a; }
+    .rarity-1 { border-color:#f5f7fb; }
+    .empty-msg { text-align:center; color:#fff; padding:2rem; }
+    .db-modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,.72); z-index:300; }
+    .db-modal { position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); width:min(92vw,720px); max-height:88vh; overflow-y:auto; background:var(--surface); border:1px solid var(--border); border-radius:14px; box-shadow:var(--shadow); z-index:301; padding:1rem; color:#fff; }
+    .db-modal-head { display:flex; align-items:center; gap:.8rem; margin-bottom:1rem; }
+    .db-modal-title { font-size:1.05rem; color:#fff; }
+    .db-modal-close { margin-left:auto; background:transparent; border:1px solid var(--border); border-radius:8px; color:#fff; cursor:pointer; font-family:inherit; padding:.35rem .7rem; }
+    .db-modal-body { display:grid; gap:1rem; }
+    .db-modal-hero { display:flex; gap:1rem; align-items:center; flex-wrap:wrap; }
+    .db-modal-image-wrap { width:min(180px,100%); aspect-ratio:1/1; border-radius:12px; overflow:hidden; background:rgba(255,255,255,.05); display:flex; align-items:center; justify-content:center; }
+    .db-modal-image { width:100%; height:100%; object-fit:cover; }
+    .db-modal-fallback { font-size:3rem; color:#fff; }
+    .db-modal-summary { display:grid; gap:.35rem; }
+    .db-modal-summary p { color:#fff; }
     .db-detail-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); gap:.5rem .8rem; }
     .db-detail-item { font-size:.82rem; }
-    .db-detail-item b { color:var(--text-muted); display:block; margin-bottom:.15rem; font-weight:700; }
+    .db-detail-item b { color:#fff; display:block; margin-bottom:.15rem; font-weight:700; }
+    .db-detail-item span { color:#fff; }
+    @media (max-width: 560px) {
+      .db-modal { left:.8rem; right:.8rem; width:auto; transform:translateY(-50%); }
+    }
   </style>
 </head>
 <body>
@@ -105,21 +122,34 @@
         <button class="filter-chip" data-filter-type="wRarity" data-value="5">★5</button>
         <button class="filter-chip" data-filter-type="wRarity" data-value="4">★4</button>
         <button class="filter-chip" data-filter-type="wRarity" data-value="3">★3</button>
+        <button class="filter-chip" data-filter-type="wRarity" data-value="2">★2</button>
+        <button class="filter-chip" data-filter-type="wRarity" data-value="1">★1</button>
       </div>
     </div>
 
     <!-- グリッド表示 -->
     <div class="db-grid" id="dbGrid"></div>
-    <section class="db-detail" id="dbDetail">
-      <h2 class="db-detail-title">項目を選択すると詳細が表示されます</h2>
-      <div class="db-detail-grid" id="dbDetailGrid"></div>
-    </section>
 
   </main>
 
   <footer class="app-footer">
     <p><a href="../index.html">← メニューへ戻る</a></p>
   </footer>
+
+  <div class="db-modal-overlay hidden" id="detailOverlay" aria-hidden="true"></div>
+  <section class="db-modal hidden" id="detailModal" role="dialog" aria-modal="true" aria-labelledby="detailTitle">
+    <div class="db-modal-head">
+      <h2 class="db-modal-title" id="detailTitle">詳細情報</h2>
+      <button class="db-modal-close" id="detailClose" type="button" aria-label="閉じる">閉じる</button>
+    </div>
+    <div class="db-modal-body">
+      <div class="db-modal-hero">
+        <div class="db-modal-image-wrap" id="detailImageWrap"></div>
+        <div class="db-modal-summary" id="detailSummary"></div>
+      </div>
+      <div class="db-detail-grid" id="detailGrid"></div>
+    </div>
+  </section>
 
   <script src="data.js"></script>
   <script>
@@ -130,6 +160,7 @@
     document.addEventListener('DOMContentLoaded', () => {
       bindTabs();
       bindFilters();
+      bindDetailModal();
       renderGrid();
     });
 
@@ -162,11 +193,7 @@
 
     function renderGrid() {
       const grid = document.getElementById('dbGrid');
-      const detailTitle = document.getElementById('dbDetail').querySelector('.db-detail-title');
-      const detailGrid = document.getElementById('dbDetailGrid');
       grid.innerHTML = '';
-      detailGrid.innerHTML = '';
-      detailTitle.textContent = '項目を選択すると詳細が表示されます';
       let items = [];
       if (currentTab === 'character') {
         items = CHARACTERS.filter(c => {
@@ -194,10 +221,15 @@
         card.setAttribute('role', 'button');
         card.setAttribute('tabindex', '0');
 
+        const thumbWrap = document.createElement('div');
+        thumbWrap.className = 'card-thumb-wrap';
+        thumbWrap.appendChild(buildImageNode(item, 'card-thumb'));
+
         const name = document.createElement('div');
         name.className = 'card-name';
         name.textContent = item.name;
 
+        card.appendChild(thumbWrap);
         card.appendChild(name);
         card.addEventListener('click', () => showDetail(item, card));
         card.addEventListener('keydown', e => {
@@ -212,22 +244,26 @@
 
     function showDetail(item, selectedCard) {
       document.querySelectorAll('.db-card').forEach(card => card.classList.toggle('active', card === selectedCard));
-      const detailTitle = document.getElementById('dbDetail').querySelector('.db-detail-title');
-      const detailGrid = document.getElementById('dbDetailGrid');
-      detailTitle.textContent = item.name + ' の詳細';
+      document.getElementById('detailTitle').textContent = item.name + ' の詳細';
+      const detailGrid = document.getElementById('detailGrid');
+      const detailSummary = document.getElementById('detailSummary');
+      const detailImageWrap = document.getElementById('detailImageWrap');
       detailGrid.innerHTML = '';
+      detailSummary.innerHTML = '';
+      detailImageWrap.innerHTML = '';
+      detailImageWrap.appendChild(buildImageNode(item, 'db-modal-image'));
 
-      const entries = currentTab === 'character'
-        ? [
-            ['名前', item.name], ['レアリティ', `★${item.rarity}`], ['元素', item.element], ['武器種', item.weapon],
-            ['所属', item.country], ['誕生日', item.birthday], ['元素エネルギー', item.energy], ['突破ステータス', item.ascensionStat],
-            ['育成素材(突破ボス)', item.talentBoss], ['天賦本', item.talentBook], ['週ボス素材', item.talentWeekly], ['敵素材', item.enemyMaterial]
-          ]
-        : [
-            ['名前', item.name], ['レアリティ', `★${item.rarity}`], ['武器種', item.weaponType], ['基礎攻撃力', item.baseAtk],
-            ['武器突破素材', item.weaponBreakMaterial], ['敵素材', item.enemyMaterial]
-          ];
+      [
+        ['名前', item.name],
+        ['レアリティ', `★${item.rarity}`],
+        [currentTab === 'character' ? '元素' : '武器種', currentTab === 'character' ? item.element : item.weaponType],
+      ].forEach(([label, value]) => {
+        const line = document.createElement('p');
+        line.textContent = `${label}: ${value}`;
+        detailSummary.appendChild(line);
+      });
 
+      const entries = getDetailEntries(item);
       entries.forEach(([label, value]) => {
         if (value === undefined || value === null || value === '') return;
         const box = document.createElement('div');
@@ -235,6 +271,71 @@
         box.innerHTML = `<b>${label}</b><span>${value}</span>`;
         detailGrid.appendChild(box);
       });
+      openDetailModal();
+    }
+
+    function getDetailEntries(item) {
+      if (currentTab === 'character') {
+        return [
+          ['所属', item.country],
+          ['誕生日', item.birthday],
+          ['体型', item.bodyLabel],
+          ['役割', (item.role || []).filter(Boolean).join(' / ')],
+          ['元素エネルギー', item.energy],
+          ['突破ステータス', item.ascensionStat],
+          ['特産品', item.localSpecialty],
+          ['突破ボス素材', item.talentBoss],
+          ['天賦本', item.talentBook],
+          ['週ボス素材', item.talentWeekly],
+          ['敵素材', item.enemyMaterial],
+          ['オリジナル料理', item.specialDish],
+          ['配布キャラ', item.distributed ? 'はい' : 'いいえ'],
+          ['衣装', item.costume ? 'あり' : 'なし'],
+          ['育成ロード', item.trainingRoad ? 'あり' : 'なし'],
+          ['実装バージョン', item.releaseVersionLabel],
+        ];
+      }
+
+      return [
+        ['武器種', item.weaponType],
+        ['基礎攻撃力', item.baseAtk],
+        ['武器突破素材', item.weaponBreakMaterial],
+        ['敵素材', item.enemyMaterial],
+        ['実装バージョン', item.releaseVersionLabel],
+        ['ゲーム出題対象', item.enabled ? 'はい' : 'いいえ'],
+      ];
+    }
+
+    function bindDetailModal() {
+      document.getElementById('detailClose').addEventListener('click', closeDetailModal);
+      document.getElementById('detailOverlay').addEventListener('click', closeDetailModal);
+    }
+
+    function openDetailModal() {
+      document.getElementById('detailModal').classList.remove('hidden');
+      document.getElementById('detailOverlay').classList.remove('hidden');
+      document.getElementById('detailOverlay').setAttribute('aria-hidden', 'false');
+    }
+
+    function closeDetailModal() {
+      document.getElementById('detailModal').classList.add('hidden');
+      document.getElementById('detailOverlay').classList.add('hidden');
+      document.getElementById('detailOverlay').setAttribute('aria-hidden', 'true');
+    }
+
+    function buildImageNode(item, className) {
+      const wrap = document.createElement('div');
+      wrap.className = className === 'card-thumb' ? 'card-thumb-fallback' : 'db-modal-fallback';
+      wrap.textContent = currentTab === 'character' ? '👤' : '⚔';
+
+      if (!item.iconUrl) return wrap;
+
+      const image = document.createElement('img');
+      image.className = className;
+      image.src = item.iconUrl;
+      image.alt = item.name;
+      image.addEventListener('error', () => image.replaceWith(wrap), { once: true });
+      return image;
     }
   </script>
 </body>
