@@ -735,8 +735,8 @@ const WEAPON_ATTRS = {
   '魔導緒論':        { rarity:3, weaponType:'法器', enemyMaterial:'スライムの液体' },
   '生徒ノート':      { rarity:3, weaponType:'法器', enemyMaterial:'新兵の記章' },
   'ポケット魔導書':  { rarity:3, weaponType:'法器', enemyMaterial:'破損した仮面' },
-  '異世界旅行記':    { rarity:3, weaponType:'弓', enemyMaterial:'牢固な矢先' },
-  '龍殺しの英雄譚':  { rarity:3, weaponType:'弓', enemyMaterial:'破損した仮面' },
+  '異世界旅行記':    { rarity:3, weaponType:'法器', enemyMaterial:'牢固な矢先' },
+  '龍殺しの英雄譚':  { rarity:3, weaponType:'法器', enemyMaterial:'破損した仮面' },
   '龍血を浴びた剣':  { rarity:3, weaponType:'片手剣', enemyMaterial:'スライムの液体' },
 };
 
