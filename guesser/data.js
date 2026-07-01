@@ -1148,8 +1148,10 @@ function buildWeaponBase() {
   for (const name of allNames) {
     const legacyName = canonicalToLegacy[name] || name;
     const sourceOverride = WEAPON_SOURCE_OVERRIDES[name] || WEAPON_SOURCE_OVERRIDES[legacyName] || {};
+    const hasAuthoritativeEntry = Object.prototype.hasOwnProperty.call(weaponReleaseVersionMap, name)
+      || Object.prototype.hasOwnProperty.call(weaponReleaseVersionMap, legacyName);
     const releaseVersion = weaponReleaseVersionMap[name] || weaponReleaseVersionMap[legacyName] || '';
-    if (!releaseVersion) continue;
+    if (!hasAuthoritativeEntry) continue;
 
     const attrs = {
       ...(WEAPON_ATTRS[name] || WEAPON_ATTRS[legacyName] || {}),
@@ -1199,7 +1201,7 @@ function normalizeWeapon(raw) {
     weaponBreakMaterialGroup: raw.weaponBreakMaterialGroup,
     enemyMaterial: raw.enemyMaterial,
     iconUrl: `${IMAGE_BASE}/weapons/${encodeURIComponent(raw.name)}.png`,
-    enabled: raw.rarity >= 3 && Boolean(raw.baseAtk) && Boolean(raw.weaponBreakMaterial) && Boolean(raw.enemyMaterial),
+    enabled: Boolean(raw.baseAtk) && Boolean(raw.weaponBreakMaterial) && Boolean(raw.enemyMaterial),
   };
 }
 
