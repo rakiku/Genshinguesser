@@ -360,7 +360,7 @@ const HINT_FIELDS = [
   { key: 'specialDish',       label: 'オリジナル料理',      type: 'exact',   defaultOn: false },
   { key: 'distributed',       label: '配布',         type: 'exact',   defaultOn: true  },
   { key: 'costume',           label: '別衣装',         type: 'exact',   defaultOn: false },
-  { key: 'trace',             label: '軌跡',      type: 'exact',   defaultOn: false },
+  { key: 'trace',             label: '軌跡の有無',      type: 'exact',   defaultOn: false },
   { key: 'trainingRoad',      label: '鍛錬の道',    type: 'exact',   defaultOn: false },
   { key: 'enemyMaterial',     label: '敵素材',        type: 'exact',   defaultOn: false },
 ];
@@ -1170,6 +1170,8 @@ function buildWeaponBase() {
       weaponBreakMaterial: breakMat,
       weaponBreakMaterialGroup: WEAPON_BREAK_GROUPS[breakMat] || breakMat,
       enemyMaterial: attrs.enemyMaterial || '',
+      ascensionStat: attrs.ascension_stat || '',
+      isDistributed: !!attrs.is_distributed,
     });
   }
   return weapons;
@@ -1200,8 +1202,9 @@ function normalizeWeapon(raw) {
     weaponBreakMaterial: raw.weaponBreakMaterial,
     weaponBreakMaterialGroup: raw.weaponBreakMaterialGroup,
     enemyMaterial: raw.enemyMaterial,
+    ascensionStat: raw.ascensionStat || '',
+    isDistributed: !!raw.isDistributed,
     iconUrl: `${IMAGE_BASE}/weapons/${encodeURIComponent(raw.name)}.png`,
-    enabled: Boolean(raw.baseAtk) && Boolean(raw.weaponBreakMaterial) && Boolean(raw.enemyMaterial),
   };
 }
 
@@ -1216,6 +1219,8 @@ const WEAPON_HINT_FIELDS = [
   { key: 'baseAtk',                label: '基礎攻撃力',   type: 'numeric', defaultOn: true },
   { key: 'weaponBreakMaterial',    label: '武器突破素材', type: 'group', group: 'weaponBreakMaterialGroup', defaultOn: true },
   { key: 'enemyMaterial',          label: '敵素材',       type: 'exact',   defaultOn: true },
+  { key: 'ascensionStat',          label: '突破ステータス', type: 'exact', defaultOn: false },
+  { key: 'isDistributed',          label: '配布武器',     type: 'exact',   defaultOn: false },
 ];
 
 /**
@@ -1225,6 +1230,7 @@ function getWeaponDisplayValue(key, value) {
   if (value === null || value === undefined || value === '') return '—';
   switch (key) {
     case 'rarity': return `★${value}`;
+    case 'isDistributed': return value ? 'あり' : 'なし';
     default: return String(value);
   }
 }

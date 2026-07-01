@@ -103,6 +103,10 @@
         <button class="filter-chip" data-filter-type="charRarity" data-value="5">★5</button>
         <button class="filter-chip" data-filter-type="charRarity" data-value="4">★4</button>
       </div>
+      <div class="filter-row">
+        <span style="font-size:.75rem;color:var(--text-muted);align-self:center;">全要素:</span>
+        <input id="charQuery" type="text" placeholder="全項目を対象に検索" style="flex:1;min-width:180px;padding:.35rem .6rem;border:1px solid var(--border);border-radius:8px;background:var(--bg-card);color:#fff;">
+      </div>
     </div>
 
     <!-- 武器フィルタ -->
@@ -124,6 +128,10 @@
         <button class="filter-chip" data-filter-type="wRarity" data-value="3">★3</button>
         <button class="filter-chip" data-filter-type="wRarity" data-value="2">★2</button>
         <button class="filter-chip" data-filter-type="wRarity" data-value="1">★1</button>
+      </div>
+      <div class="filter-row">
+        <span style="font-size:.75rem;color:var(--text-muted);align-self:center;">全要素:</span>
+        <input id="weaponQuery" type="text" placeholder="全項目を対象に検索" style="flex:1;min-width:180px;padding:.35rem .6rem;border:1px solid var(--border);border-radius:8px;background:var(--bg-card);color:#fff;">
       </div>
     </div>
 
@@ -155,7 +163,7 @@
   <script>
     'use strict';
     let currentTab = 'character';
-    const activeFilters = { element:'all', weaponType:'all', charRarity:'all', wType:'all', wRarity:'all' };
+    const activeFilters = { element:'all', weaponType:'all', charRarity:'all', wType:'all', wRarity:'all', charQuery:'', wQuery:'' };
 
     document.addEventListener('DOMContentLoaded', () => {
       bindTabs();
@@ -189,6 +197,14 @@
           renderGrid();
         });
       });
+      document.getElementById('charQuery')?.addEventListener('input', e => {
+        activeFilters.charQuery = e.target.value.trim().toLowerCase();
+        renderGrid();
+      });
+      document.getElementById('weaponQuery')?.addEventListener('input', e => {
+        activeFilters.wQuery = e.target.value.trim().toLowerCase();
+        renderGrid();
+      });
     }
 
     function renderGrid() {
@@ -200,12 +216,14 @@
           if (activeFilters.element !== 'all' && c.element !== activeFilters.element) return false;
           if (activeFilters.weaponType !== 'all' && c.weapon !== activeFilters.weaponType) return false;
           if (activeFilters.charRarity !== 'all' && String(c.rarity) !== activeFilters.charRarity) return false;
+          if (!matchesAllFields(c, activeFilters.charQuery)) return false;
           return true;
         });
       } else {
         items = WEAPONS.filter(w => {
           if (activeFilters.wType !== 'all' && w.weaponType !== activeFilters.wType) return false;
           if (activeFilters.wRarity !== 'all' && String(w.rarity) !== activeFilters.wRarity) return false;
+          if (!matchesAllFields(w, activeFilters.wQuery)) return false;
           return true;
         });
       }
@@ -291,7 +309,8 @@
           ['オリジナル料理', item.specialDish],
           ['配布キャラ', item.distributed ? 'はい' : 'いいえ'],
           ['衣装', item.costume ? 'あり' : 'なし'],
-          ['育成ロード', item.trainingRoad ? 'あり' : 'なし'],
+          ['軌跡の有無', item.trace ? 'あり' : 'なし'],
+          ['鍛錬の道', item.trainingRoad ? 'あり' : 'なし'],
           ['実装バージョン', item.releaseVersionLabel],
         ];
       }
@@ -299,11 +318,22 @@
       return [
         ['武器種', item.weaponType],
         ['基礎攻撃力', item.baseAtk],
+        ['突破ステータス', item.ascensionStat],
+        ['配布武器', item.isDistributed ? 'あり' : 'なし'],
         ['武器突破素材', item.weaponBreakMaterial],
         ['敵素材', item.enemyMaterial],
         ['実装バージョン', item.releaseVersionLabel],
-        ['ゲーム出題対象', item.enabled ? 'はい' : 'いいえ'],
       ];
+    }
+
+    function matchesAllFields(item, query) {
+      if (!query) return true;
+      const values = Object.values(item).flatMap(value => {
+        if (Array.isArray(value)) return value;
+        if (typeof value === 'boolean') return [value ? 'あり' : 'なし', value ? 'true' : 'false'];
+        return [value];
+      }).filter(v => v !== null && v !== undefined).map(v => String(v).toLowerCase());
+      return values.some(v => v.includes(query));
     }
 
     function bindDetailModal() {

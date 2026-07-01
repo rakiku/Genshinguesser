@@ -72,9 +72,11 @@ function updateModeLinks() {
   const dailyBtn   = document.getElementById('startDailyBtn');
   const endlessBtn = document.getElementById('startEndlessBtn');
   const challengeBtn = document.getElementById('startChallengeBtn');
+  const versusBtn = document.getElementById('startVersusBtn');
   if (dailyBtn)    dailyBtn.href    = buildGameUrl('daily');
   if (endlessBtn)  endlessBtn.href  = buildGameUrl('endless');
   if (challengeBtn) challengeBtn.href = buildGameUrl('challenge');
+  if (versusBtn) versusBtn.href = buildGameUrl('versus');
 }
 
 function bindModeButtons() {

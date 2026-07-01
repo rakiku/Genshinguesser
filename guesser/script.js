@@ -8,7 +8,7 @@
 // ---------------------------------------------------------------------------
 // ゲーム状態
 // ---------------------------------------------------------------------------
-let gameMode   = 'daily';       // 'daily' | 'endless' | 'challenge'
+let gameMode   = 'daily';       // 'daily' | 'endless' | 'challenge' | 'versus'
 let genre      = 'character';   // 'character' | 'weapon'
 let rarityFilter = 'all';       // 'all' | '5' | '4' | '45'
 let answer     = null;          // 正規化済み対象
@@ -21,6 +21,9 @@ let streak     = 0;             // エンドレス連勝数
 let bestStreak = 0;
 let challengeRemain = 10;       // チャレンジ残り回数
 let currentScore    = 0;        // チャレンジスコア
+let versusPassword  = '';
+let versusTurnIndex = 0;
+let versusPlayers   = ['プレイヤー1', 'プレイヤー2'];
 
 // ---------------------------------------------------------------------------
 // 定数
@@ -48,7 +51,7 @@ document.addEventListener('DOMContentLoaded', () => {
 function parseUrlParams() {
   const params = new URLSearchParams(location.search);
   const m = params.get('mode');
-  if (m === 'daily' || m === 'endless' || m === 'challenge') gameMode = m;
+  if (m === 'daily' || m === 'endless' || m === 'challenge' || m === 'versus') gameMode = m;
   const g = params.get('genre');
   if (g === 'character' || g === 'weapon') genre = g;
   const r = params.get('rarity');
@@ -93,6 +96,7 @@ function bindEvents() {
   document.getElementById('resetBtn')?.addEventListener('click', () => {
     if (gameMode === 'endless') initMode('endless');
     else if (gameMode === 'challenge') initMode('challenge');
+    else if (gameMode === 'versus') initMode('versus');
   });
 
   // 正解演出クリックで閉じる
@@ -110,7 +114,6 @@ function switchMode(mode) {
 function getPool() {
   if (genre === 'weapon') {
     return WEAPONS.filter(w => {
-      if (!w.enabled) return false;
       if (rarityFilter === '5')  return w.rarity === 5;
       if (rarityFilter === '4')  return w.rarity === 4;
       if (rarityFilter === '45') return w.rarity >= 4;
@@ -133,6 +136,7 @@ function initMode(mode) {
   attempts = 0;
   challengeRemain = CHALLENGE_MAX_WRONG;
   currentScore    = 0;
+  versusTurnIndex = 0;
 
   clearGuessHistory();
   closeWinOverlay();
@@ -162,6 +166,13 @@ function initMode(mode) {
     answer = getDailyItem(pool);
     document.getElementById('resetBtn')?.classList.add('hidden');
     restoreDailyState();
+  } else if (mode === 'versus') {
+    if (!setupVersusSession()) {
+      switchMode('daily');
+      return;
+    }
+    answer = getVersusItem(pool, versusPassword);
+    document.getElementById('resetBtn')?.classList.remove('hidden');
   } else {
     answer = getRandomItem(pool, answer);
     document.getElementById('resetBtn')?.classList.remove('hidden');
@@ -186,7 +197,12 @@ function updateGenreIndicator() {
 }
 
 function updateModeLabel(mode) {
-  const labels = { daily: '📅 デイリーモード', endless: '🔁 エンドレスモード', challenge: '🏆 チャレンジモード（10ミス終了）' };
+  const labels = {
+    daily: '📅 デイリーモード',
+    endless: '🔁 エンドレスモード',
+    challenge: '🏆 チャレンジモード（10ミス終了）',
+    versus: '⚔️ 対戦モード（交互回答）'
+  };
   const el = document.getElementById('modeLabel');
   if (el) el.textContent = labels[mode] || '';
 
@@ -198,9 +214,15 @@ function updateModeLabel(mode) {
   const si = document.getElementById('streakInfo');
   if (si) si.classList.toggle('hidden', mode !== 'endless');
 
+  // 対戦情報バー
+  const vi = document.getElementById('versusInfo');
+  if (vi) vi.classList.toggle('hidden', mode !== 'versus');
+
   // リセットボタン表示
   const resetBtn = document.getElementById('resetBtn');
   if (resetBtn) resetBtn.classList.toggle('hidden', mode === 'daily');
+
+  updateVersusInfo();
 }
 
 function updateChallengeInfo() {
@@ -236,6 +258,36 @@ function getTodayString() {
 
 function getDailyItem(pool) {
   return pool[seededIndex(getTodayString() + genre, pool.length)];
+}
+
+function getVersusItem(pool, password) {
+  const seed = `${getTodayString()}-${genre}-${rarityFilter}-${password || ''}`;
+  return pool[seededIndex(seed, pool.length)];
+}
+
+function setupVersusSession() {
+  const first = window.prompt('対戦モードの合言葉を入力してください（1P）', versusPassword || '');
+  if (first === null || !first.trim()) return false;
+  const second = window.prompt('同じ合言葉を入力してください（2P確認）', '');
+  if (second === null || !second.trim()) return false;
+  if (first !== second) {
+    alert('合言葉が一致しません。');
+    return false;
+  }
+  versusPassword = first;
+  const p1 = window.prompt('プレイヤー1名（任意）', versusPlayers[0]) || versusPlayers[0];
+  const p2 = window.prompt('プレイヤー2名（任意）', versusPlayers[1]) || versusPlayers[1];
+  versusPlayers = [p1.trim() || 'プレイヤー1', p2.trim() || 'プレイヤー2'];
+  versusTurnIndex = 0;
+  updateVersusInfo();
+  return true;
+}
+
+function updateVersusInfo() {
+  const current = document.getElementById('versusCurrentTurn');
+  const players = document.getElementById('versusPlayers');
+  if (players) players.textContent = `${versusPlayers[0]} vs ${versusPlayers[1]}`;
+  if (current) current.textContent = `${versusPlayers[versusTurnIndex] || 'プレイヤー1'} のターン`;
 }
 
 function getRandomItem(pool, exclude = null) {
@@ -446,6 +498,10 @@ function processGuess(item, save = true, options = {}) {
       challengeRemain--;
       updateChallengeInfo();
       if (challengeRemain <= 0) onChallengeOver();
+    } else if (gameMode === 'versus') {
+      versusTurnIndex = (versusTurnIndex + 1) % 2;
+      updateVersusInfo();
+      showResultBanner(`不正解。次は ${versusPlayers[versusTurnIndex]} のターン`, 'fail', false);
     }
   }
 
@@ -466,6 +522,10 @@ function onSolve(animate) {
   } else if (gameMode === 'challenge') {
     currentScore++;
     updateChallengeInfo();
+  } else if (gameMode === 'versus') {
+    showResultBanner(`🎉 ${versusPlayers[versusTurnIndex]} が正解！ 勝者です。`, 'success', animate);
+    if (animate) showWinOverlay(answer);
+    return;
   }
 
   showResultBanner('🎉 正解！ ' + answer.name, 'success', animate);
@@ -493,6 +553,11 @@ function onGiveUp(animate) {
   setInputEnabled(false);
   updateShareBtns(true);
   updateGiveUpBtn(false);
+  if (gameMode === 'versus') {
+    const winner = versusPlayers[(versusTurnIndex + 1) % 2];
+    showResultBanner(`🏳️ ギブアップ… ${winner} の勝利！ 正解は「${answer.name}」でした。`, 'fail', animate);
+    return;
+  }
   showResultBanner(`🏳️ ギブアップ… 正解は「${answer.name}」でした。`, 'fail', animate);
 }
 
@@ -508,6 +573,8 @@ function giveUpGame() {
   } else if (gameMode === 'challenge') {
     challengeRemain = 0;
     updateChallengeInfo();
+  } else if (gameMode === 'versus') {
+    versusTurnIndex = (versusTurnIndex + 1) % 2;
   }
   onGiveUp(true);
   if (gameMode === 'daily') saveDailyState();
@@ -745,6 +812,9 @@ function buildShareText() {
     lines.push(`#GenshinGuesser デイリー ${today} [${genreLabel}]`);
   } else if (gameMode === 'endless') {
     lines.push(`#GenshinGuesser エンドレス [${genreLabel}] 🔥${streak}連勝`);
+  } else if (gameMode === 'versus') {
+    const winner = solved ? versusPlayers[versusTurnIndex] : versusPlayers[(versusTurnIndex + 1) % 2];
+    lines.push(`#GenshinGuesser 対戦 [${genreLabel}] 勝者:${winner}`);
   } else {
     lines.push(`#GenshinGuesser チャレンジ [${genreLabel}] スコア:${currentScore}`);
   }
@@ -902,6 +972,7 @@ function getDisplayValue(key, value, item) {
     case 'costume':      return value ? 'あり' : 'なし';
     case 'trace':        return value ? 'あり' : 'なし';
     case 'trainingRoad': return value ? 'あり' : 'なし';
+    case 'isDistributed': return value ? 'あり' : 'なし';
     case 'releaseVersionNum': return (item && item.releaseVersionLabel) || String(value);
     default:             return String(value);
   }
