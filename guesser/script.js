@@ -340,7 +340,7 @@ function clearVersusConnection() {
 function handleVersusDisconnect() {
   if (versusClosing) return;
   if (gameMode !== 'versus') return;
-  showResultBanner('⚠️ 接続が切断されました。オンライン対戦を終了します。', 'fail', false);
+  showResultBanner('⚠️ 接続が切断されました。再接続するにはモード選択からオンライン対戦を開始してください。', 'fail', false);
   setInputEnabled(false);
 }
 
@@ -401,7 +401,8 @@ async function setupVersusSession(pool) {
   const mode = window.prompt('オンライン対戦: ルーム作成は create、参加は join を入力', 'create');
   if (mode === null) return false;
 
-  const action = mode.trim().toLowerCase();
+  const normalizedAction = mode.trim().toLowerCase();
+  const action = normalizedAction === '作成' ? 'create' : normalizedAction === '参加' ? 'join' : normalizedAction;
   if (action !== 'create' && action !== 'join') return false;
 
   if (action === 'create') {
@@ -478,7 +479,10 @@ async function setupVersusSession(pool) {
 
   await pc.setRemoteDescription(new RTCSessionDescription(invitePayload.offer));
   const channel = await channelPromise.catch(() => null);
-  if (!channel) return false;
+  if (!channel) {
+    alert('データチャンネルの接続がタイムアウトしました。');
+    return false;
+  }
   attachVersusChannel(channel);
 
   const answerDesc = await pc.createAnswer();
@@ -691,7 +695,11 @@ function selectSuggestItem(item) {
 function submitGuess() {
   if (gameEnded) return;
   if (gameMode === 'versus' && (!versusReady || !versusConnection || versusConnection.channel?.readyState !== 'open')) {
-    showInputError('オンライン対戦の接続が確立していません。');
+    const state = versusConnection?.channel?.readyState;
+    const message = !versusReady || state === 'connecting'
+      ? 'オンライン対戦の接続準備中です。少し待ってから再試行してください。'
+      : 'オンライン対戦の接続が失われました。モードを切り替えて再接続してください。';
+    showInputError(message);
     return;
   }
   if (gameMode === 'versus' && versusTurnIndex !== versusSelfIndex) {
