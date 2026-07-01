@@ -39,6 +39,7 @@ const LS_STREAK_KEY       = 'genshin-guesser-streak';
 const LS_BEST_STREAK_KEY  = 'genshin-guesser-best-streak';
 const LS_CHALLENGE_BEST   = 'genshin-guesser-challenge-best';
 const RTC_CONFIG          = { iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] };
+const DATA_CHANNEL_TIMEOUT_MS = 20000;
 
 let settings = {};
 
@@ -272,12 +273,17 @@ function getVersusItem(pool, password) {
 }
 
 function createVersusCode(payload) {
-  return btoa(unescape(encodeURIComponent(JSON.stringify(payload))));
+  const encoded = new TextEncoder().encode(JSON.stringify(payload));
+  let binary = '';
+  encoded.forEach(byte => { binary += String.fromCharCode(byte); });
+  return btoa(binary);
 }
 
 function parseVersusCode(code) {
   try {
-    const json = decodeURIComponent(escape(atob(code.trim())));
+    const binary = atob(code.trim());
+    const bytes = Uint8Array.from(binary, c => c.charCodeAt(0));
+    const json = new TextDecoder().decode(bytes);
     return JSON.parse(json);
   } catch (e) {
     return null;
@@ -301,7 +307,7 @@ function waitForIceGatheringComplete(pc, timeoutMs = 8000) {
   });
 }
 
-function waitForDataChannelOpen(channel, timeoutMs = 20000) {
+function waitForDataChannelOpen(channel, timeoutMs = DATA_CHANNEL_TIMEOUT_MS) {
   if (channel.readyState === 'open') return Promise.resolve(true);
   return new Promise(resolve => {
     const timer = setTimeout(() => resolve(false), timeoutMs);
@@ -316,6 +322,12 @@ function clearVersusConnection() {
   versusClosing = true;
   if (versusConnection?.channel) {
     try { versusConnection.channel.close(); } catch (e) { /* noop */ }
+  }
+
+  function generateRoomCode() {
+    const bytes = new Uint8Array(4);
+    window.crypto.getRandomValues(bytes);
+    return Array.from(bytes, b => b.toString(16).padStart(2, '0')).join('');
   }
   if (versusConnection?.pc) {
     try { versusConnection.pc.close(); } catch (e) { /* noop */ }
@@ -394,7 +406,7 @@ async function setupVersusSession(pool) {
 
   if (action === 'create') {
     const selfName = (window.prompt('あなたのプレイヤー名', versusPlayers[0]) || '').trim() || 'プレイヤー1';
-    const roomCode = (window.prompt('ルームコード（任意・空欄で自動生成）', '') || '').trim() || Math.random().toString(36).slice(2, 8);
+    const roomCode = (window.prompt('ルームコード（任意・空欄で自動生成）', '') || '').trim() || generateRoomCode();
     versusPassword = roomCode;
 
     const pc = new RTCPeerConnection(RTC_CONFIG);
@@ -457,7 +469,7 @@ async function setupVersusSession(pool) {
   const guestName = (window.prompt('あなたのプレイヤー名', versusPlayers[1]) || '').trim() || 'プレイヤー2';
   const pc = new RTCPeerConnection(RTC_CONFIG);
   const channelPromise = new Promise((resolve, reject) => {
-    const timer = setTimeout(() => reject(new Error('timeout')), 20000);
+    const timer = setTimeout(() => reject(new Error('timeout')), DATA_CHANNEL_TIMEOUT_MS);
     pc.addEventListener('datachannel', ev => {
       clearTimeout(timer);
       resolve(ev.channel);
