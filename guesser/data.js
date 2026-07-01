@@ -217,6 +217,151 @@ const RAW_CHARACTERS = [
 ];
 
 // ---------------------------------------------------------------------------
+// キャラクター基礎ステータス（ヒント用）
+// 表記は入力データソースを維持
+// ---------------------------------------------------------------------------
+const CHARACTER_BASE_STATS_TEXT = `
+アイノ：242、11.201、607
+アルハイゼン：313、13.348、782
+アルベド：251、13.226、876
+アルレッキーノ：342、13.103、765
+アンバー：223、9.461、601
+アーロイ：234、10.899、676
+イアンサ：257、10.657、638
+イネファ：330、12.613、828
+イファ：178、10.081、605
+イルーガ：191、11.962、814
+ウェンティ：263、10.531、669
+エウルア：342、13.226、751
+エスコフィエ：347、13.348、732
+エミリエ：335、13.568、730
+オロルン：244、9.244、587
+カチーナ：216、11.799、792
+カーヴェ：234、11.962、751
+ガイア：223、11.636、792
+キィニチ：332、12.858、802
+キャンディス：213、10.875、683
+クレー：311、10.287、615
+クロリンデ：338、12.956、784
+コレイ：200、9.787、601
+コロンビーナ：96、14.695、515
+ゴロー：183、9.570、648
+シグウィン：192、13.348、500
+シトラリ：127、11.634、763
+シャルロット：173、10.766、546
+シュヴルーズ：194、11.962、605
+シロネン：275、12.405、930
+ジン：239、14.695、769
+スカーク：359、12.417、806
+スクロース：170、9.244、703
+セトス：227、9.787、560
+セノ：318、12.491、859
+タルタリヤ：301、13.103、815
+ダリア：189、12.506、560
+チャスカ：347、9.797、615
+ティナリ：268、10.850、630
+ディオナ：212、9.570、601
+ディシア：266、15.675、628
+ディルック：335、12.981、784
+トーマ：202、10.331、751
+ドゥリン：347、12.430、822
+ドリー：223、12.397、723
+ドール：212、10.875、683
+ナヒーダ：299、10.360、630
+ナヴィア：352、12.650、793
+ニィロウ：229、15.185、729
+ニコ：342、10.409、563
+ヌヴィレット：208、14.695、576
+ネフェル：344、12.704、799
+ノエル：191、12.071、799
+バーバラ：159、9.787、669
+ファルカ：353、12.613、795
+ファルザン：197、9.570、628
+フィッシュル：244、9.189、594
+フリンズ：352、12.491、809
+フリーナ：244、15.307、696
+フレミネ：255、12.071、708
+プルーネ：221、9.679、580
+ベネット：191、12.397、771
+マーヴィカ：359、12.552、792
+ミカ：223、12.506、713
+ムアラニ：182、15.185、570
+モナ：287、10.409、653
+ヤフォダ：223、9.646、580
+ヨォーヨ：213、12.289、751
+ラウマ：255、10.654、669
+リオセスリ：311、13.593、763
+リサ：231、9.570、573
+リネ：318、11.021、538
+リネット：232、12.397、712
+リンネア：144、9.895、907
+レイラ：216、11.092、655
+レザー：234、11.962、751
+ロサリア：240、12.289、710
+ローエン：344、12.858、784
+ヴァレサ：356、12.699、782
+七七：287、12.368、922
+旅人：212、10.875、683
+久岐忍：212、12.289、751
+九条裟羅：195、9.570、628
+八重神子：340、10.372、569
+兹白：222、12.919、957
+凝光：212、9.787、573
+刻晴：323、13.103、799
+北斗：225、13.050、648
+千織：323、11.438、953
+嘉明：302、11.419、703
+夜蘭：244、14.450、548
+夢見月瑞希：215、12.736、757
+宵宮：323、10.164、615
+放浪者：328、10.164、607
+早柚：244、11.854、745
+楓原万葉：297、13.348、807
+煙緋：240、9.352、587
+珊瑚宮心海：234、13.471、657
+甘雨：335、9.797、630
+申鶴：304、12.993、830
+白朮：192、13.348、500
+神里綾人：299、13.715、769
+神里綾華：342、12.858、784
+綺良々：223、12.180、546
+胡桃：106、15.552、876
+荒瀧一斗：227、12.858、959
+藍硯：251、9.244、580
+行秋：201、10.222、758
+辛炎：248、11.201、799
+重雲：223、10.984、648
+鍾離：251、14.695、738
+閑雲：334、10.409、573
+雲菫：191、10.657、734
+雷電将軍：337、12.907、789
+香菱：225、10.875、669
+魈：349、12.736、799
+鹿野院平蔵：225、10.657、684
+`;
+
+const CHARACTER_BASE_STATS = CHARACTER_BASE_STATS_TEXT
+  .trim()
+  .split('\n')
+  .reduce((acc, line) => {
+    const trimmed = line.trim();
+    if (!trimmed) return acc;
+    const [name, values] = trimmed.split('：');
+    if (!name || !values) return acc;
+    const [baseAtkRaw, baseHpRaw, baseDefRaw] = values.split('、').map(v => v.trim());
+    if (!baseAtkRaw || !baseHpRaw || !baseDefRaw) return acc;
+    acc[name.trim()] = { baseAtkRaw, baseHpRaw, baseDefRaw };
+    return acc;
+  }, {});
+
+function parseBaseStatValue(raw) {
+  if (raw === null || raw === undefined || raw === '') return null;
+  const normalized = String(raw).replace(/\./g, '');
+  const num = Number(normalized);
+  return Number.isFinite(num) ? num : null;
+}
+
+// ---------------------------------------------------------------------------
 // 正規化関数
 // ---------------------------------------------------------------------------
 
@@ -296,6 +441,10 @@ function normalizeCharacter(raw) {
 
   // 検索用サジェスト名（displayNames または name）
   const allNames = [raw.name, ...(raw.displayNames || [])].filter(Boolean);
+  const baseStats = CHARACTER_BASE_STATS[raw.name];
+  const baseAtk = baseStats ? parseBaseStatValue(baseStats.baseAtkRaw) : null;
+  const baseHp = baseStats ? parseBaseStatValue(baseStats.baseHpRaw) : null;
+  const baseDef = baseStats ? parseBaseStatValue(baseStats.baseDefRaw) : null;
 
   return {
     id: raw.name,
@@ -309,6 +458,12 @@ function normalizeCharacter(raw) {
     body: bodyCode,
     bodyLabel: Array.isArray(raw.body) ? raw.body[0] : (raw.body || ''),
     energy: energyNum,
+    baseAtk,
+    baseHp,
+    baseDef,
+    baseAtkLabel: baseStats ? baseStats.baseAtkRaw : '',
+    baseHpLabel: baseStats ? baseStats.baseHpRaw : '',
+    baseDefLabel: baseStats ? baseStats.baseDefRaw : '',
     releaseVersionNum,
     releaseVersionLabel: raw.release_version || '',
     birthMonth: raw.birth_month || '',
@@ -347,6 +502,9 @@ const HINT_FIELDS = [
   { key: 'element',           label: '元素',         type: 'exact',   defaultOn: true  },
   { key: 'weapon',            label: '武器種',        type: 'exact',   defaultOn: true  },
   { key: 'rarity',            label: 'レアリティ',    type: 'exact',   defaultOn: true  },
+  { key: 'baseAtk',           label: '基礎攻撃力',    type: 'numeric', defaultOn: true  },
+  { key: 'baseHp',            label: '基礎HP',       type: 'numeric', defaultOn: true  },
+  { key: 'baseDef',           label: '基礎防御力',    type: 'numeric', defaultOn: true  },
   { key: 'country',           label: '国',           type: 'exact',   defaultOn: true  },
   { key: 'body',              label: '体型',         type: 'exact',   defaultOn: true  },
   { key: 'releaseVersionNum', label: '実装Ver',       type: 'numeric', defaultOn: true  },
@@ -376,6 +534,9 @@ function getDisplayValue(key, value, char) {
   if (value === null || value === undefined || value === '') return '—';
   switch (key) {
     case 'rarity':       return `★${value}`;
+    case 'baseAtk':      return char.baseAtkLabel || String(value);
+    case 'baseHp':       return char.baseHpLabel || String(value);
+    case 'baseDef':      return char.baseDefLabel || String(value);
     case 'bannerType':   return { limited: '限定', standard: '恒常', distributed: '配布', pool: 'ガチャ' }[value] || value;
     case 'body':         return char.bodyLabel || value;
     case 'distributed':  return value ? 'あり' : 'なし';
