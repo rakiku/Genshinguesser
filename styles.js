@@ -155,7 +155,7 @@ function handleAdminAuth() {
   if (!input) return;
   const password = input.value;
   // Use env variable if available (injected at build time), else default to 'password'
-  const ADMIN_PASSWORD = (typeof ADMIN_LOG_PASSWORD !== 'undefined' && ADMIN_LOG_PASSWORD) ? ADMIN_LOG_PASSWORD : 'password';
+  const ADMIN_PASSWORD = (typeof ADMIN_LOG_PASSWORD !== 'undefined' && ADMIN_LOG_PASSWORD) ? ADMIN_LOG_PASSWORD : 'Liliavanrouge0101';
   if (password === ADMIN_PASSWORD) {
     closeModal('adminAuth');
     openAdminLogModal();
