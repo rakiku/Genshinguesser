@@ -565,7 +565,8 @@ function normalizeCharacter(raw) {
   if (raw.distributed) finalBannerType = 'distributed';
 
   // 検索用サジェスト名（displayNames または name）
-  const allNames = [raw.name, ...(raw.displayNames || [])].filter(Boolean);
+　const readings = CHARACTER_READINGS[raw.name] || [];
+  const allNames = [raw.name, ...(raw.displayNames || []), ...readings].filter(Boolean);
   const baseStats = CHARACTER_BASE_STATS[raw.name];
   const baseAtk = baseStats ? parseBaseStatValue(baseStats.baseAtkRaw) : null;
   const baseHp = baseStats ? parseBaseStatValue(baseStats.baseHpRaw) : null;
