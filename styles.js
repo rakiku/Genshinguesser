@@ -1,6 +1,6 @@
 /**
  * styles.js — Genshin Guesser Hub Logic
- * Main menu: genre/mode selection, admin log, modals
+ * Main menu: genre/mode selection, admin log, modals, GitHub Sync API
  */
 'use strict';
 
@@ -14,6 +14,13 @@ let adminClickTimer = null;
 let newsItems = [];
 const ADMIN_CLICK_THRESHOLD = 10;
 const ADMIN_CLICK_WINDOW = 10000; // ms
+
+// ---------------------------------------------------------------------------
+// GitHub API 設定
+// ---------------------------------------------------------------------------
+const GITHUB_OWNER = 'rakiku';         // あなたのGitHubユーザー名
+const GITHUB_REPO  = 'Genshinguesser'; // リポジトリ名
+const GITHUB_PATH  = 'news.json';      // 更新情報を保存するJSONファイルのパス
 
 // ---------------------------------------------------------------------------
 // Init
@@ -200,7 +207,7 @@ function handleAdminLogSave() {
   } else {
     addNewsItem(date, text);
   }
-  saveNewsToStorage();
+  saveNewsToStorage(); // 非同期に変更された保存処理を呼び出す
   resetAdminLogForm();
   renderAdminNewsList();
 }
@@ -224,7 +231,7 @@ function handleAdminNewsAction(event) {
 
   if (button.dataset.action === 'delete' && window.confirm('この更新情報を削除しますか？')) {
     deleteNewsItem(index);
-    saveNewsToStorage();
+    saveNewsToStorage(); // 非同期に変更された保存処理を呼び出す
     resetAdminLogForm();
     renderAdminNewsList();
   }
@@ -238,7 +245,13 @@ const DEFAULT_NEWS_ITEMS = [
   { date: '2025-07-01', text: 'Genshin Guesser 公開！ キャラクター・武器の推測ゲームを楽しめます。' },
 ];
 
-function loadNewsFromStorage() {
+/** 
+ * 【同期/非同期併用】
+ * ページ起動時にまずLocalStorageから前回のデータを表示し、
+ * その後GitHubからキャッシュを避けて最新の「news.json」を読み込んで完全に同期します。
+ */
+async function loadNewsFromStorage() {
+  // まずローカル(LocalStorage)から即時に読み込んで表示しておく（フォールバック）
   try {
     const raw = localStorage.getItem(LS_NEWS_KEY);
     const items = raw ? JSON.parse(raw) : DEFAULT_NEWS_ITEMS;
@@ -249,14 +262,95 @@ function loadNewsFromStorage() {
         .filter(item => item && item.date && item.text)
         .map(item => ({ date: item.date, text: item.text }));
     }
-  } catch (e) { /* ignore */ }
-  if (newsItems.length === 0) newsItems = [...DEFAULT_NEWS_ITEMS];
+  } catch (e) {
+    newsItems = [...DEFAULT_NEWS_ITEMS];
+  }
   renderNewsList();
+
+  // 次に、GitHub上の「news.json」から最新情報をキャッシュなし(?v=日付スタンプ)で動的に取得
+  try {
+    const url = `news.json?v=${new Date().getTime()}`;
+    const response = await fetch(url);
+    if (response.ok) {
+      const remoteItems = await response.json();
+      if (Array.isArray(remoteItems) && remoteItems.length > 0) {
+        newsItems = remoteItems;
+        localStorage.setItem(LS_NEWS_KEY, JSON.stringify(newsItems)); // ローカル側も同期
+        renderNewsList();
+      }
+    }
+  } catch (err) {
+    console.warn('GitHub上の最新情報の取得に失敗しました。ローカルデータを使用します。', err);
+  }
 }
 
-function saveNewsToStorage() {
+/**
+ * 【非同期・GitHub完全同期】
+ * 変更があった際、ローカルのLocalStorageに保存すると同時に、
+ * あなたのGitHubへニュースデータをPUTリクエストで直接上書き保存（コミット）します。
+ */
+async function saveNewsToStorage() {
+  // 1. ローカル側の表示を更新
   localStorage.setItem(LS_NEWS_KEY, JSON.stringify(newsItems));
   renderNewsList();
+
+  // 2. ブラウザに保存されているGitHubトークンを取得
+  let token = localStorage.getItem('github_pat');
+  if (!token) {
+    // 保存されていない（初回のみ）トークンの入力を求める
+    token = prompt('【初回設定】GitHubのアクセストークン（github_pat_xxxx）を入力してください:');
+    if (!token) {
+      alert('トークン未入力のため、あなたのブラウザのみで保存されました。他の全員に反映させるにはトークンが必要です。');
+      return;
+    }
+    // あなたのPCのLocalStorageにだけ保存
+    localStorage.setItem('github_pat', token.trim());
+  }
+
+  try {
+    const url = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${GITHUB_PATH}`;
+    
+    // A. 現在のファイルのsha（ハッシュ値）を取得（GitHub APIの上書きに必須）
+    let sha = null;
+    const res = await fetch(url, { headers: { 'Authorization': `token ${token}` } });
+    if (res.ok) {
+      const data = await res.json();
+      sha = data.sha;
+    }
+
+    // B. 日本語対応のBase64エンコード
+    const jsonString = JSON.stringify(newsItems, null, 2);
+    const base64Content = btoa(unescape(encodeURIComponent(jsonString)));
+
+    // C. GitHubへPUTして直接上書きコミット
+    const putRes = await fetch(url, {
+      method: 'PUT',
+      headers: {
+        'Authorization': `token ${token}`,
+        'Accept': 'application/vnd.github.v3+json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        message: 'Update news.json via Admin Panel',
+        content: base64Content,
+        sha: sha
+      })
+    });
+
+    if (putRes.ok) {
+      alert('GitHubへの送信が完了しました！約1〜2分で全員に反映されます。');
+    } else {
+      const errData = await putRes.json();
+      alert('GitHubへの保存に失敗しました: ' + (errData.message || 'Unknown Error'));
+      // トークンエラー（期限切れなど）の場合は、次回のために保存トークンを削除する
+      if (putRes.status === 401 || putRes.status === 403) {
+        localStorage.removeItem('github_pat');
+      }
+    }
+  } catch (err) {
+    console.error('保存処理中に通信エラー:', err);
+    alert('通信に失敗したため、他のプレイヤーへ同期できませんでした。');
+  }
 }
 
 function addNewsItem(date, text, prepend = true) {
