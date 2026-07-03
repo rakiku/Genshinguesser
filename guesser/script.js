@@ -214,7 +214,7 @@ function updateModeLabel(mode) {
   const labels = {
     daily: '📅 デイリーモード',
     endless: '🔁 エンドレスモード',
-    challenge: '🏆 チャレンジモード（10ミス終了）',
+    challenge: '🏆 チャレンジモード（5ミス終了）',
     versus: '🌐 オンライン対戦モード（交互回答）'
   };
   const el = document.getElementById('modeLabel');
