@@ -631,13 +631,22 @@ function onInputKeydown(e) {
   }
 }
 
+/** カタカナをひらがなに変換するヘルパー関数 */
+function katakanaToHiragana(src) {
+  return src.replace(/[\u30a1-\u30f6]/g, match => {
+    return String.fromCharCode(match.charCodeAt(0) - 0x60);
+  });
+}
+
 function searchItems(query) {
-  const q = query.toLowerCase();
+  const q = katakanaToHiragana(query.toLowerCase()); // 入力をひらがなに統一
   const guessedIds = new Set(guesses.map(g => g.item.id));
   const pool = getPool();
   return pool.filter(item => {
     if (guessedIds.has(item.id)) return false;
-    return item.displayNames.some(name => name.toLowerCase().includes(q));
+    return item.displayNames.some(name => 
+      katakanaToHiragana(name.toLowerCase()).includes(q) // 候補もひらがなに変換して部分一致判定
+    );
   }).slice(0, 8);
 }
 
@@ -705,12 +714,13 @@ function submitGuess() {
     return;
   }
   const input = document.getElementById('guessInput');
-  const name = input.value.trim();
-  if (!name) return;
+  const rawInput = input.value.trim();
+  if (!rawInput) return;
+  const name = katakanaToHiragana(rawInput); // 入力をひらがなに統一
 
   const pool = genre === 'weapon' ? WEAPONS : CHARACTERS;
   const item = pool.find(x =>
-    x.displayNames.some(n => n === name)
+    x.displayNames.some(n => katakanaToHiragana(n) === name) // 候補もひらがなに変換して完全一致判定
   );
 
   if (!item) {
