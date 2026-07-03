@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Genshin Guesser — データベース</title>
-  <meta name="description" content="原神キャラクター・武器データベース。元素、武器種、レア度で絞り込み可能。">
+  <meta name="description" content="原神キャラクター・武器データベース。詳細な項目で絞り込み可能。">
   <link rel="icon" href="data:,">
   <link rel="stylesheet" href="style.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -14,16 +14,76 @@
     .db-header { display:flex; align-items:center; gap:.6rem; margin-bottom:1rem; flex-wrap:wrap; }
     .db-tab { padding:.35rem .9rem; border:2px solid var(--border); border-radius:6px; background:transparent; color:#fff; font-family:inherit; font-size:.85rem; cursor:pointer; }
     .db-tab.active { background:var(--accent); border-color:var(--accent); color:#fff; }
-    .filter-row { display:flex; flex-wrap:wrap; gap:.4rem; margin-bottom:.8rem; }
-    .filter-chip { padding:.25rem .7rem; border:1.5px solid var(--border); border-radius:20px; background:transparent; color:#fff; font-family:inherit; font-size:.8rem; cursor:pointer; }
-    .filter-chip.active { background:var(--accent); border-color:var(--accent); color:#fff; }
-    .filter-chip.element-炎.active { background:#e86030; border-color:#e86030; }
-    .filter-chip.element-水.active { background:#3399cc; border-color:#3399cc; }
-    .filter-chip.element-風.active { background:#55cc99; border-color:#55cc99; }
-    .filter-chip.element-雷.active { background:#9966cc; border-color:#9966cc; }
-    .filter-chip.element-氷.active { background:#66bbdd; border-color:#66bbdd; }
-    .filter-chip.element-岩.active { background:#ccaa33; border-color:#ccaa33; }
-    .filter-chip.element-草.active { background:#66bb55; border-color:#66bb55; }
+    
+    /* ---- 高機能マルチフィルター用のグリッドレイアウト ---- */
+    .filter-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+      gap: 0.6rem;
+      margin-bottom: 1.2rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1rem;
+    }
+    .filter-item {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+    .filter-item label {
+      font-size: 0.72rem;
+      color: var(--text-muted, #95a5a6);
+      font-weight: 700;
+    }
+    .filter-select {
+      padding: 0.35rem 0.5rem;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--bg-card);
+      color: #fff;
+      font-size: 0.8rem;
+      cursor: pointer;
+    }
+    .filter-select:focus {
+      border-color: var(--accent);
+      outline: none;
+    }
+    .filter-input {
+      padding: 0.35rem 0.5rem;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--bg-card);
+      color: #fff;
+      font-size: 0.8rem;
+    }
+    .filter-input:focus {
+      border-color: var(--accent);
+      outline: none;
+    }
+    .filter-btn-row {
+      grid-column: 1 / -1;
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 0.4rem;
+    }
+    .reset-btn {
+      padding: .45rem 1rem;
+      background: #7f8c8d;
+      border: none;
+      border-radius: 8px;
+      color: #fff;
+      font-family: inherit;
+      font-size: .8rem;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background 0.15s;
+    }
+    .reset-btn:hover {
+      background: #95a5a6;
+    }
+
+    /* ---- カード・グリッド表示 ---- */
     .db-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(170px,1fr)); gap:.75rem; }
     .db-card { background:var(--bg-card); border:1.5px solid var(--border); border-radius:10px; padding:.7rem; text-align:left; cursor:pointer; transition:border-color .15s; font-size:.88rem; color:#fff; display:flex; flex-direction:column; gap:.55rem; }
     .db-card:hover, .db-card.active { border-color:var(--accent); }
@@ -37,6 +97,8 @@
     .rarity-2 { border-color:#3aaa5a; }
     .rarity-1 { border-color:#f5f7fb; }
     .empty-msg { text-align:center; color:#fff; padding:2rem; }
+    
+    /* ---- 詳細モーダル ---- */
     .db-modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,.72); z-index:300; }
     .db-modal { position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); width:min(92vw,720px); max-height:88vh; overflow-y:auto; background:var(--surface); border:1px solid var(--border); border-radius:14px; box-shadow:var(--shadow); z-index:301; padding:1rem; color:#fff; }
     .db-modal-head { display:flex; align-items:center; gap:.8rem; margin-bottom:1rem; }
@@ -53,15 +115,6 @@
     .db-detail-item { font-size:.82rem; }
     .db-detail-item b { color:#fff; display:block; margin-bottom:.15rem; font-weight:700; }
     .db-detail-item span { color:#fff; }
-    .query-input {
-      flex:1;
-      min-width:180px;
-      padding:.35rem .6rem;
-      border:1px solid var(--border);
-      border-radius:8px;
-      background:var(--bg-card);
-      color:#fff;
-    }
     @media (max-width: 560px) {
       .db-modal { left:.8rem; right:.8rem; width:auto; transform:translate(0,-50%); }
     }
@@ -84,63 +137,157 @@
       <button class="db-tab" data-tab="weapon">⚔ 武器</button>
     </div>
 
-    <!-- キャラクターフィルタ -->
+    <!-- キャラクターフィルタ（詳細マルチ構成） -->
     <div id="charFilters">
-      <div class="filter-row" id="elementFilter">
-        <span style="font-size:.75rem;color:var(--text-muted);align-self:center;">元素:</span>
-        <button class="filter-chip active" data-filter-type="element" data-value="all">すべて</button>
-        <button class="filter-chip element-炎" data-filter-type="element" data-value="炎">炎</button>
-        <button class="filter-chip element-水" data-filter-type="element" data-value="水">水</button>
-        <button class="filter-chip element-風" data-filter-type="element" data-value="風">風</button>
-        <button class="filter-chip element-雷" data-filter-type="element" data-value="雷">雷</button>
-        <button class="filter-chip element-氷" data-filter-type="element" data-value="氷">氷</button>
-        <button class="filter-chip element-岩" data-filter-type="element" data-value="岩">岩</button>
-        <button class="filter-chip element-草" data-filter-type="element" data-value="草">草</button>
-      </div>
-      <div class="filter-row" id="weaponTypeFilter">
-        <span style="font-size:.75rem;color:var(--text-muted);align-self:center;">武器種:</span>
-        <button class="filter-chip active" data-filter-type="weaponType" data-value="all">すべて</button>
-        <button class="filter-chip" data-filter-type="weaponType" data-value="片手剣">片手剣</button>
-        <button class="filter-chip" data-filter-type="weaponType" data-value="両手剣">両手剣</button>
-        <button class="filter-chip" data-filter-type="weaponType" data-value="長柄武器">長柄武器</button>
-        <button class="filter-chip" data-filter-type="weaponType" data-value="弓">弓</button>
-        <button class="filter-chip" data-filter-type="weaponType" data-value="法器">法器</button>
-      </div>
-      <div class="filter-row" id="charRarityFilter">
-        <span style="font-size:.75rem;color:var(--text-muted);align-self:center;">レア度:</span>
-        <button class="filter-chip active" data-filter-type="charRarity" data-value="all">すべて</button>
-        <button class="filter-chip" data-filter-type="charRarity" data-value="5">★5</button>
-        <button class="filter-chip" data-filter-type="charRarity" data-value="4">★4</button>
-      </div>
-      <div class="filter-row">
-        <span style="font-size:.75rem;color:var(--text-muted);align-self:center;">全要素:</span>
-        <input id="charQuery" class="query-input" type="text" placeholder="全項目を対象に検索">
+      <div class="filter-grid">
+        <div class="filter-item">
+          <label for="char-name-input">名前</label>
+          <input id="char-name-input" class="filter-input" type="text" placeholder="名前検索">
+        </div>
+        <div class="filter-item">
+          <label for="char-country">国</label>
+          <select id="char-country" class="filter-select"><option value="all">すべて</option></select>
+        </div>
+        <div class="filter-item">
+          <label for="char-weapon">武器種</label>
+          <select id="char-weapon" class="filter-select"><option value="all">すべて</option></select>
+        </div>
+        <div class="filter-item">
+          <label for="char-element">元素</label>
+          <select id="char-element" class="filter-select"><option value="all">すべて</option></select>
+        </div>
+        <div class="filter-item">
+          <label for="char-birthMonth">誕生月</label>
+          <select id="char-birthMonth" class="filter-select"><option value="all">すべて</option></select>
+        </div>
+        <div class="filter-item">
+          <label for="char-releaseVersion">実装Ver</label>
+          <select id="char-releaseVersion" class="filter-select"><option value="all">すべて</option></select>
+        </div>
+        <div class="filter-item">
+          <label for="char-rarity">レアリティ</label>
+          <select id="char-rarity" class="filter-select"><option value="all">すべて</option></select>
+        </div>
+        <div class="filter-item">
+          <label for="char-body">体型</label>
+          <select id="char-body" class="filter-select"><option value="all">すべて</option></select>
+        </div>
+        <div class="filter-item">
+          <label for="char-role">役割</label>
+          <select id="char-role" class="filter-select"><option value="all">すべて</option></select>
+        </div>
+        <div class="filter-item">
+          <label for="char-energy">エネルギー</label>
+          <select id="char-energy" class="filter-select"><option value="all">すべて</option></select>
+        </div>
+        <div class="filter-item">
+          <label for="char-talentBoss">ボス素材</label>
+          <select id="char-talentBoss" class="filter-select"><option value="all">すべて</option></select>
+        </div>
+        <div class="filter-item">
+          <label for="char-localSpecialty">特産品</label>
+          <select id="char-localSpecialty" class="filter-select"><option value="all">すべて</option></select>
+        </div>
+        <div class="filter-item">
+          <label for="char-enemyMaterial">敵素材</label>
+          <select id="char-enemyMaterial" class="filter-select"><option value="all">すべて</option></select>
+        </div>
+        <div class="filter-item">
+          <label for="char-ascensionStat">突破ステータス</label>
+          <select id="char-ascensionStat" class="filter-select"><option value="all">すべて</option></select>
+        </div>
+        <div class="filter-item">
+          <label for="char-talentBook">天賦本</label>
+          <select id="char-talentBook" class="filter-select"><option value="all">すべて</option></select>
+        </div>
+        <div class="filter-item">
+          <label for="char-talentWeekly">週ボス素材</label>
+          <select id="char-talentWeekly" class="filter-select"><option value="all">すべて</option></select>
+        </div>
+        <div class="filter-item">
+          <label for="char-specialDish">料理種別</label>
+          <select id="char-specialDish" class="filter-select"><option value="all">すべて</option></select>
+        </div>
+        <div class="filter-item">
+          <label for="char-distributed">配布</label>
+          <select id="char-distributed" class="filter-select">
+            <option value="all">すべて</option>
+            <option value="true">あり</option>
+            <option value="false">なし</option>
+          </select>
+        </div>
+        <div class="filter-item">
+          <label for="char-trainingRoad">鍛錬の道</label>
+          <select id="char-trainingRoad" class="filter-select">
+            <option value="all">すべて</option>
+            <option value="true">あり</option>
+            <option value="false">なし</option>
+          </select>
+        </div>
+        <div class="filter-item">
+          <label for="char-trace">軌跡</label>
+          <select id="char-trace" class="filter-select">
+            <option value="all">すべて</option>
+            <option value="true">あり</option>
+            <option value="false">なし</option>
+          </select>
+        </div>
+        <div class="filter-item">
+          <label for="char-costume">別衣装</label>
+          <select id="char-costume" class="filter-select">
+            <option value="all">すべて</option>
+            <option value="true">あり</option>
+            <option value="false">なし</option>
+          </select>
+        </div>
+        <div class="filter-item">
+          <label for="charQuery">全要素キーワード</label>
+          <input id="charQuery" class="filter-input" type="text" placeholder="全項目を対象に検索">
+        </div>
+        <div class="filter-btn-row">
+          <button id="char-reset-btn" class="reset-btn" type="button">フィルターをリセット</button>
+        </div>
       </div>
     </div>
 
-    <!-- 武器フィルタ -->
+    <!-- 武器フィルタ（詳細マルチ構成） -->
     <div id="weaponFilters" style="display:none;">
-      <div class="filter-row">
-        <span style="font-size:.75rem;color:var(--text-muted);align-self:center;">武器種:</span>
-        <button class="filter-chip active" data-filter-type="wType" data-value="all">すべて</button>
-        <button class="filter-chip" data-filter-type="wType" data-value="片手剣">片手剣</button>
-        <button class="filter-chip" data-filter-type="wType" data-value="両手剣">両手剣</button>
-        <button class="filter-chip" data-filter-type="wType" data-value="長柄武器">長柄武器</button>
-        <button class="filter-chip" data-filter-type="wType" data-value="弓">弓</button>
-        <button class="filter-chip" data-filter-type="wType" data-value="法器">法器</button>
-      </div>
-      <div class="filter-row">
-        <span style="font-size:.75rem;color:var(--text-muted);align-self:center;">レア度:</span>
-        <button class="filter-chip active" data-filter-type="wRarity" data-value="all">すべて</button>
-        <button class="filter-chip" data-filter-type="wRarity" data-value="5">★5</button>
-        <button class="filter-chip" data-filter-type="wRarity" data-value="4">★4</button>
-        <button class="filter-chip" data-filter-type="wRarity" data-value="3">★3</button>
-        <button class="filter-chip" data-filter-type="wRarity" data-value="2">★2</button>
-        <button class="filter-chip" data-filter-type="wRarity" data-value="1">★1</button>
-      </div>
-      <div class="filter-row">
-        <span style="font-size:.75rem;color:var(--text-muted);align-self:center;">全要素:</span>
-        <input id="weaponQuery" class="query-input" type="text" placeholder="全項目を対象に検索">
+      <div class="filter-grid">
+        <div class="filter-item">
+          <label for="w-name-input">名前</label>
+          <input id="w-name-input" class="filter-input" type="text" placeholder="名前検索">
+        </div>
+        <div class="filter-item">
+          <label for="w-type">武器種</label>
+          <select id="w-type" class="filter-select"><option value="all">すべて</option></select>
+        </div>
+        <div class="filter-item">
+          <label for="w-rarity">レアリティ</label>
+          <select id="w-rarity" class="filter-select"><option value="all">すべて</option></select>
+        </div>
+        <div class="filter-item">
+          <label for="w-ascensionStat">突破ステータス</label>
+          <select id="w-ascensionStat" class="filter-select"><option value="all">すべて</option></select>
+        </div>
+        <div class="filter-item">
+          <label for="w-releaseVersion">実装Ver</label>
+          <select id="w-releaseVersion" class="filter-select"><option value="all">すべて</option></select>
+        </div>
+        <div class="filter-item">
+          <label for="w-distributed">配布武器</label>
+          <select id="w-distributed" class="filter-select">
+            <option value="all">すべて</option>
+            <option value="true">あり</option>
+            <option value="false">なし</option>
+          </select>
+        </div>
+        <div class="filter-item">
+          <label for="weaponQuery">全要素キーワード</label>
+          <input id="weaponQuery" class="filter-input" type="text" placeholder="全項目を対象に検索">
+        </div>
+        <div class="filter-btn-row">
+          <button id="w-reset-btn" class="reset-btn" type="button">フィルターをリセット</button>
+        </div>
       </div>
     </div>
 
@@ -172,13 +319,50 @@
   <script>
     'use strict';
     let currentTab = 'character';
-    const activeFilters = { element:'all', weaponType:'all', charRarity:'all', wType:'all', wRarity:'all', charQuery:'', wQuery:'' };
+    
+    // フィルターの初期ステータス
+    const activeFilters = { 
+      charName: '',
+      charCountry: 'all',
+      charWeapon: 'all',
+      charElement: 'all',
+      charBirthMonth: 'all',
+      charReleaseVersion: 'all',
+      charRarity: 'all',
+      charBody: 'all',
+      charRole: 'all',
+      charEnergy: 'all',
+      charTalentBoss: 'all',
+      charLocalSpecialty: 'all',
+      charEnemyMaterial: 'all',
+      charAscensionStat: 'all',
+      charTalentBook: 'all',
+      charTalentWeekly: 'all',
+      charSpecialDish: 'all',
+      charDistributed: 'all',
+      charTrainingRoad: 'all',
+      charTrace: 'all',
+      charCostume: 'all',
+      charQuery: '',
+      
+      wName: '',
+      wType: 'all',
+      wRarity: 'all',
+      wAscensionStat: 'all',
+      wReleaseVersion: 'all',
+      wDistributed: 'all',
+      wQuery: ''
+    };
+    
     const QUERY_DEBOUNCE_MS = 120;
     let queryDebounceTimer = null;
 
+    const jpSort = (list) => [...list].sort((a, b) => String(a).localeCompare(String(b), 'ja'));
+
     document.addEventListener('DOMContentLoaded', () => {
       bindTabs();
-      bindFilters();
+      initAdvancedFilters();
+      bindAdvancedFilters();
       bindDetailModal();
       renderGrid();
     });
@@ -195,18 +379,76 @@
       });
     }
 
-    function bindFilters() {
-      document.querySelectorAll('.filter-chip').forEach(chip => {
-        chip.addEventListener('click', () => {
-          const type = chip.dataset.filterType;
-          const value = chip.dataset.value;
-          activeFilters[type] = value;
-          // Update active class within same filter group
-          chip.closest('.filter-row').querySelectorAll('.filter-chip[data-filter-type="' + type + '"]').forEach(c => {
-            c.classList.toggle('active', c.dataset.value === value);
-          });
-          renderGrid();
-        });
+    /** 
+     * CHARACTERS / WEAPONS の定義データから自動的にユニークな絞り込み用選択肢を抽出し、
+     * HTML上のプルダウンメニュー（<select>）に反映する
+     */
+    function initAdvancedFilters() {
+      function parseReleaseVersionNum(str) {
+        if (typeof parseReleaseVersion === 'function') return parseReleaseVersion(str);
+        return parseFloat(str) || 0;
+      }
+
+      // キャラクター選択肢の抽出
+      populateSelect('char-country', jpSort([...new Set(CHARACTERS.map(c => c.country))].filter(Boolean)));
+      populateSelect('char-weapon', jpSort([...new Set(CHARACTERS.map(c => c.weapon))].filter(Boolean)));
+      populateSelect('char-element', jpSort([...new Set(CHARACTERS.map(c => c.element))].filter(Boolean)));
+      
+      // 誕生月のソート（「1月」「2月」...「12月」の数字順）
+      const months = [...new Set(CHARACTERS.map(c => c.birthMonth))].filter(Boolean).sort((a, b) => {
+        const aNum = parseInt(a.replace(/[０-９]/g, s => String.fromCharCode(s.charCodeAt(0) - 0xfee0))) || 99;
+        const bNum = parseInt(b.replace(/[０-９]/g, s => String.fromCharCode(s.charCodeAt(0) - 0xfee0))) || 99;
+        return aNum - bNum;
+      });
+      populateSelect('char-birthMonth', months);
+      
+      // 実装バージョンのソート
+      const versions = [...new Set(CHARACTERS.map(c => c.releaseVersionLabel))].filter(Boolean).sort((a, b) => parseReleaseVersionNum(a) - parseReleaseVersionNum(b));
+      populateSelect('char-releaseVersion', versions);
+      
+      populateSelect('char-rarity', [...new Set(CHARACTERS.map(c => c.rarity))].filter(v => v !== undefined).sort((a, b) => b - a).map(String));
+      populateSelect('char-body', jpSort([...new Set(CHARACTERS.map(c => c.bodyLabel))].filter(Boolean)));
+      populateSelect('char-role', jpSort([...new Set(CHARACTERS.flatMap(c => c.role))].filter(Boolean)));
+      populateSelect('char-energy', [...new Set(CHARACTERS.map(c => c.energy))].filter(v => v !== undefined).sort((a, b) => a - b).map(String));
+      populateSelect('char-talentBoss', jpSort([...new Set(CHARACTERS.map(c => c.talentBoss))].filter(Boolean)));
+      populateSelect('char-localSpecialty', jpSort([...new Set(CHARACTERS.map(c => c.localSpecialty))].filter(Boolean)));
+      populateSelect('char-enemyMaterial', jpSort([...new Set(CHARACTERS.map(c => c.enemyMaterial))].filter(Boolean)));
+      populateSelect('char-ascensionStat', jpSort([...new Set(CHARACTERS.map(c => c.ascensionStat))].filter(Boolean)));
+      populateSelect('char-talentBook', jpSort([...new Set(CHARACTERS.map(c => c.talentBook))].filter(Boolean)));
+      populateSelect('char-talentWeekly', jpSort([...new Set(CHARACTERS.map(c => c.talentWeekly))].filter(Boolean)));
+      populateSelect('char-specialDish', jpSort([...new Set(CHARACTERS.map(c => c.specialDish))].filter(Boolean)));
+
+      // 武器選択肢の抽出
+      populateSelect('w-type', jpSort([...new Set(WEAPONS.map(w => w.weaponType))].filter(Boolean)));
+      populateSelect('w-rarity', [...new Set(WEAPONS.map(w => w.rarity))].filter(v => v !== undefined).sort((a, b) => b - a).map(String));
+      populateSelect('w-ascensionStat', jpSort([...new Set(WEAPONS.map(w => w.ascensionStat))].filter(Boolean)));
+      
+      const wVersions = [...new Set(WEAPONS.map(w => w.releaseVersionLabel))].filter(Boolean).sort((a, b) => parseReleaseVersionNum(a) - parseReleaseVersionNum(b));
+      populateSelect('w-releaseVersion', wVersions);
+    }
+
+    function populateSelect(id, values) {
+      const select = document.getElementById(id);
+      if (!select) return;
+      select.innerHTML = '<option value="all">すべて</option>';
+      values.forEach(v => {
+        const opt = document.createElement('option');
+        opt.value = v;
+        opt.textContent = v.includes('★') ? v : (id.includes('rarity') || id.includes('Rarity') ? `★${v}` : v);
+        select.appendChild(opt);
+      });
+    }
+
+    /** フィルターイベントの紐付け */
+    function bindAdvancedFilters() {
+      // テキスト入力の監視
+      document.getElementById('char-name-input')?.addEventListener('input', e => {
+        activeFilters.charName = e.target.value.trim().toLowerCase();
+        scheduleRenderGrid();
+      });
+      document.getElementById('w-name-input')?.addEventListener('input', e => {
+        activeFilters.wName = e.target.value.trim().toLowerCase();
+        scheduleRenderGrid();
       });
       document.getElementById('charQuery')?.addEventListener('input', e => {
         activeFilters.charQuery = e.target.value.trim().toLowerCase();
@@ -216,6 +458,78 @@
         activeFilters.wQuery = e.target.value.trim().toLowerCase();
         scheduleRenderGrid();
       });
+
+      // キャラクター側セレクトボックスの監視
+      const charFields = [
+        'country', 'weapon', 'element', 'birthMonth', 'releaseVersion',
+        'rarity', 'body', 'role', 'energy', 'talentBoss', 'localSpecialty',
+        'enemyMaterial', 'ascensionStat', 'talentBook', 'talentWeekly',
+        'specialDish', 'distributed', 'trainingRoad', 'trace', 'costume'
+      ];
+      charFields.forEach(field => {
+        const id = 'char-' + field;
+        const el = document.getElementById(id);
+        el?.addEventListener('change', () => {
+          activeFilters['char' + field.charAt(0).toUpperCase() + field.slice(1)] = el.value;
+          renderGrid();
+        });
+      });
+
+      // 武器側セレクトボックスの監視
+      const wFields = ['type', 'rarity', 'ascensionStat', 'releaseVersion', 'distributed'];
+      wFields.forEach(field => {
+        const id = 'w-' + field;
+        const el = document.getElementById(id);
+        el?.addEventListener('change', () => {
+          activeFilters['w' + field.charAt(0).toUpperCase() + field.slice(1)] = el.value;
+          renderGrid();
+        });
+      });
+
+      // リセットボタン
+      document.getElementById('char-reset-btn')?.addEventListener('click', () => resetAllFilters('character'));
+      document.getElementById('w-reset-btn')?.addEventListener('click', () => resetAllFilters('weapon'));
+    }
+
+    /** 各Tabのフィルターリセット処理 */
+    function resetAllFilters(tab) {
+      if (tab === 'character') {
+        const charFields = [
+          'country', 'weapon', 'element', 'birthMonth', 'releaseVersion',
+          'rarity', 'body', 'role', 'energy', 'talentBoss', 'localSpecialty',
+          'enemyMaterial', 'ascensionStat', 'talentBook', 'talentWeekly',
+          'specialDish', 'distributed', 'trainingRoad', 'trace', 'costume'
+        ];
+        charFields.forEach(field => {
+          const id = 'char-' + field;
+          const el = document.getElementById(id);
+          if (el) el.value = 'all';
+          activeFilters['char' + field.charAt(0).toUpperCase() + field.slice(1)] = 'all';
+        });
+        const nameInput = document.getElementById('char-name-input');
+        if (nameInput) nameInput.value = '';
+        activeFilters.charName = '';
+
+        const queryInput = document.getElementById('charQuery');
+        if (queryInput) queryInput.value = '';
+        activeFilters.charQuery = '';
+      } else {
+        const wFields = ['type', 'rarity', 'ascensionStat', 'releaseVersion', 'distributed'];
+        wFields.forEach(field => {
+          const id = 'w-' + field;
+          const el = document.getElementById(id);
+          if (el) el.value = 'all';
+          activeFilters['w' + field.charAt(0).toUpperCase() + field.slice(1)] = 'all';
+        });
+        const nameInput = document.getElementById('w-name-input');
+        if (nameInput) nameInput.value = '';
+        activeFilters.wName = '';
+
+        const queryInput = document.getElementById('weaponQuery');
+        if (queryInput) queryInput.value = '';
+        activeFilters.wQuery = '';
+      }
+      renderGrid();
     }
 
     function scheduleRenderGrid() {
@@ -226,22 +540,48 @@
       }, QUERY_DEBOUNCE_MS);
     }
 
+    /** グリッド再描画（高機能絞り込み） */
     function renderGrid() {
       const grid = document.getElementById('dbGrid');
       grid.innerHTML = '';
       let items = [];
+      
       if (currentTab === 'character') {
         items = CHARACTERS.filter(c => {
-          if (activeFilters.element !== 'all' && c.element !== activeFilters.element) return false;
-          if (activeFilters.weaponType !== 'all' && c.weapon !== activeFilters.weaponType) return false;
+          if (activeFilters.charName && !c.name.toLowerCase().includes(activeFilters.charName)) return false;
+          if (activeFilters.charCountry !== 'all' && c.country !== activeFilters.charCountry) return false;
+          if (activeFilters.charWeapon !== 'all' && c.weapon !== activeFilters.charWeapon) return false;
+          if (activeFilters.charElement !== 'all' && c.element !== activeFilters.charElement) return false;
+          if (activeFilters.charBirthMonth !== 'all' && c.birthMonth !== activeFilters.charBirthMonth) return false;
+          if (activeFilters.charReleaseVersion !== 'all' && c.releaseVersionLabel !== activeFilters.charReleaseVersion) return false;
           if (activeFilters.charRarity !== 'all' && String(c.rarity) !== activeFilters.charRarity) return false;
+          if (activeFilters.charBody !== 'all' && c.bodyLabel !== activeFilters.charBody) return false;
+          if (activeFilters.charRole !== 'all' && !c.role.includes(activeFilters.charRole)) return false;
+          if (activeFilters.charEnergy !== 'all' && String(c.energy) !== activeFilters.charEnergy) return false;
+          if (activeFilters.charTalentBoss !== 'all' && c.talentBoss !== activeFilters.charTalentBoss) return false;
+          if (activeFilters.charLocalSpecialty !== 'all' && c.localSpecialty !== activeFilters.charLocalSpecialty) return false;
+          if (activeFilters.charEnemyMaterial !== 'all' && c.enemyMaterial !== activeFilters.charEnemyMaterial) return false;
+          if (activeFilters.charAscensionStat !== 'all' && c.ascensionStat !== activeFilters.charAscensionStat) return false;
+          if (activeFilters.charTalentBook !== 'all' && c.talentBook !== activeFilters.charTalentBook) return false;
+          if (activeFilters.charTalentWeekly !== 'all' && c.talentWeekly !== activeFilters.charTalentWeekly) return false;
+          if (activeFilters.charSpecialDish !== 'all' && c.specialDish !== activeFilters.charSpecialDish) return false;
+          if (activeFilters.charDistributed !== 'all' && String(c.distributed) !== activeFilters.charDistributed) return false;
+          if (activeFilters.charTrainingRoad !== 'all' && String(c.trainingRoad) !== activeFilters.charTrainingRoad) return false;
+          if (activeFilters.charTrace !== 'all' && String(c.trace) !== activeFilters.charTrace) return false;
+          if (activeFilters.charCostume !== 'all' && String(c.costume) !== activeFilters.charCostume) return false;
+          
           if (!matchesAllFields(c, activeFilters.charQuery)) return false;
           return true;
         });
       } else {
         items = WEAPONS.filter(w => {
+          if (activeFilters.wName && !w.name.toLowerCase().includes(activeFilters.wName)) return false;
           if (activeFilters.wType !== 'all' && w.weaponType !== activeFilters.wType) return false;
           if (activeFilters.wRarity !== 'all' && String(w.rarity) !== activeFilters.wRarity) return false;
+          if (activeFilters.wAscensionStat !== 'all' && w.ascensionStat !== activeFilters.wAscensionStat) return false;
+          if (activeFilters.wReleaseVersion !== 'all' && w.releaseVersionLabel !== activeFilters.wReleaseVersion) return false;
+          if (activeFilters.wDistributed !== 'all' && String(w.isDistributed) !== activeFilters.wDistributed) return false;
+          
           if (!matchesAllFields(w, activeFilters.wQuery)) return false;
           return true;
         });
