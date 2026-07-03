@@ -40,21 +40,22 @@
       padding: 0.35rem 0.5rem;
       border: 1px solid var(--border);
       border-radius: 6px;
-      background: var(--bg-card);
-      color: #fff;
+      background: #ffffff; /* 背景を白に固定 */
+      color: #000000;      /* 文字色を黒に固定 */
       font-size: 0.8rem;
       cursor: pointer;
     }
-    .filter-select:focus {
-      border-color: var(--accent);
-      outline: none;
+    /* プルダウンメニュー内の選択肢も確実に黒文字にする */
+    .filter-select option {
+      background: #ffffff;
+      color: #000000;
     }
     .filter-input {
       padding: 0.35rem 0.5rem;
       border: 1px solid var(--border);
       border-radius: 6px;
-      background: var(--bg-card);
-      color: #fff;
+      background: #ffffff; /* 背景を白に固定 */
+      color: #000000;      /* 文字色を黒に固定 */
       font-size: 0.8rem;
     }
     .filter-input:focus {
