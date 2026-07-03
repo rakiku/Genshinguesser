@@ -133,6 +133,9 @@ function getCurrentHintFields() {
 }
 
 async function initMode(mode) {
+  // チャレンジモードで正解（クリア）した状態から次の問題へ進むかを判定
+  const isNextChallengeRound = (gameMode === 'challenge' && mode === 'challenge' && solved);
+
   gameMode = mode;
   guesses  = [];
   solved   = false;
@@ -140,8 +143,13 @@ async function initMode(mode) {
   gaveUp = false;
   attempts = 0;
   challengeRemain = CHALLENGE_MAX_WRONG;
-  currentScore    = 0;
   versusTurnIndex = 0;
+
+  // クリアして次の問題に進む場合以外は、チャレンジスコアを0にリセット
+  if (!isNextChallengeRound) {
+    currentScore = 0;
+  }
+
 
   clearGuessHistory();
   closeWinOverlay();
