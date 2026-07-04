@@ -73,6 +73,11 @@ function bindEvents() {
     });
   });
 
+// 遊び方モーダルの開閉イベント
+  document.getElementById('howToBtn')?.addEventListener('click', () => openModal('howTo'));
+  document.getElementById('howToClose')?.addEventListener('click', () => closeModal('howTo'));
+  document.getElementById('howToOverlay')?.addEventListener('click', () => closeModal('howTo'));  
+
   // 入力欄
   const input = document.getElementById('guessInput');
   if (input) {
@@ -1297,4 +1302,15 @@ function getEnabledFields() {
   }
   // 通常モード時は個人の設定を反映
   return fields.filter(f => settings[f.key] !== false);
+}
+
+// モーダルの開閉を制御する共通の関数
+function openModal(name) {
+  document.getElementById(name + 'Modal')?.classList.remove('hidden');
+  document.getElementById(name + 'Overlay')?.classList.remove('hidden');
+}
+
+function closeModal(name) {
+  document.getElementById(name + 'Modal')?.classList.add('hidden');
+  document.getElementById(name + 'Overlay')?.classList.add('hidden');
 }
