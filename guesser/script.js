@@ -32,7 +32,7 @@ let versusReady = false;
 // 定数
 // ---------------------------------------------------------------------------
 const CHALLENGE_MAX_WRONG = 5;
-const LS_SETTINGS_KEY     = 'genshin-guesser-settings';
+const LS_SETTINGS_KEY     = 'genshin-guesser-settings-v3';
 const LS_DAILY_KEY        = 'genshin-guesser-daily-v2';
 const LS_STREAK_KEY       = 'genshin-guesser-streak';
 const LS_BEST_STREAK_KEY  = 'genshin-guesser-best-streak';
