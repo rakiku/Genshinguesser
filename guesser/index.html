@@ -107,6 +107,7 @@
     <div class="action-row">
       <button class="icon-btn share-btn hidden" id="shareBtn" aria-label="Twitterで共有">Twitterで共有</button>
       <button class="icon-btn copy-btn hidden" id="copyBtn" aria-label="結果をコピー">📋 コピー</button>
+      <button class="icon-btn" id="howToBtn" type="button">📖 遊び方</button>
       <button class="icon-btn" id="settingsBtn" aria-label="ヒント設定">⚙ 設定</button>
       <button class="icon-btn" id="giveUpBtn" aria-label="ギブアップ">🏳️ ギブアップ</button>
       <button class="icon-btn hidden" id="resetBtn" aria-label="次の問題">🔄 次の問題</button>
@@ -128,5 +129,25 @@
   <!-- データ・ロジック -->
   <script src="data.js"></script>
   <script src="script.js"></script>
+
+<!-- 遊び方モーダル（HTMLの最後に追加します） -->
+<div class="modal hidden" id="howToModal">
+  <div class="modal-content">
+    <h3>📖 ゲッサーの遊び方</h3>
+    <p>キャラクター（または武器）の名前を入力して、正解を推測しましょう！</p>
+    <p>回答を送信するたびに、ターゲットとの属性の一致度が色で表示されます。</p>
+    
+    <div style="text-align: left; margin: 15px 0; line-height: 1.6;">
+      <p>🟢 <strong>緑色</strong>：完全一致！正解と同じ属性です。</p>
+      <p>🟡 <strong>黄色</strong>：グループ一致（同じ「国」の特産品、同じ「天賦本」の秘境、同じ「週ボス」のドロップ素材など、おしい状態です）。</p>
+      <p>⚪ <strong>灰色</strong>：一致していません。</p>
+      <p>▲ / ▼：数値（基礎攻撃力、エネルギーなど）が正解よりも「高い」か「低い」かを示します。</p>
+    </div>
+
+    <button id="howToClose" type="button" class="btn">閉じる</button>
+  </div>
+</div>
+<div class="modal-overlay hidden" id="howToOverlay"></div>
+  
 </body>
 </html>
