@@ -236,6 +236,12 @@ function updateModeLabel(mode) {
   const resetBtn = document.getElementById('resetBtn');
   if (resetBtn) resetBtn.classList.toggle('hidden', mode === 'daily');
 
+   // ★追加：チャレンジモード時は「設定」ボタンを非表示にする
+  const settingsBtn = document.getElementById('settingsBtn');
+  if (settingsBtn) {
+    settingsBtn.classList.toggle('hidden', mode === 'challenge');
+}
+    
   updateVersusInfo();
 }
 
@@ -911,8 +917,9 @@ function renderGuessRow(entry, rowIndex) {
   const history = document.getElementById('guessHistory');
   if (!history) return;
   const { item, results } = entry;
-  const fields = getCurrentHintFields();
-  const enabledFields = fields.filter(f => settings[f.key] !== false);
+  
+  // ★変更：常に共通のルールで判定させるために、getEnabledFields() に置き換える
+  const enabledFields = getEnabledFields();
 
   const wrapper = document.createElement('div');
   wrapper.className = 'guess-row';
@@ -1086,7 +1093,7 @@ function closeWinOverlay() {
 // 共有機能 (Req 7)
 // ---------------------------------------------------------------------------
 function buildShareText() {
-  const fields = getCurrentHintFields().filter(f => settings[f.key] !== false);
+  const fields = getEnabledFields();
   const lines = [];
   const today = getTodayString();
   const genreLabel = genre === 'weapon' ? '武器' : 'キャラ';
@@ -1262,4 +1269,32 @@ function getDisplayValue(key, value, item) {
     case 'releaseVersionNum': return (item && item.releaseVersionLabel) || String(value);
     default:             return String(value);
   }
+}
+
+/**
+ * 現在有効なヒントフィールドのリストを取得する（チャレンジモード時は固定）
+ */
+function getEnabledFields() {
+  const fields = getCurrentHintFields();
+  if (gameMode === 'challenge') {
+    if (genre === 'character') {
+      // 指定された8項目のみに強制固定する
+      const allowedKeys = [
+        'element',      // 元素
+        'weapon',       // 武器種
+        'rarity',       // レアリティ
+        'country',      // 国
+        'energy',       // エネルギー
+        'birthMonth',   // 誕生月
+        'talentBook',   // 天賦本
+        'talentBoss'    // 突破ボス
+      ];
+      return fields.filter(f => allowedKeys.includes(f.key));
+    } else {
+      // 武器ジャンルの場合（必要に応じてすべて表示など）
+      return fields;
+    }
+  }
+  // 通常モード時は個人の設定を反映
+  return fields.filter(f => settings[f.key] !== false);
 }
