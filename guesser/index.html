@@ -130,21 +130,57 @@
   <script src="data.js"></script>
   <script src="script.js"></script>
 
-<!-- 遊び方モーダル（HTMLの最後に追加します） -->
+<!-- 遊び方モーダル（チュートリアル画像5枚入り） -->
 <div class="modal hidden" id="howToModal">
-  <div class="modal-content">
+  <!-- スマホでもスクロールできるようにスタイルを調整しています -->
+  <div class="modal-content" style="max-height: 85vh; overflow-y: auto; text-align: center;">
     <h3>📖 ゲッサーの遊び方</h3>
-    <p>キャラクター（または武器）の名前を入力して、正解を推測しましょう！</p>
-    <p>回答を送信するたびに、ターゲットとの属性の一致度が色で表示されます。</p>
     
-    <div style="text-align: left; margin: 15px 0; line-height: 1.6;">
+    <p style="font-size: 0.9rem; color: #ccc; margin-bottom: 15px;">
+      キャラクター（または武器）の名前を入力して、正解を推測しましょう！<br>
+      回答を送信するたびに、ターゲットとの属性の一致度が色で表示されます。
+    </p>
+
+    <!-- チュートリアル画像エリア（縦並びステップ順） -->
+    <!-- ※各ステップの見出し（①、②など）は、実際の画像の中身に合わせて自由に変更してください -->
+    <div class="tutorial-gallery" style="display: flex; flex-direction: column; gap: 20px; margin: 20px 0;">
+      
+      <div style="border-bottom: 1px solid #333; padding-bottom: 15px;">
+        <p style="font-weight: bold; margin-bottom: 8px; color: #ffd700;">① ゲームの始め方</p>
+        <img src="../files/tutorial/tutorial1.png" alt="チュートリアル 1" style="max-width: 100%; height: auto; border-radius: 8px; border: 1px solid #444;">
+      </div>
+
+      <div style="border-bottom: 1px solid #333; padding-bottom: 15px;">
+        <p style="font-weight: bold; margin-bottom: 8px; color: #ffd700;">② 回答の入力と推測</p>
+        <img src="../files/tutorial/tutorial2.png" alt="チュートリアル 2" style="max-width: 100%; height: auto; border-radius: 8px; border: 1px solid #444;">
+      </div>
+
+      <div style="border-bottom: 1px solid #333; padding-bottom: 15px;">
+        <p style="font-weight: bold; margin-bottom: 8px; color: #ffd700;">③ 判定の見方（色について）</p>
+        <img src="../files/tutorial/tutorial3.png" alt="チュートリアル 3" style="max-width: 100%; height: auto; border-radius: 8px; border: 1px solid #444;">
+      </div>
+
+      <div style="border-bottom: 1px solid #333; padding-bottom: 15px;">
+        <p style="font-weight: bold; margin-bottom: 8px; color: #ffd700;">④ ヒントの活用</p>
+        <img src="../files/tutorial/tutorial4.png" alt="チュートリアル 4" style="max-width: 100%; height: auto; border-radius: 8px; border: 1px solid #444;">
+      </div>
+
+      <div style="padding-bottom: 15px;">
+        <p style="font-weight: bold; margin-bottom: 8px; color: #ffd700;">⑤ クリアと共有</p>
+        <img src="../files/tutorial/tutorial5.png" alt="チュートリアル 5" style="max-width: 100%; height: auto; border-radius: 8px; border: 1px solid #444;">
+      </div>
+
+    </div>
+
+    <!-- ルールテキスト説明（画像を見ればわかる場合は削除してもOKです） -->
+    <div style="text-align: left; background: #222; padding: 15px; border-radius: 8px; margin-bottom: 20px; font-size: 0.85rem; line-height: 1.6;">
       <p>🟢 <strong>緑色</strong>：完全一致！正解と同じ属性です。</p>
       <p>🟡 <strong>黄色</strong>：グループ一致（同じ「国」の特産品、同じ「天賦本」の秘境、同じ「週ボス」のドロップ素材など、おしい状態です）。</p>
       <p>⚪ <strong>灰色</strong>：一致していません。</p>
       <p>▲ / ▼：数値（基礎攻撃力、エネルギーなど）が正解よりも「高い」か「低い」かを示します。</p>
     </div>
 
-    <button id="howToClose" type="button" class="btn">閉じる</button>
+    <button id="howToClose" type="button" class="btn" style="width: 100%; max-width: 200px; margin: 10px auto 0 auto;">閉じる</button>
   </div>
 </div>
 <div class="modal-overlay hidden" id="howToOverlay"></div>
