@@ -1,3 +1,135 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Genshin Guesser — 原神推測ゲーム</title>
+  <meta name="description" content="ヒントを元に原神のキャラクターや武器を当てる推測ゲームです。デイリー・エンドレス・チャレンジ・オンライン対戦の4モードを搭載。">
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap">
+</head>
+<body>
+
+  <!-- ヘッダー -->
+  <header class="app-header">
+    <h1 class="app-title">⚔ Genshin Guesser</h1>
+    <nav class="header-actions">
+      <a href="../index.html" class="back-link icon-btn" aria-label="メニューへ戻る">← メニュー</a>
+    </nav>
+  </header>
+
+  <!-- メインコンテンツ -->
+  <main class="app-main" role="main">
+
+    <!-- ジャンル表示 -->
+    <div class="genre-indicator" id="genreIndicator" aria-live="polite"></div>
+
+    <!-- モード切替 -->
+    <section aria-label="ゲームモード選択">
+      <div class="mode-switcher" role="group" aria-label="モード切替">
+        <button class="mode-btn" data-mode="daily"     aria-pressed="false">📅 デイリー</button>
+        <button class="mode-btn" data-mode="endless"   aria-pressed="false">�� エンドレス</button>
+        <button class="mode-btn" data-mode="challenge" aria-pressed="false">🏆 チャレンジ</button>
+        <button class="mode-btn" data-mode="versus" aria-pressed="false">🌐 オンライン対戦</button>
+      </div>
+
+      <div class="overlay hidden" id="settingsOverlay" aria-hidden="true"></div>
+      <div class="modal hidden" id="settingsModal" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
+        <div class="modal-header">
+          <h2 class="modal-title" id="settingsTitle">使うヒント設定</h2>
+          <button class="modal-close" id="settingsClose" aria-label="閉じる">✕</button>
+        </div>
+        <div class="settings-list" id="settingsList"></div>
+        <button class="settings-save-btn" id="settingsSaveBtn">設定を保存</button>
+      </div>
+    </section>
+
+    <!-- モードラベル -->
+    <p class="mode-label" id="modeLabel" aria-live="polite"></p>
+
+    <!-- チャレンジ: 残り挑戦数 -->
+    <div class="challenge-info hidden" id="challengeInfo">
+      <span id="remainLabel">残り <strong id="remainCount">5</strong> 回</span>
+      <span class="sep">|</span>
+      <span id="scoreLabel">スコア: <strong id="currentScore">0</strong></span>
+    </div>
+
+    <!-- エンドレス: ストリーク -->
+    <div class="streak-info hidden" id="streakInfo">
+      <span>🔥 連勝: <strong id="streakCount">0</strong></span>
+      <span class="sep">|</span>
+      <span>最高: <strong id="bestStreakCount">0</strong></span>
+    </div>
+
+    <!-- 対戦: ターン情報 -->
+    <div class="streak-info hidden" id="versusInfo">
+      <span id="versusPlayers">プレイヤー1 vs プレイヤー2</span>
+      <span class="sep">|</span>
+      <span id="versusCurrentTurn">プレイヤー1 のターン</span>
+    </div>
+
+    <!-- 入力エリア -->
+    <section class="input-area" aria-label="回答入力">
+      <div class="input-wrapper">
+        <label for="guessInput" class="hidden">名前を入力</label>
+        <input
+          type="text"
+          id="guessInput"
+          placeholder="名前を入力…"
+          autocomplete="off"
+          autocorrect="off"
+          autocapitalize="off"
+          spellcheck="false"
+          aria-label="キャラクター/武器名"
+          aria-autocomplete="list"
+          aria-controls="suggestList"
+        >
+        <button class="submit-btn" id="submitBtn" aria-label="回答を送信">決定</button>
+        <div id="suggestList" class="hidden" role="listbox" aria-label="候補一覧"></div>
+      </div>
+      <p class="input-error hidden" id="inputError" role="alert" aria-live="assertive"></p>
+    </section>
+
+    <!-- 結果バナー -->
+    <div id="resultBanner" class="result-banner hidden" role="status" aria-live="polite"></div>
+
+    <!-- 正解時演出 -->
+    <div class="win-overlay hidden" id="winOverlay" aria-hidden="true">
+      <div class="win-card">
+        <img id="winImage" src="" alt="" class="win-image">
+        <div class="win-title" id="winTitle"></div>
+      </div>
+    </div>
+
+    <!-- アクションボタン -->
+    <div class="action-row">
+      <button class="icon-btn share-btn hidden" id="shareBtn" aria-label="Twitterで共有">Twitterで共有</button>
+      <button class="icon-btn copy-btn hidden" id="copyBtn" aria-label="結果をコピー">📋 コピー</button>
+      <button class="icon-btn" id="howToBtn" type="button">📖 遊び方</button>
+      <button class="icon-btn" id="settingsBtn" aria-label="ヒント設定">⚙ 設定</button>
+      <button class="icon-btn" id="giveUpBtn" aria-label="ギブアップ">🏳️ ギブアップ</button>
+      <button class="icon-btn hidden" id="resetBtn" aria-label="次の問題">🔄 次の問題</button>
+    </div>
+
+    <!-- 回答履歴 -->
+    <section aria-label="回答履歴">
+      <div id="guessHistory" role="list" aria-label="これまでの回答"></div>
+    </section>
+
+  </main>
+
+  <!-- フッター -->
+  <footer class="app-footer">
+    <p>Genshin Guesser — ファンメイド。原神は miHoYo / HoYoverse の登録商標です。</p>
+    <p style="margin-top:.3rem;"><a href="../index.html">← メニューへ戻る</a></p>
+  </footer>
+
+  <!-- データ・ロジック -->
+  <script src="data.js"></script>
+  <script src="script.js"></script>
+
 <!-- 遊び方モーダル（チュートリアル画像5枚入り・完全論理整合版） -->
 <div class="modal hidden" id="howToModal">
   <!-- スマホでも最後までスクロールできるように高さを制御しています -->
