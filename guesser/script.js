@@ -1044,7 +1044,7 @@ function buildMaterialIcon(fieldKey, item) {
     talentBoss:   () => `${IMAGE_BASE}/materials/boss/${encodeURIComponent(item.talentBoss)}.png`,
     talentWeekly: () => `${IMAGE_BASE}/talent_weekly/${encodeURIComponent(item.talentWeekly)}.png`, // talent_weekly フォルダへ
     talentBook:   () => `${IMAGE_BASE}/talentBook/${encodeURIComponent(item.talentBook)}.png`,     // talentBook フォルダへ
-    enemyMaterial:() => `${IMAGE_BASE}/materials/enemy/${encodeURIComponent(item.enemyMaterial)}.png`,
+    enemyMaterial:() => `${IMAGE_BASE}/enemy material/${encodeURIComponent(item.enemyMaterial)}.png`,
     
     // 🟢 変更：武器突破素材のパスを WEAPON_BREAK に修正
     weaponBreakMaterial: () => `${IMAGE_BASE}/WEAPON_BREAK/${encodeURIComponent(item.weaponBreakMaterial)}.png`,
