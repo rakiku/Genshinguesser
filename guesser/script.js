@@ -1031,36 +1031,34 @@ function renderGuessRow(entry, rowIndex) {
 
 /**
  * 素材アイコン要素を生成する（対象項目のみ）
- * キャラ: 突破ボス, 週ボス素材, 敵素材, 天賦本
- * 武器: 武器突破素材, 敵素材
+ * キャラ: 元素、国、突破ボス、週ボス素材、敵素材、天賦本
+ * 武器: 武器突破素材、一般敵素材、エリート敵素材
  */
 function buildMaterialIcon(fieldKey, item) {
   const matKeys = {
-    // キャラ
-    talentBoss:   () => `${IMAGE_BASE}/materials/boss/${encodeURIComponent(item.talentBoss)}.png`,
-    talentWeekly: () => `${IMAGE_BASE}/materials/weekly/${encodeURIComponent(item.talentWeekly)}.png`,
-    talentBook:   () => `${IMAGE_BASE}/materials/talent/${encodeURIComponent(item.talentBook)}.png`,
-    enemyMaterial: () => `${IMAGE_BASE}/materials/enemy/${encodeURIComponent(item.enemyMaterial)}.png`,
-    // 武器
-    weaponBreakMaterial: () => `${IMAGE_BASE}/materials/weapon_break/${encodeURIComponent(item.weaponBreakMaterial)}.png`,
+    // 🟢 追加：元素と国のアイコン（新設フォルダから取得）
+    element:      () => `${IMAGE_BASE}/elements/${encodeURIComponent(item.element)}.png`,
+    country:      () => `${IMAGE_BASE}/country/${encodeURIComponent(item.country)}.png`,
     
-    // ★追加：武器エリート素材の読み込み元（スペースを含んだ正しいフォルダ名で指定します）
+    // 🟢 変更：新しいフォルダ構成に合わせたパスに修正
+    talentBoss:   () => `${IMAGE_BASE}/materials/boss/${encodeURIComponent(item.talentBoss)}.png`,
+    talentWeekly: () => `${IMAGE_BASE}/talent_weekly/${encodeURIComponent(item.talentWeekly)}.png`, // talent_weekly フォルダへ
+    talentBook:   () => `${IMAGE_BASE}/talentBook/${encodeURIComponent(item.talentBook)}.png`,     // talentBook フォルダへ
+    enemyMaterial:() => `${IMAGE_BASE}/materials/enemy/${encodeURIComponent(item.enemyMaterial)}.png`,
+    
+    // 🟢 変更：武器突破素材のパスを WEAPON_BREAK に修正
+    weaponBreakMaterial: () => `${IMAGE_BASE}/WEAPON_BREAK/${encodeURIComponent(item.weaponBreakMaterial)}.png`,
     weaponEnemyMaterial: () => `${IMAGE_BASE}/weapons Enemy material/${encodeURIComponent(item.weaponEnemyMaterial)}.png`,
   };
-  
+
   if (!matKeys[fieldKey]) return null;
 
   const img = document.createElement('img');
   img.src = matKeys[fieldKey]();
   img.alt = '';
   img.className = 'mat-icon';
-  img.onerror = () => { img.remove(); };
+  img.onerror = () => { img.remove(); }; // 画像がない場合は非表示
   return img;
-}
-
-function clearGuessHistory() {
-  const history = document.getElementById('guessHistory');
-  if (history) history.innerHTML = '';
 }
 
 // ---------------------------------------------------------------------------
