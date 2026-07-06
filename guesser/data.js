@@ -1316,10 +1316,65 @@ function normalizeWeapon(raw) {
   };
 }
 
-// 3. 武器データを読み込み、ビルドする
+// ===========================================================================
+// 【貼り付け用のコード】
+// ===========================================================================
+
+// 1. 武器生データを自動生成する関数（消えていた定義をここに復元します）
+function buildWeaponBase() {
+  const canonical = name => WEAPON_NAME_ALIASES[name] || name;
+  const canonicalEntries = Object.entries(WEAPON_NAME_ALIASES).map(([legacy, current]) => [current, legacy]);
+  const canonicalToLegacy = Object.fromEntries(canonicalEntries);
+  const allNames = new Set([
+    ...Object.keys(weaponReleaseVersionMap).map(canonical),
+    ...Object.keys(WEAPON_TO_BREAK_MAT).map(canonical),
+    ...Object.keys(WEAPON_BASE_ATK).flatMap(k => WEAPON_BASE_ATK[k]).map(canonical),
+    ...Object.keys(WEAPON_ATTRS).map(canonical),
+    ...Object.keys(WEAPON_SOURCE_OVERRIDES).map(canonical),
+  ]);
+
+  const nameToAtk = {};
+  for (const [atk, names] of Object.entries(WEAPON_BASE_ATK)) {
+    for (const n of names) nameToAtk[canonical(n)] = parseInt(atk, 10);
+  }
+
+  const weapons = [];
+  for (const name of allNames) {
+    const legacyName = canonicalToLegacy[name] || name;
+    const sourceOverride = WEAPON_SOURCE_OVERRIDES[name] || WEAPON_SOURCE_OVERRIDES[legacyName] || {};
+    const hasAuthoritativeEntry = Object.prototype.hasOwnProperty.call(weaponReleaseVersionMap, name)
+      || Object.prototype.hasOwnProperty.call(weaponReleaseVersionMap, legacyName);
+    const releaseVersion = weaponReleaseVersionMap[name] || weaponReleaseVersionMap[legacyName] || '';
+    if (!hasAuthoritativeEntry) continue;
+
+    const attrs = {
+      ...(WEAPON_ATTRS[name] || WEAPON_ATTRS[legacyName] || {}),
+      ...sourceOverride,
+    };
+    const breakMat = WEAPON_TO_BREAK_MAT[name] || WEAPON_TO_BREAK_MAT[legacyName] || '';
+    const baseAtk = nameToAtk[name] || 0;
+    if (!attrs.rarity || !attrs.weaponType) continue;
+
+    weapons.push({
+      name,
+      rarity: attrs.rarity,
+      weaponType: attrs.weaponType,
+      baseAtk,
+      releaseVersion,
+      weaponBreakMaterial: breakMat,
+      weaponBreakMaterialGroup: WEAPON_BREAK_GROUPS[breakMat] || breakMat,
+      enemyMaterial: attrs.enemyMaterial || '',
+      ascensionStat: attrs.ascensionStat || '',
+      isDistributed: !!attrs.is_distributed,
+    });
+  }
+  return weapons;
+}
+
+// 2. 武器生データをロードする
 const RAW_WEAPONS = buildWeaponBase();
 
-// 4. グループ分け用の箱「weaponGroups」を作成（ここで初めてRAW_WEAPONSを使用）
+// 3. グループ分け用の箱「weaponGroups」を作成
 const weaponGroups = RAW_WEAPONS.reduce((acc, weapon) => {
   const type = weapon.weaponType;
   if (!acc[type]) acc[type] = [];
@@ -1327,7 +1382,7 @@ const weaponGroups = RAW_WEAPONS.reduce((acc, weapon) => {
   return acc;
 }, {});
 
-// 5. 成形済みの武器リストを最終生成します（ここで上のすべてが初期化されているため順序が正常になります）
+// 4. 成形済みの武器リストを最終生成
 const WEAPONS = Object.values(weaponGroups).flat().map(normalizeWeapon);
 
 // ---------------------------------------------------------------------------
