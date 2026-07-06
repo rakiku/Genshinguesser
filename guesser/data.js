@@ -1514,4 +1514,3 @@ function getWeaponDisplayValue(key, value) {
     default: return String(value);
   }
 }
-}
