@@ -1316,3 +1316,13 @@ function closeModal(name) {
   document.getElementById(name + 'Modal')?.classList.add('hidden');
   document.getElementById(name + 'Overlay')?.classList.add('hidden');
 }
+
+/**
+ * 回答履歴の表示エリアを空にする関数
+ */
+function clearGuessHistory() {
+  const history = document.getElementById('guessHistory');
+  if (history) {
+    history.innerHTML = '';
+  }
+}
