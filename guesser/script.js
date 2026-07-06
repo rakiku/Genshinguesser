@@ -1043,7 +1043,11 @@ function buildMaterialIcon(fieldKey, item) {
     enemyMaterial: () => `${IMAGE_BASE}/materials/enemy/${encodeURIComponent(item.enemyMaterial)}.png`,
     // 武器
     weaponBreakMaterial: () => `${IMAGE_BASE}/materials/weapon_break/${encodeURIComponent(item.weaponBreakMaterial)}.png`,
+    
+    // ★追加：武器エリート素材の読み込み元（スペースを含んだ正しいフォルダ名で指定します）
+    weaponEnemyMaterial: () => `${IMAGE_BASE}/weapons Enemy material/${encodeURIComponent(item.weaponEnemyMaterial)}.png`,
   };
+  
   if (!matKeys[fieldKey]) return null;
 
   const img = document.createElement('img');
