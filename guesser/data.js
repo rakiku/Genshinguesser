@@ -1737,16 +1737,22 @@ const WEAPON_HINT_FIELDS = [
   { key: 'ascensionStat',          label: '突破ステータス', type: 'exact', defaultOn: false },
   { key: 'isDistributed',          label: '配布武器',     type: 'exact',   defaultOn: false },
   { key: 'weaponEnemyMaterial',    label: '精鋭素材',     type: 'exact',   defaultOn: true }, // 🟢 この行を追加します
+　{ key: 'releaseVersionNum',      label: '実装Ver',      type: 'numeric', defaultOn: true }, // 🟢 追加しました
 ];
 
 /**
  * 武器フィールドの表示用ラベル変換
+ * @param {string} key - フィールドキー
+ * @param {*} value - 値
+ * @param {object} [weapon] - 武器オブジェクト
+ * @returns {string}
  */
-function getWeaponDisplayValue(key, value) {
+function getWeaponDisplayValue(key, value, weapon) {
   if (value === null || value === undefined || value === '') return '—';
   switch (key) {
     case 'rarity': return `★${value}`;
     case 'isDistributed': return value ? 'あり' : 'なし';
+    case 'releaseVersionNum': return weapon ? (weapon.releaseVersionLabel || String(value)) : String(value); // 🟢 追加しました
     default: return String(value);
   }
 }
