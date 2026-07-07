@@ -33,7 +33,7 @@ const WEEKLY_BOSS_GROUPS = {
   '獄炎の蝶': 'La Signora', '溶滅の刻': 'La Signora','灰燼の心': 'La Signora',
   '万劫の真意': 'raiden', '凶将の手眼': 'raiden','禍神の禊涙': 'raiden',  
   '傀儡の糸': 'Shouki no Kami', '空行の虚鈴': 'Shouki no Kami', '無心の淵鏡': 'Shouki no Kami',
-  '原初のオアシスの初咲き': 'Apep', '太古の樹海の一瞬': 'Apep', '天地に映える蕨': 'Apep',
+  '原初のオアシスの初咲き': 'Apep', '太古の樹海の一瞬': 'Apep', '天地に生える蕨': 'Apep',
   '光なき一塊': 'All-Devouring Narwhal', '光なき糸': 'All-Devouring Narwhal', '光なき渦の眼': 'All-Devouring Narwhal',
   '残火の灯燭': 'The Knave', '絹織りの羽': 'The Knave', '否定と裁決': 'The Knave',
   '昇揚のサンプル「ルーク」': 'The Game Before the Gate', '昇揚のサンプル「ナイト」': 'The Game Before the Gate', '昇揚のサンプル「王族」': 'The Game Before the Gate',
