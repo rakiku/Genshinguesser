@@ -1564,8 +1564,8 @@ function buildWeaponBase() {
       weaponBreakMaterial: breakMat,
       weaponBreakMaterialGroup: WEAPON_BREAK_GROUPS[breakMat] || breakMat,
       enemyMaterial: attrs.enemyMaterial || '',
-      ascensionStat: attrs.ascensionStat || '', 
-      isDistributed: !!attrs.isDistributed,
+      ascensionStat: attrs.ascension_Stat || '', 
+      isDistributed: !!attrs.is_Distributed,
     });
   }
   return weapons;
