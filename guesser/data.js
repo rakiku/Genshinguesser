@@ -1521,7 +1521,7 @@ const WEAPON_ATTRS = {
  　'生徒ノート':        { rarity: 1, weaponType: '法器', enemyMaterial: '新兵の記章',     ascension_stat: '',  is_distributed: false },
 };
 
-// 1. 武器生データを自動生成する関数
+/ 1. 武器生データを自動生成する関数
 function buildWeaponBase() {
   const canonical = name => WEAPON_NAME_ALIASES[name] || name;
   const canonicalEntries = Object.entries(WEAPON_NAME_ALIASES).map(([legacy, current]) => [current, legacy]);
@@ -1564,8 +1564,8 @@ function buildWeaponBase() {
       weaponBreakMaterial: breakMat,
       weaponBreakMaterialGroup: WEAPON_BREAK_GROUPS[breakMat] || breakMat,
       enemyMaterial: attrs.enemyMaterial || '',
-      ascensionStat: attrs.ascension_Stat || '', 
-      isDistributed: !!attrs.is_Distributed,
+      ascensionStat: attrs.ascension_stat || '',  // 🟢 すべて小文字の ascension_stat に修正
+      isDistributed: !!attrs.is_distributed,      // 🟢 すべて小文字の is_distributed に修正
     });
   }
   return weapons;
