@@ -1715,6 +1715,7 @@ const WEAPON_HINT_FIELDS = [
   { key: 'enemyMaterial',          label: '敵素材',       type: 'exact',   defaultOn: true },
   { key: 'ascensionStat',          label: '突破ステータス', type: 'exact', defaultOn: false },
   { key: 'isDistributed',          label: '配布武器',     type: 'exact',   defaultOn: false },
+  { key: 'weaponEnemyMaterial',    label: '精鋭素材',     type: 'exact',   defaultOn: true }, // 🟢 この行を追加します
 ];
 
 /**
