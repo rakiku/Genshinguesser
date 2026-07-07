@@ -1330,7 +1330,7 @@ const WEAPON_ATTRS = {
   '碧落の瓏':          { rarity: 5, weaponType: '法器', enemyMaterial: '色褪せた赤い絹',   ascension_stat: 'HP',           is_distributed: false },
   'トゥライトゥーラの記憶':{ rarity: 5, weaponType: '法器', enemyMaterial: 'キノコンの胞子', ascension_stat: '会心ダメージ', is_distributed: false },
   '千夜に浮かぶ夢':    { rarity: 5, weaponType: '法器', enemyMaterial: 'キノコンの胞子',   ascension_stat: '元素熟知',     is_distributed: false },
-  '神楽の真意':        { rarity: 5, weaponType: '法器', enemyMaterial: 'フライム of 乾核', ascension_stat: '会心ダメージ', is_distributed: false },
+  '神楽の真意':        { rarity: 5, weaponType: '法器', enemyMaterial: 'フライムの乾核', ascension_stat: '会心ダメージ', is_distributed: false },
   '浮世の錠':          { rarity: 5, weaponType: '法器', enemyMaterial: '破損した仮面',     ascension_stat: '攻撃力',       is_distributed: false },
   '天空の巻':          { rarity: 5, weaponType: '法器', enemyMaterial: '牢固な矢先',       ascension_stat: '攻撃力',       is_distributed: false },
   '四風原典':          { rarity: 5, weaponType: '法器', enemyMaterial: 'スライムの液体',   ascension_stat: '会心率',       is_distributed: false },
@@ -1374,7 +1374,7 @@ const WEAPON_ATTRS = {
   '「スーパーアルティメット覇王魔剣」':{ rarity: 4, weaponType: '両手剣', enemyMaterial: '整合の歯車', ascension_stat: '元素チャージ効率', is_distributed: true },
   '携帯型チェンソー':  { rarity: 4, weaponType: '両手剣', enemyMaterial: '整合の歯車',       ascension_stat: 'HP', is_distributed: false },
   '話死合い棒':        { rarity: 4, weaponType: '両手剣', enemyMaterial: 'スライムの液体',   ascension_stat: '会心率', is_distributed: false },
-  'タイダル・シャドー':{ rarity: 4, weaponType: '両手剣', enemyMaterial: '整合 of 歯車',     ascension_stat: '攻撃力', is_distributed: false },
+  'タイダル・シャドー':{ rarity: 4, weaponType: '両手剣', enemyMaterial: '整合の歯車',     ascension_stat: '攻撃力', is_distributed: false },
   '鉄彩の花':          { rarity: 4, weaponType: '両手剣', enemyMaterial: 'フライムの乾核',   ascension_stat: '元素熟知', is_distributed: true },
   'マカイラの水色':    { rarity: 4, weaponType: '両手剣', enemyMaterial: '宝探しの鴉マーク', ascension_stat: '元素熟知', is_distributed: false },
   '森林のレガリア':    { rarity: 4, weaponType: '両手剣', enemyMaterial: '色褪せた赤い絹',   ascension_stat: '元素チャージ効率', is_distributed: false },
@@ -1494,7 +1494,7 @@ const WEAPON_ATTRS = {
 
   // ★3 長柄武器
   '鉾槍':              { rarity: 3, weaponType: '長柄武器', enemyMaterial: 'トリックフラワーの蜜', ascension_stat: '攻撃力', is_distributed: false },
-  '白纓槍':            { rarity: 3, weaponType: '長柄武器', enemyMaterial: '新兵 of 記章',     ascension_stat: '会心率', is_distributed: false },
+  '白纓槍':            { rarity: 3, weaponType: '長柄武器', enemyMaterial: '新兵の記章',     ascension_stat: '会心率', is_distributed: false },
   '黒纓槍':            { rarity: 3, weaponType: '長柄武器', enemyMaterial: '牢固な矢先',       ascension_stat: 'HP', is_distributed: false },
 
   // ★3 弓
