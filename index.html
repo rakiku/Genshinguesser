@@ -17,6 +17,8 @@
     <div class="header-inner">
       <span class="header-logo"> 原神 Guesser</span>
       <nav class="header-nav">
+        <!-- 🟢 配信者の方へボタンを追加（ヘッダー） -->
+        <button class="nav-btn" id="streamerBtn">配信者の方へ</button>
         <button class="nav-btn" id="howToBtn">遊び方</button>
         <button class="nav-btn" id="aboutBtn">このサイトについて</button>
       </nav>
@@ -84,6 +86,11 @@
           <span class="btn-icon">📚</span>
           <span class="btn-text">データベース</span>
         </a>
+        <!-- 🟢 配信者の方へボタンを追加（メインメニュー） -->
+        <button class="sub-btn help-btn" id="streamerBtn2" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+          <span class="btn-icon">🎥</span>
+          <span class="btn-text">配信者の方へ</span>
+        </button>
         <button class="sub-btn help-btn" id="howToBtn2">
           <span class="btn-icon">❓</span>
           <span class="btn-text">遊び方</span>
@@ -123,7 +130,7 @@
       <p class="video-note">廃人サバのメンバーで遊んだ様子</p>
       <div class="video-wrapper">
         <iframe
-          src="https://www.youtube.com/embed/thjLWrtY5Us"
+          src=""
           title="Genshin Guesser 遊び方動画"
           frameborder="0"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -153,12 +160,48 @@
       <span class="footer-sep">|</span>
       <a href="faq.html" class="footer-link">FAQ</a>
       <span class="footer-sep">|</span>
+      <!-- 🟢 配信者の方へボタンを追加（フッター） -->
+      <button class="footer-link-btn" id="streamerFooterBtn">配信者の方へ</button>
+      <span class="footer-sep">|</span>
       <button class="footer-link-btn" id="howToFooterBtn">遊び方</button>
       <span class="footer-sep">|</span>
       <a href="contact.html" class="footer-link">Contact</a>
     </div>
     <p class="footer-copy">原神Guesser — ファンメイド非公式サイト。原神は miHoYo / HoYoverse の登録商標です。</p>
   </footer>
+
+  <!-- 🟢 配信者向け注意事項モーダルを追加 -->
+  <div class="modal-overlay hidden" id="streamerOverlay" aria-hidden="true"></div>
+  <div class="modal hidden" id="streamerModal" role="dialog" aria-modal="true" aria-labelledby="streamerTitle">
+    <div class="modal-header">
+      <h2 class="modal-title" id="streamerTitle">🎥 配信者・動画投稿者の方へ</h2>
+      <button class="modal-close" id="streamerClose" aria-label="閉じる">✕</button>
+    </div>
+    <div class="modal-body">
+      <h3>配信・動画化は完全自由！</h3>
+      <p>当ゲームを使用した生配信や動画投稿は、事前・事後の連絡不要でどなたでも自由に行っていただけます。収益化しているチャンネルでのご利用も大歓迎です！</p>
+      
+      <h3>お願い・注意事項</h3>
+      <ul>
+        <li>
+          <strong>ゲームリンクの掲載（必須）</strong><br>
+          動画の概要欄や配信の配信説明欄等に、当ゲームのURL（<code>https://rakiku.github.io/Genshinguesser/</code>）を掲載していただくようお願いいたします。
+        </li>
+        <li>
+          <strong>作者X（旧Twitter）の掲載（推奨）</strong><br>
+          必須ではありませんが、可能であれば作者のXアカウント（例: <code>@あなたのアカウント名</code> など）の紹介やリンクもあわせて載せていただけると開発の励みになります。
+        </li>
+        <li>
+          <strong>「デイリーモード」の解答ネタバレへの配慮</strong><br>
+          デイリーモードは1日1回全員共通の問題を扱います。自分で解くのを楽しみにしている他のプレイヤーのために、動画のサムネイルや配信タイトルで、直接答えがわかるようなネタバレはお控えいただくようご配慮をお願いいたします。
+        </li>
+        <li>
+          <strong>非公式ファンメイドであることの明記</strong><br>
+          当ゲームは有志が作成した非公式ゲームです。視聴者様が公式コンテンツと誤認されないよう、ご理解と配慮をお願いいたします。
+        </li>
+      </ul>
+    </div>
+  </div>
 
   <!-- 遊び方モーダル -->
   <div class="modal-overlay hidden" id="howToOverlay" aria-hidden="true"></div>
