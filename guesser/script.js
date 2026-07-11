@@ -1119,7 +1119,7 @@ function buildShareText() {
   if (solved) {
     lines.push(`✅ ${attempts}回で正解！`);
   } else {
-    lines.push(`❌ 失敗... 正解は「${answer.name}」`);
+    lines.push(`❌ 失敗... `);
   }
   lines.push('');
 
