@@ -21,7 +21,7 @@ const TALENT_BOOK_GROUPS = {
   '忠言': 'sumeru',    '篤行': 'sumeru',    '創意': 'sumeru',
   '公平': 'fontaine',  '正義': 'fontaine',  '秩序': 'fontaine',
   '焚燼': 'natlan',    '紛争': 'natlan',    '角逐': 'natlan',
-  '流浪': 'khaenriah', '楽園': 'khaenriah', '月光': 'khaenriah',
+  '流浪': 'nodkrai', '楽園': 'nodkrai', '月光': 'nodkrai',
 };
 
 /** 週ボス素材グループ（同一週ボスからのドロップ） */
@@ -70,7 +70,7 @@ const LOCAL_SPECIALTY_GROUPS = {
   '蛍光ツノキノコ': 'natlan', 'サウリアンサキュレント': 'natlan', 'ケネパベリー': 'natlan',
   '岩裂の花': 'natlan', 'シャクギク': 'natlan',
   // ナドクライ
-  '月落銀': 'khaenriah', '携行型ベアリング': 'khaenriah', '琥珀香': 'khaenriah','ヴィンテル草': 'khaenriah',
+  '月落銀': 'nodkrai', '携行型ベアリング': 'nodkrai', '琥珀香': 'nodkrai','ヴィンテル草': 'nodkrai',
 };
 
 /** 突破ステータスグループ（同系統） */
@@ -213,6 +213,8 @@ const CHARACTER_READINGS = {
   "スカーク": ["すかーく"],
   "アーロイ": ["あーろい"],
   "旅人": ["たびびと"],
+  "アリョーシャ": ["ありょーしゃ"],
+  "オデット": ["おでっと"],
 };
 
 // ---------------------------------------------------------------------------
@@ -333,6 +335,8 @@ const RAW_CHARACTERS = [
   { name: "リンネア", country: "ナドクライ", weapon: "弓", element: "岩", birth_month: "５月", birthday: "5月23日", rarity: ['☆５'], body: "中身女性", role: ["オフフィールドアタッカー", "オフフィールドライフキーパー"], energy: 60, talent_boss: "守護者・堕天", local_specialty: "フェザーモス", ascension_stat: "会心率", distributed: false, talent_book: "流浪", talent_weekly: "異端の薬瓶", special_dish: "スタミナ回復系", trace: false, costume: false, enemy_material: ["破損した徽章"], training_road: false, release_version: "Luna VI (6.5)" },
   { name: "ニコ", country: "例外", weapon: "法器", element: "炎", birth_month: "９月", birthday: "9月29日", rarity: ['☆５'], body: "中身女性", role: ["オフフィールドサポーター", "オフフィールドライフキーパー"], energy: 60, talent_boss: "昏き魘夢の主", local_specialty: "琥珀香", ascension_stat: "攻撃力", distributed: false, talent_book: "楽園", talent_weekly: "偽りの樹脂", special_dish: "スタミナ回復系", trace: false, costume: false, enemy_material: ["破損した徽章"], training_road: false, release_version: "Luna VII (6.6)" },
   { name: "サンドローネ", country: "スネージナヤ", weapon: "両手剣", element: "氷", birth_month: "１月", birthday: "1月13日", rarity: ['☆５'], body: "中身女性", role: ["オンフィールドアタッカー"], energy: 60, talent_boss: "守護者・堕天", local_specialty: "探測ユニット・子機", ascension_stat: "会心率", distributed: false, talent_book: "流浪", talent_weekly: "狂人の誓約", special_dish: "スタミナ軽減系", trace: false, costume: false, enemy_material: ["破損した駆動軸"], training_road: false, release_version: "Luna VIII (6.7)" }, 
+  { name: "アリョーシャ", country: "スネージナヤ", weapon: "長柄武器", element: "雷", birth_month: "２月", birthday: "2月9日", version: "n.0", rarity: ['☆５'], body: "中身男性", role: ["オフフィールドサポーター","オフフィールドライフキーパー"], energy: 70, talent_boss: "キメラ・フリューゲルレーヴェ", local_specialty: "フロストフラワー", ascension_stat: "元素チャージ効率", distributed: true, talent_book: "堅忍", talent_weekly: "異端の薬瓶", special_dish: "スタミナ軽減系", trace: false, costume: false, enemy_material: ["異種合成魔獣"], training_road: false, release_version: "7.0" },
+  { name: "オデット", country: "スネージナヤ", weapon: "片手剣", element: "氷", birth_month: "２月", birthday: "2月20日", version: "n.0", rarity: ['☆５'], body: "中身女性", role: ["オフフィールドアタッカー"], energy: 60, talent_boss: "不滅派生創造物", local_specialty: "フロストフラワー", ascension_stat: "会心ダメージ", distributed: true, talent_book: "慈愛", talent_weekly: "歪曲した枯れ枝", special_dish: "攻撃系", trace: false, costume: false, enemy_material: ["幻造蛍屑"], training_road: false, release_version: "7.0" },
   // 旅人（特殊：出題対象外）
   { name: "旅人", country: "例外", weapon: "片手剣", element: "その他", birth_month: "その他", birthday: "なし", rarity: ['☆５'], body: "中身男性/中身女性", role: ["オンフィールドアタッカー"], energy: 60, talent_boss: "", local_specialty: "風車アスター", ascension_stat: "攻撃力", distributed: true, talent_book: "自由", talent_weekly: "", special_dish: "", trace: false, costume: true, enemy_material: [], training_road: false, release_version: "1.0", displayNames: ["空", "蛍"], enabled: false },
   { name: "スカーク", country: "例外", weapon: "片手剣", element: "氷", birth_month: "１１月", birthday: "11月5日", rarity: ['☆５'], body: "中身女性", role: ["オンフィールドアタッカー"], energy: 0, talent_boss: "深淵なるミミック・パピラ", local_specialty: "岩裂の花", ascension_stat: "会心ダメージ", distributed: false, talent_book: "角逐", talent_weekly: "昇揚のサンプル「ナイト」", special_dish: "回復系", trace: false, costume: false, enemy_material: ["整合の歯車"], training_road: false, release_version: "5.7" },
