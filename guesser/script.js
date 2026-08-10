@@ -21,11 +21,10 @@ let streak     = 0;             // エンドレス連勝数
 let bestStreak = 0;
 let challengeRemain = 5;       // チャレンジ残り回数
 let currentScore    = 0;        // チャレンジスコア
-let versusPassword  = '';
 let versusTurnIndex = 0;
 let versusPlayers   = ['プレイヤー1', 'プレイヤー2'];
 let versusSelfIndex = 0;
-let versusConnection = null;
+let versusConnection = null; // { code, playerIndex } | null
 let versusReady = false;
 
 // ---------------------------------------------------------------------------
@@ -37,8 +36,6 @@ const LS_DAILY_KEY        = 'genshin-guesser-daily-v2';
 const LS_STREAK_KEY       = 'genshin-guesser-streak';
 const LS_BEST_STREAK_KEY  = 'genshin-guesser-best-streak';
 const LS_CHALLENGE_BEST   = 'genshin-guesser-challenge-best';
-const RTC_CONFIG          = { iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] };
-const DATA_CHANNEL_TIMEOUT_MS = 20000;
 
 let settings = {};
 
@@ -77,6 +74,25 @@ function bindEvents() {
   document.getElementById('howToBtn')?.addEventListener('click', () => openModal('howTo'));
   document.getElementById('howToClose')?.addEventListener('click', () => closeModal('howTo'));
   document.getElementById('howToOverlay')?.addEventListener('click', () => closeModal('howTo'));  
+
+  // オンライン対戦モーダル
+  document.getElementById('versusCreateBtn')?.addEventListener('click', () => versusShowPanel('versusCreate'));
+  document.getElementById('versusJoinBtn')?.addEventListener('click', () => versusShowPanel('versusJoin'));
+  document.getElementById('versusModalClose')?.addEventListener('click', cancelVersusModal);
+  document.getElementById('versusModalOverlay')?.addEventListener('click', cancelVersusModal);
+  document.getElementById('backFromCreateBtn')?.addEventListener('click', () => versusShowPanel('versusChoice'));
+  document.getElementById('backFromJoinBtn')?.addEventListener('click', () => versusShowPanel('versusChoice'));
+  document.getElementById('doCreateRoomBtn')?.addEventListener('click', handleDoCreateRoom);
+  document.getElementById('cancelWaitBtn')?.addEventListener('click', cancelVersusModal);
+  document.getElementById('doJoinRoomBtn')?.addEventListener('click', handleDoJoinRoom);
+
+  // ページ離脱時にルームをクリーンアップ
+  window.addEventListener('beforeunload', () => {
+    if (versusConnection?.code) {
+      void mpMarkFinished(versusConnection.code);
+      mpUnsubscribe();
+    }
+  });
 
   // 入力欄
   const input = document.getElementById('guessInput');
@@ -285,127 +301,301 @@ function getDailyItem(pool) {
   return pool[seededIndex(getTodayString() + genre, pool.length)];
 }
 
-function getVersusItem(pool, password) {
-  const seed = `${getTodayString()}-${genre}-${rarityFilter}-${password || ''}`;
+function getVersusItem(pool, code) {
+  const seed = `${getTodayString()}-${genre}-${rarityFilter}-${code || ''}`;
   return pool[seededIndex(seed, pool.length)];
 }
 
-function createVersusCode(payload) {
-  const encoded = new TextEncoder().encode(JSON.stringify(payload));
-  let binary = '';
-  encoded.forEach(byte => { binary += String.fromCharCode(byte); });
-  return btoa(binary);
+// ---------------------------------------------------------------------------
+// Versus モーダル管理
+// ---------------------------------------------------------------------------
+let _versusModalResolve = null;
+let _cancelVersusWait   = null;
+
+function openVersusModal() {
+  versusShowPanel('versusChoice');
+  versusSetError('');
+  // Reset create form state
+  const createBtn = document.getElementById('doCreateRoomBtn');
+  if (createBtn) { createBtn.disabled = false; createBtn.classList.remove('hidden'); }
+  const hostInput = document.getElementById('hostNameInput');
+  if (hostInput) { hostInput.disabled = false; hostInput.value = ''; }
+  document.getElementById('roomCodeDisplay')?.classList.add('hidden');
+  document.getElementById('backFromCreateBtn')?.classList.remove('hidden');
+  // Reset join form state
+  const joinBtn = document.getElementById('doJoinRoomBtn');
+  if (joinBtn) joinBtn.disabled = false;
+  const guestInput = document.getElementById('guestNameInput');
+  if (guestInput) guestInput.value = '';
+  const codeInput = document.getElementById('roomCodeInput');
+  if (codeInput) codeInput.value = '';
+  // Show modal
+  document.getElementById('versusModal')?.classList.remove('hidden');
+  document.getElementById('versusModalOverlay')?.classList.remove('hidden');
+  return new Promise(resolve => { _versusModalResolve = resolve; });
 }
 
-function parseVersusCode(code) {
+function resolveVersusModal(result) {
+  document.getElementById('versusModal')?.classList.add('hidden');
+  document.getElementById('versusModalOverlay')?.classList.add('hidden');
+  _cancelVersusWait = null;
+  if (_versusModalResolve) { _versusModalResolve(result); _versusModalResolve = null; }
+}
+
+function cancelVersusModal() {
+  if (_cancelVersusWait) { _cancelVersusWait(); _cancelVersusWait = null; }
+  mpUnsubscribe();
+  resolveVersusModal(null);
+}
+
+function versusShowPanel(id) {
+  ['versusChoice', 'versusCreate', 'versusJoin'].forEach(p => {
+    document.getElementById(p)?.classList.toggle('hidden', p !== id);
+  });
+  versusSetError('');
+}
+
+function versusSetError(msg) {
+  const el = document.getElementById('versusModalError');
+  if (!el) return;
+  el.textContent = msg;
+  el.classList.toggle('hidden', !msg);
+}
+
+// ---------------------------------------------------------------------------
+// ホスト: ルームを作成して待機
+// ---------------------------------------------------------------------------
+async function handleDoCreateRoom() {
+  const name = (document.getElementById('hostNameInput')?.value.trim()) || 'プレイヤー1';
+  const createBtn = document.getElementById('doCreateRoomBtn');
+  if (createBtn) createBtn.disabled = true;
+  versusSetError('');
+
+  // Check config
+  if (!mpIsConfigured()) {
+    versusSetError('Supabase が未設定です。SUPABASE_SETUP.md を参照してください。');
+    if (createBtn) createBtn.disabled = false;
+    return;
+  }
+
+  const pool = getPool();
+  const answerItem = getRandomItem(pool, null);
+
+  let room;
   try {
-    const binary = atob(code.trim());
-    const bytes = Uint8Array.from(binary, c => c.charCodeAt(0));
-    const json = new TextDecoder().decode(bytes);
-    return JSON.parse(json);
+    room = await mpCreateRoom({ genre, rarityFilter, hostName: name, answerId: answerItem.id });
   } catch (e) {
-    return null;
+    versusSetError('ルームの作成に失敗しました: ' + e.message);
+    if (createBtn) createBtn.disabled = false;
+    return;
   }
-}
 
-function waitForIceGatheringComplete(pc, timeoutMs = 8000) {
-  if (pc.iceGatheringState === 'complete') return Promise.resolve();
-  return new Promise(resolve => {
-    const onState = () => {
-      if (pc.iceGatheringState === 'complete') {
-        pc.removeEventListener('icegatheringstatechange', onState);
-        resolve();
+  // UI を待機状態に切り替える
+  const codeEl = document.getElementById('displayedRoomCode');
+  if (codeEl) codeEl.textContent = room.code;
+  document.getElementById('roomCodeDisplay')?.classList.remove('hidden');
+  if (createBtn) createBtn.classList.add('hidden');
+  const hostInput = document.getElementById('hostNameInput');
+  if (hostInput) hostInput.disabled = true;
+  document.getElementById('backFromCreateBtn')?.classList.add('hidden');
+
+  let cancelled = false;
+  _cancelVersusWait = () => { cancelled = true; };
+
+  // Realtime 購読: ゲストが参加したら解決・切断時にも通知
+  mpSubscribeToRoom(room.code, {
+    onRoomUpdate: (updated) => {
+      if (cancelled) return;
+      if (updated.status === 'playing') {
+        resolveVersusModal({
+          role:      'host',
+          hostName:  name,
+          guestName: updated.guest_name || 'プレイヤー2',
+          code:      room.code,
+          answer:    answerItem,
+        });
+      } else if (updated.status === 'finished' && versusReady && gameMode === 'versus') {
+        handleVersusDisconnect();
       }
-    };
-    pc.addEventListener('icegatheringstatechange', onState);
-    setTimeout(() => {
-      pc.removeEventListener('icegatheringstatechange', onState);
-      resolve();
-    }, timeoutMs);
+    },
+    onGameEvent: handleVersusGameEvent,
   });
 }
 
-function waitForDataChannelOpen(channel, timeoutMs = DATA_CHANNEL_TIMEOUT_MS) {
-  if (channel.readyState === 'open') return Promise.resolve(true);
-  return new Promise(resolve => {
-    const timer = setTimeout(() => resolve(false), timeoutMs);
-    channel.addEventListener('open', () => {
-      clearTimeout(timer);
-      resolve(true);
-    }, { once: true });
+// ---------------------------------------------------------------------------
+// ゲスト: ルームに参加して init を受信するまで待機
+// ---------------------------------------------------------------------------
+async function handleDoJoinRoom() {
+  const name = (document.getElementById('guestNameInput')?.value.trim()) || 'プレイヤー2';
+  const code = (document.getElementById('roomCodeInput')?.value.trim()) || '';
+
+  if (!/^\d{6}$/.test(code)) {
+    versusSetError('6桁の数字を入力してください。');
+    return;
+  }
+
+  // Check config
+  if (!mpIsConfigured()) {
+    versusSetError('Supabase が未設定です。SUPABASE_SETUP.md を参照してください。');
+    return;
+  }
+
+  const joinBtn = document.getElementById('doJoinRoomBtn');
+  if (joinBtn) joinBtn.disabled = true;
+  versusSetError('');
+
+  let cancelled = false;
+  _cancelVersusWait = () => { cancelled = true; };
+
+  // init イベント受信用 Promise（購読前に設定してレースコンディションを防ぐ）
+  let initResolve = null;
+  const initReceived = new Promise(resolve => { initResolve = resolve; });
+
+  // 購読を先に行い、その後 join（ホストの init ブロードキャストを取りこぼさないため）
+  mpSubscribeToRoom(code, {
+    onRoomUpdate: (updated) => {
+      // ゲスト側で room が finished になったら切断通知
+      if (updated.status === 'finished' && versusReady && gameMode === 'versus') {
+        handleVersusDisconnect();
+      }
+    },
+    onGameEvent: (event) => {
+      if (event.type === 'init' && initResolve) {
+        const r = initResolve;
+        initResolve = null;
+        r(event);
+        return;
+      }
+      handleVersusGameEvent(event);
+    },
+  });
+
+  // ルームに参加
+  let room;
+  try {
+    room = await mpJoinRoom(code, name);
+  } catch (e) {
+    if (!cancelled) {
+      mpUnsubscribe();
+      versusSetError(e.message);
+      if (joinBtn) joinBtn.disabled = false;
+    }
+    return;
+  }
+
+  if (cancelled) return;
+
+  // init を 30 秒待つ
+  let initData;
+  try {
+    initData = await Promise.race([
+      initReceived,
+      new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 30000)),
+    ]);
+  } catch {
+    if (!cancelled) {
+      versusSetError('ホストからの応答がタイムアウトしました。再度お試しください。');
+      mpUnsubscribe();
+      if (joinBtn) joinBtn.disabled = false;
+    }
+    return;
+  }
+
+  if (cancelled) return;
+
+  resolveVersusModal({
+    role:      'guest',
+    guestName: name,
+    code:      room.code,
+    room,
+    initData,
   });
 }
 
-function generateRoomCode() {
-  const bytes = new Uint8Array(4);
-  window.crypto.getRandomValues(bytes);
-  return Array.from(bytes, b => b.toString(16).padStart(2, '0')).join('');
-}
-
+// ---------------------------------------------------------------------------
+// versus セッション確立
+// ---------------------------------------------------------------------------
 function clearVersusConnection() {
-  if (versusConnection?.channel) {
-    versusConnection.channel.removeEventListener('close', handleVersusDisconnect);
-    versusConnection.channel.removeEventListener('error', handleVersusDisconnect);
-    try { versusConnection.channel.close(); } catch (e) { /* noop */ }
-  }
-  if (versusConnection?.pc) {
-    try { versusConnection.pc.close(); } catch (e) { /* noop */ }
-  }
+  mpUnsubscribe();
   versusConnection = null;
   versusReady = false;
 }
 
-function handleVersusDisconnect() {
-  if (gameMode !== 'versus') return;
-  showResultBanner('⚠️ 接続が切断されました。再接続するにはモード選択からオンライン対戦を開始してください。', 'fail', false);
-  setInputEnabled(false);
-}
+async function setupVersusSession(pool) {
+  clearVersusConnection();
 
-function attachVersusChannel(channel) {
-  channel.addEventListener('message', e => {
-    handleVersusMessage(e.data);
-  });
-  channel.addEventListener('close', handleVersusDisconnect);
-  channel.addEventListener('error', handleVersusDisconnect);
-}
-
-function sendVersusMessage(type, payload = {}) {
-  const channel = versusConnection?.channel;
-  if (!channel || channel.readyState !== 'open') return;
-  channel.send(JSON.stringify({ type, payload }));
-}
-
-function handleVersusMessage(raw) {
-  let data = null;
-  try { data = JSON.parse(raw); } catch (e) { return; }
-  if (!data || !data.type) return;
-  const pool = genre === 'weapon' ? WEAPONS : CHARACTERS;
-
-  if (data.type === 'init') {
-    const payload = data.payload || {};
-    const players = Array.isArray(payload.players) ? payload.players : [];
-    if (players.length === 2) versusPlayers = players;
-    versusTurnIndex = Number(payload.turnIndex) || 0;
-    const answerItem = pool.find(item => item.id === payload.answerId);
-    if (answerItem) answer = answerItem;
-    versusReady = true;
-    updateVersusInfo();
-    showResultBanner('🌐 オンライン対戦に接続しました。', 'success', false);
-    return;
+  if (!mpIsConfigured()) {
+    showResultBanner(
+      '⚠️ オンライン対戦には Supabase の設定が必要です。\nSUPABASE_SETUP.md を参照してください。',
+      'fail', false
+    );
+    return false;
   }
 
-  if (data.type === 'guess') {
-    const payload = data.payload || {};
-    const item = pool.find(x => x.id === payload.guessId);
+  const result = await openVersusModal();
+  if (!result) return false;
+
+  if (result.role === 'host') {
+    versusPlayers    = [result.hostName, result.guestName];
+    versusSelfIndex  = 0;
+    versusTurnIndex  = 0;
+    answer           = result.answer;
+    versusConnection = { code: result.code };
+    versusReady      = true;
+    // ゲストに init を送信
+    mpBroadcast('init', { players: versusPlayers, turnIndex: 0, answerId: answer.id });
+    updateVersusInfo();
+    showResultBanner('🌐 ゲストが参加しました！ゲームを開始します。', 'success', false);
+    return true;
+  }
+
+  if (result.role === 'guest') {
+    const { initData, room } = result;
+    const initPool = genre === 'weapon' ? WEAPONS : CHARACTERS;
+
+    // ルームのジャンル・レアリティ設定を反映
+    genre        = room.genre === 'weapon' ? 'weapon' : 'character';
+    rarityFilter = ['5', '4', '45'].includes(room.rarity_filter) ? room.rarity_filter : 'all';
+    updateGenreIndicator();
+
+    versusPlayers   = Array.isArray(initData.players) ? initData.players : [room.host_name || 'プレイヤー1', result.guestName];
+    versusTurnIndex = Number(initData.turnIndex) || 0;
+    versusSelfIndex = 1;
+    versusConnection = { code: result.code };
+
+    const answerItem = initPool.find(item => item.id === initData.answerId);
+    if (!answerItem) {
+      mpUnsubscribe();
+      showResultBanner('⚠️ 問題データが見つかりませんでした。モードとジャンル設定が一致しているか確認してください。', 'fail', false);
+      return false;
+    }
+    answer      = answerItem;
+    versusReady = true;
+    updateVersusInfo();
+    showResultBanner('🌐 ホストに接続しました！ゲームを開始します。', 'success', false);
+    return true;
+  }
+
+  return false;
+}
+
+// ---------------------------------------------------------------------------
+// versus ゲームイベントハンドラ（broadcast 受信）
+// ---------------------------------------------------------------------------
+function handleVersusGameEvent(event) {
+  if (!event || !event.type) return;
+  const pool = genre === 'weapon' ? WEAPONS : CHARACTERS;
+
+  if (event.type === 'guess') {
+    const item = pool.find(x => x.id === event.guessId);
     if (!item || gameEnded) return;
     processGuess(item, false, { animateSolve: false, remoteAction: true });
     return;
   }
 
-  if (data.type === 'giveup') {
+  if (event.type === 'giveup') {
     if (gameEnded) return;
-    const payload = data.payload || {};
-    const actorIndex = Number(payload.actorIndex);
+    const actorIndex = Number(event.actorIndex);
     if (!Number.isNaN(actorIndex)) versusTurnIndex = actorIndex;
     gaveUp = true;
     solved = false;
@@ -413,122 +603,10 @@ function handleVersusMessage(raw) {
   }
 }
 
-async function setupVersusSession(pool) {
-  clearVersusConnection();
-  const mode = window.prompt('オンライン対戦: ルーム作成は create、参加は join を入力', 'create');
-  if (mode === null) return false;
-
-  const rawAction = mode.trim();
-  const action = rawAction === '作成' ? 'create' : rawAction === '参加' ? 'join' : rawAction.toLowerCase();
-  if (action !== 'create' && action !== 'join') return false;
-
-  if (action === 'create') {
-    const selfName = (window.prompt('あなたのプレイヤー名', versusPlayers[0]) || '').trim() || 'プレイヤー1';
-    const roomCode = (window.prompt('ルームコード（任意・空欄で自動生成）', '') || '').trim() || generateRoomCode();
-    versusPassword = roomCode;
-
-    const pc = new RTCPeerConnection(RTC_CONFIG);
-    const channel = pc.createDataChannel('versus');
-    attachVersusChannel(channel);
-    const offer = await pc.createOffer();
-    await pc.setLocalDescription(offer);
-    await waitForIceGatheringComplete(pc);
-
-    const inviteCode = createVersusCode({
-      version: 1,
-      roomCode,
-      genre,
-      rarityFilter,
-      hostName: selfName,
-      offer: pc.localDescription
-    });
-    window.prompt('この招待コードを相手に共有してください', inviteCode);
-    const joinCode = window.prompt('参加者から受け取った参加コードを入力してください', '');
-    if (!joinCode) { clearVersusConnection(); return false; }
-    const joinPayload = parseVersusCode(joinCode);
-    if (!joinPayload || joinPayload.roomCode !== roomCode || !joinPayload.answer) {
-      alert('参加コードが不正です。');
-      clearVersusConnection();
-      return false;
-    }
-
-    await pc.setRemoteDescription(new RTCSessionDescription(joinPayload.answer));
-    const opened = await waitForDataChannelOpen(channel);
-    if (!opened) {
-      alert('接続に失敗しました。');
-      clearVersusConnection();
-      return false;
-    }
-
-    versusConnection = { pc, channel };
-    versusPlayers = [selfName, joinPayload.guestName || 'プレイヤー2'];
-    versusSelfIndex = 0;
-    versusTurnIndex = 0;
-    answer = getVersusItem(pool, versusPassword);
-    versusReady = true;
-    sendVersusMessage('init', { players: versusPlayers, turnIndex: versusTurnIndex, answerId: answer.id });
-    updateVersusInfo();
-    return true;
-  }
-
-  const inviteCode = window.prompt('招待コードを入力してください', '');
-  if (!inviteCode) return false;
-  const invitePayload = parseVersusCode(inviteCode);
-  if (!invitePayload || !invitePayload.offer || !invitePayload.roomCode) {
-    alert('招待コードが不正です。');
-    return false;
-  }
-
-  genre = invitePayload.genre === 'weapon' ? 'weapon' : 'character';
-  rarityFilter = invitePayload.rarityFilter === '5' || invitePayload.rarityFilter === '4' || invitePayload.rarityFilter === '45' ? invitePayload.rarityFilter : 'all';
-  updateGenreIndicator();
-  versusPassword = invitePayload.roomCode;
-
-  const guestName = (window.prompt('あなたのプレイヤー名', versusPlayers[1]) || '').trim() || 'プレイヤー2';
-  const pc = new RTCPeerConnection(RTC_CONFIG);
-  const channelPromise = new Promise((resolve, reject) => {
-    const timer = setTimeout(() => reject(new Error('timeout')), DATA_CHANNEL_TIMEOUT_MS);
-    pc.addEventListener('datachannel', ev => {
-      clearTimeout(timer);
-      resolve(ev.channel);
-    }, { once: true });
-  });
-
-  await pc.setRemoteDescription(new RTCSessionDescription(invitePayload.offer));
-  const channel = await channelPromise.catch(() => null);
-  if (!channel) {
-    alert('データチャンネルの接続がタイムアウトしました。');
-    return false;
-  }
-  attachVersusChannel(channel);
-
-  const answerDesc = await pc.createAnswer();
-  await pc.setLocalDescription(answerDesc);
-  await waitForIceGatheringComplete(pc);
-
-  const replyCode = createVersusCode({
-    version: 1,
-    roomCode: invitePayload.roomCode,
-    guestName,
-    answer: pc.localDescription
-  });
-  window.prompt('この参加コードを作成者に送ってください', replyCode);
-
-  const opened = await waitForDataChannelOpen(channel);
-  if (!opened) {
-    alert('接続に失敗しました。');
-    clearVersusConnection();
-    return false;
-  }
-
-  versusConnection = { pc, channel };
-  versusPlayers = [invitePayload.hostName || 'プレイヤー1', guestName];
-  versusSelfIndex = 1;
-  versusTurnIndex = 0;
-  answer = getVersusItem(pool, versusPassword);
-  versusReady = true;
-  updateVersusInfo();
-  return true;
+function handleVersusDisconnect() {
+  if (gameMode !== 'versus') return;
+  showResultBanner('⚠️ 接続が切断されました。再接続するにはモード選択からオンライン対戦を開始してください。', 'fail', false);
+  setInputEnabled(false);
 }
 
 function updateVersusInfo() {
@@ -545,6 +623,7 @@ function nextVersusTurn() {
   versusTurnIndex = (versusTurnIndex + 1) % 2;
   updateVersusInfo();
 }
+
 
 function getOpponentIndex() {
   return (versusTurnIndex + 1) % 2;
@@ -720,12 +799,8 @@ function selectSuggestItem(item) {
 // ---------------------------------------------------------------------------
 function submitGuess() {
   if (gameEnded) return;
-  if (gameMode === 'versus' && (!versusReady || !versusConnection || versusConnection.channel?.readyState !== 'open')) {
-    const state = versusConnection?.channel?.readyState;
-    const message = !versusReady || state === 'connecting'
-      ? 'オンライン対戦の接続準備中です。少し待ってから再試行してください。'
-      : 'オンライン対戦の接続が失われました。モードを切り替えて再接続してください。';
-    showInputError(message);
+  if (gameMode === 'versus' && (!versusReady || !versusConnection)) {
+    showInputError('オンライン対戦の接続準備中です。少し待ってから再試行してください。');
     return;
   }
   if (gameMode === 'versus' && versusTurnIndex !== versusSelfIndex) {
@@ -794,7 +869,7 @@ function processGuess(item, save = true, options = {}) {
 
   if (gameMode === 'daily' && save) saveDailyState();
   if (gameMode === 'versus' && !remoteAction) {
-    sendVersusMessage('guess', { guessId: item.id, actorIndex });
+    mpBroadcast('guess', { guessId: item.id, actorIndex });
   }
 }
 
@@ -866,7 +941,7 @@ function giveUpGame() {
   }
   onGiveUp(true);
   if (gameMode === 'versus') {
-    sendVersusMessage('giveup', { actorIndex: versusSelfIndex });
+    mpBroadcast('giveup', { actorIndex: versusSelfIndex });
   }
   if (gameMode === 'daily') saveDailyState();
 }

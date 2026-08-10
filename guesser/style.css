@@ -631,3 +631,141 @@ a:hover { text-decoration: underline; }
 .guess-detail.hidden {
   display: none !important;
 }
+
+/* --- オンライン対戦モーダル --- */
+.versus-modal-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.versus-modal-content h3 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--accent);
+  text-align: center;
+  margin-bottom: .25rem;
+}
+
+.versus-desc {
+  font-size: .85rem;
+  color: #ccc;
+  line-height: 1.5;
+  text-align: center;
+}
+
+.versus-btn-row {
+  display: flex;
+  gap: .75rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.versus-action-btn {
+  background: var(--accent);
+  color: #1a1206;
+  border: none;
+  border-radius: var(--radius);
+  padding: .65rem 1.25rem;
+  font-size: .95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background .15s;
+  min-width: 140px;
+}
+
+.versus-action-btn:hover { background: #e0bf84; }
+.versus-action-btn:disabled { opacity: .5; cursor: not-allowed; }
+
+.versus-cancel-btn {
+  display: block;
+  margin: .5rem auto 0;
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: .85rem;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.versus-back-btn {
+  display: block;
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: .85rem;
+  cursor: pointer;
+  text-decoration: underline;
+  margin-top: .25rem;
+}
+
+.versus-field-label {
+  display: block;
+  font-size: .8rem;
+  color: #aaa;
+  margin-bottom: .25rem;
+  margin-top: .5rem;
+}
+
+.versus-input {
+  width: 100%;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: .55rem .75rem;
+  color: var(--text);
+  font-size: .95rem;
+  outline: none;
+  transition: border-color .15s;
+}
+
+.versus-input:focus { border-color: var(--accent); }
+
+.versus-code-input {
+  font-size: 1.4rem;
+  letter-spacing: .3em;
+  text-align: center;
+  font-weight: 700;
+}
+
+.room-code-box {
+  text-align: center;
+  font-size: 2.4rem;
+  font-weight: 700;
+  letter-spacing: .35em;
+  color: var(--accent);
+  background: var(--surface2);
+  border: 2px solid var(--accent-dim);
+  border-radius: var(--radius);
+  padding: .65rem 1rem;
+  margin: .5rem 0;
+  user-select: all;
+  cursor: text;
+}
+
+.versus-wait-msg {
+  text-align: center;
+  font-size: .82rem;
+  color: #aaa;
+  animation: pulse-text 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse-text {
+  0%,100% { opacity: 1; }
+  50%      { opacity: .4; }
+}
+
+.versus-error {
+  color: var(--error);
+  font-size: .82rem;
+  text-align: center;
+  margin-top: .25rem;
+}
+
+/* modal-overlay (共通、howTo と共有) */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.65);
+  z-index: 200;
+}
