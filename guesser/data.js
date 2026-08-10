@@ -884,7 +884,7 @@ const WEAPON_SOURCE_OVERRIDES = {
 "救済の剣": { rarity: 4, weaponType: "両手剣" },
 "シンフォニーの鋳影": { rarity: 4, weaponType: "両手剣" },
  "導炎の源": { rarity: 4, weaponType: "片手剣" },
- "異端を狩る溶刀": { rarity: 4, weaponType: "片手剣" },
+ "異端を狩る溶刃": { rarity: 4, weaponType: "片手剣" },
   "螭龍の剣": { rarity: 4, weaponType: "両手剣" },
   
 };
