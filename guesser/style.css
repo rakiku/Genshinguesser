@@ -755,6 +755,51 @@ a:hover { text-decoration: underline; }
   50%      { opacity: .4; }
 }
 
+/* ロビー: プレイヤー状況表示 */
+.versus-lobby {
+  margin: .75rem 0;
+  border: 1px solid var(--accent-dim);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.versus-lobby-row {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  padding: .5rem .75rem;
+  background: var(--surface2);
+  border-bottom: 1px solid var(--border);
+}
+
+.versus-lobby-row:last-child {
+  border-bottom: none;
+}
+
+.lobby-label {
+  font-size: .72rem;
+  color: #888;
+  min-width: 2.5rem;
+}
+
+.lobby-player-name {
+  flex: 1;
+  font-weight: 700;
+  font-size: .9rem;
+  color: var(--text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.lobby-status {
+  font-size: .75rem;
+  white-space: nowrap;
+}
+
+.lobby-ready { color: #4caf50; }
+.lobby-waiting { color: #aaa; }
+
 .versus-error {
   color: var(--error);
   font-size: .82rem;

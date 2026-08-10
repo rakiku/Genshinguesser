@@ -162,11 +162,25 @@
       <input class="versus-input" type="text" id="hostNameInput" maxlength="20" placeholder="プレイヤー1" autocomplete="off">
       <button class="versus-action-btn" id="doCreateRoomBtn">ルームを作成する</button>
 
-      <!-- コード表示（作成後） -->
+      <!-- コード表示 / ロビー（作成後） -->
       <div class="hidden" id="roomCodeDisplay">
         <p class="versus-desc">以下のコードを相手に伝えてください。</p>
         <div class="room-code-box" id="displayedRoomCode" aria-live="polite"></div>
-        <p class="versus-wait-msg">相手の参加を待っています…</p>
+
+        <!-- ロビー: プレイヤー状況 -->
+        <div class="versus-lobby">
+          <div class="versus-lobby-row">
+            <span class="lobby-label">あなた</span>
+            <span class="lobby-player-name" id="lobbyHostName">プレイヤー1</span>
+            <span class="lobby-status lobby-waiting" id="lobbyHostStatus">⏳ 相手を待っています…</span>
+          </div>
+          <div class="versus-lobby-row">
+            <span class="lobby-label">相手</span>
+            <span class="lobby-player-name" id="lobbyGuestName">—</span>
+            <span class="lobby-status lobby-waiting" id="lobbyGuestStatus">⏳ 参加待ち…</span>
+          </div>
+        </div>
+
         <button class="versus-cancel-btn" id="cancelWaitBtn">キャンセル</button>
       </div>
 

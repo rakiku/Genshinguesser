@@ -393,6 +393,12 @@ async function handleDoCreateRoom() {
   // UI を待機状態に切り替える
   const codeEl = document.getElementById('displayedRoomCode');
   if (codeEl) codeEl.textContent = room.code;
+  const lobbyHost = document.getElementById('lobbyHostName');
+  if (lobbyHost) lobbyHost.textContent = name || 'プレイヤー1';
+  const lobbyGuest = document.getElementById('lobbyGuestName');
+  if (lobbyGuest) lobbyGuest.textContent = '—';
+  const lobbyGuestStatus = document.getElementById('lobbyGuestStatus');
+  if (lobbyGuestStatus) { lobbyGuestStatus.textContent = '⏳ 参加待ち…'; lobbyGuestStatus.className = 'lobby-status lobby-waiting'; }
   document.getElementById('roomCodeDisplay')?.classList.remove('hidden');
   if (createBtn) createBtn.classList.add('hidden');
   const hostInput = document.getElementById('hostNameInput');
@@ -407,10 +413,18 @@ async function handleDoCreateRoom() {
     onRoomUpdate: (updated) => {
       if (cancelled) return;
       if (updated.status === 'playing') {
+        // ロビーに相手の名前を表示してから解決
+        const gName = updated.guest_name || 'プレイヤー2';
+        const lg = document.getElementById('lobbyGuestName');
+        if (lg) lg.textContent = gName;
+        const lgs = document.getElementById('lobbyGuestStatus');
+        if (lgs) { lgs.textContent = '✅ 参加しました！'; lgs.className = 'lobby-status lobby-ready'; }
+        const lhs = document.getElementById('lobbyHostStatus');
+        if (lhs) { lhs.textContent = '✅ 準備完了'; lhs.className = 'lobby-status lobby-ready'; }
         resolveVersusModal({
           role:      'host',
           hostName:  name,
-          guestName: updated.guest_name || 'プレイヤー2',
+          guestName: gName,
           code:      room.code,
           answer:    answerItem,
         });
