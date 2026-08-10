@@ -175,6 +175,7 @@ body {
 .daily-btn   { background: linear-gradient(135deg, #e08030, #c06010); }
 .endless-btn { background: linear-gradient(135deg, #3aaa5a, #1a8a3a); }
 .challenge-btn { background: linear-gradient(135deg, #8855cc, #6635aa); }
+.versus-btn    { background: linear-gradient(135deg, #0f4c81, #1565c0); }
 
 .btn-icon { font-size: 1.4rem; }
 .btn-text { font-size: 1.05rem; font-weight: 700; }
