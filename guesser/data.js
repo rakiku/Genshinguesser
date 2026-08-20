@@ -48,7 +48,7 @@ const LOCAL_SPECIALTY_GROUPS = {
   // モンド
   '蒲公英の種': 'mondstadt', 'セシリアの花': 'mondstadt', '風車アスター': 'mondstadt',
   'イグサ': 'mondstadt', 'ヴァルベリー': 'mondstadt', '慕風のマッシュルーム': 'mondstadt',
-  'ドドリアン': 'mondstadt', 'ググプラム': 'mondstadt', 'フロストランプ': 'mondstadt',
+  'ドドリアン': 'mondstadt', 'ググプラム': 'mondstadt', 
   'フェザーモス': 'mondstadt', 
   // 璃月
   '夜泊石': 'liyue', '清心': 'liyue', '石珀': 'liyue', '瑠璃百合': 'liyue',
@@ -71,7 +71,7 @@ const LOCAL_SPECIALTY_GROUPS = {
   '蛍光ツノキノコ': 'natlan', 'サウリアンサキュレント': 'natlan', 'ケネパベリー': 'natlan',
   '岩裂の花': 'natlan', 'シャクギク': 'natlan',
   // ナドクライ
-  '月落銀': 'nodkrai', '携行型ベアリング': 'nodkrai', '琥珀香': 'nodkrai','ヴィンテル草': 'nodkrai',
+  '月落銀': 'nodkrai', '携行型ベアリング': 'nodkrai', '琥珀香': 'nodkrai','ヴィンテル草': 'nodkrai','フロストランプ': 'nodkrai',
   // スネージナヤ
   'フロストフラワー': 'Snezhnaya', 'フロック草': 'Snezhnaya', '金蕨': 'Snezhnaya',
 };
