@@ -12,15 +12,18 @@
   const weaponHintFields = source.WEAPON_HINT_FIELDS || (typeof WEAPON_HINT_FIELDS !== 'undefined' ? WEAPON_HINT_FIELDS : []);
 
   function getPool(genre, rarityFilter) {
+    const normalizedRarityFilter = ['4', '5', '45'].includes(rarityFilter) ? rarityFilter : 'all';
+    const applyRarityFilter = item => {
+      if (normalizedRarityFilter === '5') return item.rarity === 5;
+      if (normalizedRarityFilter === '4') return item.rarity === 4;
+      if (normalizedRarityFilter === '45') return item.rarity >= 4;
+      return true;
+    };
+
     if (genre === 'weapon') {
-      return weapons.filter(weapon => {
-        if (rarityFilter === '5') return weapon.rarity === 5;
-        if (rarityFilter === '4') return weapon.rarity === 4;
-        if (rarityFilter === '45') return weapon.rarity >= 4;
-        return true;
-      });
+      return weapons.filter(applyRarityFilter);
     }
-    return characters.filter(character => character.enabled !== false);
+    return characters.filter(character => character.enabled !== false && applyRarityFilter(character));
   }
 
   function getHintFields(genre) {

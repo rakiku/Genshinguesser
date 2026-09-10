@@ -8,14 +8,21 @@ const { RoomManager } = require('./server/room-manager');
 
 const app = express();
 const server = http.createServer(app);
-const io = new Server(server, {
-  cors: { origin: true, credentials: true },
-});
+const io = new Server(server);
 
 const manager = new RoomManager();
 const timerIntervals = new Map();
 
-app.use(express.static(__dirname));
+app.get('/', (_req, res) => {
+  res.sendFile(path.join(__dirname, 'index.html'));
+});
+['contact.html', 'faq.html', 'terms.html', 'styles.css', 'styles.js', 'news.json', 'googled165f15ed644d7f4.html'].forEach(file => {
+  app.get(`/${file}`, (_req, res) => {
+    res.sendFile(path.join(__dirname, file));
+  });
+});
+app.use('/guesser', express.static(path.join(__dirname, 'guesser')));
+app.use('/files', express.static(path.join(__dirname, 'files')));
 app.get('/health', (_req, res) => {
   res.json({ ok: true });
 });

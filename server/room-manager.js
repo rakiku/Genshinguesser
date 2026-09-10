@@ -273,6 +273,7 @@ class RoomManager {
   timeoutTurn(code) {
     const room = this.requireRoom(code);
     if (room.status !== 'playing') return null;
+    if (this.getRemainingSeconds(room) > 0) return null;
 
     const actorIndex = room.currentTurnIndex;
     const entry = {

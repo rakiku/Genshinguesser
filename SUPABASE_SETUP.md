@@ -2,4 +2,4 @@
 
 オンライン対戦は Supabase 依存ではなく、リポジトリ内の Node.js + Socket.IO サーバーに置き換わりました。
 
-ローカル起動方法とテスト方法は `/home/runner/work/Genshinguesser/Genshinguesser/README.md` を参照してください。
+ローカル起動方法とテスト方法は `README.md` を参照してください。
