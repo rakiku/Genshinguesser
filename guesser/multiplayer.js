@@ -116,6 +116,10 @@ function loadSocketScript() {
 
   let script = getSocketScriptElement();
   const existingState = script?.dataset?.socketIoClientState;
+  if (existingState === 'loaded') {
+    if (mpIsConfigured()) return Promise.resolve(ensureSocket());
+    script = createSocketScriptElement();
+  }
   if (!script || existingState === 'error' || existingState === 'timeout') {
     script = createSocketScriptElement();
   }
