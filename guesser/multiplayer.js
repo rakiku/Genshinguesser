@@ -9,9 +9,84 @@ let _socketLoadPromise = null;
 
 const SOCKET_IO_PATH = '/socket.io';
 const SOCKET_IO_SCRIPT_SRC = `${SOCKET_IO_PATH}/socket.io.js`;
+const SOCKET_IO_LOAD_TIMEOUT_MS = 5_000;
 
 function buildSocketClientError() {
   return new Error('オンライン対戦を初期化できませんでした。npm start でアプリを開き、/socket.io/socket.io.js が 404 になっていないか確認してください。');
+}
+
+function getSocketScriptElement() {
+  return document.querySelector('script[data-socket-io-client="true"]');
+}
+
+function createSocketScriptElement() {
+  const script = document.createElement('script');
+  script.src = SOCKET_IO_SCRIPT_SRC;
+  script.async = true;
+  script.dataset.socketIoClient = 'true';
+  document.head.appendChild(script);
+  return script;
+}
+
+function setSocketScriptState(script, state) {
+  if (script && script.dataset) script.dataset.socketIoClientState = state;
+}
+
+function watchSocketScript(script) {
+  return new Promise((resolve, reject) => {
+    if (mpIsConfigured()) {
+      setSocketScriptState(script, 'loaded');
+      resolve();
+      return;
+    }
+
+    const cleanupFns = [];
+    const cleanup = () => {
+      clearTimeout(timeoutId);
+      cleanupFns.splice(0).forEach(fn => fn());
+    };
+    const settleLoaded = () => {
+      cleanup();
+      if (!mpIsConfigured()) {
+        setSocketScriptState(script, 'error');
+        reject(buildSocketClientError());
+        return;
+      }
+      setSocketScriptState(script, 'loaded');
+      resolve();
+    };
+    const settleFailed = () => {
+      cleanup();
+      setSocketScriptState(script, 'error');
+      reject(buildSocketClientError());
+    };
+    const timeoutId = setTimeout(() => {
+      cleanup();
+      setSocketScriptState(script, 'timeout');
+      reject(buildSocketClientError());
+    }, SOCKET_IO_LOAD_TIMEOUT_MS);
+    const attach = (eventName, handler) => {
+      if (typeof script.addEventListener === 'function') {
+        script.addEventListener(eventName, handler);
+        cleanupFns.push(() => script.removeEventListener(eventName, handler));
+        return;
+      }
+      const propertyName = `on${eventName}`;
+      const previousHandler = script[propertyName];
+      const wrappedHandler = event => {
+        if (typeof previousHandler === 'function') previousHandler.call(script, event);
+        handler(event);
+      };
+      script[propertyName] = wrappedHandler;
+      cleanupFns.push(() => {
+        if (script[propertyName] === wrappedHandler) script[propertyName] = previousHandler;
+      });
+    };
+
+    setSocketScriptState(script, 'loading');
+    attach('load', settleLoaded);
+    attach('error', settleFailed);
+  });
 }
 
 function mpIsConfigured() {
@@ -29,15 +104,13 @@ function loadSocketScript() {
   if (mpIsConfigured()) return Promise.resolve();
   if (_socketLoadPromise) return _socketLoadPromise;
 
-  _socketLoadPromise = new Promise((resolve, reject) => {
-    const script = document.createElement('script');
-    script.src = SOCKET_IO_SCRIPT_SRC;
-    script.async = true;
-    script.dataset.socketIoClient = 'true';
-    script.onload = () => resolve();
-    script.onerror = () => reject(buildSocketClientError());
-    document.head.appendChild(script);
-  }).then(() => {
+  let script = getSocketScriptElement();
+  const existingState = script?.dataset?.socketIoClientState;
+  if (!script || existingState === 'error' || existingState === 'timeout') {
+    script = createSocketScriptElement();
+  }
+
+  _socketLoadPromise = watchSocketScript(script).then(() => {
     if (!mpIsConfigured()) throw buildSocketClientError();
   }).catch(error => {
     _socketLoadPromise = null;
@@ -212,6 +285,7 @@ function mpResetForTests() {
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = {
     SOCKET_IO_PATH,
+    SOCKET_IO_LOAD_TIMEOUT_MS,
     SOCKET_IO_SCRIPT_SRC,
     mpEnsureReady,
     mpGetSession,
