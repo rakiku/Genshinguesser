@@ -1,9 +1,11 @@
 'use strict';
 
+const http = require('node:http');
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const { setImmediate: waitForImmediate } = require('node:timers/promises');
-const { server, SOCKET_IO_PATH } = require('../server');
+const { Server } = require('socket.io');
+const { app, SOCKET_IO_PATH } = require('../server');
 const multiplayer = require('../guesser/multiplayer.js');
 
 function installDomStubs({ appendChild } = {}) {
@@ -30,14 +32,17 @@ function installDomStubs({ appendChild } = {}) {
 }
 
 test('socket.io client bundle is served from the app server path', async t => {
-  await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
+  const testServer = http.createServer(app);
+  const testIo = new Server(testServer, { path: SOCKET_IO_PATH });
+  await new Promise(resolve => testServer.listen(0, '127.0.0.1', resolve));
   t.after(async () => {
     await new Promise((resolve, reject) => {
-      server.close(error => (error ? reject(error) : resolve()));
+      testIo.close();
+      testServer.close(error => (error ? reject(error) : resolve()));
     });
   });
 
-  const { port } = server.address();
+  const { port } = testServer.address();
   const response = await fetch(`http://127.0.0.1:${port}${SOCKET_IO_PATH}/socket.io.js`);
 
   assert.equal(response.status, 200);
