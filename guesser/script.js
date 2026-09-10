@@ -533,6 +533,8 @@ async function clearVersusConnection(leaveRoom = false) {
   }
 
   if (previousConnection && typeof mpDisconnect === 'function') {
+    clearVersusPlayerKey(previousConnection.code);
+    requestedVersusRoomCode = '';
     mpDisconnect();
   }
 }

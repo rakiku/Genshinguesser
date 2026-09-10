@@ -343,12 +343,15 @@ class RoomManager {
 
   cleanup() {
     const now = this.now();
+    const evictedRoomCodes = [];
     for (const room of this.rooms.values()) {
       const ttl = room.status === 'finished' ? this.finishedRoomTtlMs : this.roomTtlMs;
       if (now - room.updatedAt > ttl) {
+        evictedRoomCodes.push(room.code);
         this.rooms.delete(room.code);
       }
     }
+    return evictedRoomCodes;
   }
 
   buildSnapshot(code, playerKey) {

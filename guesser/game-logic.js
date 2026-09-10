@@ -21,7 +21,7 @@
     };
 
     if (genre === 'weapon') {
-      return weapons.filter(applyRarityFilter);
+      return weapons.filter(weapon => weapon.enabled !== false && applyRarityFilter(weapon));
     }
     return characters.filter(character => character.enabled !== false && applyRarityFilter(character));
   }

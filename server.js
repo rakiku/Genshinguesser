@@ -47,16 +47,18 @@ function staticRateLimit(req, res, next) {
   next();
 }
 
-app.get('/', staticRateLimit, (_req, res) => {
+app.use(staticRateLimit);
+
+app.get('/', (_req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
 });
 ['contact.html', 'faq.html', 'terms.html', 'styles.css', 'styles.js', 'news.json', 'googled165f15ed644d7f4.html'].forEach(file => {
-  app.get(`/${file}`, staticRateLimit, (_req, res) => {
+  app.get(`/${file}`, (_req, res) => {
     res.sendFile(path.join(__dirname, file));
   });
 });
-app.use('/guesser', staticRateLimit, express.static(path.join(__dirname, 'guesser')));
-app.use('/files', staticRateLimit, express.static(path.join(__dirname, 'files')));
+app.use('/guesser', express.static(path.join(__dirname, 'guesser')));
+app.use('/files', express.static(path.join(__dirname, 'files')));
 app.get('/health', (_req, res) => {
   res.json({ ok: true });
 });
@@ -120,7 +122,7 @@ function startRoomTimer(roomCode) {
 }
 
 setInterval(() => {
-  manager.cleanup();
+  manager.cleanup().forEach(stopRoomTimer);
 }, 60 * 1000).unref();
 
 io.on('connection', socket => {
