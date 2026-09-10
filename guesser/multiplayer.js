@@ -1,203 +1,165 @@
-/**
- * multiplayer.js — Supabase オンライン対戦モジュール
- *
- * 依存: Supabase JS SDK (CDN から読み込み)
- * 設定: index.html で window.SUPABASE_URL / window.SUPABASE_ANON_KEY を定義する。
- *
- * 公開 API:
- *   mpIsConfigured()
- *   mpGetClient()
- *   mpGenerateCode()        → 6桁数字文字列
- *   mpCreateRoom(opts)      → Promise<room>
- *   mpJoinRoom(code, name)  → Promise<room>
- *   mpSubscribeToRoom(code, { onRoomUpdate, onGameEvent }) → channel
- *   mpBroadcast(type, data)
- *   mpUnsubscribe()
- *   mpMarkFinished(code)
- */
-
 'use strict';
 
-// ---------------------------------------------------------------------------
-// Supabase クライアント
-// ---------------------------------------------------------------------------
-
-let _client = null;
-let _channel = null;
+let _socket = null;
+let _handlers = {};
+let _session = null;
+let _hasConnectedOnce = false;
+let _resumeSessionOnConnect = false;
 
 function mpIsConfigured() {
-  return !!(window.SUPABASE_URL && window.SUPABASE_ANON_KEY &&
-    window.SUPABASE_URL !== 'https://YOUR_PROJECT.supabase.co');
+  return typeof window.io === 'function';
 }
 
-function mpGetClient() {
-  if (_client) return _client;
+function mpInit(handlers = {}) {
+  _handlers = handlers;
+  ensureSocket();
+}
+
+function ensureSocket() {
+  if (_socket) {
+    if (!_socket.connected) _socket.connect();
+    return _socket;
+  }
   if (!mpIsConfigured()) {
-    throw new Error(
-      'Supabase の設定が未完了です。\n' +
-      'index.html 内の SUPABASE_URL と SUPABASE_ANON_KEY を正しい値に変更してください。\n' +
-      '詳細は SUPABASE_SETUP.md を参照してください。'
-    );
-  }
-  if (typeof window.supabase === 'undefined' || typeof window.supabase.createClient !== 'function') {
-    throw new Error('Supabase JS SDK が読み込まれていません。');
-  }
-  _client = window.supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY);
-  return _client;
-}
-
-// ---------------------------------------------------------------------------
-// 6桁ルームコード生成
-// ---------------------------------------------------------------------------
-
-function mpGenerateCode() {
-  const buf = new Uint32Array(1);
-  window.crypto.getRandomValues(buf);
-  // 100000–999999 の一様乱数
-  return String(100000 + (buf[0] % 900000));
-}
-
-// ---------------------------------------------------------------------------
-// ルーム作成
-// ---------------------------------------------------------------------------
-
-/**
- * @param {{ genre: string, rarityFilter: string, hostName: string, answerId: string }} opts
- * @returns {Promise<{code:string, host_name:string, genre:string, rarity_filter:string, answer_id:string, status:string}>}
- */
-async function mpCreateRoom({ genre, rarityFilter, hostName, answerId }) {
-  const client = mpGetClient();
-  const code = mpGenerateCode();
-  const expiresAt = new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString();
-
-  const { data, error } = await client
-    .from('rooms')
-    .insert({
-      code,
-      host_name: hostName,
-      guest_name: null,
-      genre,
-      rarity_filter: rarityFilter,
-      answer_id: answerId,
-      status: 'waiting',
-      expires_at: expiresAt,
-    })
-    .select()
-    .single();
-
-  if (error) throw new Error('ルームの作成に失敗しました: ' + error.message);
-  return data;
-}
-
-// ---------------------------------------------------------------------------
-// ルーム参加
-// ---------------------------------------------------------------------------
-
-/**
- * @param {string} code  6桁ルームコード
- * @param {string} guestName
- * @returns {Promise<room>}
- */
-async function mpJoinRoom(code, guestName) {
-  const client = mpGetClient();
-
-  // guest_name をセット & status を playing に更新（waiting かつ有効期限内のみ）
-  const { data, error } = await client
-    .from('rooms')
-    .update({ guest_name: guestName, status: 'playing' })
-    .eq('code', code)
-    .eq('status', 'waiting')
-    .gt('expires_at', new Date().toISOString())
-    .select()
-    .single();
-
-  if (!data || error) {
-    // 失敗原因を詳しく取得
-    const { data: room } = await client
-      .from('rooms')
-      .select('status, expires_at')
-      .eq('code', code)
-      .maybeSingle();
-
-    if (!room) throw new Error('ルームが見つかりません。コードを確認してください。');
-    if (new Date(room.expires_at) < new Date()) throw new Error('このルームは有効期限切れです。');
-    if (room.status !== 'waiting') throw new Error('このルームはすでに満員か終了しています。');
-    throw new Error('ルームへの参加に失敗しました。しばらくしてから再試行してください。');
+    throw new Error('Socket.IO クライアントが読み込まれていません。');
   }
 
-  return data;
+  _socket = window.io({
+    autoConnect: true,
+    transports: ['websocket', 'polling'],
+  });
+
+  _socket.on('connect', () => {
+    if (_hasConnectedOnce && _resumeSessionOnConnect && _session && _session.roomCode && _session.playerKey) {
+      void emitWithAck('room:reconnect', {
+        code: _session.roomCode,
+        playerKey: _session.playerKey,
+        expectedSeat: _session.seat,
+      }).catch(error => {
+        if (_handlers.onError) _handlers.onError(error);
+      });
+    }
+    _hasConnectedOnce = true;
+    if (_handlers.onConnect) _handlers.onConnect();
+  });
+
+  _socket.on('disconnect', reason => {
+    if (_handlers.onDisconnect) _handlers.onDisconnect(reason);
+  });
+
+  _socket.on('room:state', snapshot => {
+    if (_handlers.onRoomState) _handlers.onRoomState(snapshot);
+  });
+
+  _socket.on('game:started', payload => {
+    if (_handlers.onGameStarted) _handlers.onGameStarted(payload);
+  });
+
+  _socket.on('game:timer', payload => {
+    if (_handlers.onGameTimer) _handlers.onGameTimer(payload);
+  });
+
+  _socket.on('game:guess_result', payload => {
+    if (_handlers.onGuessResult) _handlers.onGuessResult(payload);
+  });
+
+  _socket.on('game:turn_timeout', payload => {
+    if (_handlers.onTurnTimeout) _handlers.onTurnTimeout(payload);
+  });
+
+  _socket.on('game:ended', payload => {
+    if (_handlers.onGameEnded) _handlers.onGameEnded(payload);
+  });
+
+  _socket.on('stamp:received', payload => {
+    if (_handlers.onStampReceived) _handlers.onStampReceived(payload);
+  });
+
+  return _socket;
 }
 
-// ---------------------------------------------------------------------------
-// Realtime 購読
-// ---------------------------------------------------------------------------
-
-/**
- * ルームの DB 変更とゲームイベント（Broadcast）の両方を購読する。
- * @param {string} code
- * @param {{ onRoomUpdate?: Function, onGameEvent?: Function }} handlers
- * @returns {RealtimeChannel}
- */
-function mpSubscribeToRoom(code, { onRoomUpdate, onGameEvent } = {}) {
-  const client = mpGetClient();
-
-  // 既存チャンネルをクリーンアップ
-  if (_channel) {
-    try { client.removeChannel(_channel); } catch (e) { /* noop */ }
-    _channel = null;
-  }
-
-  _channel = client
-    .channel(`room:${code}`, { config: { broadcast: { self: false } } })
-    .on(
-      'postgres_changes',
-      { event: 'UPDATE', schema: 'public', table: 'rooms', filter: `code=eq.${code}` },
-      payload => { if (onRoomUpdate) onRoomUpdate(payload.new); }
-    )
-    .on('broadcast', { event: 'game' }, payload => {
-      if (onGameEvent) onGameEvent(payload.payload);
-    })
-    .subscribe();
-
-  return _channel;
-}
-
-// ---------------------------------------------------------------------------
-// Broadcast 送信
-// ---------------------------------------------------------------------------
-
-/**
- * 相手にゲームイベントを送信する。
- * @param {string} type  'init' | 'guess' | 'giveup'
- * @param {Object} data
- */
-function mpBroadcast(type, data) {
-  if (!_channel) return;
-  _channel.send({
-    type: 'broadcast',
-    event: 'game',
-    payload: { ...data, type },  // type last — prevents data from overriding the event type
+function emitWithAck(eventName, payload) {
+  const socket = ensureSocket();
+  return new Promise((resolve, reject) => {
+    socket.emit(eventName, payload, response => {
+      if (!response || response.ok === false) {
+        reject(new Error(response && response.error ? response.error : '通信に失敗しました。'));
+        return;
+      }
+      resolve(response);
+    });
   });
 }
 
-// ---------------------------------------------------------------------------
-// クリーンアップ
-// ---------------------------------------------------------------------------
+function mpCreateRoom({ hostName, genre, rarityFilter, rules }) {
+  return emitWithAck('room:create', { hostName, genre, rarityFilter, rules }).then(response => {
+    _session = {
+      roomCode: response.roomCode,
+      playerKey: response.playerKey,
+      playerName: hostName || 'プレイヤー1',
+      seat: response.snapshot?.selfSeat,
+    };
+    _resumeSessionOnConnect = true;
+    return response;
+  });
+}
 
-function mpUnsubscribe() {
-  if (_channel) {
-    try { mpGetClient().removeChannel(_channel); } catch (e) { /* noop */ }
-    _channel = null;
+function mpJoinRoom({ code, guestName, playerKey, expectedSeat }) {
+  const eventName = playerKey ? 'room:reconnect' : 'room:join';
+  const payload = playerKey
+    ? { code, playerKey, expectedSeat }
+    : { code, guestName };
+  return emitWithAck(eventName, payload).then(response => {
+    _session = {
+      roomCode: response.roomCode,
+      playerKey: response.playerKey,
+      playerName: guestName || _session?.playerName || 'プレイヤー',
+      seat: response.snapshot?.selfSeat,
+    };
+    _resumeSessionOnConnect = true;
+    return response;
+  });
+}
+
+function mpLeaveRoom({ roomCode, code, playerKey } = {}) {
+  const activeRoomCode = roomCode || code || _session?.roomCode;
+  const activePlayerKey = playerKey || _session?.playerKey;
+  return emitWithAck('room:leave', {
+    code: activeRoomCode,
+    playerKey: activePlayerKey,
+  }).finally(() => {
+    _session = null;
+    _resumeSessionOnConnect = false;
+  });
+}
+
+function mpSubmitGuess({ guessId }) {
+  return emitWithAck('game:guess', { guessId });
+}
+
+function mpSendStamp(stamp) {
+  return emitWithAck('stamp:send', { stamp });
+}
+
+function mpGiveUp() {
+  return emitWithAck('game:giveup', {});
+}
+
+function mpUpdateRules(rules) {
+  return emitWithAck('game:update_rules', { rules });
+}
+
+function mpRequestRematch() {
+  return emitWithAck('game:rematch_request', {});
+}
+
+function mpDisconnect() {
+  _resumeSessionOnConnect = false;
+  if (_socket) {
+    _socket.disconnect();
   }
 }
 
-/** ルームを finished にマーク（ページ離脱時など） */
-async function mpMarkFinished(code) {
-  if (!code) return;
-  try {
-    await mpGetClient()
-      .from('rooms')
-      .update({ status: 'finished' })
-      .eq('code', code);
-  } catch (e) { /* noop */ }
+function mpGetSession() {
+  return _session ? { ..._session } : null;
 }

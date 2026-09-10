@@ -320,6 +320,16 @@ a:hover { text-decoration: underline; }
   min-width: 80px;
 }
 
+.guess-actor {
+  font-size: .72rem;
+  color: var(--text-muted);
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: .12rem .45rem;
+  white-space: nowrap;
+}
+
 .summary-dots {
   display: flex;
   gap: 4px;
@@ -654,6 +664,156 @@ a:hover { text-decoration: underline; }
   text-align: center;
 }
 
+.versus-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin: 1rem 0;
+  padding: 1rem;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: rgba(18, 22, 32, 0.9);
+}
+
+.versus-room-tools {
+  display: flex;
+  gap: .75rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.versus-room-meta {
+  display: flex;
+  flex-direction: column;
+  gap: .2rem;
+  min-width: 120px;
+}
+
+.versus-room-label,
+.versus-timer-label,
+.versus-player-heading {
+  font-size: .72rem;
+  color: var(--text-muted);
+}
+
+.versus-invite-input {
+  font-size: .82rem;
+}
+
+.versus-status-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: .75rem;
+}
+
+.versus-player-card,
+.versus-timer-card,
+.versus-rematch-panel {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface2);
+  padding: .9rem;
+}
+
+.versus-player-card.active {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px rgba(255, 215, 64, 0.3);
+}
+
+.versus-player-card.self {
+  background: rgba(255, 215, 64, 0.08);
+}
+
+.versus-player-name {
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.versus-player-status {
+  margin-top: .3rem;
+  font-size: .82rem;
+  color: var(--text-muted);
+}
+
+.versus-timer-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.versus-timer-value {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.versus-timer-unit {
+  font-size: .8rem;
+  color: var(--text-muted);
+}
+
+.versus-stamp-panel {
+  display: flex;
+  flex-direction: column;
+  gap: .75rem;
+}
+
+.versus-stamp-buttons {
+  display: flex;
+  gap: .5rem;
+  flex-wrap: wrap;
+}
+
+.stamp-btn {
+  border: 1px solid var(--border);
+  background: var(--surface2);
+  color: var(--text);
+  border-radius: 999px;
+  padding: .45rem .8rem;
+  cursor: pointer;
+}
+
+.stamp-btn:hover {
+  border-color: var(--accent);
+}
+
+.versus-stamp-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: .4rem;
+  max-height: 150px;
+  overflow-y: auto;
+}
+
+.stamp-timeline-item {
+  font-size: .82rem;
+  color: #ddd;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 8px;
+  padding: .45rem .6rem;
+}
+
+.versus-rematch-controls {
+  display: flex;
+  flex-direction: column;
+  gap: .6rem;
+}
+
+.timeout-row {
+  border-color: rgba(248, 81, 73, 0.45);
+}
+
+.timeout-summary {
+  cursor: default;
+  justify-content: space-between;
+}
+
+.timeout-badge {
+  color: #f85149;
+  border-color: rgba(248, 81, 73, 0.45);
+}
+
 .versus-btn-row {
   display: flex;
   gap: .75rem;
@@ -805,6 +965,12 @@ a:hover { text-decoration: underline; }
   font-size: .82rem;
   text-align: center;
   margin-top: .25rem;
+}
+
+@media (max-width: 720px) {
+  .versus-status-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* modal-overlay (共通、howTo と共有) */

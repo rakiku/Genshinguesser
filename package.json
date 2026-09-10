@@ -1,0 +1,21 @@
+{
+  "name": "genshinguesser",
+  "version": "1.0.0",
+  "description": "Genshin Guesser with turn-based online battle mode",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node --test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rakiku/Genshinguesser.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^5.2.1",
+    "socket.io": "^4.8.3"
+  }
+}

@@ -638,7 +638,7 @@ const CHARACTERS = RAW_CHARACTERS.map(normalizeCharacter).filter(c => c.enabled)
 const HINT_FIELDS = [
   { key: 'element',           label: '元素',         type: 'exact',   defaultOn: true  },
   { key: 'weapon',            label: '武器種',        type: 'exact',   defaultOn: true  },
-  { key: 'rarity',            label: 'レアリティ',    type: 'exact',   defaultOn: true  },
+  { key: 'rarity',            label: 'レアリティ',    type: 'numeric', defaultOn: true  },
   { key: 'baseAtk',           label: '基礎攻撃力',    type: 'numeric', defaultOn: false  },
   { key: 'baseHp',            label: '基礎HP',       type: 'numeric', defaultOn: false  },
   { key: 'baseDef',           label: '基礎防御力',    type: 'numeric', defaultOn: false  },
@@ -2070,4 +2070,14 @@ function getWeaponDisplayValue(key, value, weapon) {
     case 'releaseVersionNum': return weapon ? (weapon.releaseVersionLabel || String(value)) : String(value); // 🟢 追加しました
     default: return String(value);
   }
+}
+
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = {
+    CHARACTERS,
+    WEAPONS,
+    HINT_FIELDS,
+    WEAPON_HINT_FIELDS,
+    parseReleaseVersion,
+  };
 }
