@@ -27,4 +27,4 @@ npm test
 ### `socket.io.js` が 404 になるとき
 
 - オンライン対戦は GitHub Pages のような静的配信だけでは動かず、`npm start` で起動する Node + Socket.IO サーバーが必要です。
-- ブラウザの Network で `/socket.io/socket.io.js` が 200 で返ること、Console に `Socket.IO クライアントが読み込まれていません` の未処理エラーが出ていないことを確認してください。
+- ブラウザの Network で `/socket.io/socket.io.js` が 200 で返ること、Console に `オンライン対戦を初期化できませんでした` という案内が出ていないことを確認してください。
