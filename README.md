@@ -23,3 +23,8 @@ npm test
 - 招待リンクは `guesser/index.html?room=XXXXXX` 形式です。
 - 初期のターン時間は 60 秒です。
 - 対戦終了後は同じルームで再戦でき、再戦前にターン時間を変更できます。
+
+### `socket.io.js` が 404 になるとき
+
+- オンライン対戦は GitHub Pages のような静的配信だけでは動かず、`npm start` で起動する Node + Socket.IO サーバーが必要です。
+- ブラウザの Network で `/socket.io/socket.io.js` が 200 で返ること、Console に `オンライン対戦を初期化できませんでした` という案内が出ていないことを確認してください。

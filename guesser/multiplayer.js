@@ -5,14 +5,144 @@ let _handlers = {};
 let _session = null;
 let _hasConnectedOnce = false;
 let _resumeSessionOnConnect = false;
+let _socketLoadPromise = null;
+
+const SOCKET_IO_RUNTIME = Object.freeze({
+  path: '/socket.io',
+  scriptSrc: '/socket.io/socket.io.js',
+  // Prevent multiplayer actions from waiting forever if the static/injected client bundle never settles.
+  loadTimeoutMs: 5_000,
+});
+const SOCKET_IO_PATH = SOCKET_IO_RUNTIME.path;
+const SOCKET_IO_SCRIPT_SRC = SOCKET_IO_RUNTIME.scriptSrc;
+const SOCKET_IO_LOAD_TIMEOUT_MS = SOCKET_IO_RUNTIME.loadTimeoutMs;
+
+function buildSocketClientError() {
+  return new Error('オンライン対戦を初期化できませんでした。npm start でアプリを開き、/socket.io/socket.io.js が 404 になっていないか確認してください。');
+}
+
+function getSocketScriptElement() {
+  return document.querySelector('script[data-socket-io-client="true"]');
+}
+
+function createSocketScriptElement() {
+  const script = document.createElement('script');
+  script.src = SOCKET_IO_SCRIPT_SRC;
+  script.async = true;
+  script.dataset.socketIoClient = 'true';
+  document.head.appendChild(script);
+  return script;
+}
+
+function setSocketScriptState(script, state) {
+  if (script && script.dataset) script.dataset.socketIoClientState = state;
+}
+
+function watchSocketScript(script) {
+  return new Promise((resolve, reject) => {
+    if (mpIsConfigured()) {
+      setSocketScriptState(script, 'loaded');
+      resolve();
+      return;
+    }
+
+    const cleanupFns = [];
+    const cleanup = () => {
+      clearTimeout(timeoutId);
+      cleanupFns.splice(0).forEach(fn => fn());
+    };
+    const settleLoaded = () => {
+      cleanup();
+      if (!mpIsConfigured()) {
+        setSocketScriptState(script, 'error');
+        reject(buildSocketClientError());
+        return;
+      }
+      setSocketScriptState(script, 'loaded');
+      resolve();
+    };
+    const settleFailed = () => {
+      cleanup();
+      setSocketScriptState(script, 'error');
+      reject(buildSocketClientError());
+    };
+    const timeoutId = setTimeout(() => {
+      cleanup();
+      setSocketScriptState(script, 'timeout');
+      reject(buildSocketClientError());
+    }, SOCKET_IO_LOAD_TIMEOUT_MS);
+    const attach = (eventName, handler) => {
+      if (typeof script.addEventListener === 'function') {
+        script.addEventListener(eventName, handler);
+        cleanupFns.push(() => script.removeEventListener(eventName, handler));
+        return;
+      }
+      const propertyName = `on${eventName}`;
+      const previousHandler = script[propertyName];
+      const wrappedHandler = event => {
+        if (typeof previousHandler === 'function') previousHandler.call(script, event);
+        handler(event);
+      };
+      script[propertyName] = wrappedHandler;
+      cleanupFns.push(() => {
+        if (script[propertyName] === wrappedHandler) script[propertyName] = previousHandler;
+      });
+    };
+
+    setSocketScriptState(script, 'loading');
+    attach('load', settleLoaded);
+    attach('error', settleFailed);
+  });
+}
 
 function mpIsConfigured() {
   return typeof window.io === 'function';
 }
 
+/**
+ * Fire-and-forget bootstrap used during page startup.
+ * Consumers that need a ready socket should await mpEnsureReady().
+ */
 function mpInit(handlers = {}) {
   _handlers = handlers;
-  ensureSocket();
+  void mpEnsureReady().catch(error => {
+    if (_handlers.onError) _handlers.onError(error);
+  });
+}
+
+function loadSocketScript() {
+  if (mpIsConfigured()) return Promise.resolve(ensureSocket());
+  if (_socketLoadPromise) return _socketLoadPromise;
+
+  let script = getSocketScriptElement();
+  const existingState = script?.dataset?.socketIoClientState;
+  if (existingState === 'loaded') {
+    if (mpIsConfigured()) return Promise.resolve(ensureSocket());
+    script = createSocketScriptElement();
+  }
+  if (!script || existingState === 'error' || existingState === 'timeout') {
+    script = createSocketScriptElement();
+  }
+
+  _socketLoadPromise = watchSocketScript(script).then(() => {
+    if (!mpIsConfigured()) throw buildSocketClientError();
+    return ensureSocket();
+  }).then(socket => {
+    _socketLoadPromise = null;
+    return socket;
+  }).catch(error => {
+    _socketLoadPromise = null;
+    throw error;
+  });
+
+  return _socketLoadPromise;
+}
+
+/**
+ * Resolves once the Socket.IO client bundle is available and the socket has been created.
+ */
+function mpEnsureReady() {
+  return loadSocketScript();
 }
 
 function ensureSocket() {
@@ -21,11 +151,12 @@ function ensureSocket() {
     return _socket;
   }
   if (!mpIsConfigured()) {
-    throw new Error('Socket.IO クライアントが読み込まれていません。');
+    throw buildSocketClientError();
   }
 
   _socket = window.io({
     autoConnect: true,
+    path: SOCKET_IO_PATH,
     transports: ['websocket', 'polling'],
   });
 
@@ -79,8 +210,7 @@ function ensureSocket() {
 }
 
 function emitWithAck(eventName, payload) {
-  const socket = ensureSocket();
-  return new Promise((resolve, reject) => {
+  return mpEnsureReady().then(socket => new Promise((resolve, reject) => {
     socket.emit(eventName, payload, response => {
       if (!response || response.ok === false) {
         reject(new Error(response && response.error ? response.error : '通信に失敗しました。'));
@@ -88,7 +218,7 @@ function emitWithAck(eventName, payload) {
       }
       resolve(response);
     });
-  });
+  }));
 }
 
 function mpCreateRoom({ hostName, genre, rarityFilter, rules }) {
@@ -162,4 +292,27 @@ function mpDisconnect() {
 
 function mpGetSession() {
   return _session ? { ..._session } : null;
+}
+
+function mpResetForTests() {
+  _socket = null;
+  _handlers = {};
+  _session = null;
+  _hasConnectedOnce = false;
+  _resumeSessionOnConnect = false;
+  _socketLoadPromise = null;
+}
+
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = {
+    SOCKET_IO_RUNTIME,
+    SOCKET_IO_PATH,
+    SOCKET_IO_LOAD_TIMEOUT_MS,
+    SOCKET_IO_SCRIPT_SRC,
+    mpEnsureReady,
+    mpGetSession,
+    mpInit,
+    mpIsConfigured,
+    mpResetForTests,
+  };
 }
