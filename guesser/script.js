@@ -560,7 +560,14 @@ async function clearVersusConnection(leaveRoom = false) {
 }
 
 async function setupVersusSession() {
-  if (!mpIsConfigured()) {
+  if (typeof mpEnsureReady === 'function') {
+    try {
+      await mpEnsureReady();
+    } catch (error) {
+      handleVersusTransportError(error);
+      return false;
+    }
+  } else if (!mpIsConfigured()) {
     showResultBanner('⚠️ オンライン対戦サーバーに接続できません。ローカルでは `npm start` を実行してください。', 'fail', false);
     return false;
   }

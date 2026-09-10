@@ -5,6 +5,14 @@ let _handlers = {};
 let _session = null;
 let _hasConnectedOnce = false;
 let _resumeSessionOnConnect = false;
+let _socketLoadPromise = null;
+
+const SOCKET_IO_PATH = '/socket.io';
+const SOCKET_IO_SCRIPT_SRC = `${SOCKET_IO_PATH}/socket.io.js`;
+
+function buildSocketClientError() {
+  return new Error('オンライン対戦を初期化できませんでした。npm start でアプリを開き、/socket.io/socket.io.js が 404 になっていないか確認してください。');
+}
 
 function mpIsConfigured() {
   return typeof window.io === 'function';
@@ -12,7 +20,35 @@ function mpIsConfigured() {
 
 function mpInit(handlers = {}) {
   _handlers = handlers;
-  ensureSocket();
+  void mpEnsureReady().catch(error => {
+    if (_handlers.onError) _handlers.onError(error);
+  });
+}
+
+function loadSocketScript() {
+  if (mpIsConfigured()) return Promise.resolve();
+  if (_socketLoadPromise) return _socketLoadPromise;
+
+  _socketLoadPromise = new Promise((resolve, reject) => {
+    const script = document.createElement('script');
+    script.src = SOCKET_IO_SCRIPT_SRC;
+    script.async = true;
+    script.dataset.socketIoClient = 'true';
+    script.onload = () => resolve();
+    script.onerror = () => reject(buildSocketClientError());
+    document.head.appendChild(script);
+  }).then(() => {
+    if (!mpIsConfigured()) throw buildSocketClientError();
+  }).catch(error => {
+    _socketLoadPromise = null;
+    throw error;
+  });
+
+  return _socketLoadPromise;
+}
+
+function mpEnsureReady() {
+  return loadSocketScript().then(() => ensureSocket());
 }
 
 function ensureSocket() {
@@ -21,11 +57,12 @@ function ensureSocket() {
     return _socket;
   }
   if (!mpIsConfigured()) {
-    throw new Error('Socket.IO クライアントが読み込まれていません。');
+    throw buildSocketClientError();
   }
 
   _socket = window.io({
     autoConnect: true,
+    path: SOCKET_IO_PATH,
     transports: ['websocket', 'polling'],
   });
 
@@ -79,8 +116,7 @@ function ensureSocket() {
 }
 
 function emitWithAck(eventName, payload) {
-  const socket = ensureSocket();
-  return new Promise((resolve, reject) => {
+  return mpEnsureReady().then(socket => new Promise((resolve, reject) => {
     socket.emit(eventName, payload, response => {
       if (!response || response.ok === false) {
         reject(new Error(response && response.error ? response.error : '通信に失敗しました。'));
@@ -88,7 +124,7 @@ function emitWithAck(eventName, payload) {
       }
       resolve(response);
     });
-  });
+  }));
 }
 
 function mpCreateRoom({ hostName, genre, rarityFilter, rules }) {
@@ -162,4 +198,25 @@ function mpDisconnect() {
 
 function mpGetSession() {
   return _session ? { ..._session } : null;
+}
+
+function mpResetForTests() {
+  _socket = null;
+  _handlers = {};
+  _session = null;
+  _hasConnectedOnce = false;
+  _resumeSessionOnConnect = false;
+  _socketLoadPromise = null;
+}
+
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = {
+    SOCKET_IO_PATH,
+    SOCKET_IO_SCRIPT_SRC,
+    mpEnsureReady,
+    mpGetSession,
+    mpInit,
+    mpIsConfigured,
+    mpResetForTests,
+  };
 }

@@ -8,6 +8,7 @@ const { Server } = require('socket.io');
 const { RoomManager } = require('./server/room-manager');
 
 const port = Number(process.env.PORT || 3000);
+const SOCKET_IO_PATH = '/socket.io';
 const isDevelopment = process.env.NODE_ENV !== 'production';
 const allowedOrigins = new Set([
   ...(process.env.ALLOWED_ORIGIN ? [process.env.ALLOWED_ORIGIN] : []),
@@ -18,6 +19,7 @@ const staticRequestBuckets = new Map();
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
+  path: SOCKET_IO_PATH,
   allowRequest: (request, callback) => {
     const origin = request.headers.origin;
     if (!origin) return callback(null, false);
@@ -350,4 +352,5 @@ module.exports = {
   server,
   io,
   manager,
+  SOCKET_IO_PATH,
 };
