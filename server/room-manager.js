@@ -61,7 +61,7 @@ class RoomManager {
     };
   }
 
-  joinRoom({ code, guestName, playerKey }) {
+  joinRoom({ code, guestName, playerKey, expectedSeat }) {
     const room = this.getRoom(code);
     if (!room) throw new Error('ルームが見つかりません。コードを確認してください。');
 
@@ -72,6 +72,10 @@ class RoomManager {
       player.lastSeenAt = this.now();
       this.touchRoom(room, 'room_rejoined');
       return { room, playerKey: player.key, seat: existingSeat, rejoined: true };
+    }
+
+    if (playerKey && Number.isInteger(expectedSeat)) {
+      throw new Error('再接続セッションの復元に失敗しました。もう一度ルームに入り直してください。');
     }
 
     if (room.status === 'finished') {
@@ -228,7 +232,7 @@ class RoomManager {
       throw new Error('不正な候補です。');
     }
 
-    if (room.history.some(entry => entry.type === 'guess' && entry.guessId === guessId)) {
+    if (room.history.some(entry => entry.type === 'guess' && entry.actorIndex === seat && entry.guessId === guessId)) {
       throw new Error('その候補はすでに入力済みです。');
     }
 

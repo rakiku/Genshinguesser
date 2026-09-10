@@ -125,3 +125,18 @@ test('release version parsing handles Luna labels', () => {
   assert.equal(data.parseReleaseVersion('Luna III (6.2)'), 6.2);
   assert.equal(data.parseReleaseVersion('7.0'), 7);
 });
+
+test('rejoin with expected seat fails fast for stale player keys', () => {
+  const clock = createClock(1_000);
+  const manager = new RoomManager({ now: clock.now, random: () => 0 });
+  const created = manager.createRoom({ hostName: 'P1', genre: 'character' });
+
+  assert.throws(() => {
+    manager.joinRoom({
+      code: created.room.code,
+      guestName: 'P1',
+      playerKey: 'stale-key',
+      expectedSeat: 0,
+    });
+  }, /再接続セッションの復元に失敗しました/);
+});

@@ -234,7 +234,7 @@ async function initMode(mode) {
   }
 
   if (mode === 'daily') {
-    await clearVersusConnection(true);
+    await clearVersusConnection(false);
     answer = getDailyItem(pool);
     document.getElementById('resetBtn')?.classList.add('hidden');
     restoreDailyState();
@@ -245,7 +245,7 @@ async function initMode(mode) {
     }
     document.getElementById('resetBtn')?.classList.add('hidden');
   } else {
-    await clearVersusConnection(true);
+    await clearVersusConnection(false);
     answer = getRandomItem(pool, answer);
     document.getElementById('resetBtn')?.classList.remove('hidden');
   }
@@ -352,18 +352,19 @@ function getVersusStorageKey(code) {
   return LS_VERSUS_PLAYER_PREFIX + String(code || '').toUpperCase();
 }
 
-function loadVersusPlayerKey(code) {
+function loadVersusPlayerSession(code) {
   try {
-    return sessionStorage.getItem(getVersusStorageKey(code)) || '';
+    const raw = sessionStorage.getItem(getVersusStorageKey(code));
+    return raw ? JSON.parse(raw) : null;
   } catch (error) {
-    return '';
+    return null;
   }
 }
 
-function saveVersusPlayerKey(code, playerKey) {
+function saveVersusPlayerSession(code, playerKey, seat) {
   if (!code || !playerKey) return;
   try {
-    sessionStorage.setItem(getVersusStorageKey(code), playerKey);
+    sessionStorage.setItem(getVersusStorageKey(code), JSON.stringify({ playerKey, seat }));
   } catch (error) {
     /* noop */
   }
@@ -478,11 +479,12 @@ async function handleDoJoinRoom() {
 
   try {
     const guestName = (document.getElementById('guestNameInput')?.value.trim()) || 'プレイヤー2';
-    const storedKey = loadVersusPlayerKey(roomCode);
+    const storedSession = loadVersusPlayerSession(roomCode);
     const response = await mpJoinRoom({
       code: roomCode,
       guestName,
-      playerKey: storedKey || undefined,
+      playerKey: storedSession?.playerKey || undefined,
+      expectedSeat: storedSession?.seat,
     });
     finalizeVersusSession(response);
     resolveVersusModal(true);
@@ -500,7 +502,7 @@ function finalizeVersusSession(response) {
     playerKey: response.playerKey,
   };
   requestedVersusRoomCode = response.roomCode;
-  saveVersusPlayerKey(response.roomCode, response.playerKey);
+  saveVersusPlayerSession(response.roomCode, response.playerKey, response.snapshot?.selfSeat);
   handleVersusRoomState(response.snapshot);
 }
 
@@ -526,6 +528,11 @@ async function clearVersusConnection(leaveRoom = false) {
       /* noop */
     }
     clearVersusPlayerKey(previousConnection.code);
+    return;
+  }
+
+  if (previousConnection && typeof mpDisconnect === 'function') {
+    mpDisconnect();
   }
 }
 
@@ -537,13 +544,14 @@ async function setupVersusSession() {
 
   hideVersusPanel();
   const reconnectCode = requestedVersusRoomCode;
-  const reconnectKey = reconnectCode ? loadVersusPlayerKey(reconnectCode) : '';
-  if (reconnectCode && reconnectKey) {
+  const reconnectSession = reconnectCode ? loadVersusPlayerSession(reconnectCode) : null;
+  if (reconnectCode && reconnectSession?.playerKey) {
     try {
       const response = await mpJoinRoom({
         code: reconnectCode,
         guestName: '再接続中',
-        playerKey: reconnectKey,
+        playerKey: reconnectSession.playerKey,
+        expectedSeat: reconnectSession.seat,
       });
       finalizeVersusSession(response);
       showResultBanner('🌐 ルームに再接続しました。', 'success', false);
@@ -845,15 +853,23 @@ function updateVersusInputState() {
 
 async function copyVersusInviteLink() {
   if (!versusConnection?.code) return;
-  const inviteLink = buildVersusInviteLink(versusConnection.code);
-  await navigator.clipboard.writeText(inviteLink);
-  setCopiedLabel('copyInviteLinkBtn', 'コピーしました！');
+  try {
+    const inviteLink = buildVersusInviteLink(versusConnection.code);
+    await navigator.clipboard.writeText(inviteLink);
+    setCopiedLabel('copyInviteLinkBtn', 'コピーしました！');
+  } catch (error) {
+    showResultBanner('⚠️ 招待リンクのコピーに失敗しました。', 'fail', false);
+  }
 }
 
 async function copyVersusRoomCode() {
   if (!versusConnection?.code) return;
-  await navigator.clipboard.writeText(versusConnection.code);
-  setCopiedLabel('copyRoomCodeBtn', 'コピーしました！');
+  try {
+    await navigator.clipboard.writeText(versusConnection.code);
+    setCopiedLabel('copyRoomCodeBtn', 'コピーしました！');
+  } catch (error) {
+    showResultBanner('⚠️ ルームコードのコピーに失敗しました。', 'fail', false);
+  }
 }
 
 async function handleVersusRuleUpdate() {
@@ -886,14 +902,16 @@ async function handleVersusStamp(stamp) {
   }
 }
 
-function handleLeaveVersusRoom() {
+async function handleLeaveVersusRoom() {
   if (!versusConnection?.code) {
     cancelVersusModal();
     return;
   }
   if (!window.confirm('オンライン対戦ルームから退出しますか？')) return;
   clearVersusPlayerKey(versusConnection.code);
-  void switchMode('daily');
+  requestedVersusRoomCode = '';
+  await clearVersusConnection(true);
+  await switchMode('daily');
 }
 
 function getOpponentIndex() {
@@ -1096,7 +1114,7 @@ async function submitGuess() {
     showInputError('現在の出題範囲外です。');
     return;
   }
-  if (guesses.some(g => g.item.id === item.id)) {
+  if (gameMode !== 'versus' && guesses.some(g => g.item.id === item.id)) {
     showInputError('すでに入力済みです。');
     return;
   }

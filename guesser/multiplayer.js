@@ -4,6 +4,7 @@ let _socket = null;
 let _handlers = {};
 let _session = null;
 let _hasConnectedOnce = false;
+let _resumeSessionOnConnect = false;
 
 function mpIsConfigured() {
   return typeof window.io === 'function';
@@ -15,7 +16,10 @@ function mpInit(handlers = {}) {
 }
 
 function ensureSocket() {
-  if (_socket) return _socket;
+  if (_socket) {
+    if (!_socket.connected) _socket.connect();
+    return _socket;
+  }
   if (!mpIsConfigured()) {
     throw new Error('Socket.IO クライアントが読み込まれていません。');
   }
@@ -26,11 +30,12 @@ function ensureSocket() {
   });
 
   _socket.on('connect', () => {
-    if (_hasConnectedOnce && _session && _session.roomCode && _session.playerKey) {
+    if (_hasConnectedOnce && _resumeSessionOnConnect && _session && _session.roomCode && _session.playerKey) {
       void emitWithAck('room:join', {
         code: _session.roomCode,
         guestName: _session.playerName,
         playerKey: _session.playerKey,
+        expectedSeat: _session.seat,
       }).catch(error => {
         if (_handlers.onError) _handlers.onError(error);
       });
@@ -93,18 +98,22 @@ function mpCreateRoom({ hostName, genre, rarityFilter, rules }) {
       roomCode: response.roomCode,
       playerKey: response.playerKey,
       playerName: hostName || 'プレイヤー1',
+      seat: response.snapshot?.selfSeat,
     };
+    _resumeSessionOnConnect = true;
     return response;
   });
 }
 
-function mpJoinRoom({ code, guestName, playerKey }) {
-  return emitWithAck('room:join', { code, guestName, playerKey }).then(response => {
+function mpJoinRoom({ code, guestName, playerKey, expectedSeat }) {
+  return emitWithAck('room:join', { code, guestName, playerKey, expectedSeat }).then(response => {
     _session = {
       roomCode: response.roomCode,
       playerKey: response.playerKey,
       playerName: guestName || _session?.playerName || 'プレイヤー',
+      seat: response.snapshot?.selfSeat,
     };
+    _resumeSessionOnConnect = true;
     return response;
   });
 }
@@ -117,6 +126,7 @@ function mpLeaveRoom({ roomCode, playerKey } = {}) {
     playerKey: activePlayerKey,
   }).finally(() => {
     _session = null;
+    _resumeSessionOnConnect = false;
   });
 }
 
@@ -141,6 +151,7 @@ function mpRequestRematch() {
 }
 
 function mpDisconnect() {
+  _resumeSessionOnConnect = false;
   if (_socket) {
     _socket.disconnect();
   }

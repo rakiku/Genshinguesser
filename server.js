@@ -6,18 +6,52 @@ const express = require('express');
 const { Server } = require('socket.io');
 const { RoomManager } = require('./server/room-manager');
 
+const port = Number(process.env.PORT || 3000);
+const allowedOrigins = new Set([
+  process.env.ALLOWED_ORIGIN,
+  `http://localhost:${port}`,
+  `http://127.0.0.1:${port}`,
+].filter(Boolean));
+const staticRequestBuckets = new Map();
+
 const app = express();
 const server = http.createServer(app);
-const io = new Server(server);
+const io = new Server(server, {
+  allowRequest: (request, callback) => {
+    const origin = request.headers.origin;
+    if (!origin) {
+      callback(null, true);
+      return;
+    }
+    callback(null, allowedOrigins.has(origin));
+  },
+});
 
 const manager = new RoomManager();
 const timerIntervals = new Map();
 
-app.get('/', (_req, res) => {
+function staticRateLimit(req, res, next) {
+  const ip = req.ip || req.socket.remoteAddress || 'unknown';
+  const now = Date.now();
+  const bucket = staticRequestBuckets.get(ip);
+  if (!bucket || now - bucket.windowStart >= 60_000) {
+    staticRequestBuckets.set(ip, { count: 1, windowStart: now });
+    next();
+    return;
+  }
+  if (bucket.count >= 240) {
+    res.status(429).send('Too many requests');
+    return;
+  }
+  bucket.count += 1;
+  next();
+}
+
+app.get('/', staticRateLimit, (_req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
 });
 ['contact.html', 'faq.html', 'terms.html', 'styles.css', 'styles.js', 'news.json', 'googled165f15ed644d7f4.html'].forEach(file => {
-  app.get(`/${file}`, (_req, res) => {
+  app.get(`/${file}`, staticRateLimit, (_req, res) => {
     res.sendFile(path.join(__dirname, file));
   });
 });
@@ -260,7 +294,6 @@ io.on('connection', socket => {
   });
 });
 
-const port = Number(process.env.PORT || 3000);
 if (require.main === module) {
   server.listen(port, () => {
     console.log(`Genshinguesser server running at http://localhost:${port}`);
