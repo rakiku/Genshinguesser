@@ -122,6 +122,7 @@ function loadSocketScript() {
 
   _socketLoadPromise = watchSocketScript(script).then(() => {
     if (!mpIsConfigured()) throw buildSocketClientError();
+    _socketLoadPromise = null;
   }).catch(error => {
     _socketLoadPromise = null;
     throw error;
