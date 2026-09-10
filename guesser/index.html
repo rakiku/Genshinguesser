@@ -184,14 +184,13 @@
     <p style="margin-top:.3rem;"><a href="../index.html">← メニューへ戻る</a></p>
   </footer>
 
-  <!-- データ・ロジック -->
+<!-- データ・ロジック -->
   <script src="data.js"></script>
-
   <script src="game-logic.js"></script>
-  <script src="/socket.io/socket.io.js" data-socket-io-client="true"></script>
-  <!-- オンライン対戦モジュール -->
+  <!-- P2Pオンライン対戦（完全無料・サーバー不要） -->
+  <script src="https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js"></script>
+  <script src="room-manager.js"></script>
   <script src="multiplayer.js"></script>
-
   <script src="script.js"></script>
 
 <!-- オンライン対戦モーダル -->
