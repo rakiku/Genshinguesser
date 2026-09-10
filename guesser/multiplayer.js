@@ -7,9 +7,15 @@ let _hasConnectedOnce = false;
 let _resumeSessionOnConnect = false;
 let _socketLoadPromise = null;
 
-const SOCKET_IO_PATH = '/socket.io';
-const SOCKET_IO_SCRIPT_SRC = `${SOCKET_IO_PATH}/socket.io.js`;
-const SOCKET_IO_LOAD_TIMEOUT_MS = 5_000;
+const SOCKET_IO_RUNTIME = Object.freeze({
+  path: '/socket.io',
+  scriptSrc: '/socket.io/socket.io.js',
+  // Prevent multiplayer actions from waiting forever if the static/injected client bundle never settles.
+  loadTimeoutMs: 5_000,
+});
+const SOCKET_IO_PATH = SOCKET_IO_RUNTIME.path;
+const SOCKET_IO_SCRIPT_SRC = SOCKET_IO_RUNTIME.scriptSrc;
+const SOCKET_IO_LOAD_TIMEOUT_MS = SOCKET_IO_RUNTIME.loadTimeoutMs;
 
 function buildSocketClientError() {
   return new Error('オンライン対戦を初期化できませんでした。npm start でアプリを開き、/socket.io/socket.io.js が 404 になっていないか確認してください。');
@@ -93,6 +99,10 @@ function mpIsConfigured() {
   return typeof window.io === 'function';
 }
 
+/**
+ * Fire-and-forget bootstrap used during page startup.
+ * Consumers that need a ready socket should await mpEnsureReady().
+ */
 function mpInit(handlers = {}) {
   _handlers = handlers;
   void mpEnsureReady().catch(error => {
@@ -120,6 +130,9 @@ function loadSocketScript() {
   return _socketLoadPromise;
 }
 
+/**
+ * Resolves once the Socket.IO client bundle is available and the socket has been created.
+ */
 function mpEnsureReady() {
   return loadSocketScript().then(() => ensureSocket());
 }
@@ -284,6 +297,7 @@ function mpResetForTests() {
 
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = {
+    SOCKET_IO_RUNTIME,
     SOCKET_IO_PATH,
     SOCKET_IO_LOAD_TIMEOUT_MS,
     SOCKET_IO_SCRIPT_SRC,
