@@ -26,6 +26,13 @@ let versusPlayers   = ['プレイヤー1', 'プレイヤー2'];
 let versusSelfIndex = 0;
 let versusConnection = null; // { code, playerIndex } | null
 let versusReady = false;
+let versusRoomState = null;
+let versusTimerSeconds = 0;
+let requestedVersusRoomCode = '';
+let versusLastFinishedActionId = null;
+
+const VERSUS_STAMPS = ['💭 考え中…', '🎯 分かった！', '😱 惜しい！', '👑 GG!'];
+const LS_VERSUS_PLAYER_PREFIX = 'genshin-guesser-versus-player-';
 
 // ---------------------------------------------------------------------------
 // 定数
@@ -52,8 +59,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function parseUrlParams() {
   const params = new URLSearchParams(location.search);
+  const room = params.get('room');
   const m = params.get('mode');
   if (m === 'daily' || m === 'endless' || m === 'challenge' || m === 'versus') gameMode = m;
+  if (room) {
+    requestedVersusRoomCode = room.trim().toUpperCase();
+    gameMode = 'versus';
+  }
   const g = params.get('genre');
   if (g === 'character' || g === 'weapon') genre = g;
   const r = params.get('rarity');
@@ -83,15 +95,34 @@ function bindEvents() {
   document.getElementById('backFromCreateBtn')?.addEventListener('click', () => versusShowPanel('versusChoice'));
   document.getElementById('backFromJoinBtn')?.addEventListener('click', () => versusShowPanel('versusChoice'));
   document.getElementById('doCreateRoomBtn')?.addEventListener('click', handleDoCreateRoom);
-  document.getElementById('cancelWaitBtn')?.addEventListener('click', cancelVersusModal);
   document.getElementById('doJoinRoomBtn')?.addEventListener('click', handleDoJoinRoom);
+  document.getElementById('copyInviteLinkBtn')?.addEventListener('click', copyVersusInviteLink);
+  document.getElementById('copyRoomCodeBtn')?.addEventListener('click', copyVersusRoomCode);
+  document.getElementById('updateVersusRulesBtn')?.addEventListener('click', handleVersusRuleUpdate);
+  document.getElementById('requestRematchBtn')?.addEventListener('click', handleVersusRematchRequest);
+  document.getElementById('versusLeaveBtn')?.addEventListener('click', handleLeaveVersusRoom);
+  document.querySelectorAll('[data-stamp]').forEach(btn => {
+   btn.addEventListener('click', () => handleVersusStamp(btn.dataset.stamp || ''));
+  });
+
+  if (typeof mpInit === 'function') {
+   mpInit({
+     onConnect: handleVersusSocketConnect,
+     onDisconnect: handleVersusSocketDisconnect,
+     onRoomState: handleVersusRoomState,
+     onGameStarted: handleVersusGameStarted,
+     onGameTimer: handleVersusGameTimer,
+     onGuessResult: handleVersusGuessResult,
+     onTurnTimeout: handleVersusTurnTimeout,
+     onGameEnded: handleVersusGameEnded,
+     onStampReceived: handleVersusStampReceived,
+     onError: handleVersusTransportError,
+   });
+  }
 
   // ページ離脱時にルームをクリーンアップ
   window.addEventListener('beforeunload', () => {
-    if (versusConnection?.code) {
-      void mpMarkFinished(versusConnection.code);
-      mpUnsubscribe();
-    }
+   if (typeof mpDisconnect === 'function') mpDisconnect();
   });
 
   // 入力欄
@@ -138,10 +169,13 @@ async function switchMode(mode) {
 }
 
 function getPool() {
+  if (window.GenshinGameLogic) {
+    return window.GenshinGameLogic.getPool(genre, rarityFilter);
+  }
   if (genre === 'weapon') {
     return WEAPONS.filter(w => {
-      if (rarityFilter === '5')  return w.rarity === 5;
-      if (rarityFilter === '4')  return w.rarity === 4;
+      if (rarityFilter === '5') return w.rarity === 5;
+      if (rarityFilter === '4') return w.rarity === 4;
       if (rarityFilter === '45') return w.rarity >= 4;
       return true;
     });
@@ -150,6 +184,9 @@ function getPool() {
 }
 
 function getCurrentHintFields() {
+  if (window.GenshinGameLogic) {
+    return window.GenshinGameLogic.getHintFields(genre);
+  }
   return genre === 'weapon' ? WEAPON_HINT_FIELDS : HINT_FIELDS;
 }
 
@@ -197,7 +234,7 @@ async function initMode(mode) {
   }
 
   if (mode === 'daily') {
-    clearVersusConnection();
+    await clearVersusConnection(true);
     answer = getDailyItem(pool);
     document.getElementById('resetBtn')?.classList.add('hidden');
     restoreDailyState();
@@ -206,9 +243,9 @@ async function initMode(mode) {
       await switchMode('daily');
       return;
     }
-    document.getElementById('resetBtn')?.classList.remove('hidden');
+    document.getElementById('resetBtn')?.classList.add('hidden');
   } else {
-    clearVersusConnection();
+    await clearVersusConnection(true);
     answer = getRandomItem(pool, answer);
     document.getElementById('resetBtn')?.classList.remove('hidden');
   }
@@ -307,29 +344,71 @@ function getVersusItem(pool, code) {
 }
 
 // ---------------------------------------------------------------------------
-// Versus モーダル管理
+// Versus モーダル / セッション管理
 // ---------------------------------------------------------------------------
 let _versusModalResolve = null;
-let _cancelVersusWait   = null;
+
+function getVersusStorageKey(code) {
+  return LS_VERSUS_PLAYER_PREFIX + String(code || '').toUpperCase();
+}
+
+function loadVersusPlayerKey(code) {
+  try {
+    return sessionStorage.getItem(getVersusStorageKey(code)) || '';
+  } catch (error) {
+    return '';
+  }
+}
+
+function saveVersusPlayerKey(code, playerKey) {
+  if (!code || !playerKey) return;
+  try {
+    sessionStorage.setItem(getVersusStorageKey(code), playerKey);
+  } catch (error) {
+    /* noop */
+  }
+}
+
+function clearVersusPlayerKey(code) {
+  if (!code) return;
+  try {
+    sessionStorage.removeItem(getVersusStorageKey(code));
+  } catch (error) {
+    /* noop */
+  }
+}
+
+function buildVersusInviteLink(code) {
+  const url = new URL(window.location.href);
+  url.search = '';
+  url.searchParams.set('room', String(code || '').toUpperCase());
+  return url.toString();
+}
+
+function setCopiedLabel(buttonId, text) {
+  const button = document.getElementById(buttonId);
+  if (!button) return;
+  const original = button.dataset.originalLabel || button.textContent;
+  button.dataset.originalLabel = original;
+  button.textContent = text;
+  setTimeout(() => {
+    button.textContent = original;
+  }, 1600);
+}
 
 function openVersusModal() {
-  versusShowPanel('versusChoice');
-  versusSetError('');
-  // Reset create form state
   const createBtn = document.getElementById('doCreateRoomBtn');
-  if (createBtn) { createBtn.disabled = false; createBtn.classList.remove('hidden'); }
-  const hostInput = document.getElementById('hostNameInput');
-  if (hostInput) { hostInput.disabled = false; hostInput.value = ''; }
-  document.getElementById('roomCodeDisplay')?.classList.add('hidden');
-  document.getElementById('backFromCreateBtn')?.classList.remove('hidden');
-  // Reset join form state
   const joinBtn = document.getElementById('doJoinRoomBtn');
+  if (createBtn) createBtn.disabled = false;
   if (joinBtn) joinBtn.disabled = false;
-  const guestInput = document.getElementById('guestNameInput');
-  if (guestInput) guestInput.value = '';
+  const createTurnTime = document.getElementById('createTurnTimeSelect');
+  if (createTurnTime) createTurnTime.value = String(versusRoomState?.rules?.turnTimeSeconds || 60);
+  const rematchTurnTime = document.getElementById('rematchTurnTimeSelect');
+  if (rematchTurnTime) rematchTurnTime.value = String(versusRoomState?.rules?.turnTimeSeconds || 60);
   const codeInput = document.getElementById('roomCodeInput');
-  if (codeInput) codeInput.value = '';
-  // Show modal
+  if (codeInput) codeInput.value = requestedVersusRoomCode || '';
+  versusShowPanel(requestedVersusRoomCode ? 'versusJoin' : 'versusChoice');
+  versusSetError('');
   document.getElementById('versusModal')?.classList.remove('hidden');
   document.getElementById('versusModalOverlay')?.classList.remove('hidden');
   return new Promise(resolve => { _versusModalResolve = resolve; });
@@ -338,309 +417,487 @@ function openVersusModal() {
 function resolveVersusModal(result) {
   document.getElementById('versusModal')?.classList.add('hidden');
   document.getElementById('versusModalOverlay')?.classList.add('hidden');
-  _cancelVersusWait = null;
-  if (_versusModalResolve) { _versusModalResolve(result); _versusModalResolve = null; }
+  if (_versusModalResolve) {
+    _versusModalResolve(result);
+    _versusModalResolve = null;
+  }
 }
 
 function cancelVersusModal() {
-  if (_cancelVersusWait) { _cancelVersusWait(); _cancelVersusWait = null; }
-  mpUnsubscribe();
   resolveVersusModal(null);
 }
 
 function versusShowPanel(id) {
-  ['versusChoice', 'versusCreate', 'versusJoin'].forEach(p => {
-    document.getElementById(p)?.classList.toggle('hidden', p !== id);
+  ['versusChoice', 'versusCreate', 'versusJoin'].forEach(panelId => {
+    document.getElementById(panelId)?.classList.toggle('hidden', panelId !== id);
   });
   versusSetError('');
 }
 
-function versusSetError(msg) {
-  const el = document.getElementById('versusModalError');
-  if (!el) return;
-  el.textContent = msg;
-  el.classList.toggle('hidden', !msg);
+function versusSetError(message) {
+  const element = document.getElementById('versusModalError');
+  if (!element) return;
+  element.textContent = message;
+  element.classList.toggle('hidden', !message);
 }
 
-// ---------------------------------------------------------------------------
-// ホスト: ルームを作成して待機
-// ---------------------------------------------------------------------------
 async function handleDoCreateRoom() {
-  const name = (document.getElementById('hostNameInput')?.value.trim()) || 'プレイヤー1';
   const createBtn = document.getElementById('doCreateRoomBtn');
   if (createBtn) createBtn.disabled = true;
   versusSetError('');
 
-  // Check config
-  if (!mpIsConfigured()) {
-    versusSetError('Supabase が未設定です。SUPABASE_SETUP.md を参照してください。');
-    if (createBtn) createBtn.disabled = false;
-    return;
-  }
-
-  const pool = getPool();
-  const answerItem = getRandomItem(pool, null);
-
-  let room;
   try {
-    room = await mpCreateRoom({ genre, rarityFilter, hostName: name, answerId: answerItem.id });
-  } catch (e) {
-    versusSetError('ルームの作成に失敗しました: ' + e.message);
+    const hostName = (document.getElementById('hostNameInput')?.value.trim()) || 'プレイヤー1';
+    const turnTimeSeconds = Number(document.getElementById('createTurnTimeSelect')?.value || 60);
+    const response = await mpCreateRoom({
+      hostName,
+      genre,
+      rarityFilter,
+      rules: { turnTimeSeconds },
+    });
+    finalizeVersusSession(response);
+    showResultBanner('🌐 ルームを作成しました。相手の参加を待っています。', 'success', false);
+    resolveVersusModal(true);
+  } catch (error) {
+    versusSetError('ルームの作成に失敗しました: ' + error.message);
     if (createBtn) createBtn.disabled = false;
-    return;
   }
-
-  // UI を待機状態に切り替える
-  const codeEl = document.getElementById('displayedRoomCode');
-  if (codeEl) codeEl.textContent = room.code;
-  const lobbyHost = document.getElementById('lobbyHostName');
-  if (lobbyHost) lobbyHost.textContent = name || 'プレイヤー1';
-  const lobbyGuest = document.getElementById('lobbyGuestName');
-  if (lobbyGuest) lobbyGuest.textContent = '—';
-  const lobbyGuestStatus = document.getElementById('lobbyGuestStatus');
-  if (lobbyGuestStatus) { lobbyGuestStatus.textContent = '⏳ 参加待ち…'; lobbyGuestStatus.className = 'lobby-status lobby-waiting'; }
-  document.getElementById('roomCodeDisplay')?.classList.remove('hidden');
-  if (createBtn) createBtn.classList.add('hidden');
-  const hostInput = document.getElementById('hostNameInput');
-  if (hostInput) hostInput.disabled = true;
-  document.getElementById('backFromCreateBtn')?.classList.add('hidden');
-
-  let cancelled = false;
-  _cancelVersusWait = () => { cancelled = true; };
-
-  // Realtime 購読: ゲストが参加したら解決・切断時にも通知
-  mpSubscribeToRoom(room.code, {
-    onRoomUpdate: (updated) => {
-      if (cancelled) return;
-      if (updated.status === 'playing') {
-        // ロビーに相手の名前を表示してから解決
-        const gName = updated.guest_name || 'プレイヤー2';
-        const lg = document.getElementById('lobbyGuestName');
-        if (lg) lg.textContent = gName;
-        const lgs = document.getElementById('lobbyGuestStatus');
-        if (lgs) { lgs.textContent = '✅ 参加しました！'; lgs.className = 'lobby-status lobby-ready'; }
-        const lhs = document.getElementById('lobbyHostStatus');
-        if (lhs) { lhs.textContent = '✅ 準備完了'; lhs.className = 'lobby-status lobby-ready'; }
-        resolveVersusModal({
-          role:      'host',
-          hostName:  name,
-          guestName: gName,
-          code:      room.code,
-          answer:    answerItem,
-        });
-      } else if (updated.status === 'finished' && versusReady && gameMode === 'versus') {
-        handleVersusDisconnect();
-      }
-    },
-    onGameEvent: handleVersusGameEvent,
-  });
 }
 
-// ---------------------------------------------------------------------------
-// ゲスト: ルームに参加して init を受信するまで待機
-// ---------------------------------------------------------------------------
 async function handleDoJoinRoom() {
-  const name = (document.getElementById('guestNameInput')?.value.trim()) || 'プレイヤー2';
-  const code = (document.getElementById('roomCodeInput')?.value.trim()) || '';
-
-  if (!/^\d{6}$/.test(code)) {
-    versusSetError('6桁の数字を入力してください。');
-    return;
-  }
-
-  // Check config
-  if (!mpIsConfigured()) {
-    versusSetError('Supabase が未設定です。SUPABASE_SETUP.md を参照してください。');
-    return;
-  }
-
   const joinBtn = document.getElementById('doJoinRoomBtn');
   if (joinBtn) joinBtn.disabled = true;
   versusSetError('');
 
-  let cancelled = false;
-  _cancelVersusWait = () => { cancelled = true; };
-
-  // init イベント受信用 Promise（購読前に設定してレースコンディションを防ぐ）
-  let initResolve = null;
-  const initReceived = new Promise(resolve => { initResolve = resolve; });
-
-  // 購読を先に行い、その後 join（ホストの init ブロードキャストを取りこぼさないため）
-  mpSubscribeToRoom(code, {
-    onRoomUpdate: (updated) => {
-      // ゲスト側で room が finished になったら切断通知
-      if (updated.status === 'finished' && versusReady && gameMode === 'versus') {
-        handleVersusDisconnect();
-      }
-    },
-    onGameEvent: (event) => {
-      if (event.type === 'init' && initResolve) {
-        const r = initResolve;
-        initResolve = null;
-        r(event);
-        return;
-      }
-      handleVersusGameEvent(event);
-    },
-  });
-
-  // ルームに参加
-  let room;
-  try {
-    room = await mpJoinRoom(code, name);
-  } catch (e) {
-    if (!cancelled) {
-      mpUnsubscribe();
-      versusSetError(e.message);
-      if (joinBtn) joinBtn.disabled = false;
-    }
+  const roomCode = (document.getElementById('roomCodeInput')?.value || '').trim().toUpperCase();
+  if (!/^[A-Z0-9]{6}$/.test(roomCode)) {
+    versusSetError('6桁の英数字を入力してください。');
+    if (joinBtn) joinBtn.disabled = false;
     return;
   }
 
-  if (cancelled) return;
-
-  // init を 30 秒待つ
-  let initData;
   try {
-    initData = await Promise.race([
-      initReceived,
-      new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 30000)),
-    ]);
-  } catch {
-    if (!cancelled) {
-      versusSetError('ホストからの応答がタイムアウトしました。再度お試しください。');
-      mpUnsubscribe();
-      if (joinBtn) joinBtn.disabled = false;
-    }
-    return;
+    const guestName = (document.getElementById('guestNameInput')?.value.trim()) || 'プレイヤー2';
+    const storedKey = loadVersusPlayerKey(roomCode);
+    const response = await mpJoinRoom({
+      code: roomCode,
+      guestName,
+      playerKey: storedKey || undefined,
+    });
+    finalizeVersusSession(response);
+    resolveVersusModal(true);
+  } catch (error) {
+    clearVersusPlayerKey(roomCode);
+    versusSetError(error.message);
+    if (joinBtn) joinBtn.disabled = false;
   }
-
-  if (cancelled) return;
-
-  resolveVersusModal({
-    role:      'guest',
-    guestName: name,
-    code:      room.code,
-    room,
-    initData,
-  });
 }
 
-// ---------------------------------------------------------------------------
-// versus セッション確立
-// ---------------------------------------------------------------------------
-function clearVersusConnection() {
-  mpUnsubscribe();
+function finalizeVersusSession(response) {
+  if (!response) return;
+  versusConnection = {
+    code: response.roomCode,
+    playerKey: response.playerKey,
+  };
+  requestedVersusRoomCode = response.roomCode;
+  saveVersusPlayerKey(response.roomCode, response.playerKey);
+  handleVersusRoomState(response.snapshot);
+}
+
+async function clearVersusConnection(leaveRoom = false) {
+  const previousConnection = versusConnection;
   versusConnection = null;
   versusReady = false;
+  versusRoomState = null;
+  versusPlayers = ['プレイヤー1', 'プレイヤー2'];
+  versusSelfIndex = 0;
+  versusTurnIndex = 0;
+  versusTimerSeconds = 0;
+  versusLastFinishedActionId = null;
+  hideVersusPanel();
+
+  if (leaveRoom && previousConnection && typeof mpLeaveRoom === 'function') {
+    try {
+      await mpLeaveRoom({
+        roomCode: previousConnection.code,
+        playerKey: previousConnection.playerKey,
+      });
+    } catch (error) {
+      /* noop */
+    }
+    clearVersusPlayerKey(previousConnection.code);
+  }
 }
 
-async function setupVersusSession(pool) {
-  clearVersusConnection();
-
+async function setupVersusSession() {
   if (!mpIsConfigured()) {
-    showResultBanner(
-      '⚠️ オンライン対戦には Supabase の設定が必要です。\nSUPABASE_SETUP.md を参照してください。',
-      'fail', false
-    );
+    showResultBanner('⚠️ オンライン対戦サーバーに接続できません。ローカルでは `npm start` を実行してください。', 'fail', false);
     return false;
   }
 
-  const result = await openVersusModal();
-  if (!result) return false;
-
-  if (result.role === 'host') {
-    versusPlayers    = [result.hostName, result.guestName];
-    versusSelfIndex  = 0;
-    versusTurnIndex  = 0;
-    answer           = result.answer;
-    versusConnection = { code: result.code };
-    versusReady      = true;
-    // ゲストに init を送信
-    mpBroadcast('init', { players: versusPlayers, turnIndex: 0, answerId: answer.id });
-    updateVersusInfo();
-    showResultBanner('🌐 ゲストが参加しました！ゲームを開始します。', 'success', false);
-    return true;
-  }
-
-  if (result.role === 'guest') {
-    const { initData, room } = result;
-    const initPool = genre === 'weapon' ? WEAPONS : CHARACTERS;
-
-    // ルームのジャンル・レアリティ設定を反映
-    genre        = room.genre === 'weapon' ? 'weapon' : 'character';
-    rarityFilter = ['5', '4', '45'].includes(room.rarity_filter) ? room.rarity_filter : 'all';
-    updateGenreIndicator();
-
-    versusPlayers   = Array.isArray(initData.players) ? initData.players : [room.host_name || 'プレイヤー1', result.guestName];
-    versusTurnIndex = Number(initData.turnIndex) || 0;
-    versusSelfIndex = 1;
-    versusConnection = { code: result.code };
-
-    const answerItem = initPool.find(item => item.id === initData.answerId);
-    if (!answerItem) {
-      mpUnsubscribe();
-      showResultBanner('⚠️ 問題データが見つかりませんでした。モードとジャンル設定が一致しているか確認してください。', 'fail', false);
-      return false;
+  hideVersusPanel();
+  const reconnectCode = requestedVersusRoomCode;
+  const reconnectKey = reconnectCode ? loadVersusPlayerKey(reconnectCode) : '';
+  if (reconnectCode && reconnectKey) {
+    try {
+      const response = await mpJoinRoom({
+        code: reconnectCode,
+        guestName: '再接続中',
+        playerKey: reconnectKey,
+      });
+      finalizeVersusSession(response);
+      showResultBanner('🌐 ルームに再接続しました。', 'success', false);
+      return true;
+    } catch (error) {
+      clearVersusPlayerKey(reconnectCode);
     }
-    answer      = answerItem;
-    versusReady = true;
-    updateVersusInfo();
-    showResultBanner('🌐 ホストに接続しました！ゲームを開始します。', 'success', false);
-    return true;
   }
 
-  return false;
+  const result = await openVersusModal();
+  return !!result;
 }
 
-// ---------------------------------------------------------------------------
-// versus ゲームイベントハンドラ（broadcast 受信）
-// ---------------------------------------------------------------------------
-function handleVersusGameEvent(event) {
-  if (!event || !event.type) return;
-  const pool = genre === 'weapon' ? WEAPONS : CHARACTERS;
+function handleVersusSocketConnect() {
+  if (gameMode !== 'versus' || !versusConnection?.code) return;
+  updateVersusInfo();
+}
 
-  if (event.type === 'guess') {
-    const item = pool.find(x => x.id === event.guessId);
-    if (!item || gameEnded) return;
-    processGuess(item, false, { animateSolve: false, remoteAction: true });
+function handleVersusSocketDisconnect() {
+  if (gameMode !== 'versus') return;
+  showResultBanner('⚠️ 接続が切断されました。再接続を試みています…', 'fail', false);
+  setInputEnabled(false);
+  updateVersusInfo();
+}
+
+function handleVersusTransportError(error) {
+  if (gameMode !== 'versus') return;
+  showResultBanner(`⚠️ ${error.message}`, 'fail', false);
+}
+
+function handleVersusRoomState(snapshot) {
+  if (!snapshot || gameMode !== 'versus') return;
+  if (versusConnection?.code && snapshot.roomCode !== versusConnection.code) return;
+
+  versusRoomState = snapshot;
+  versusPlayers = snapshot.players.map(player => player.name || `プレイヤー${player.seat + 1}`);
+  versusSelfIndex = snapshot.selfSeat >= 0 ? snapshot.selfSeat : 0;
+  versusTurnIndex = Number(snapshot.currentTurnIndex) || 0;
+  versusReady = snapshot.players.every(player => player.occupied);
+  versusTimerSeconds = snapshot.remainingSeconds ?? snapshot.rules.turnTimeSeconds;
+  genre = snapshot.genre === 'weapon' ? 'weapon' : 'character';
+  rarityFilter = ['5', '4', '45'].includes(snapshot.rarityFilter) ? snapshot.rarityFilter : 'all';
+  updateGenreIndicator();
+
+  attempts = snapshot.history.filter(entry => entry.type === 'guess').length;
+  guesses = snapshot.history
+    .filter(entry => entry.type === 'guess')
+    .map(entry => {
+      const item = window.GenshinGameLogic.findItemById(snapshot.genre, entry.guessId, snapshot.rarityFilter);
+      return item ? { item, results: entry.results, actorName: entry.actorName } : null;
+    })
+    .filter(Boolean)
+    .reverse();
+
+  if (snapshot.status !== 'finished') {
+    answer = null;
+    gameEnded = false;
+    solved = false;
+    gaveUp = false;
+    updateShareBtns(false);
+    updateGiveUpBtn(snapshot.status === 'playing');
+  }
+
+  renderVersusPanel();
+  renderVersusHistory();
+  renderVersusStampTimeline();
+  updateVersusInfo();
+  updateVersusTimerDisplay();
+  updateVersusInputState();
+
+  if (snapshot.status === 'finished') {
+    handleVersusFinishedState(snapshot);
+  }
+}
+
+function handleVersusGameStarted(payload) {
+  if (!versusConnection || payload.roomCode !== versusConnection.code) return;
+  versusTimerSeconds = payload.rules?.turnTimeSeconds || 60;
+  closeWinOverlay();
+  const hasHistory = (versusRoomState?.history?.length || 0) > 0;
+  showResultBanner(
+    hasHistory
+      ? `🌐 対戦を同期しました。現在は ${versusPlayers[payload.currentTurnIndex] || 'プレイヤー1'} のターンです。`
+      : `🌐 対戦開始！ ${versusPlayers[0]} からスタートです。`,
+    'success',
+    false
+  );
+  updateVersusTimerDisplay();
+}
+
+function handleVersusGameTimer(payload) {
+  if (!versusConnection || payload.roomCode !== versusConnection.code) return;
+  versusTimerSeconds = payload.remainingSeconds;
+  if (typeof payload.currentTurnIndex === 'number') versusTurnIndex = payload.currentTurnIndex;
+  updateVersusTimerDisplay();
+  updateVersusInfo();
+}
+
+function handleVersusGuessResult() {
+  clearInputError();
+}
+
+function handleVersusTurnTimeout(payload) {
+  if (!versusConnection || payload.roomCode !== versusConnection.code) return;
+  const nextPlayer = versusPlayers[versusTurnIndex] || '次のプレイヤー';
+  showResultBanner(`⏰ ${payload.actorName} は時間切れです。自動スキップしました。\n次は ${nextPlayer} のターンです。`, 'fail', false);
+}
+
+function handleVersusGameEnded(snapshot) {
+  if (!snapshot || gameMode !== 'versus') return;
+  handleVersusRoomState(snapshot);
+}
+
+function handleVersusStampReceived() {
+  renderVersusStampTimeline();
+}
+
+function handleVersusFinishedState(snapshot) {
+  if (snapshot.lastAction?.id && snapshot.lastAction.id === versusLastFinishedActionId) return;
+  versusLastFinishedActionId = snapshot.lastAction?.id || null;
+
+  answer = window.GenshinGameLogic.findItemById(snapshot.genre, snapshot.answerId, snapshot.rarityFilter);
+  gameEnded = true;
+  solved = snapshot.lastAction?.reason === 'correct';
+  gaveUp = snapshot.lastAction?.reason === 'giveup' && snapshot.lastAction?.actorIndex === versusSelfIndex;
+  setInputEnabled(false);
+  updateShareBtns(true);
+  updateGiveUpBtn(false);
+
+  const winner = snapshot.winnerIndex >= 0 ? versusPlayers[snapshot.winnerIndex] : 'プレイヤー';
+  const actorName = snapshot.lastAction?.actorIndex >= 0 ? versusPlayers[snapshot.lastAction.actorIndex] : 'プレイヤー';
+  const answerName = answer ? answer.name : '不明';
+
+  if (snapshot.lastAction?.reason === 'correct') {
+    showResultBanner(`🎉 ${winner} が正解！ 正解は「${answerName}」でした。`, 'success', true);
+    if (answer) showWinOverlay(answer);
     return;
   }
 
-  if (event.type === 'giveup') {
-    if (gameEnded) return;
-    const actorIndex = Number(event.actorIndex);
-    if (!Number.isNaN(actorIndex)) versusTurnIndex = actorIndex;
-    gaveUp = true;
-    solved = false;
-    onGiveUp(false);
+  if (snapshot.lastAction?.reason === 'giveup') {
+    showResultBanner(`🏳️ ${actorName} がギブアップしました。\n${winner} の勝利！ 正解は「${answerName}」でした。`, 'fail', false);
+    return;
   }
+
+  if (snapshot.lastAction?.reason === 'left') {
+    showResultBanner(`⚠️ ${actorName} が退室しました。\n${winner} の勝利です。`, 'fail', false);
+    return;
+  }
+
+  showResultBanner(`🏁 対戦終了。正解は「${answerName}」でした。`, 'success', false);
 }
 
-function handleVersusDisconnect() {
-  if (gameMode !== 'versus') return;
-  showResultBanner('⚠️ 接続が切断されました。再接続するにはモード選択からオンライン対戦を開始してください。', 'fail', false);
-  setInputEnabled(false);
+function renderVersusPanel() {
+  const panel = document.getElementById('versusPanel');
+  if (!panel) return;
+  panel.classList.toggle('hidden', gameMode !== 'versus' || !versusConnection?.code);
+
+  const roomCodeEl = document.getElementById('versusRoomCodeValue');
+  if (roomCodeEl) roomCodeEl.textContent = versusConnection?.code || '------';
+
+  const inviteInput = document.getElementById('versusInviteLink');
+  if (inviteInput) inviteInput.value = versusConnection?.code ? buildVersusInviteLink(versusConnection.code) : '';
+
+  const rematchPanel = document.getElementById('versusRematchPanel');
+  if (rematchPanel) rematchPanel.classList.toggle('hidden', versusRoomState?.status !== 'finished');
+
+  const rematchStatus = document.getElementById('versusRematchStatus');
+  if (rematchStatus && versusRoomState?.status === 'finished') {
+    const readySeats = versusRoomState.rematch?.readySeats || [];
+    const readyNames = readySeats.map(seat => versusPlayers[seat]).filter(Boolean);
+    rematchStatus.textContent = readyNames.length
+      ? `再戦待ち: ${readyNames.join(' / ')}`
+      : '再戦する場合は両プレイヤーが準備完了を押してください。';
+  }
+
+  const rematchTurnTime = document.getElementById('rematchTurnTimeSelect');
+  if (rematchTurnTime && versusRoomState?.rules?.turnTimeSeconds) {
+    rematchTurnTime.value = String(versusRoomState.rules.turnTimeSeconds);
+  }
+
+  [0, 1].forEach(index => {
+    const player = versusRoomState?.players?.[index];
+    const card = document.getElementById(`versusPlayerCard${index}`);
+    const name = document.getElementById(`versusPlayerName${index}`);
+    const status = document.getElementById(`versusPlayerStatus${index}`);
+    if (!card || !name || !status) return;
+    name.textContent = versusPlayers[index] || `プレイヤー${index + 1}`;
+    const statusText = !player?.occupied
+      ? '参加待ち'
+      : player.connected ? '接続中' : '再接続待ち';
+    status.textContent = statusText;
+    card.classList.toggle('active', versusTurnIndex === index && versusRoomState?.status === 'playing');
+    card.classList.toggle('self', versusSelfIndex === index);
+  });
+}
+
+function renderVersusHistory() {
+  if (gameMode !== 'versus' || !versusRoomState) return;
+  clearGuessHistory();
+  versusRoomState.history.forEach((entry, rowIndex) => {
+    if (entry.type === 'timeout') {
+      renderVersusTimeoutRow(entry, rowIndex);
+      return;
+    }
+    const item = window.GenshinGameLogic.findItemById(versusRoomState.genre, entry.guessId, versusRoomState.rarityFilter);
+    if (!item) return;
+    renderGuessRow({
+      item,
+      results: entry.results,
+      actorName: entry.actorName,
+    }, rowIndex);
+  });
+}
+
+function renderVersusTimeoutRow(entry, rowIndex) {
+  const history = document.getElementById('guessHistory');
+  if (!history) return;
+  const wrapper = document.createElement('div');
+  wrapper.className = 'guess-row timeout-row';
+  wrapper.dataset.index = rowIndex;
+
+  const summary = document.createElement('div');
+  summary.className = 'guess-summary timeout-summary';
+
+  const name = document.createElement('span');
+  name.className = 'guess-name';
+  name.textContent = `${entry.actorName}：時間切れ`;
+  summary.appendChild(name);
+
+  const badge = document.createElement('span');
+  badge.className = 'guess-actor timeout-badge';
+  badge.textContent = '自動スキップ';
+  summary.appendChild(badge);
+
+  wrapper.appendChild(summary);
+  history.insertBefore(wrapper, history.firstChild);
+}
+
+function renderVersusStampTimeline() {
+  const timeline = document.getElementById('versusStampTimeline');
+  if (!timeline) return;
+  timeline.innerHTML = '';
+  const stamps = versusRoomState?.stamps || [];
+  stamps.slice().reverse().forEach(entry => {
+    const item = document.createElement('div');
+    item.className = 'stamp-timeline-item';
+    item.textContent = `${entry.actorName}：${entry.stamp}`;
+    timeline.appendChild(item);
+  });
+}
+
+function hideVersusPanel() {
+  document.getElementById('versusPanel')?.classList.add('hidden');
+  document.getElementById('versusRematchPanel')?.classList.add('hidden');
+  const timeline = document.getElementById('versusStampTimeline');
+  if (timeline) timeline.innerHTML = '';
 }
 
 function updateVersusInfo() {
   const current = document.getElementById('versusCurrentTurn');
   const players = document.getElementById('versusPlayers');
   if (players) {
-    const status = versusReady ? '接続中' : '接続待機';
+    const status = !versusConnection?.code
+      ? '未接続'
+      : versusReady ? '2人対戦中' : '相手待ち';
     players.textContent = `${versusPlayers[0]} vs ${versusPlayers[1]} (${status})`;
   }
-  if (current) current.textContent = `${versusPlayers[versusTurnIndex] || 'プレイヤー1'} のターン`;
+  if (!current) return;
+  if (!versusRoomState || versusRoomState.status === 'waiting') {
+    current.textContent = '相手の参加を待っています';
+    return;
+  }
+  if (versusRoomState.status === 'finished') {
+    current.textContent = '対戦終了';
+    return;
+  }
+  current.textContent = `${versusPlayers[versusTurnIndex] || 'プレイヤー1'} のターン`;
 }
 
-function nextVersusTurn() {
-  versusTurnIndex = (versusTurnIndex + 1) % 2;
-  updateVersusInfo();
+function updateVersusTimerDisplay() {
+  const timer = document.getElementById('versusTimerValue');
+  if (!timer) return;
+  if (!versusRoomState || versusRoomState.status !== 'playing') {
+    timer.textContent = '—';
+    return;
+  }
+  timer.textContent = String(versusTimerSeconds).padStart(2, '0');
 }
 
+function updateVersusInputState() {
+  if (gameMode !== 'versus') return;
+  const canInput = Boolean(
+    versusRoomState &&
+    versusRoomState.status === 'playing' &&
+    versusSelfIndex === versusTurnIndex
+  );
+  setInputEnabled(canInput);
+}
+
+async function copyVersusInviteLink() {
+  if (!versusConnection?.code) return;
+  const inviteLink = buildVersusInviteLink(versusConnection.code);
+  await navigator.clipboard.writeText(inviteLink);
+  setCopiedLabel('copyInviteLinkBtn', 'コピーしました！');
+}
+
+async function copyVersusRoomCode() {
+  if (!versusConnection?.code) return;
+  await navigator.clipboard.writeText(versusConnection.code);
+  setCopiedLabel('copyRoomCodeBtn', 'コピーしました！');
+}
+
+async function handleVersusRuleUpdate() {
+  if (!versusConnection?.code) return;
+  try {
+    const turnTimeSeconds = Number(document.getElementById('rematchTurnTimeSelect')?.value || 60);
+    await mpUpdateRules({ turnTimeSeconds });
+    showResultBanner(`⚙️ 再戦ルールを ${turnTimeSeconds} 秒に更新しました。`, 'success', false);
+  } catch (error) {
+    showResultBanner(`⚠️ ${error.message}`, 'fail', false);
+  }
+}
+
+async function handleVersusRematchRequest() {
+  if (!versusConnection?.code) return;
+  try {
+    await mpRequestRematch();
+    showResultBanner('🔄 再戦準備を送信しました。相手の準備を待っています。', 'success', false);
+  } catch (error) {
+    showResultBanner(`⚠️ ${error.message}`, 'fail', false);
+  }
+}
+
+async function handleVersusStamp(stamp) {
+  if (!stamp || !versusConnection?.code || versusRoomState?.status !== 'playing') return;
+  try {
+    await mpSendStamp(stamp);
+  } catch (error) {
+    showResultBanner(`⚠️ ${error.message}`, 'fail', false);
+  }
+}
+
+function handleLeaveVersusRoom() {
+  if (!versusConnection?.code) {
+    cancelVersusModal();
+    return;
+  }
+  if (!window.confirm('オンライン対戦ルームから退出しますか？')) return;
+  clearVersusPlayerKey(versusConnection.code);
+  void switchMode('daily');
+}
 
 function getOpponentIndex() {
-  return (versusTurnIndex + 1) % 2;
+  return versusTurnIndex === 0 ? 1 : 0;
 }
 
 function getRandomItem(pool, exclude = null) {
@@ -811,7 +1068,7 @@ function selectSuggestItem(item) {
 // ---------------------------------------------------------------------------
 // 回答送信
 // ---------------------------------------------------------------------------
-function submitGuess() {
+async function submitGuess() {
   if (gameEnded) return;
   if (gameMode === 'versus' && (!versusReady || !versusConnection)) {
     showInputError('オンライン対戦の接続準備中です。少し待ってから再試行してください。');
@@ -844,23 +1101,28 @@ function submitGuess() {
     return;
   }
 
-  input.value = '';   // ← 決定後にクリア (Req 5)
+  input.value = '';
   closeSuggest();
   clearInputError();
+  if (gameMode === 'versus') {
+   try {
+     await mpSubmitGuess({ guessId: item.id });
+   } catch (error) {
+     showInputError(error.message);
+   }
+   return;
+  }
   processGuess(item, true);
 }
 
 function processGuess(item, save = true, options = {}) {
   const animateSolve = options.animateSolve !== false;
   const remoteAction = options.remoteAction === true;
-  if (gameMode === 'versus' && !remoteAction && versusTurnIndex !== versusSelfIndex) {
-    showInputError(`現在は ${versusPlayers[versusTurnIndex]} のターンです。`);
-    return;
-  }
-  const actorIndex = versusTurnIndex;
   attempts++;
   const fields = getCurrentHintFields();
-  const results = compareItem(item, answer, fields);
+  const results = window.GenshinGameLogic
+    ? window.GenshinGameLogic.compareItem(item, answer, fields)
+    : compareItem(item, answer, fields);
   guesses.unshift({ item, results });
 
   renderGuessRow({ item, results }, guesses.length - 1);
@@ -875,16 +1137,10 @@ function processGuess(item, save = true, options = {}) {
       challengeRemain--;
       updateChallengeInfo();
       if (challengeRemain <= 0) onChallengeOver();
-    } else if (gameMode === 'versus') {
-      nextVersusTurn();
-      showResultBanner(`不正解。次は ${versusPlayers[versusTurnIndex]} のターン`, 'fail', false);
     }
   }
 
   if (gameMode === 'daily' && save) saveDailyState();
-  if (gameMode === 'versus' && !remoteAction) {
-    mpBroadcast('guess', { guessId: item.id, actorIndex });
-  }
 }
 
 function onSolve(animate) {
@@ -940,9 +1196,17 @@ function onGiveUp(animate) {
   showResultBanner(`🏳️ ギブアップ… 正解は「${answer.name}」でした。`, 'fail', animate);
 }
 
-function giveUpGame() {
+async function giveUpGame() {
   if (gameEnded) return;
   if (!window.confirm('ギブアップしますか？ 正解を表示してこの問題を終了します。')) return;
+  if (gameMode === 'versus') {
+    try {
+      await mpGiveUp();
+    } catch (error) {
+      showResultBanner(`⚠️ ${error.message}`, 'fail', false);
+    }
+    return;
+  }
   gaveUp = true;
   solved = false;
   if (gameMode === 'endless') {
@@ -954,9 +1218,6 @@ function giveUpGame() {
     updateChallengeInfo();
   }
   onGiveUp(true);
-  if (gameMode === 'versus') {
-    mpBroadcast('giveup', { actorIndex: versusSelfIndex });
-  }
   if (gameMode === 'daily') saveDailyState();
 }
 
@@ -967,6 +1228,9 @@ function giveUpGame() {
 // 判定ロジック
 // ---------------------------------------------------------------------------
 function compareItem(guess, ans, fields) {
+  if (window.GenshinGameLogic) {
+    return window.GenshinGameLogic.compareItem(guess, ans, fields);
+  }
   const out = {};
   fields.forEach(field => {
     out[field.key] = compareField(field, guess, ans);
@@ -975,6 +1239,9 @@ function compareItem(guess, ans, fields) {
 }
 
 function compareField(field, guess, ans) {
+  if (window.GenshinGameLogic) {
+    return window.GenshinGameLogic.compareField(field, guess, ans);
+  }
   const gVal = guess[field.key];
   const aVal = ans[field.key];
 
@@ -1010,7 +1277,7 @@ function compareField(field, guess, ans) {
 function renderGuessRow(entry, rowIndex) {
   const history = document.getElementById('guessHistory');
   if (!history) return;
-  const { item, results } = entry;
+  const { item, results, actorName } = entry;
   
   // ★変更：常に共通のルールで判定させるために、getEnabledFields() に置き換える
   const enabledFields = getEnabledFields();
@@ -1038,6 +1305,13 @@ function renderGuessRow(entry, rowIndex) {
   nameSpan.className = 'guess-name';
   nameSpan.textContent = item.name;
   summary.appendChild(nameSpan);
+
+  if (actorName) {
+    const actorSpan = document.createElement('span');
+    actorSpan.className = 'guess-actor';
+    actorSpan.textContent = actorName;
+    summary.appendChild(actorSpan);
+  }
 
   const dotWrap = document.createElement('div');
   dotWrap.className = 'summary-dots';
@@ -1199,7 +1473,8 @@ function buildShareText() {
   } else if (gameMode === 'endless') {
     lines.push(`#GenshinGuesser エンドレス [${genreLabel}] 🔥${streak}連勝`);
   } else if (gameMode === 'versus') {
-    const winner = solved ? versusPlayers[versusTurnIndex] : versusPlayers[getOpponentIndex()];
+    const winnerIndex = versusRoomState?.winnerIndex;
+    const winner = winnerIndex >= 0 ? versusPlayers[winnerIndex] : '未決着';
     lines.push(`#GenshinGuesser オンライン対戦 [${genreLabel}] 勝者:${winner}`);
   } else {
     lines.push(`#GenshinGuesser チャレンジ [${genreLabel}] スコア:${currentScore}`);
@@ -1371,6 +1646,9 @@ function getDisplayValue(key, value, item) {
  * 現在有効なヒントフィールドのリストを取得する（チャレンジモード時は固定）
  */
 function getEnabledFields() {
+  if (gameMode === 'versus') {
+    return getCurrentHintFields();
+  }
   const fields = getCurrentHintFields();
   if (gameMode === 'challenge') {
     if (genre === 'character') {
