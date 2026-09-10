@@ -8,10 +8,10 @@ const { Server } = require('socket.io');
 const { RoomManager } = require('./server/room-manager');
 
 const port = Number(process.env.PORT || 3000);
+const isDevelopment = process.env.NODE_ENV !== 'production';
 const allowedOrigins = new Set([
-  process.env.ALLOWED_ORIGIN,
-  `http://localhost:${port}`,
-  `http://127.0.0.1:${port}`,
+  ...(process.env.ALLOWED_ORIGIN ? [process.env.ALLOWED_ORIGIN] : []),
+  ...(isDevelopment ? [`http://localhost:${port}`, `http://127.0.0.1:${port}`] : []),
 ].filter(Boolean));
 const staticRequestBuckets = new Map();
 
@@ -20,10 +20,7 @@ const server = http.createServer(app);
 const io = new Server(server, {
   allowRequest: (request, callback) => {
     const origin = request.headers.origin;
-    if (!origin) {
-      callback(null, true);
-      return;
-    }
+    if (!origin) return callback(null, false);
     callback(null, allowedOrigins.has(origin));
   },
 });
@@ -189,9 +186,31 @@ io.on('connection', socket => {
     }
   });
 
+  socket.on('room:reconnect', (payload, ack = () => {}) => {
+    try {
+      const result = manager.reconnectRoom(payload || {});
+      manager.attachSocket(result.room.code, result.playerKey, socket.id);
+      socket.data.roomCode = result.room.code;
+      socket.data.playerKey = result.playerKey;
+      socket.join(result.room.code);
+      ack({
+        ok: true,
+        roomCode: result.room.code,
+        playerKey: result.playerKey,
+        snapshot: manager.buildSnapshot(result.room, result.playerKey),
+      });
+      emitRoomState(result.room);
+      if (result.room.status === 'playing') {
+        startRoomTimer(result.room.code);
+      }
+    } catch (error) {
+      ack({ ok: false, error: error.message });
+    }
+  });
+
   socket.on('room:leave', (payload, ack = () => {}) => {
     try {
-      const code = payload && payload.roomCode ? payload.roomCode : socket.data.roomCode;
+      const code = payload && payload.code ? payload.code : socket.data.roomCode;
       const playerKey = payload && payload.playerKey ? payload.playerKey : socket.data.playerKey;
       const result = manager.leaveRoom({ code, playerKey });
       if (result.deleted) {

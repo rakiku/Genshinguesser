@@ -132,9 +132,8 @@ test('rejoin with expected seat fails fast for stale player keys', () => {
   const created = manager.createRoom({ hostName: 'P1', genre: 'character' });
 
   assert.throws(() => {
-    manager.joinRoom({
+    manager.reconnectRoom({
       code: created.room.code,
-      guestName: 'P1',
       playerKey: 'stale-key',
       expectedSeat: 0,
     });
@@ -148,9 +147,8 @@ test('guest rejoin with expected seat also fails fast for stale player keys', ()
   manager.joinRoom({ code: created.room.code, guestName: 'P2' });
 
   assert.throws(() => {
-    manager.joinRoom({
+    manager.reconnectRoom({
       code: created.room.code,
-      guestName: 'P2',
       playerKey: 'stale-key',
       expectedSeat: 1,
     });
@@ -163,11 +161,34 @@ test('rejoin rejects seat mismatch even with a valid player key', () => {
   const created = manager.createRoom({ hostName: 'P1', genre: 'character' });
 
   assert.throws(() => {
-    manager.joinRoom({
+    manager.reconnectRoom({
       code: created.room.code,
-      guestName: 'P1',
       playerKey: created.playerKey,
       expectedSeat: 1,
     });
   }, /座席確認に失敗しました/);
+});
+
+test('late guess returns timeout result after the turn expires', () => {
+  const clock = createClock(1_000);
+  const manager = new RoomManager({ now: clock.now, random: () => 0 });
+  const created = manager.createRoom({ hostName: 'P1', genre: 'character', rules: { turnTimeSeconds: 60 } });
+  manager.joinRoom({ code: created.room.code, guestName: 'P2' });
+  clock.advance(60_000);
+
+  let thrownError = null;
+  try {
+    manager.submitGuess({
+      code: created.room.code,
+      playerKey: created.playerKey,
+      guessId: 'ジン',
+    });
+  } catch (error) {
+    thrownError = error;
+  }
+
+  assert.ok(thrownError);
+  assert.equal(thrownError.message, '時間切れです。');
+  assert.equal(thrownError.timeoutResult.entry.type, 'timeout');
+  assert.equal(thrownError.timeoutResult.room.currentTurnIndex, 1);
 });

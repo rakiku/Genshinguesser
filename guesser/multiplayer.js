@@ -31,9 +31,8 @@ function ensureSocket() {
 
   _socket.on('connect', () => {
     if (_hasConnectedOnce && _resumeSessionOnConnect && _session && _session.roomCode && _session.playerKey) {
-      void emitWithAck('room:join', {
+      void emitWithAck('room:reconnect', {
         code: _session.roomCode,
-        guestName: _session.playerName,
         playerKey: _session.playerKey,
         expectedSeat: _session.seat,
       }).catch(error => {
@@ -106,7 +105,11 @@ function mpCreateRoom({ hostName, genre, rarityFilter, rules }) {
 }
 
 function mpJoinRoom({ code, guestName, playerKey, expectedSeat }) {
-  return emitWithAck('room:join', { code, guestName, playerKey, expectedSeat }).then(response => {
+  const eventName = playerKey ? 'room:reconnect' : 'room:join';
+  const payload = playerKey
+    ? { code, playerKey, expectedSeat }
+    : { code, guestName };
+  return emitWithAck(eventName, payload).then(response => {
     _session = {
       roomCode: response.roomCode,
       playerKey: response.playerKey,
@@ -118,11 +121,11 @@ function mpJoinRoom({ code, guestName, playerKey, expectedSeat }) {
   });
 }
 
-function mpLeaveRoom({ roomCode, playerKey } = {}) {
-  const activeRoomCode = roomCode || _session?.roomCode;
+function mpLeaveRoom({ roomCode, code, playerKey } = {}) {
+  const activeRoomCode = roomCode || code || _session?.roomCode;
   const activePlayerKey = playerKey || _session?.playerKey;
   return emitWithAck('room:leave', {
-    roomCode: activeRoomCode,
+    code: activeRoomCode,
     playerKey: activePlayerKey,
   }).finally(() => {
     _session = null;

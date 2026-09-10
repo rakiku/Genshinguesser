@@ -61,25 +61,9 @@ class RoomManager {
     };
   }
 
-  joinRoom({ code, guestName, playerKey, expectedSeat }) {
+  joinRoom({ code, guestName }) {
     const room = this.getRoom(code);
     if (!room) throw new Error('ルームが見つかりません。コードを確認してください。');
-
-    const existingSeat = playerKey ? room.players.findIndex(player => player && player.key === playerKey) : -1;
-    if (existingSeat >= 0) {
-      if (Number.isInteger(expectedSeat) && existingSeat !== expectedSeat) {
-        throw new Error('再接続セッションの座席確認に失敗しました。もう一度入り直してください。');
-      }
-      const player = room.players[existingSeat];
-      player.connected = true;
-      player.lastSeenAt = this.now();
-      this.touchRoom(room, 'room_rejoined');
-      return { room, playerKey: player.key, seat: existingSeat, rejoined: true };
-    }
-
-    if (playerKey && Number.isInteger(expectedSeat)) {
-      throw new Error('再接続セッションの復元に失敗しました。もう一度ルームに入り直してください。');
-    }
 
     if (room.status === 'finished') {
       throw new Error('このルームの対戦は終了しています。');
@@ -98,6 +82,25 @@ class RoomManager {
       seat: 1,
       rejoined: false,
     };
+  }
+
+  reconnectRoom({ code, playerKey, expectedSeat }) {
+    const room = this.getRoom(code);
+    if (!room) throw new Error('ルームが見つかりません。コードを確認してください。');
+
+    const existingSeat = playerKey ? room.players.findIndex(player => player && player.key === playerKey) : -1;
+    if (existingSeat < 0) {
+      throw new Error('再接続セッションの復元に失敗しました。もう一度ルームに入り直してください。');
+    }
+    if (Number.isInteger(expectedSeat) && existingSeat !== expectedSeat) {
+      throw new Error('再接続セッションの座席確認に失敗しました。もう一度入り直してください。');
+    }
+
+    const player = room.players[existingSeat];
+    player.connected = true;
+    player.lastSeenAt = this.now();
+    this.touchRoom(room, 'room_rejoined');
+    return { room, playerKey: player.key, seat: existingSeat, rejoined: true };
   }
 
   attachSocket(code, playerKey, socketId) {

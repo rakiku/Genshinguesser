@@ -541,7 +541,7 @@ async function clearVersusConnection(leaveRoom = false) {
   if (leaveRoom && previousConnection && typeof mpLeaveRoom === 'function') {
     try {
       await mpLeaveRoom({
-        roomCode: previousConnection.code,
+        code: previousConnection.code,
         playerKey: previousConnection.playerKey,
       });
     } catch (error) {
@@ -549,6 +549,7 @@ async function clearVersusConnection(leaveRoom = false) {
     }
     clearVersusPlayerKey(previousConnection.code);
     setLastVersusRoomCode('');
+    if (typeof mpDisconnect === 'function') mpDisconnect();
     return;
   }
 
