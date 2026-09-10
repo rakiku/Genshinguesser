@@ -111,7 +111,7 @@ function mpInit(handlers = {}) {
 }
 
 function loadSocketScript() {
-  if (mpIsConfigured()) return Promise.resolve();
+  if (mpIsConfigured()) return Promise.resolve(ensureSocket());
   if (_socketLoadPromise) return _socketLoadPromise;
 
   let script = getSocketScriptElement();
@@ -122,7 +122,10 @@ function loadSocketScript() {
 
   _socketLoadPromise = watchSocketScript(script).then(() => {
     if (!mpIsConfigured()) throw buildSocketClientError();
+    return ensureSocket();
+  }).then(socket => {
     _socketLoadPromise = null;
+    return socket;
   }).catch(error => {
     _socketLoadPromise = null;
     throw error;
@@ -135,7 +138,7 @@ function loadSocketScript() {
  * Resolves once the Socket.IO client bundle is available and the socket has been created.
  */
 function mpEnsureReady() {
-  return loadSocketScript().then(() => ensureSocket());
+  return loadSocketScript();
 }
 
 function ensureSocket() {
