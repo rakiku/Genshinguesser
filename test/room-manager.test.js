@@ -156,3 +156,18 @@ test('guest rejoin with expected seat also fails fast for stale player keys', ()
     });
   }, /再接続セッションの復元に失敗しました/);
 });
+
+test('rejoin rejects seat mismatch even with a valid player key', () => {
+  const clock = createClock(1_000);
+  const manager = new RoomManager({ now: clock.now, random: () => 0 });
+  const created = manager.createRoom({ hostName: 'P1', genre: 'character' });
+
+  assert.throws(() => {
+    manager.joinRoom({
+      code: created.room.code,
+      guestName: 'P1',
+      playerKey: created.playerKey,
+      expectedSeat: 1,
+    });
+  }, /座席確認に失敗しました/);
+});

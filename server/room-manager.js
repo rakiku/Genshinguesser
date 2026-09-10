@@ -67,6 +67,9 @@ class RoomManager {
 
     const existingSeat = playerKey ? room.players.findIndex(player => player && player.key === playerKey) : -1;
     if (existingSeat >= 0) {
+      if (Number.isInteger(expectedSeat) && existingSeat !== expectedSeat) {
+        throw new Error('再接続セッションの座席確認に失敗しました。もう一度入り直してください。');
+      }
       const player = room.players[existingSeat];
       player.connected = true;
       player.lastSeenAt = this.now();

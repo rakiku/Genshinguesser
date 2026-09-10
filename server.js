@@ -1,6 +1,7 @@
 'use strict';
 
 const http = require('node:http');
+const fs = require('node:fs');
 const path = require('node:path');
 const express = require('express');
 const { Server } = require('socket.io');
@@ -29,6 +30,25 @@ const io = new Server(server, {
 
 const manager = new RoomManager();
 const timerIntervals = new Map();
+const rootAssetFiles = {
+  '/': { file: 'index.html', type: 'html' },
+  '/contact.html': { file: 'contact.html', type: 'html' },
+  '/faq.html': { file: 'faq.html', type: 'html' },
+  '/terms.html': { file: 'terms.html', type: 'html' },
+  '/styles.css': { file: 'styles.css', type: 'css' },
+  '/styles.js': { file: 'styles.js', type: 'application/javascript' },
+  '/news.json': { file: 'news.json', type: 'application/json' },
+  '/googled165f15ed644d7f4.html': { file: 'googled165f15ed644d7f4.html', type: 'html' },
+};
+const rootAssetPayloads = Object.fromEntries(
+  Object.entries(rootAssetFiles).map(([route, asset]) => [
+    route,
+    {
+      type: asset.type,
+      body: fs.readFileSync(path.join(__dirname, asset.file)),
+    },
+  ])
+);
 
 function staticRateLimit(req, res, next) {
   const ip = req.ip || req.socket.remoteAddress || 'unknown';
@@ -49,12 +69,9 @@ function staticRateLimit(req, res, next) {
 
 app.use(staticRateLimit);
 
-app.get('/', (_req, res) => {
-  res.sendFile(path.join(__dirname, 'index.html'));
-});
-['contact.html', 'faq.html', 'terms.html', 'styles.css', 'styles.js', 'news.json', 'googled165f15ed644d7f4.html'].forEach(file => {
-  app.get(`/${file}`, (_req, res) => {
-    res.sendFile(path.join(__dirname, file));
+Object.entries(rootAssetPayloads).forEach(([route, asset]) => {
+  app.get(route, (_req, res) => {
+    res.type(asset.type).send(asset.body);
   });
 });
 app.use('/guesser', express.static(path.join(__dirname, 'guesser')));

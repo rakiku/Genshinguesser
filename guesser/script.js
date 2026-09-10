@@ -33,6 +33,7 @@ let versusLastFinishedActionId = null;
 
 const VERSUS_STAMPS = ['💭 考え中…', '🎯 分かった！', '😱 惜しい！', '👑 GG!'];
 const LS_VERSUS_PLAYER_PREFIX = 'genshin-guesser-versus-player-';
+const LS_VERSUS_LAST_ROOM_KEY = 'genshin-guesser-versus-last-room';
 
 // ---------------------------------------------------------------------------
 // 定数
@@ -379,6 +380,23 @@ function clearVersusPlayerKey(code) {
   }
 }
 
+function getLastVersusRoomCode() {
+  try {
+    return sessionStorage.getItem(LS_VERSUS_LAST_ROOM_KEY) || '';
+  } catch (error) {
+    return '';
+  }
+}
+
+function setLastVersusRoomCode(code) {
+  try {
+    if (code) sessionStorage.setItem(LS_VERSUS_LAST_ROOM_KEY, code);
+    else sessionStorage.removeItem(LS_VERSUS_LAST_ROOM_KEY);
+  } catch (error) {
+    /* noop */
+  }
+}
+
 function buildVersusInviteLink(code) {
   const url = new URL(window.location.href);
   url.search = '';
@@ -504,6 +522,7 @@ function finalizeVersusSession(response) {
   requestedVersusRoomCode = response.roomCode;
   const playerName = response.snapshot?.players?.[response.snapshot?.selfSeat]?.name || '';
   saveVersusPlayerSession(response.roomCode, response.playerKey, response.snapshot?.selfSeat, playerName);
+  setLastVersusRoomCode(response.roomCode);
   handleVersusRoomState(response.snapshot);
 }
 
@@ -529,11 +548,11 @@ async function clearVersusConnection(leaveRoom = false) {
       /* noop */
     }
     clearVersusPlayerKey(previousConnection.code);
+    setLastVersusRoomCode('');
     return;
   }
 
   if (previousConnection && typeof mpDisconnect === 'function') {
-    clearVersusPlayerKey(previousConnection.code);
     requestedVersusRoomCode = '';
     mpDisconnect();
   }
@@ -546,7 +565,7 @@ async function setupVersusSession() {
   }
 
   hideVersusPanel();
-  const reconnectCode = requestedVersusRoomCode;
+  const reconnectCode = requestedVersusRoomCode || getLastVersusRoomCode();
   const reconnectSession = reconnectCode ? loadVersusPlayerSession(reconnectCode) : null;
   if (reconnectCode && reconnectSession?.playerKey) {
     try {
@@ -913,6 +932,7 @@ async function handleLeaveVersusRoom() {
   if (!window.confirm('オンライン対戦ルームから退出しますか？')) return;
   clearVersusPlayerKey(versusConnection.code);
   requestedVersusRoomCode = '';
+  setLastVersusRoomCode('');
   await clearVersusConnection(true);
   await switchMode('daily');
 }
