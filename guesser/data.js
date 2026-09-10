@@ -1144,7 +1144,7 @@ const WEAPON_SOURCE_OVERRIDES = {
 "救済の剣": { rarity: 4, weaponType: "両手剣" },
 "シンフォニーの鋳影": { rarity: 4, weaponType: "両手剣" },
  "導炎の源": { rarity: 4, weaponType: "片手剣" },
- "異端を狩る熔刃": { rarity: 4, weaponType: "片手剣" },
+ "異端を狩る熔刀": { rarity: 4, weaponType: "片手剣" },
   "螭龍の剣": { rarity: 4, weaponType: "両手剣" },
   
 };
@@ -1395,7 +1395,7 @@ const weaponReleaseVersionMap = {
   "救済の剣": "7.0",
   "シンフォニーの鋳影": "7.0",
   "導炎の源": "7.0",
-  "異端を狩る熔刃": "7.0",
+  "異端を狩る熔刀": "7.0",
   "螭龍の剣": "1.0",
   "超越の鍵": "Luna VIII (6.7)",
 };
@@ -1493,7 +1493,7 @@ const WEAPON_TO_BREAK_MAT = {
   '純水流華': '純聖な雫の精髄', '久遠流転の大典': '純聖な雫の精髄',
   '白雨心弦': '純聖な雫の精髄',
   // 灼心を捧げる栄光
-  '異端を狩る熔刃': '灼心を捧げる栄光','エズピツァルの笛': '灼心を捧げる栄光', 'ストロングボーン': '灼心を捧げる栄光',
+  '異端を狩る熔刀': '灼心を捧げる栄光','エズピツァルの笛': '灼心を捧げる栄光', 'ストロングボーン': '灼心を捧げる栄光',
   'アースシェイカー': '灼心を捧げる栄光', '千烈の日輪': '灼心を捧げる栄光',
   '砕け散る光輪': '灼心を捧げる栄光', 'サーフィンタイム': '灼心を捧げる栄光',
   '波乗りの旋回': '灼心を捧げる栄光',
@@ -1520,7 +1520,7 @@ const WEAPON_TO_BREAK_MAT = {
   '天光のリュート': '極北の末裔の煌光', '帳の夜曲': '極北の末裔の煌光',
   '月紡ぎの曙光': '極北の末裔の煌光',
  　// 蔵に眠る霊薬の狂宴
-   '氷の吐息': '蔵に眠る霊薬の狂宴',
+   '氷の吐息': '蔵に眠る霊薬の狂宴','白銀の湖を舞う翼': '蔵に眠る霊薬の狂宴',
   // 蒼星軍勢の征服
    '胸中の谺': '蒼星軍勢の征服','霜雪の契': '蒼星軍勢の征服','導炎の源': '蒼星軍勢の征服','救済の剣': '蒼星軍勢の征服',
   // 氷の皇帝の訣別
@@ -1639,8 +1639,8 @@ const WEAPON_ATTRS = {
   '塵と光の七つの誓約':{ rarity: 5, weaponType: '法器', enemyMaterial: '破損した駆動軸',   ascension_stat: '攻撃力',       is_distributed: false },
 
   // ★4 片手剣
-  '異端を狩る溶刃':      { rarity: 5, weaponType: '片手剣', enemyMaterial: '', ascension_stat: '会心率', is_distributed: false },
-  '導炎の源':      { rarity: 5, weaponType: '片手剣', enemyMaterial: '', ascension_stat: '元素熟知', is_distributed: false },
+  '異端を狩る溶刀':      { rarity: 5, weaponType: '片手剣', enemyMaterial: '従戦士の木笛', ascension_stat: '会心率', is_distributed: false },
+  '導炎の源':      { rarity: 5, weaponType: '片手剣', enemyMaterial: '幻光の屑', ascension_stat: '元素熟知', is_distributed: false },
   '月紡ぎの曙光':      { rarity: 4, weaponType: '片手剣', enemyMaterial: '破損した駆動軸',   ascension_stat: '攻撃力', is_distributed: false },
   '静謐の笛':          { rarity: 4, weaponType: '片手剣', enemyMaterial: '破損した徽章',     ascension_stat: '元素チャージ効率', is_distributed: false },
   '厄水の災い':        { rarity: 4, weaponType: '片手剣', enemyMaterial: '従戦士の木笛',     ascension_stat: '攻撃力', is_distributed: true },
@@ -1671,8 +1671,8 @@ const WEAPON_ATTRS = {
   '匣中龍吟':          { rarity: 4, weaponType: '片手剣', enemyMaterial: '宝探しの鴉マーク', ascension_stat: '攻撃力', is_distributed: false },
 
   // ★4 両手剣
-   '救済の剣':      { rarity: 5, weaponType: '両手剣', enemyMaterial: '', ascension_stat: '攻撃力', is_distributed: false },
-   'シンフォニーの鋳影':      { rarity: 5, weaponType: '両手剣', enemyMaterial: '', ascension_stat: '会心率', is_distributed: false },
+   '救済の剣':      { rarity: 5, weaponType: '両手剣', enemyMaterial: '合成獣のコア', ascension_stat: '攻撃力', is_distributed: false },
+   'シンフォニーの鋳影':      { rarity: 5, weaponType: '両手剣', enemyMaterial: '異海の露', ascension_stat: '会心率', is_distributed: false },
   '万能の鍵':          { rarity: 4, weaponType: '両手剣', enemyMaterial: '破損した駆動軸',   ascension_stat: '元素チャージ効率', is_distributed: false },
   '実りの鉤鉈':        { rarity: 4, weaponType: '両手剣', enemyMaterial: '未熟な牙',       ascension_stat: '攻撃力', is_distributed: false },
   'アースシェイカー':  { rarity: 4, weaponType: '両手剣', enemyMaterial: '従戦士の木笛',     ascension_stat: '攻撃力', is_distributed: false },
@@ -1700,8 +1700,8 @@ const WEAPON_ATTRS = {
   '知恵の溶炎':        { rarity: 4, weaponType: '両手剣', enemyMaterial: '異海の露',       ascension_stat: '元素熟知', is_distributed: true },
 
   // ★4 長柄武器
-   '遠望の歌':      { rarity: 5, weaponType: '長柄武器', enemyMaterial: '', ascension_stat: '元素熟知', is_distributed: false },
-   '氷の吐息':      { rarity: 5, weaponType: '長柄武器', enemyMaterial: '', ascension_stat: '元素チャージ効率', is_distributed: false },
+   '遠望の歌':      { rarity: 5, weaponType: '長柄武器', enemyMaterial: '幻光の屑', ascension_stat: '元素熟知', is_distributed: false },
+   '氷の吐息':      { rarity: 5, weaponType: '長柄武器', enemyMaterial: '合成獣のコア', ascension_stat: '元素チャージ効率', is_distributed: false },
   '喜多院十文字槍':    { rarity: 4, weaponType: '長柄武器', enemyMaterial: '宝探しの鴉マーク', ascension_stat: '元素熟知', is_distributed: false },
   '千岩長槍':          { rarity: 4, weaponType: '長柄武器', enemyMaterial: '牢固な矢先',     ascension_stat: '攻撃力', is_distributed: false },
   '聖祭者の輝杖':      { rarity: 4, weaponType: '長柄武器', enemyMaterial: '破損した駆動軸',   ascension_stat: '会心率', is_distributed: false },
@@ -1728,8 +1728,8 @@ const WEAPON_ATTRS = {
   '死闘の槍':          { rarity: 4, weaponType: '長柄武器', enemyMaterial: 'トリックフラワーの蜜', ascension_stat: '会心率', is_distributed: false },
 
   // ★4 弓
-   '霜雪の契':      { rarity: 5, weaponType: '弓', enemyMaterial: '', ascension_stat: '防御力', is_distributed: false },
-   '千鈞懸黎':      { rarity: 5, weaponType: '弓', enemyMaterial: '', ascension_stat: '会心率', is_distributed: false },
+   '霜雪の契':      { rarity: 5, weaponType: '弓', enemyMaterial: '合成獣のコア', ascension_stat: '防御力', is_distributed: false },
+   '千鈞懸黎':      { rarity: 5, weaponType: '弓', enemyMaterial: '新兵の記章', ascension_stat: '会心率', is_distributed: false },
   '虹蛇の雨弦':        { rarity: 4, weaponType: '弓', enemyMaterial: '破損した徽章',     ascension_stat: '元素チャージ効率', is_distributed: true },
   '羅網の針':          { rarity: 4, weaponType: '弓', enemyMaterial: '牢固な矢先',       ascension_stat: '元素チャージ効率', is_distributed: false },
   '冷寂の音':          { rarity: 4, weaponType: '弓', enemyMaterial: '整合の歯車',       ascension_stat: 'HP', is_distributed: true },
@@ -1760,8 +1760,8 @@ const WEAPON_ATTRS = {
   '旧貴族長弓':        { rarity: 4, weaponType: '弓', enemyMaterial: '占いの絵巻',       ascension_stat: '攻撃力', is_distributed: false },
 
   // ★4 法器
-   '胸中の谺':      { rarity: 5, weaponType: '法器', enemyMaterial: '', ascension_stat: '攻撃力', is_distributed: false },
-   '諸王の対局':      { rarity: 5, weaponType: '片手剣', enemyMaterial: '', ascension_stat: '会心率', is_distributed: false },
+   '胸中の谺':      { rarity: 5, weaponType: '法器', enemyMaterial: '幻光の屑', ascension_stat: '攻撃力', is_distributed: false },
+   '諸王の対局':      { rarity: 5, weaponType: '片手剣', enemyMaterial: '色褪せた赤い絹', ascension_stat: '会心率', is_distributed: false },
   '霜辰':              { rarity: 4, weaponType: '法器', enemyMaterial: '破損した徽章',     ascension_stat: '会心ダメージ', is_distributed: false },
   '天光のリュート':    { rarity: 4, weaponType: '法器', enemyMaterial: '破損した徽章',     ascension_stat: '元素チャージ効率', is_distributed: true },
   '烏髄の孤灯':        { rarity: 4, weaponType: '法器', enemyMaterial: '破損した徽章',     ascension_stat: '元素熟知',     is_distributed: false },
@@ -1928,7 +1928,7 @@ const WEAPON_ENEMY_MATERIALS_MAP = {
   "赤角石塵滅砕": "隠獣の指爪", "惡王丸": "隠獣の指爪", "斬波のひれ長": "隠獣の指爪", "神楽の真意": "隠獣の指爪", "誓いの明瞳": "隠獣の指爪", "冬極の白星": "隠獣の指爪",
 
   // 脆い骨片
-  "鉄蜂の刺し": "脆い骨片", "飛天御剣": "脆い骨片", "銜玉の海皇": "脆い骨片", "飛天大御剣": "脆い骨片", "螭龍の剣": "脆い骨片", "古華・試作": "脆い骨片", "破天の槍": "脆い骨片", "千岩長槍": "脆い骨片", "星鎌・試作": "脆い骨片", "黒纓槍": "脆い骨片", "浮世の錠": "脆い骨片", "万国諸海の図譜": "脆い骨片", "果てなき紺碧の唄": "脆い骨片", "リングボウ": "脆い骨片",
+  "千鈞懸黎": "脆い骨片","鉄蜂の刺し": "脆い骨片", "飛天御剣": "脆い骨片", "銜玉の海皇": "脆い骨片", "飛天大御剣": "脆い骨片", "螭龍の剣": "脆い骨片", "古華・試作": "脆い骨片", "破天の槍": "脆い骨片", "千岩長槍": "脆い骨片", "星鎌・試作": "脆い骨片", "黒纓槍": "脆い骨片", "浮世の錠": "脆い骨片", "万国諸海の図譜": "脆い骨片", "果てなき紺碧の唄": "脆い骨片", "リングボウ": "脆い骨片",
 
   // 猟兵の刀
   "斬山の刃": "猟兵の刀", "黒岩の長剣": "猟兵の刀", "匣中龍吟": "猟兵の刀", "暗鉄剣": "猟兵の刀", "千岩古剣": "猟兵の刀", "白影の剣": "猟兵の刀", "和璞鳶": "猟兵の刀", "流月の針": "猟兵の刀", "白纓槍": "猟兵の刀", "黒岩の緋玉": "猟兵の刀", "匣中日月": "猟兵の刀", "翡玉法珠": "猟兵の刀", "落霞": "猟兵の刀", "黒岩の戦弓": "猟兵の刀", "弓蔵": "猟兵の刀", "弾弓": "猟兵の刀",
@@ -1973,7 +1973,7 @@ const WEAPON_ENEMY_MATERIALS_MAP = {
   "静謐の笛": "霜夜の残光", "黒蝕": "霜夜の残光", "夜を紡ぐ天鏡": "霜夜の残光", "烏髄の孤灯": "霜夜の残光", "霜辰": "霜夜の残光",
 
   // 冷えた鱗甲の欠片
-  "知恵の溶炎": "冷えた鱗甲の欠片", "砕け散る光輪": "冷えた鱗甲の欠片", "ヴィヴィッド・ハート": "冷えた鱗甲の欠片",  "冷寂の音": "冷えた鱗甲の欠片",
+  "異端を狩る溶刀": "冷えた鱗甲の欠片", "知恵の溶炎": "冷えた鱗甲の欠片", "砕け散る光輪": "冷えた鱗甲の欠片", "ヴィヴィッド・ハート": "冷えた鱗甲の欠片",  "冷寂の音": "冷えた鱗甲の欠片",
 
   // 折光の胚芽
   "厄水の災い": "折光の胚芽", "蒼耀": "折光の胚芽", "玉響停の御噺": "折光の胚芽", "星鷲の紅き羽": "折光の胚芽", "虹蛇の雨弦": "折光の胚芽",
@@ -1988,7 +1988,7 @@ const WEAPON_ENEMY_MATERIALS_MAP = {
   "ストロングボーン": "砕けた意志の欠片", "サーフィンタイム": "砕けた意志の欠片", "ヤシュチェの環": "砕けた意志の欠片", "波乗りの旋回": "砕けた意志の欠片", "祭星者の眺め": "砕けた意志の欠片",
 
   // 砕けた剣の柄
-  "エズピツァルの笛": "砕けた剣の柄", "赤月のシルエット": "砕けた剣の柄", "ルミドゥースの挽歌": "砕けた剣の柄", "築雲": "砕けた剣の柄",
+  "シンフォニーの鋳影": "砕けた剣の柄","エズピツァルの笛": "砕けた剣の柄", "赤月のシルエット": "砕けた剣の柄", "ルミドゥースの挽歌": "砕けた剣の柄", "築雲": "砕けた剣の柄",
 
   // 翼状の羽鰭
   "砂中の賢者達の問答": "翼状の羽鰭", "鶴鳴の余韻": "翼状の羽鰭", "白雨心弦": "翼状の羽鰭", "チェーンブレイカー": "翼状の羽鰭",
@@ -2006,10 +2006,13 @@ const WEAPON_ENEMY_MATERIALS_MAP = {
   "翠光の裁葉": "毀れた背骨", "葦海の標": "毀れた背骨", "鉄彩の花": "毀れた背骨", "話死合い棒": "毀れた背骨",
 
   // 壊れたプリズム
-  "聖顕の鍵": "壊れたプリズム", "東花坊時雨": "壊れたプリズム", "サイフォスの月明かり": "壊れたプリズム", "千夜に浮かぶ夢": "壊れたプリズム",
+  "諸王の対局": "壊れたプリズム","聖顕の鍵": "壊れたプリズム", "東花坊時雨": "壊れたプリズム", "サイフォスの月明かり": "壊れたプリズム", "千夜に浮かぶ夢": "壊れたプリズム",
     
   // 生命の虚ろな根
- "白銀の湖を舞う翼": "生命の虚ろな根",
+ "白銀の湖を舞う翼": "生命の虚ろな根","霜雪の契": "生命の虚ろな根","遠望の歌": "生命の虚ろな根","救済の剣": "生命の虚ろな根",
+
+  //沈積増生物
+　"胸中の谺": "沈積増生物","氷の吐息": "沈積増生物","導炎の源": "沈積増生物",
 };
 
 // 2. 武器データを1つずつ成形（正規化）する関数
