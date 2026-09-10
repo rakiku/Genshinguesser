@@ -361,10 +361,10 @@ function loadVersusPlayerSession(code) {
   }
 }
 
-function saveVersusPlayerSession(code, playerKey, seat) {
+function saveVersusPlayerSession(code, playerKey, seat, name) {
   if (!code || !playerKey) return;
   try {
-    sessionStorage.setItem(getVersusStorageKey(code), JSON.stringify({ playerKey, seat }));
+    sessionStorage.setItem(getVersusStorageKey(code), JSON.stringify({ playerKey, seat, name }));
   } catch (error) {
     /* noop */
   }
@@ -502,7 +502,8 @@ function finalizeVersusSession(response) {
     playerKey: response.playerKey,
   };
   requestedVersusRoomCode = response.roomCode;
-  saveVersusPlayerSession(response.roomCode, response.playerKey, response.snapshot?.selfSeat);
+  const playerName = response.snapshot?.players?.[response.snapshot?.selfSeat]?.name || '';
+  saveVersusPlayerSession(response.roomCode, response.playerKey, response.snapshot?.selfSeat, playerName);
   handleVersusRoomState(response.snapshot);
 }
 
@@ -549,7 +550,7 @@ async function setupVersusSession() {
     try {
       const response = await mpJoinRoom({
         code: reconnectCode,
-        guestName: '再接続中',
+        guestName: reconnectSession.name || 'プレイヤー',
         playerKey: reconnectSession.playerKey,
         expectedSeat: reconnectSession.seat,
       });

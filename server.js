@@ -55,8 +55,8 @@ app.get('/', staticRateLimit, (_req, res) => {
     res.sendFile(path.join(__dirname, file));
   });
 });
-app.use('/guesser', express.static(path.join(__dirname, 'guesser')));
-app.use('/files', express.static(path.join(__dirname, 'files')));
+app.use('/guesser', staticRateLimit, express.static(path.join(__dirname, 'guesser')));
+app.use('/files', staticRateLimit, express.static(path.join(__dirname, 'files')));
 app.get('/health', (_req, res) => {
   res.json({ ok: true });
 });
@@ -65,6 +65,13 @@ function emitRoomState(room) {
   room.players.forEach(player => {
     if (!player || !player.socketId) return;
     io.to(player.socketId).emit('room:state', manager.buildSnapshot(room, player.key));
+  });
+}
+
+function emitGameEnded(room) {
+  room.players.forEach(player => {
+    if (!player || !player.socketId) return;
+    io.to(player.socketId).emit('game:ended', manager.buildSnapshot(room, player.key));
   });
 }
 
@@ -177,7 +184,7 @@ io.on('connection', socket => {
         if (result.room.status === 'finished') stopRoomTimer(result.room.code);
         emitRoomState(result.room);
         if (result.room.status === 'finished') {
-          io.to(result.room.code).emit('game:ended', manager.buildSnapshot(result.room, playerKey));
+          emitGameEnded(result.room);
         }
       }
       ack({ ok: true, deleted: false });
@@ -200,7 +207,7 @@ io.on('connection', socket => {
       });
       if (result.room.status === 'finished') {
         stopRoomTimer(result.room.code);
-        io.to(result.room.code).emit('game:ended', manager.buildSnapshot(result.room, socket.data.playerKey));
+        emitGameEnded(result.room);
       } else {
         startRoomTimer(result.room.code);
       }
@@ -227,7 +234,7 @@ io.on('connection', socket => {
       });
       stopRoomTimer(room.code);
       emitRoomState(room);
-      io.to(room.code).emit('game:ended', manager.buildSnapshot(room, socket.data.playerKey));
+      emitGameEnded(room);
       ack({ ok: true });
     } catch (error) {
       ack({ ok: false, error: error.message });

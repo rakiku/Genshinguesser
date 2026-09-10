@@ -140,3 +140,19 @@ test('rejoin with expected seat fails fast for stale player keys', () => {
     });
   }, /再接続セッションの復元に失敗しました/);
 });
+
+test('guest rejoin with expected seat also fails fast for stale player keys', () => {
+  const clock = createClock(1_000);
+  const manager = new RoomManager({ now: clock.now, random: () => 0 });
+  const created = manager.createRoom({ hostName: 'P1', genre: 'character' });
+  manager.joinRoom({ code: created.room.code, guestName: 'P2' });
+
+  assert.throws(() => {
+    manager.joinRoom({
+      code: created.room.code,
+      guestName: 'P2',
+      playerKey: 'stale-key',
+      expectedSeat: 1,
+    });
+  }, /再接続セッションの復元に失敗しました/);
+});
