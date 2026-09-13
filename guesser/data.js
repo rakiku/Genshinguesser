@@ -22,7 +22,7 @@ const TALENT_BOOK_GROUPS = {
   '公平': 'fontaine',  '正義': 'fontaine',  '秩序': 'fontaine',
   '焚燼': 'natlan',    '紛争': 'natlan',    '角逐': 'natlan',
   '流浪': 'nodkrai', '楽園': 'nodkrai', '月光': 'nodkrai',
-  '慈愛': 'Snezhnaya', '堅忍': 'Snezhnaya', '栄光': 'Snezhnaya',
+  '慈愛': 'Snezhnaya', '不屈': 'Snezhnaya', '栄光': 'Snezhnaya',
 };
 
 /** 週ボス素材グループ（同一週ボスからのドロップ） */
@@ -1639,8 +1639,8 @@ const WEAPON_ATTRS = {
   '塵と光の七つの誓約':{ rarity: 5, weaponType: '法器', enemyMaterial: '破損した駆動軸',   ascension_stat: '攻撃力',       is_distributed: false },
 
   // ★4 片手剣
-  '異端を狩る溶刀':      { rarity: 5, weaponType: '片手剣', enemyMaterial: '従戦士の木笛', ascension_stat: '会心率', is_distributed: false },
-  '導炎の源':      { rarity: 5, weaponType: '片手剣', enemyMaterial: '幻光の屑', ascension_stat: '元素熟知', is_distributed: false },
+  '異端を狩る溶刃':      { rarity: 4, weaponType: '片手剣', enemyMaterial: '従戦士の木笛', ascension_stat: '会心率', is_distributed: false },
+  '導炎の源':      { rarity: 4, weaponType: '片手剣', enemyMaterial: '幻光の屑', ascension_stat: '元素熟知', is_distributed: false },
   '月紡ぎの曙光':      { rarity: 4, weaponType: '片手剣', enemyMaterial: '破損した駆動軸',   ascension_stat: '攻撃力', is_distributed: false },
   '静謐の笛':          { rarity: 4, weaponType: '片手剣', enemyMaterial: '破損した徽章',     ascension_stat: '元素チャージ効率', is_distributed: false },
   '厄水の災い':        { rarity: 4, weaponType: '片手剣', enemyMaterial: '従戦士の木笛',     ascension_stat: '攻撃力', is_distributed: true },
