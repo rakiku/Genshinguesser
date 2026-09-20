@@ -216,8 +216,8 @@ const CHARACTER_READINGS = {
   "スカーク": ["ｼｼｮ","ししょ","すかーく"],
   "アーロイ": ["あーろい"],
   "旅人": ["たびびと"],
-  "アリョーシャ": ["ありょーしゃ"],
-  "オデット": ["プリンシパル","おでっと"],
+  "アリョーシャ": ["ありょーしゃ", "ありよし"],
+  "オデット": ["ぷりんしぱる","おでっと"],
 };
 
 // ---------------------------------------------------------------------------
@@ -340,6 +340,8 @@ const RAW_CHARACTERS = [
   { name: "サンドローネ", country: "スネージナヤ", weapon: "両手剣", element: "氷", birth_month: "１月", birthday: "1月13日", rarity: ['☆５'], body: "中身女性", role: ["オンフィールドアタッカー"], energy: 60, talent_boss: "守護者・堕天", local_specialty: "探測ユニット・子機", ascension_stat: "会心率", distributed: false, talent_book: "流浪", talent_weekly: "狂人の誓約", special_dish: "スタミナ軽減系", trace: false, costume: false, enemy_material: ["破損した駆動軸"], training_road: false, release_version: "Luna VIII (6.7)" }, 
   { name: "アリョーシャ", country: "スネージナヤ", weapon: "長柄武器", element: "雷", birth_month: "２月", birthday: "2月9日", version: "n.0", rarity: ['☆４'], body: "中身男性", role: ["オフフィールドサポーター","オフフィールドライフキーパー"], energy: 70, talent_boss: "合成獣・フリューゲルレーヴェ", local_specialty: "フロック草", ascension_stat: "元素チャージ効率", distributed: true, talent_book: "堅忍", talent_weekly: "異端の薬瓶", special_dish: "スタミナ軽減系", trace: false, costume: false, enemy_material: ["異種合成魔獣"], training_road: false, release_version: "7.0" },
   { name: "オデット", country: "スネージナヤ", weapon: "片手剣", element: "氷", birth_month: "２月", birthday: "2月20日", version: "n.0", rarity: ['☆５'], body: "中身女性", role: ["オフフィールドアタッカー"], energy: 60, talent_boss: "不滅派生創造物", local_specialty: "フロストフラワー", ascension_stat: "会心ダメージ", distributed: true, talent_book: "慈愛", talent_weekly: "歪曲した枯れ枝", special_dish: "攻撃系", trace: false, costume: false, enemy_material: ["幻造蛍屑"], training_road: false, release_version: "7.0" },
+  { name: "ヴェスナ", country: "スネージナヤ", weapon: "片手剣", element: "風", birth_month: "２月", birthday: "2月14日", version: "n.1", rarity: ['☆５'], body: "中身女性", role: ["オンフィールドアタッカー"], energy: 60, talent_boss: "遊雪の刃", local_specialty: "ザラトイアリャーク", ascension_stat: "HP", distributed: true, talent_book: "栄光", talent_weekly: "冒涜の新芽", special_dish: "防御系", trace: false, costume: false, enemy_material: ["幻光の屑"], training_road: false, release_version: "7.1" },
+  { name: "ヴォジャニーツァ", country: "スネージナヤ", weapon: "法器", element: "水", birth_month: "３月", birthday: "3月29日", version: "n.1", rarity: ['☆５'], body: "中身女性", role: ["オフフィールドサポーター","オフフィールドライフキーパー"], energy: 60, talent_boss: "不滅の副産物", local_specialty: "フロストフラワー", ascension_stat: "HP", distributed: true, talent_book: "不屈", talent_weekly: "狂人の誓約", special_dish: "継続回復系", trace: false, costume: false, enemy_material: ["合成獣のコア"], training_road: false, release_version: "7.1" },
 
   // 旅人（特殊：出題対象外）
   { name: "旅人", country: "例外", weapon: "片手剣", element: "その他", birth_month: "その他", birthday: "なし", rarity: ['☆５'], body: "中身男性/中身女性", role: ["オンフィールドアタッカー"], energy: 60, talent_boss: "", local_specialty: "風車アスター", ascension_stat: "攻撃力", distributed: true, talent_book: "自由", talent_weekly: "", special_dish: "", trace: false, costume: true, enemy_material: [], training_road: false, release_version: "1.0", displayNames: ["空", "蛍"], enabled: false },
@@ -472,6 +474,8 @@ const CHARACTER_BASE_STATS_TEXT = `
 雷電将軍：337、12.907、789
 香菱：225、10.875、669
 魈：349、12.736、799
+ヴォジャニーツァ：108、14.818、484
+ヴェスナ：354、13.262、730
 鹿野院平蔵：225、10.657、684
 `;
 
@@ -733,7 +737,7 @@ const WEAPON_NAME_ALIASES = {
 const WEAPON_READINGS = {
   "「漁獲」": ["ぎょかく"],
   "アモスの弓": ["あもすのゆみ", "かんうもち"],
-  "暗鉄剣": ["あんてつけん"],
+  "暗鉄剣": ["あんてつけん", "おーばーろーど"],
   "異世界旅行記": ["いせかいりょこうき"],
   "果てなき紺碧の唄": ["はてなきこんぺきのうた"],
   "喜多院十文字槍": ["きたいんじゅうもんじやり"],
@@ -742,16 +746,16 @@ const WEAPON_READINGS = {
   "旧貴族大剣": ["きゅうきぞくたいけん"],
   "旧貴族長剣": ["きゅうきぞくちょうけん"],
   "旧貴族秘法録": ["きゅうきぞくひほうろく"],
-  "暁を告げる歴史": ["あかつきをつげるれきし", "うぇんてぃもち"],
+  "暁を告げる歴史": ["あかつきをつげるれきし", "うぇんてぃもち", "えねにき"],
   "桂木斬長正": ["かつらぎざんながまさ"],
   "護摩の杖": ["ごまのつえ", "ふーたおもち"],
   "降臨の剣": ["こうりんのけん"],
   "黒岩の戦弓": ["こくがんのせんきゅう", "こくがんのいくさゆみ"],
   "黒岩の突槍": ["こくがんのとっそう"],
   "黒岩の緋玉": ["こくがんのひぎょく"],
-  "黒剣": ["こっけん"],
+  "黒剣": ["こっけん", "くろさわり"],
   "黒蝕": ["こくしょく", "どぅりんもち"],
-  "黒纓槍": ["こくえいそう"],
+  "黒纓槍": ["こくえいそう", "すらいむやり"],
   "サイフォスの月明かり": ["さいふぉすのつきあかり"],
   "シナバースピンドル": ["しなすぴ","しなばーすぴんどる"],
   "祭礼の弓": ["さいれいのゆみ"],
@@ -763,14 +767,14 @@ const WEAPON_READINGS = {
   "赦罪": ["しゃざい", "くろりんでもち"],
   "終焉を嘆く詩": ["しゅうえんをなげくうた", "しゅうえんゆみ", "うぇんてぃもち"],
   "昭心": ["しょうしん"],
-  "松韻の響く頃": ["しょういんのひびくころ", "えうるあもち"],
-  "真言の匣": ["しんごんのはこ", "ねふぇるもち"],
+  "松韻の響く頃": ["しょういんのひびくころ", "えうるあもち", "まつたけ"],
+  "真言の匣": ["しんごんのはこ", "ねふぇるもち", "せんねんぱずる"],
   "神楽の真意": ["かぐらのしんい", "やえみこもち"],
   "星鷲の紅き羽": ["せいしゅうのあかきはね", "ちゃすかもち"],
-  "静水流転の輝き": ["せいすいるてんのかがやき", "ふりーなもち"],
+  "静水流転の輝き": ["せいすいるてんのかがやき", "ふりーなもち", "おもちゃ"],
   "千岩長槍": ["せんがんながやり"],
-  "千烈の日輪": ["せんれつのにちりん", "まーヴぃかもち"],
-  "船渠剣": ["せんきょけん"],
+  "千烈の日輪": ["せんれつのにちりん", "まーヴぃかもち", "にんじん", "にちりん"],
+  "船渠剣": ["せんきょけん", "りったいきどう", "かったー", "まんじゅうはっさい"],
   "蒼紋の角杯": ["そうもんのかくはい"],
   "息災": ["そくさい", "しんかくもち"],
   "ダークアレイの狩人": ["だーくあれいのかりうど", "だーくあれいのかりゅうど"],
@@ -787,7 +791,7 @@ const WEAPON_READINGS = {
   "天目影打": ["あめのまかげうち"],
   "東花坊時雨": ["とうかぼうしぐれ", "からかさおばけ"],
   "虹蛇の雨弦": ["にじへびのうげん"],
-  "プロスペクタードリル": ["ぷろすぺくたーどりる"],
+  "プロスペクタードリル": ["ぷろすぺくたーどりる", "どりる"],
   "波乱月白経津": ["はらんげっぱくふつ", "かみさとあやともち", "あやともち"],
   "破魔の弓": ["はまのゆみ"],
   "白雨心弦": ["はくうしんげん", "しぐうぃんもち"],
@@ -813,7 +817,7 @@ const WEAPON_READINGS = {
   "ヴィヴィッド・ハート": ["ヴぃヴぃっどはーと", "ヴぁれさもち"],
   "エズピツァルの笛": ["えずぴつぁるのふえ"],
   "サーフィンタイム": ["さーふぃんたいむ", "むあらにもち"],
-  "サーンドルの渡し守": ["さーんどるのわたしもり"],
+  "サーンドルの渡し守": ["さーんどるのわたしもり", "てつぱいぷ"],
   "シャープシューターの誓い": ["しゃーぷしゅーたーのちかい"],
   "ストロングボーン": ["すとろんぐぼーん"],
   "ダークアレイの酒と詩": ["だーくあれいのさけとうた", "だーくあれいのさけとし"],
@@ -851,14 +855,14 @@ const WEAPON_READINGS = {
   "原木刀": ["げんぼくとう"],
   "古華・試作": ["こかしさく"],
   "古祠の瓏": ["こしのろう"],
-  "香りのシンフォニスト": ["かおりのしんふぉにすと", "えすこふぃえもち", "えすこもち"],
+  "香りのシンフォニスト": ["かおりのしんふぉにすと", "えすこふぃえもち", "えすこもち", "ふぉーく"],
   "黒岩の斬刀": ["こくがんのざんとう"],
   "黒岩の長剣": ["こくがんのちょうけん"],
-  "砂中の賢者達の問答": ["さちゅうのけんじゃたちのもんどう"],
+  "砂中の賢者達の問答": ["さちゅうのけんじゃたちのもんどう", "まほうしょうじょ", "すてっき"],
   "災憾": ["さいかん", "ろーえんもち"],
   "砕け散る光輪": ["くだけちるこうりん", "いねふぁもち"],
   "祭星者の眺め": ["さいせいしゃのながめ", "しとらりもち", "ばぁちゃんもち"],
-  "裁断": ["さいだん"],
+  "裁断": ["さいだん", "なヴぃあもち"],
   "三日月の含光": ["みかづきのがんこう", "みかずきのかんこう", "しはくもち"],
   "斬岩・試作": ["ざんがんしさく"],
   "斬山の刃": ["ざんざんのやいば", "ざんさんのやいば"],
@@ -977,6 +981,12 @@ const WEAPON_READINGS = {
   "西風長槍": ["せいふうやり", "せぴゅろすすぴあー"],
   "西風秘典": ["せいふうひてん", "せぴゅろすひてん"],
   "西風猟弓": ["せぴゅろすあろー", "せいふうゆみ"],
+  "銀灯": ["ぎんとう"],
+  "蝶の羽化": ["ちょうのうか", "ヴぇすなもち"],
+  "旋流の讃美歌": ["せんりゅうのさんびか", "ヴぉじゃにーつぁもち"],
+  "風に遊ぶ弦": ["かぜにあそぶげん"],
+  "雪に沈む心": ["ゆきにしずむこころ"],
+  "新たなる枝": ["あらたなるえだ"],
 };
 
 const WEAPON_SOURCE_OVERRIDES = {
@@ -1146,8 +1156,13 @@ const WEAPON_SOURCE_OVERRIDES = {
  "導炎の源": { rarity: 4, weaponType: "片手剣" },
  "異端を狩る熔刀": { rarity: 4, weaponType: "片手剣" },
   "螭龍の剣": { rarity: 4, weaponType: "両手剣" },
-  
-};
+  "蝶の羽化": { rarity: 5, weaponType: "片手剣" },
+  "旋流の讃美歌": { rarity: 5, weaponType: "法器" },
+  "銀灯": { rarity: 4, weaponType: "片手剣" },
+  "新たなる枝": { rarity: 4, weaponType: "片手剣" },
+  "雪に沈む心": { rarity: 4, weaponType: "法器" },
+  "風に遊ぶ弦": { rarity: 4, weaponType: "弓" },
+  };
 
 // 武器の実装バージョンデータの定義
 const weaponReleaseVersionMap = {
@@ -1398,6 +1413,12 @@ const weaponReleaseVersionMap = {
   "異端を狩る熔刀": "7.0",
   "螭龍の剣": "1.0",
   "超越の鍵": "Luna VIII (6.7)",
+  "蝶の羽化": "7.1",
+  "旋流の讃美歌": "7.1",
+  "銀灯": "7.1",
+  "風に遊ぶ弦": "7.1",
+  "雪に沈む心": "7.1",
+  "新たなる枝": "7.1",
 };
 
 
@@ -1430,7 +1451,7 @@ const WEAPON_TO_BREAK_MAT = {
   '銜玉の海皇': '漆黒の隕鉄の塊', '黒纓槍': '漆黒の隕鉄の塊', '破天の槍': '漆黒の隕鉄の塊',
   '護摩の杖': '漆黒の隕鉄の塊', '星鎌・試作': '漆黒の隕鉄の塊', '千岩長槍': '漆黒の隕鉄の塊',
   '万国諸海の図譜': '漆黒の隕鉄の塊', '浮世の錠': '漆黒の隕鉄の塊', 'リングボウ': '漆黒の隕鉄の塊',
-  '落霞': '漆黒の隕鉄の塊', '築雲': '漆黒の隕鉄の塊',
+  '落霞': '漆黒の隕鉄の塊', '築雲': '漆黒の隕鉄の塊','銀灯': '漆黒の隕鉄の塊',
   // 獅牙戦士の理想
   '蒼古なる自由への誓い': '獅牙戦士の理想', '腐食の剣': '獅牙戦士の理想', '旅道の剣': '獅牙戦士の理想',
   '祭礼の剣': '獅牙戦士の理想', '西風大剣': '獅牙戦士の理想', '旧貴族大剣': '獅牙戦士の理想',
@@ -1520,11 +1541,11 @@ const WEAPON_TO_BREAK_MAT = {
   '天光のリュート': '極北の末裔の煌光', '帳の夜曲': '極北の末裔の煌光',
   '月紡ぎの曙光': '極北の末裔の煌光',
  　// 蔵に眠る霊薬の狂宴
-   '氷の吐息': '蔵に眠る霊薬の狂宴','白銀の湖を舞う翼': '蔵に眠る霊薬の狂宴',
+   '氷の吐息': '蔵に眠る霊薬の狂宴','白銀の湖を舞う翼': '蔵に眠る霊薬の狂宴','旋流の讃美歌': '蔵に眠る霊薬の狂宴','新たなる枝': '蔵に眠る霊薬の狂宴',
   // 蒼星軍勢の征服
-   '胸中の谺': '蒼星軍勢の征服','霜雪の契': '蒼星軍勢の征服','導炎の源': '蒼星軍勢の征服','救済の剣': '蒼星軍勢の征服',
+   '胸中の谺': '蒼星軍勢の征服','霜雪の契': '蒼星軍勢の征服','導炎の源': '蒼星軍勢の征服','救済の剣': '蒼星軍勢の征服','蝶の羽化': '蒼星軍勢の征服',
   // 氷の皇帝の訣別
-  '遠望の歌': '氷の皇帝の訣別',
+  '遠望の歌': '氷の皇帝の訣別','風に遊ぶ弦': '氷の皇帝の訣別','雪に沈む心': '氷の皇帝の訣別',
 };
 
 
@@ -1538,12 +1559,12 @@ const WEAPON_TO_BREAK_MAT = {
 // 基礎攻撃力（MAX）マッピング
 const WEAPON_BASE_ATK = {
  741: ['千烈の日輪','山の王の長牙','松韻の響く頃','息災','鶴鳴の余韻','塵と光と七つの誓約'],
-  674: ['白銀の湖を舞う翼','赦罪','風鷹剣','蒼耀','霧切の廻光','天空の傲','裁断','血染めの荒れ地','赤月のシルエット','和璞鳶','天空の脊','天空の翼','暁を告げる歴史','凛流の監視者','天空の巻','トゥライトゥーラの記憶','ヴィヴィッド・ハート','災憾','万能の鍵'],
+  674: ['蝶の羽化','白銀の湖を舞う翼','赦罪','風鷹剣','蒼耀','霧切の廻光','天空の傲','裁断','血染めの荒れ地','赤月のシルエット','和璞鳶','天空の脊','天空の翼','暁を告げる歴史','凛流の監視者','天空の巻','トゥライトゥーラの記憶','ヴィヴィッド・ハート','災憾','万能の鍵'],
   620: ['ダークアレイの閃光','聖祭者の輝杖','斬波のひれ長'],
   608: ['星鋒の剣','黒蝕','蒼古なる自由への誓い','波乱月白経津','天空の刃','斬山の刃','葦海の標','狼の武勲詩','無工の剣','狼の末路','草薙の稲光','砕け散る光輪','ルミドゥースの挽歌','護摩の杖','香りのシンフォニスト','破天の槍','アモスの弓','星鷲の紅き羽','終焉を嘆く詩','冬極の白星','始まりの大魔術','飛来の鳴弦','不滅の月華','碧落の瓏','神楽の真意','四風原典','浮世の錠'],
   565: ['胸中の谺','救済の剣','遠望の歌','黒岩の長剣','厄水の災い','海淵のフィナーレ','月紡ぎの曙光','斬岩・試作','王の近侍','ストロングボーン','「スーパーアルティメット覇王魔剣」','アースシェイカー','森林のレガリア','実りの鉤鉈','鉄彩の花','古華・試作','祭礼の大剣','雪葬の星銀','話死合い棒','旧貴族大剣','流月の針','西風長槍','喜多院十文字槍','千岩長槍','ムーンピアサー','鎮山の釘','プロスペクタードリル','正義の報酬','旧貴族長槍','玉響停の御噺','ダークアレイの狩人','黒岩の戦弓','落霞','トキの嘴','曚雲の月','チェーンブレイカー','レンジゲージ','祭礼の弓','烈日の後嗣','果てなき紺碧の唄','純水流華','白辰の輪','万国諸海の図譜','誓いの明導','旧貴族秘法録','ダークアレイの酒と詩'],
-  542: ['聖顕の鍵','翠光の裁葉','三日月の含光','岩峰を巡る歌','盤岩結緑','静水流転の輝き','有楽御簾切','赤角石塵滅砕','赤砂の杖','若水','霜契の金枝','狩人の道','白雨心弦','千夜に浮かぶ夢','帳の夜曲','真言の匣','祭星者の眺め','寝正月の初晴','サーフィンタイム','久遠流転の大典','夜を紡ぐ天鏡'],
-  510: ['導炎の源','異端を狩る熔刃','シンフォニーの鋳影','氷の吐息','諸王の対局','千鈞懸黎','霜雪の契','腐食の剣','サーンドルの渡し守','鉄蜂の刺し','籠釣瓶一心','匣中龍吟','旧貴族長剣','水仙十字の剣','黒剣','船渠剣','笛の剣','東花坊時雨','降臨の剣','サイフォスの月明かり','惡王丸','黒岩の斬刀','知恵の溶炎','桂木斬長正','千岩古剣','マカイラの水色','雨裁','螭龍の剣','鐘の剣','タイダル・シャドー','白影の剣','狼牙','「漁獲」','黒岩の突槍','フィヨルドの歌','砂中の賢者達の問答','虹の行方','風信の矛','金掘りのシャベル','星鎌・試作','築雲','竭沢','花飾りの羽','幽夜のワルツ','プレデター','澹月・試作','虹蛇の雨弦','旧貴族長弓','弓蔵','冷寂の音','絶弦','蒼翠の狩猟弓','風花の頌歌','静寂の唄','蒼紋の角杯','黒岩の緋玉','霜辰','天光のリュート','西風秘典','冬忍びの実','金珀・試作','ヤシュチェの環','匣中日月','流浪楽章','彷徨える星','満悦の実'],
+  542: ['旋流の讃美歌','聖顕の鍵','翠光の裁葉','三日月の含光','岩峰を巡る歌','盤岩結緑','静水流転の輝き','有楽御簾切','赤角石塵滅砕','赤砂の杖','若水','霜契の金枝','狩人の道','白雨心弦','千夜に浮かぶ夢','帳の夜曲','真言の匣','祭星者の眺め','寝正月の初晴','サーフィンタイム','久遠流転の大典','夜を紡ぐ天鏡'],
+  510: ['銀灯','風に遊ぶ弦','新たなる枝','雪に沈む心','導炎の源','異端を狩る熔刃','シンフォニーの鋳影','氷の吐息','諸王の対局','千鈞懸黎','霜雪の契','腐食の剣','サーンドルの渡し守','鉄蜂の刺し','籠釣瓶一心','匣中龍吟','旧貴族長剣','水仙十字の剣','黒剣','船渠剣','笛の剣','東花坊時雨','降臨の剣','サイフォスの月明かり','惡王丸','黒岩の斬刀','知恵の溶炎','桂木斬長正','千岩古剣','マカイラの水色','雨裁','螭龍の剣','鐘の剣','タイダル・シャドー','白影の剣','狼牙','「漁獲」','黒岩の突槍','フィヨルドの歌','砂中の賢者達の問答','虹の行方','風信の矛','金掘りのシャベル','星鎌・試作','築雲','竭沢','花飾りの羽','幽夜のワルツ','プレデター','澹月・試作','虹蛇の雨弦','旧貴族長弓','弓蔵','冷寂の音','絶弦','蒼翠の狩猟弓','風花の頌歌','静寂の唄','蒼紋の角杯','黒岩の緋玉','霜辰','天光のリュート','西風秘典','冬忍びの実','金珀・試作','ヤシュチェの環','匣中日月','流浪楽章','彷徨える星','満悦の実'],
   454: ['天目影打','シナバースピンドル','西風剣','エズピツァルの笛','祭礼の剣','静謐の笛','西風大剣','銜玉の海皇','携帯型チェンソー','死闘の槍','匣中滅龍','ドラゴンスピア','リングボウ','西風猟弓','破魔の弓','羅網の針','烏髄の孤灯','ドドコの物語','昭心','祭礼の断片','古祠の瓏','波乗りの旋回'],
   448: ['旅道の剣','鉾槍','文使い','シャープシューターの誓い','翡玉法珠','特級の宝玉'],
   440: ['降臨の剣'],
@@ -1557,7 +1578,8 @@ const WEAPON_BASE_ATK = {
 const WEAPON_ATTRS = {
   // ★5 片手剣
   '星鋒の剣':      { rarity: 5, weaponType: '片手剣', enemyMaterial: '', ascension_stat: '会心ダメージ', is_distributed: false },
-  '白銀の湖を舞う翼':      { rarity: 5, weaponType: '片手剣', enemyMaterial: '生命の虚ろな根', ascension_stat: '会心ダメージ', is_distributed: false },
+  '蝶の羽化':      { rarity: 5, weaponType: '片手剣', enemyMaterial: '合成獣のコア', ascension_stat: '会心ダメージ', is_distributed: false },
+  '白銀の湖を舞う翼':      { rarity: 5, weaponType: '片手剣', enemyMaterial: '合成獣のコア', ascension_stat: '会心ダメージ', is_distributed: false },
   '三日月の含光':      { rarity: 5, weaponType: '片手剣', enemyMaterial: '破損した駆動軸', ascension_stat: '会心ダメージ', is_distributed: false },
   '黒蝕':              { rarity: 5, weaponType: '片手剣', enemyMaterial: '破損した駆動軸', ascension_stat: '会心率', is_distributed: false },
   '岩峰を巡る歌':      { rarity: 5, weaponType: '片手剣', enemyMaterial: '未熟な牙',       ascension_stat: '防御力', is_distributed: false },
@@ -1618,6 +1640,7 @@ const WEAPON_ATTRS = {
   '冬極の白星':        { rarity: 5, weaponType: '弓', enemyMaterial: 'フライムの乾核',     ascension_stat: '会心率', is_distributed: false },
 
   // ★5 法器
+  '旋流の讃美歌':  { rarity: 5, weaponType: '法器', enemyMaterial: '沈積片',   ascension_stat: 'HP', is_distributed: false },
   '帳の夜曲':          { rarity: 5, weaponType: '法器', enemyMaterial: '破損した徽章',     ascension_stat: '会心ダメージ', is_distributed: false },
   '真言の匣':          { rarity: 5, weaponType: '法器', enemyMaterial: 'キノコンの胞子',   ascension_stat: '会心ダメージ', is_distributed: false },
   '夜を紡ぐ天鏡':      { rarity: 5, weaponType: '法器', enemyMaterial: '破損した駆動軸',   ascension_stat: '元素熟知',     is_distributed: false },
@@ -1639,6 +1662,8 @@ const WEAPON_ATTRS = {
   '塵と光の七つの誓約':{ rarity: 5, weaponType: '法器', enemyMaterial: '破損した駆動軸',   ascension_stat: '攻撃力',       is_distributed: false },
 
   // ★4 片手剣
+  '新たなる枝':  { rarity: 4, weaponType: '片手剣', enemyMaterial: '合成獣のコア',   ascension_stat: '会心ダメージ', is_distributed: false },
+  '銀灯':  { rarity: 4, weaponType: '片手剣', enemyMaterial: '新兵の記章',   ascension_stat: '会心ダメージ', is_distributed: false },
   '異端を狩る溶刃':      { rarity: 4, weaponType: '片手剣', enemyMaterial: '従戦士の木笛', ascension_stat: '会心率', is_distributed: false },
   '導炎の源':      { rarity: 4, weaponType: '片手剣', enemyMaterial: '幻光の屑', ascension_stat: '元素熟知', is_distributed: false },
   '月紡ぎの曙光':      { rarity: 4, weaponType: '片手剣', enemyMaterial: '破損した駆動軸',   ascension_stat: '攻撃力', is_distributed: false },
@@ -1671,8 +1696,8 @@ const WEAPON_ATTRS = {
   '匣中龍吟':          { rarity: 4, weaponType: '片手剣', enemyMaterial: '宝探しの鴉マーク', ascension_stat: '攻撃力', is_distributed: false },
 
   // ★4 両手剣
-   '救済の剣':      { rarity: 5, weaponType: '両手剣', enemyMaterial: '合成獣のコア', ascension_stat: '攻撃力', is_distributed: false },
-   'シンフォニーの鋳影':      { rarity: 5, weaponType: '両手剣', enemyMaterial: '異海の露', ascension_stat: '会心率', is_distributed: false },
+   '救済の剣':      { rarity: 4, weaponType: '両手剣', enemyMaterial: '合成獣のコア', ascension_stat: '攻撃力', is_distributed: false },
+   'シンフォニーの鋳影':      { rarity: 4, weaponType: '両手剣', enemyMaterial: '異海の露', ascension_stat: '会心率', is_distributed: false },
   '万能の鍵':          { rarity: 4, weaponType: '両手剣', enemyMaterial: '破損した駆動軸',   ascension_stat: '元素チャージ効率', is_distributed: false },
   '実りの鉤鉈':        { rarity: 4, weaponType: '両手剣', enemyMaterial: '未熟な牙',       ascension_stat: '攻撃力', is_distributed: false },
   'アースシェイカー':  { rarity: 4, weaponType: '両手剣', enemyMaterial: '従戦士の木笛',     ascension_stat: '攻撃力', is_distributed: false },
@@ -1700,8 +1725,8 @@ const WEAPON_ATTRS = {
   '知恵の溶炎':        { rarity: 4, weaponType: '両手剣', enemyMaterial: '異海の露',       ascension_stat: '元素熟知', is_distributed: true },
 
   // ★4 長柄武器
-   '遠望の歌':      { rarity: 5, weaponType: '長柄武器', enemyMaterial: '幻光の屑', ascension_stat: '元素熟知', is_distributed: false },
-   '氷の吐息':      { rarity: 5, weaponType: '長柄武器', enemyMaterial: '合成獣のコア', ascension_stat: '元素チャージ効率', is_distributed: false },
+   '遠望の歌':      { rarity: 4, weaponType: '長柄武器', enemyMaterial: '幻光の屑', ascension_stat: '元素熟知', is_distributed: false },
+   '氷の吐息':      { rarity: 4, weaponType: '長柄武器', enemyMaterial: '合成獣のコア', ascension_stat: '元素チャージ効率', is_distributed: false },
   '喜多院十文字槍':    { rarity: 4, weaponType: '長柄武器', enemyMaterial: '宝探しの鴉マーク', ascension_stat: '元素熟知', is_distributed: false },
   '千岩長槍':          { rarity: 4, weaponType: '長柄武器', enemyMaterial: '牢固な矢先',     ascension_stat: '攻撃力', is_distributed: false },
   '聖祭者の輝杖':      { rarity: 4, weaponType: '長柄武器', enemyMaterial: '破損した駆動軸',   ascension_stat: '会心率', is_distributed: false },
@@ -1728,8 +1753,9 @@ const WEAPON_ATTRS = {
   '死闘の槍':          { rarity: 4, weaponType: '長柄武器', enemyMaterial: 'トリックフラワーの蜜', ascension_stat: '会心率', is_distributed: false },
 
   // ★4 弓
-   '霜雪の契':      { rarity: 5, weaponType: '弓', enemyMaterial: '合成獣のコア', ascension_stat: '防御力', is_distributed: false },
-   '千鈞懸黎':      { rarity: 5, weaponType: '弓', enemyMaterial: '新兵の記章', ascension_stat: '会心率', is_distributed: false },
+  '風に遊ぶ弦':  { rarity: 4, weaponType: '弓', enemyMaterial: '合成獣のコア',   ascension_stat: '会心率', is_distributed: false },
+   '霜雪の契':      { rarity: 4, weaponType: '弓', enemyMaterial: '合成獣のコア', ascension_stat: '防御力', is_distributed: false },
+   '千鈞懸黎':      { rarity: 4, weaponType: '弓', enemyMaterial: '新兵の記章', ascension_stat: '会心率', is_distributed: false },
   '虹蛇の雨弦':        { rarity: 4, weaponType: '弓', enemyMaterial: '破損した徽章',     ascension_stat: '元素チャージ効率', is_distributed: true },
   '羅網の針':          { rarity: 4, weaponType: '弓', enemyMaterial: '牢固な矢先',       ascension_stat: '元素チャージ効率', is_distributed: false },
   '冷寂の音':          { rarity: 4, weaponType: '弓', enemyMaterial: '整合の歯車',       ascension_stat: 'HP', is_distributed: true },
@@ -1760,8 +1786,9 @@ const WEAPON_ATTRS = {
   '旧貴族長弓':        { rarity: 4, weaponType: '弓', enemyMaterial: '占いの絵巻',       ascension_stat: '攻撃力', is_distributed: false },
 
   // ★4 法器
-   '胸中の谺':      { rarity: 5, weaponType: '法器', enemyMaterial: '幻光の屑', ascension_stat: '攻撃力', is_distributed: false },
-   '諸王の対局':      { rarity: 5, weaponType: '片手剣', enemyMaterial: '色褪せた赤い絹', ascension_stat: '会心率', is_distributed: false },
+  '雪に沈む心':  { rarity: 4, weaponType: '法器', enemyMaterial: '幻光の屑',   ascension_stat: '会心ダメージ', is_distributed: false },
+   '胸中の谺':      { rarity: 4, weaponType: '法器', enemyMaterial: '幻光の屑', ascension_stat: '攻撃力', is_distributed: false },
+   '諸王の対局':      { rarity: 4, weaponType: '法器', enemyMaterial: '色褪せた赤い絹', ascension_stat: '会心率', is_distributed: false },
   '霜辰':              { rarity: 4, weaponType: '法器', enemyMaterial: '破損した徽章',     ascension_stat: '会心ダメージ', is_distributed: false },
   '天光のリュート':    { rarity: 4, weaponType: '法器', enemyMaterial: '破損した徽章',     ascension_stat: '元素チャージ効率', is_distributed: true },
   '烏髄の孤灯':        { rarity: 4, weaponType: '法器', enemyMaterial: '破損した徽章',     ascension_stat: '元素熟知',     is_distributed: false },
@@ -1928,7 +1955,7 @@ const WEAPON_ENEMY_MATERIALS_MAP = {
   "赤角石塵滅砕": "隠獣の指爪", "惡王丸": "隠獣の指爪", "斬波のひれ長": "隠獣の指爪", "神楽の真意": "隠獣の指爪", "誓いの明瞳": "隠獣の指爪", "冬極の白星": "隠獣の指爪",
 
   // 脆い骨片
-  "千鈞懸黎": "脆い骨片","鉄蜂の刺し": "脆い骨片", "飛天御剣": "脆い骨片", "銜玉の海皇": "脆い骨片", "飛天大御剣": "脆い骨片", "螭龍の剣": "脆い骨片", "古華・試作": "脆い骨片", "破天の槍": "脆い骨片", "千岩長槍": "脆い骨片", "星鎌・試作": "脆い骨片", "黒纓槍": "脆い骨片", "浮世の錠": "脆い骨片", "万国諸海の図譜": "脆い骨片", "果てなき紺碧の唄": "脆い骨片", "リングボウ": "脆い骨片",
+  "銀灯": "脆い骨片","千鈞懸黎": "脆い骨片","鉄蜂の刺し": "脆い骨片", "飛天御剣": "脆い骨片", "銜玉の海皇": "脆い骨片", "飛天大御剣": "脆い骨片", "螭龍の剣": "脆い骨片", "古華・試作": "脆い骨片", "破天の槍": "脆い骨片", "千岩長槍": "脆い骨片", "星鎌・試作": "脆い骨片", "黒纓槍": "脆い骨片", "浮世の錠": "脆い骨片", "万国諸海の図譜": "脆い骨片", "果てなき紺碧の唄": "脆い骨片", "リングボウ": "脆い骨片",
 
   // 猟兵の刀
   "斬山の刃": "猟兵の刀", "黒岩の長剣": "猟兵の刀", "匣中龍吟": "猟兵の刀", "暗鉄剣": "猟兵の刀", "千岩古剣": "猟兵の刀", "白影の剣": "猟兵の刀", "和璞鳶": "猟兵の刀", "流月の針": "猟兵の刀", "白纓槍": "猟兵の刀", "黒岩の緋玉": "猟兵の刀", "匣中日月": "猟兵の刀", "翡玉法珠": "猟兵の刀", "落霞": "猟兵の刀", "黒岩の戦弓": "猟兵の刀", "弓蔵": "猟兵の刀", "弾弓": "猟兵の刀",
@@ -2009,10 +2036,10 @@ const WEAPON_ENEMY_MATERIALS_MAP = {
   "諸王の対局": "壊れたプリズム","聖顕の鍵": "壊れたプリズム", "東花坊時雨": "壊れたプリズム", "サイフォスの月明かり": "壊れたプリズム", "千夜に浮かぶ夢": "壊れたプリズム",
     
   // 生命の虚ろな根
- "白銀の湖を舞う翼": "生命の虚ろな根","霜雪の契": "生命の虚ろな根","遠望の歌": "生命の虚ろな根","救済の剣": "生命の虚ろな根",
+ "白銀の湖を舞う翼": "生命の虚ろな根","霜雪の契": "生命の虚ろな根","遠望の歌": "生命の虚ろな根","救済の剣": "生命の虚ろな根","蝶の羽化": "生命の虚ろな根","雪に沈む心": "生命の虚ろな根","新たなる枝": "生命の虚ろな根",
 
   //沈積増生物
-　"胸中の谺": "沈積増生物","氷の吐息": "沈積増生物","導炎の源": "沈積増生物",
+　"胸中の谺": "沈積増生物","氷の吐息": "沈積増生物","導炎の源": "沈積増生物","風に遊ぶ弦": "沈積増生物","旋流の讃美歌": "沈積増生物",
 };
 
 // 2. 武器データを1つずつ成形（正規化）する関数
