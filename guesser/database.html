@@ -252,61 +252,57 @@
     </div>
 
     <!-- 武器フィルタ（詳細マルチ構成） -->
-<div id="weaponFilters" class="hidden">
-  <div class="filter-grid">
-    <div class="filter-item">
-      <label for="weapon-name-input">名前</label>
-      <input id="weapon-name-input" class="filter-input" type="text" placeholder="名前検索">
+    <div id="weaponFilters" style="display:none;">
+      <div class="filter-grid">
+        <div class="filter-item">
+          <label for="w-name-input">名前</label>
+          <input id="w-name-input" class="filter-input" type="text" placeholder="名前検索">
+        </div>
+        <div class="filter-item">
+          <label for="w-type">武器種</label>
+          <select id="w-type" class="filter-select"><option value="all">すべて</option></select>
+        </div>
+        <div class="filter-item">
+          <label for="w-rarity">レアリティ</label>
+          <select id="w-rarity" class="filter-select"><option value="all">すべて</option></select>
+        </div>
+        <div class="filter-item">
+          <label for="w-ascensionStat">突破ステータス</label>
+          <select id="w-ascensionStat" class="filter-select"><option value="all">すべて</option></select>
+        </div>
+        <div class="filter-item">
+          <label for="w-weaponBreakMaterial">武器突破素材</label>
+          <select id="w-weaponBreakMaterial" class="filter-select"><option value="all">すべて</option></select>
+        </div>
+        <div class="filter-item">
+          <label for="w-enemyMaterial">敵素材</label>
+          <select id="w-enemyMaterial" class="filter-select"><option value="all">すべて</option></select>
+        </div>
+        <div class="filter-item">
+          <label for="w-weaponEnemyMaterial">精鋭素材</label>
+          <select id="w-weaponEnemyMaterial" class="filter-select"><option value="all">すべて</option></select>
+        </div>
+        <div class="filter-item">
+          <label for="w-releaseVersion">実装Ver</label>
+          <select id="w-releaseVersion" class="filter-select"><option value="all">すべて</option></select>
+        </div>
+        <div class="filter-item">
+          <label for="w-distributed">配布武器</label>
+          <select id="w-distributed" class="filter-select">
+            <option value="all">すべて</option>
+            <option value="true">あり</option>
+            <option value="false">なし</option>
+          </select>
+        </div>
+        <div class="filter-item" style="grid-column: 1 / -1;">
+          <label for="weaponQuery">全要素キーワード</label>
+          <input id="weaponQuery" class="filter-input" type="text" placeholder="全項目を対象に検索">
+        </div>
+        <div class="filter-btn-row">
+          <button id="w-reset-btn" class="reset-btn" type="button">フィルターをリセット</button>
+        </div>
+      </div>
     </div>
-    <div class="filter-item">
-      <label for="weapon-type">武器種</label>
-      <select id="weapon-type" class="filter-select"><option value="all">すべて</option></select>
-    </div>
-    <div class="filter-item">
-      <label for="weapon-rarity">レアリティ</label>
-      <select id="weapon-rarity" class="filter-select"><option value="all">すべて</option></select>
-    </div>
-    <div class="filter-item">
-      <label for="weapon-baseAtk">基礎攻撃力</label>
-      <select id="weapon-baseAtk" class="filter-select"><option value="all">すべて</option></select>
-    </div>
-    <div class="filter-item">
-      <label for="weapon-ascensionStat">突破ステータス</label>
-      <select id="weapon-ascensionStat" class="filter-select"><option value="all">すべて</option></select>
-    </div>
-    <div class="filter-item">
-      <label for="weapon-weaponBreakMaterial">武器突破素材</label>
-      <select id="weapon-weaponBreakMaterial" class="filter-select"><option value="all">すべて</option></select>
-    </div>
-    <div class="filter-item">
-      <label for="weapon-enemyMaterial">敵素材</label>
-      <select id="weapon-enemyMaterial" class="filter-select"><option value="all">すべて</option></select>
-    </div>
-    <div class="filter-item">
-      <label for="weapon-weaponEnemyMaterial">精鋭素材</label>
-      <select id="weapon-weaponEnemyMaterial" class="filter-select"><option value="all">すべて</option></select>
-    </div>
-    <div class="filter-item">
-      <label for="weapon-releaseVersion">実装Ver</label>
-      <select id="weapon-releaseVersion" class="filter-select"><option value="all">すべて</option></select>
-    </div>
-    <div class="filter-item">
-      <label for="weapon-distributed">配布武器</label>
-      <select id="weapon-distributed" class="filter-select">
-        <option value="all">すべて</option>
-        <option value="true">あり</option>
-        <option value="false">なし</option>
-      </select>
-    </div>
-    <div class="filter-item" style="grid-column: 1 / -1;">
-      <label for="weapon-keyword">全要素キーワード</label>
-      <input id="weapon-keyword" class="filter-input" type="text" placeholder="全項目を対象に検索">
-    </div>
-    <div class="filter-btn-row">
-      <button id="weaponResetFilterBtn" class="reset-btn">フィルターのリセット</button>
-    </div>
-  </div>
-</div>
 
     <!-- グリッド表示 -->
     <div class="db-grid" id="dbGrid"></div>
@@ -366,6 +362,9 @@
       wType: 'all',
       wRarity: 'all',
       wAscensionStat: 'all',
+      wWeaponBreakMaterial: 'all',
+      wEnemyMaterial: 'all',
+      wWeaponEnemyMaterial: 'all',
       wReleaseVersion: 'all',
       wDistributed: 'all',
       wQuery: ''
@@ -439,6 +438,9 @@
       populateSelect('w-type', jpSort([...new Set(WEAPONS.map(w => w.weaponType))].filter(Boolean)));
       populateSelect('w-rarity', [...new Set(WEAPONS.map(w => w.rarity))].filter(v => v !== undefined).sort((a, b) => b - a).map(String));
       populateSelect('w-ascensionStat', jpSort([...new Set(WEAPONS.map(w => w.ascensionStat))].filter(Boolean)));
+      populateSelect('w-weaponBreakMaterial', jpSort([...new Set(WEAPONS.map(w => w.weaponBreakMaterial))].filter(Boolean)));
+      populateSelect('w-enemyMaterial', jpSort([...new Set(WEAPONS.map(w => w.enemyMaterial))].filter(Boolean)));
+      populateSelect('w-weaponEnemyMaterial', jpSort([...new Set(WEAPONS.map(w => w.weaponEnemyMaterial))].filter(Boolean)));
       
       const wVersions = [...new Set(WEAPONS.map(w => w.releaseVersionLabel))].filter(Boolean).sort((a, b) => parseReleaseVersionNum(a) - parseReleaseVersionNum(b));
       populateSelect('w-releaseVersion', wVersions);
@@ -493,7 +495,7 @@
       });
 
       // 武器側セレクトボックスの監視
-      const wFields = ['type', 'rarity', 'ascensionStat', 'releaseVersion', 'distributed'];
+      const wFields = ['type', 'rarity', 'ascensionStat', 'weaponBreakMaterial', 'enemyMaterial', 'weaponEnemyMaterial', 'releaseVersion', 'distributed'];
       wFields.forEach(field => {
         const id = 'w-' + field;
         const el = document.getElementById(id);
@@ -531,7 +533,7 @@
         if (queryInput) queryInput.value = '';
         activeFilters.charQuery = '';
       } else {
-        const wFields = ['type', 'rarity', 'ascensionStat', 'releaseVersion', 'distributed'];
+        const wFields = ['type', 'rarity', 'ascensionStat', 'weaponBreakMaterial', 'enemyMaterial', 'weaponEnemyMaterial', 'releaseVersion', 'distributed'];
         wFields.forEach(field => {
           const id = 'w-' + field;
           const el = document.getElementById(id);
@@ -596,6 +598,9 @@
           if (activeFilters.wType !== 'all' && w.weaponType !== activeFilters.wType) return false;
           if (activeFilters.wRarity !== 'all' && String(w.rarity) !== activeFilters.wRarity) return false;
           if (activeFilters.wAscensionStat !== 'all' && w.ascensionStat !== activeFilters.wAscensionStat) return false;
+          if (activeFilters.wWeaponBreakMaterial !== 'all' && w.weaponBreakMaterial !== activeFilters.wWeaponBreakMaterial) return false;
+          if (activeFilters.wEnemyMaterial !== 'all' && w.enemyMaterial !== activeFilters.wEnemyMaterial) return false;
+          if (activeFilters.wWeaponEnemyMaterial !== 'all' && w.weaponEnemyMaterial !== activeFilters.wWeaponEnemyMaterial) return false;
           if (activeFilters.wReleaseVersion !== 'all' && w.releaseVersionLabel !== activeFilters.wReleaseVersion) return false;
           if (activeFilters.wDistributed !== 'all' && String(w.isDistributed) !== activeFilters.wDistributed) return false;
           
@@ -701,6 +706,7 @@
         ['配布武器', item.isDistributed ? 'あり' : 'なし'],
         ['武器突破素材', item.weaponBreakMaterial],
         ['敵素材', item.enemyMaterial],
+        ['精鋭素材', item.weaponEnemyMaterial],
         ['実装バージョン', item.releaseVersionLabel],
       ];
     }
