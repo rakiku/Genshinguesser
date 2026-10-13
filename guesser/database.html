@@ -252,45 +252,61 @@
     </div>
 
     <!-- 武器フィルタ（詳細マルチ構成） -->
-    <div id="weaponFilters" style="display:none;">
-      <div class="filter-grid">
-        <div class="filter-item">
-          <label for="w-name-input">名前</label>
-          <input id="w-name-input" class="filter-input" type="text" placeholder="名前検索">
-        </div>
-        <div class="filter-item">
-          <label for="w-type">武器種</label>
-          <select id="w-type" class="filter-select"><option value="all">すべて</option></select>
-        </div>
-        <div class="filter-item">
-          <label for="w-rarity">レアリティ</label>
-          <select id="w-rarity" class="filter-select"><option value="all">すべて</option></select>
-        </div>
-        <div class="filter-item">
-          <label for="w-ascensionStat">突破ステータス</label>
-          <select id="w-ascensionStat" class="filter-select"><option value="all">すべて</option></select>
-        </div>
-        <div class="filter-item">
-          <label for="w-releaseVersion">実装Ver</label>
-          <select id="w-releaseVersion" class="filter-select"><option value="all">すべて</option></select>
-        </div>
-        <div class="filter-item">
-          <label for="w-distributed">配布武器</label>
-          <select id="w-distributed" class="filter-select">
-            <option value="all">すべて</option>
-            <option value="true">あり</option>
-            <option value="false">なし</option>
-          </select>
-        </div>
-        <div class="filter-item">
-          <label for="weaponQuery">全要素キーワード</label>
-          <input id="weaponQuery" class="filter-input" type="text" placeholder="全項目を対象に検索">
-        </div>
-        <div class="filter-btn-row">
-          <button id="w-reset-btn" class="reset-btn" type="button">フィルターをリセット</button>
-        </div>
-      </div>
+<div id="weaponFilters" class="hidden">
+  <div class="filter-grid">
+    <div class="filter-item">
+      <label for="weapon-name-input">名前</label>
+      <input id="weapon-name-input" class="filter-input" type="text" placeholder="名前検索">
     </div>
+    <div class="filter-item">
+      <label for="weapon-type">武器種</label>
+      <select id="weapon-type" class="filter-select"><option value="all">すべて</option></select>
+    </div>
+    <div class="filter-item">
+      <label for="weapon-rarity">レアリティ</label>
+      <select id="weapon-rarity" class="filter-select"><option value="all">すべて</option></select>
+    </div>
+    <div class="filter-item">
+      <label for="weapon-baseAtk">基礎攻撃力</label>
+      <select id="weapon-baseAtk" class="filter-select"><option value="all">すべて</option></select>
+    </div>
+    <div class="filter-item">
+      <label for="weapon-ascensionStat">突破ステータス</label>
+      <select id="weapon-ascensionStat" class="filter-select"><option value="all">すべて</option></select>
+    </div>
+    <div class="filter-item">
+      <label for="weapon-weaponBreakMaterial">武器突破素材</label>
+      <select id="weapon-weaponBreakMaterial" class="filter-select"><option value="all">すべて</option></select>
+    </div>
+    <div class="filter-item">
+      <label for="weapon-enemyMaterial">敵素材</label>
+      <select id="weapon-enemyMaterial" class="filter-select"><option value="all">すべて</option></select>
+    </div>
+    <div class="filter-item">
+      <label for="weapon-weaponEnemyMaterial">精鋭素材</label>
+      <select id="weapon-weaponEnemyMaterial" class="filter-select"><option value="all">すべて</option></select>
+    </div>
+    <div class="filter-item">
+      <label for="weapon-releaseVersion">実装Ver</label>
+      <select id="weapon-releaseVersion" class="filter-select"><option value="all">すべて</option></select>
+    </div>
+    <div class="filter-item">
+      <label for="weapon-distributed">配布武器</label>
+      <select id="weapon-distributed" class="filter-select">
+        <option value="all">すべて</option>
+        <option value="true">あり</option>
+        <option value="false">なし</option>
+      </select>
+    </div>
+    <div class="filter-item" style="grid-column: 1 / -1;">
+      <label for="weapon-keyword">全要素キーワード</label>
+      <input id="weapon-keyword" class="filter-input" type="text" placeholder="全項目を対象に検索">
+    </div>
+    <div class="filter-btn-row">
+      <button id="weaponResetFilterBtn" class="reset-btn">フィルターのリセット</button>
+    </div>
+  </div>
+</div>
 
     <!-- グリッド表示 -->
     <div class="db-grid" id="dbGrid"></div>
