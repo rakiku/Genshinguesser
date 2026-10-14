@@ -980,3 +980,12 @@ a:hover { text-decoration: underline; }
   background: rgba(0,0,0,.65);
   z-index: 200;
 }
+
+.cell-judge {
+  font-size: 0.75rem;
+  font-weight: 700;
+  margin-top: 2px;
+}
+.detail-cell.result-green  .cell-judge { color: #56d364; }
+.detail-cell.result-yellow .cell-judge { color: #e3b341; }
+.detail-cell.result-gray   .cell-judge { color: var(--text-muted); }
