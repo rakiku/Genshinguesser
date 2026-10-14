@@ -8,6 +8,7 @@
 // ---------------------------------------------------------------------------
 // ゲーム状態
 // ---------------------------------------------------------------------------
+let gameStarted = false;
 let gameMode   = 'daily';       // 'daily' | 'endless' | 'challenge' | 'versus'
 let genre      = 'character';   // 'character' | 'weapon'
 let rarityFilter = 'all';       // 'all' | '5' | '4' | '45'
@@ -75,6 +76,8 @@ function parseUrlParams() {
 
 /** イベントバインド */
 function bindEvents() {
+  // スタートボタン
+  document.getElementById('startGameBtn')?.addEventListener('click', handleStartGame);
   // モード切替
   document.querySelectorAll('.mode-btn').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -251,9 +254,11 @@ async function initMode(mode) {
     document.getElementById('resetBtn')?.classList.remove('hidden');
   }
 
-  setInputEnabled(true);
+ gameStarted = false;
+  setInputEnabled(false);
+  document.getElementById('startSection')?.classList.remove('hidden');
   const input = document.getElementById('guessInput');
-  if (input) { input.value = ''; input.focus(); }
+  if (input) { input.value = ''; }
   document.getElementById('resultBanner')?.classList.add('hidden');
 }
 
@@ -1748,5 +1753,43 @@ function clearGuessHistory() {
   const history = document.getElementById('guessHistory');
   if (history) {
     history.innerHTML = '';
+  }
+}
+// ---------------------------------------------------------------------------
+// ゲームスタート処理
+// ---------------------------------------------------------------------------
+async function handleStartGame() {
+  gameStarted = true;
+  document.getElementById('startSection')?.classList.add('hidden');
+  setInputEnabled(true);
+
+  // デイリーモードの場合、保存された状態の復元を試みる
+  if (gameMode === 'daily') {
+    const raw = localStorage.getItem(LS_DAILY_KEY);
+    if (raw) {
+      try {
+        const data = JSON.parse(raw);
+        if (data.date === getTodayString() && data.genre === genre && data.answerId === answer.id) {
+          restoreDailyState();
+          return; // 復元できたら初回ランダム開示はスキップ
+        }
+      } catch (e) { /* ignore */ }
+    }
+  }
+
+  // オンライン対戦の場合
+  if (gameMode === 'versus') {
+    updateVersusInputState();
+    return;
+  }
+
+  // 🏆 チャレンジモード以外の場合、最初にランダムで1つ解答（ハズレのキャラ/武器）を開示して始める
+  if (gameMode !== 'challenge' && guesses.length === 0) {
+    const pool = getPool();
+    const candidates = pool.filter(x => x.id !== answer.id);
+    if (candidates.length > 0) {
+      const initialGuess = candidates[Math.floor(Math.random() * candidates.length)];
+      processGuess(initialGuess, false, { animateSolve: false });
+    }
   }
 }
