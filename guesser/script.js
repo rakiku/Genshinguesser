@@ -655,7 +655,6 @@ function handleVersusRoomState(snapshot) {
   renderVersusStampTimeline();
   updateVersusInfo();
   updateVersusTimerDisplay();
-  ();
 
   if (snapshot.status === 'finished') {
     handleVersusFinishedState(snapshot);
