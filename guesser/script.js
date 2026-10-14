@@ -1783,18 +1783,19 @@ async function handleStartGame() {
     return;
   }
 
-  // 🎮 すべてのモードで最初にランダムで1つ解答を開示して始める（チャレンジも含む）
+  // 🎮 すべてのモード（チャレンジ含む）で最初にランダムで1つ解答を開示して始める
   if (guesses.length === 0) {
     const pool = getPool();
     const candidates = pool.filter(x => x.id !== answer.id);
     if (candidates.length > 0) {
       const initialGuess = candidates[Math.floor(Math.random() * candidates.length)];
-     
       processGuess(initialGuess, false, { animateSolve: false });
-      
+
+      // チャレンジモードの場合は最初の自動オープンで残り回数（ミス許容数）が減らないように補正
       if (gameMode === 'challenge') {
         challengeRemain++;
         updateChallengeInfo();
       }
     }
   }
+}
