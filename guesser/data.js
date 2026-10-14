@@ -1663,7 +1663,7 @@ const WEAPON_ATTRS = {
 
   // ★4 片手剣
   '新たなる枝':  { rarity: 4, weaponType: '片手剣', enemyMaterial: '合成獣のコア',   ascension_stat: '会心ダメージ', is_distributed: false },
-  '銀灯':  { rarity: 4, weaponType: '片手剣', enemyMaterial: '新兵の記章',   ascension_stat: '会心ダメージ', is_distributed: false },
+  '銀灯':  { rarity: 4, weaponType: '片手剣', enemyMaterial: '新兵の記章',   ascension_stat: '会心ダメージ', is_distributed: true },
   '異端を狩る溶刃':      { rarity: 4, weaponType: '片手剣', enemyMaterial: '従戦士の木笛', ascension_stat: '会心率', is_distributed: false },
   '導炎の源':      { rarity: 4, weaponType: '片手剣', enemyMaterial: '幻光の屑', ascension_stat: '元素熟知', is_distributed: false },
   '月紡ぎの曙光':      { rarity: 4, weaponType: '片手剣', enemyMaterial: '破損した駆動軸',   ascension_stat: '攻撃力', is_distributed: false },
