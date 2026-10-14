@@ -989,3 +989,12 @@ a:hover { text-decoration: underline; }
 .detail-cell.result-green  .cell-judge { color: #56d364; }
 .detail-cell.result-yellow .cell-judge { color: #e3b341; }
 .detail-cell.result-gray   .cell-judge { color: var(--text-muted); }
+/* --- スタートボタンエリア --- */
+.start-section {
+  display: flex;
+  flex-direction: column;
+  gap: .5rem;
+}
+.start-section.hidden {
+  display: none !important;
+}
