@@ -1783,13 +1783,18 @@ async function handleStartGame() {
     return;
   }
 
-  // 🏆 チャレンジモード以外の場合、最初にランダムで1つ解答（ハズレのキャラ/武器）を開示して始める
-  if (gameMode !== 'challenge' && guesses.length === 0) {
+  // 🎮 すべてのモードで最初にランダムで1つ解答を開示して始める（チャレンジも含む）
+  if (guesses.length === 0) {
     const pool = getPool();
     const candidates = pool.filter(x => x.id !== answer.id);
     if (candidates.length > 0) {
       const initialGuess = candidates[Math.floor(Math.random() * candidates.length)];
+     
       processGuess(initialGuess, false, { animateSolve: false });
+      
+      if (gameMode === 'challenge') {
+        challengeRemain++;
+        updateChallengeInfo();
+      }
     }
   }
-}
