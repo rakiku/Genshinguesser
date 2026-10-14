@@ -876,11 +876,30 @@ function updateVersusTimerDisplay() {
   timer.textContent = String(versusTimerSeconds).padStart(2, '0');
 }
 
-function updateVersusInputState() {
-  if (gameMode !== 'versus') return;
+unction updateVersusInputState() {
+  if (gameMode !== 'versus') {
+    // 非対戦モードの場合
+    const startSection = document.getElementById('startSection');
+    if (startSection) {
+      startSection.classList.toggle('hidden', gameStarted);
+    }
+    return;
+  }
+
+  // 🌐 オンライン対戦モードの場合
+  const isWaiting = !versusRoomState || versusRoomState.status === 'waiting' || !gameStarted;
+  const isHost = versusSelfIndex === 0;
+  
+  const startSection = document.getElementById('startSection');
+  if (startSection) {
+    // 💡 未開始の状態のとき、Player 1（ホスト）にだけスタートボタンを表示する（Player 2には非表示）
+    startSection.classList.toggle('hidden', !(isWaiting && isHost));
+  }
+
   const canInput = Boolean(
     versusRoomState &&
     versusRoomState.status === 'playing' &&
+    gameStarted &&
     versusSelfIndex === versusTurnIndex
   );
   setInputEnabled(canInput);
@@ -1759,6 +1778,11 @@ function clearGuessHistory() {
 // ゲームスタート処理
 // ---------------------------------------------------------------------------
 async function handleStartGame() {
+  // 🌐 オンライン対戦の場合、Player 1（ホスト）以外はスタートボタンを押せないようにガード
+  if (gameMode === 'versus' && versusSelfIndex !== 0) {
+    return;
+  }
+
   gameStarted = true;
   document.getElementById('startSection')?.classList.add('hidden');
   setInputEnabled(true);
@@ -1777,13 +1801,7 @@ async function handleStartGame() {
     }
   }
 
-  // オンライン対戦の場合
-  if (gameMode === 'versus') {
-    updateVersusInputState();
-    return;
-  }
-
-  // 🎮 すべてのモード（チャレンジ含む）で最初にランダムで1つ解答を開示して始める
+  // 🎮 オンライン対戦を含むすべてのモードで、最初にランダムで1つ解答を開示して始める
   if (guesses.length === 0) {
     const pool = getPool();
     const candidates = pool.filter(x => x.id !== answer.id);
@@ -1791,11 +1809,18 @@ async function handleStartGame() {
       const initialGuess = candidates[Math.floor(Math.random() * candidates.length)];
       processGuess(initialGuess, false, { animateSolve: false });
 
-      // チャレンジモードの場合は最初の自動オープンで残り回数（ミス許容数）が減らないように補正
+      // チャレンジモードの場合は最初の自動オープンで残り回数が減らないように補正
       if (gameMode === 'challenge') {
         challengeRemain++;
         updateChallengeInfo();
       }
     }
+  }
+
+  // オンライン対戦の場合の入力可能判定の更新
+  if (gameMode === 'versus') {
+    updateVersusInputState();
+  }
+}
   }
 }
