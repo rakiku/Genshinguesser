@@ -655,7 +655,7 @@ function handleVersusRoomState(snapshot) {
   renderVersusStampTimeline();
   updateVersusInfo();
   updateVersusTimerDisplay();
-  updateVersusInputState();
+  ();
 
   if (snapshot.status === 'finished') {
     handleVersusFinishedState(snapshot);
@@ -876,7 +876,7 @@ function updateVersusTimerDisplay() {
   timer.textContent = String(versusTimerSeconds).padStart(2, '0');
 }
 
-unction updateVersusInputState() {
+function updateVersusInputState() {
   if (gameMode !== 'versus') {
     // 非対戦モードの場合
     const startSection = document.getElementById('startSection');
@@ -1820,7 +1820,5 @@ async function handleStartGame() {
   // オンライン対戦の場合の入力可能判定の更新
   if (gameMode === 'versus') {
     updateVersusInputState();
-  }
-}
   }
 }
