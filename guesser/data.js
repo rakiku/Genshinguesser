@@ -80,19 +80,19 @@ const LOCAL_SPECIALTY_GROUPS = {
 const ASCENSION_STAT_GROUPS = {
   '会心率': 'crit', '会心ダメージ': 'crit',
   '攻撃力': 'atk', 
-  '物理ダメージ': 'physical_damage',
   'HP': 'hp',
   '防御力': 'def',
   '元素熟知': 'em',
   '元素チャージ効率': 'er',
   '与える治療効果': 'heal',
-  '炎元素ダメージ': 'pyro_dmg',
-  '水元素ダメージ': 'hydro_dmg',
-  '風元素ダメージ': 'anemo_dmg',
-  '雷元素ダメージ': 'electro_dmg',
-  '草元素ダメージ': 'dendro_dmg',
-  '氷元素ダメージ': 'cryo_dmg',
-  '岩元素ダメージ': 'geo_dmg',
+  '炎元素ダメージ': 'element_dmg',   
+  '水元素ダメージ': 'element_dmg',
+  '風元素ダメージ': 'element_dmg',
+  '雷元素ダメージ': 'element_dmg',
+  '草元素ダメージ': 'element_dmg',
+  '氷元素ダメージ': 'element_dmg',
+  '岩元素ダメージ': 'element_dmg',
+  '物理ダメージ': 'element_dmg',
 };
 
 // ---------------------------------------------------------------------------
@@ -2050,6 +2050,8 @@ function normalizeWeapon(raw) {
   const readings = WEAPON_READINGS[raw.name] || [];
   const weaponEnemyMaterial = WEAPON_ENEMY_MATERIALS_MAP[raw.name] || ''; 
 
+  const ascensionStatGroup = ASCENSION_STAT_GROUPS[raw.ascensionStat] || raw.ascensionStat || '';
+
   return {
     id: raw.name,
     name: raw.name,
@@ -2064,6 +2066,7 @@ function normalizeWeapon(raw) {
     enemyMaterial: raw.enemyMaterial,
     weaponEnemyMaterial, 
     ascensionStat: raw.ascensionStat || '',
+    ascensionStatGroup, 
     isDistributed: !!raw.isDistributed,
     iconUrl: `${IMAGE_BASE}/weapons/${encodeURIComponent(raw.name)}.png`,
   };
@@ -2081,10 +2084,10 @@ const WEAPON_HINT_FIELDS = [
   { key: 'baseAtk',                label: '基礎攻撃力',   type: 'numeric', defaultOn: true },
   { key: 'weaponBreakMaterial',    label: '武器突破素材', type: 'group', group: 'weaponBreakMaterialGroup', defaultOn: true },
   { key: 'enemyMaterial',          label: '敵素材',       type: 'exact',   defaultOn: true },
-  { key: 'ascensionStat',          label: '突破ステータス', type: 'exact', defaultOn: false },
+  { key: 'ascensionStat',          label: '突破ステータス', type: 'group', group: 'ascensionStatGroup', defaultOn: false },
   { key: 'isDistributed',          label: '配布武器',     type: 'exact',   defaultOn: false },
-  { key: 'weaponEnemyMaterial',    label: '精鋭素材',     type: 'exact',   defaultOn: true }, // 🟢 この行を追加します
-　{ key: 'releaseVersionNum',      label: '実装Ver',      type: 'numeric', defaultOn: true }, // 🟢 追加しました
+  { key: 'weaponEnemyMaterial',    label: '精鋭素材',     type: 'exact',   defaultOn: true }, 
+　{ key: 'releaseVersionNum',      label: '実装Ver',      type: 'numeric', defaultOn: true }, 
 ];
 
 /**
