@@ -1411,13 +1411,21 @@ function renderGuessRow(entry, rowIndex) {
     if (r.arrow) {
       const arrow = document.createElement('span');
       arrow.className = `arrow arrow-${r.arrow}`;
-      arrow.textContent = r.arrow === 'up' ? ' ▲' : ' ▼';
+      
+      arrow.textContent = r.arrow === 'up' ? ' ↑' : ' ↓'; 
       arrow.setAttribute('aria-label', r.arrow === 'up' ? '正解より低い' : '正解より高い');
       val.appendChild(arrow);
     }
 
     cell.appendChild(label);
     cell.appendChild(val);
+
+    const judgeSymbol = r.result === 'green' ? '◎' : (r.result === 'yellow' ? '△' : '×');
+    const judgeEl = document.createElement('div');
+    judgeEl.className = 'cell-judge';
+    judgeEl.textContent = `判定：${judgeSymbol}`;
+    cell.appendChild(judgeEl);
+
     grid.appendChild(cell);
   });
 
