@@ -259,7 +259,7 @@
     </div>
   </div>
 
-  <!-- 管理者ログ追加モーダル -->
+ <!-- 管理者ログ追加モーダル -->
   <div class="modal-overlay hidden" id="adminLogOverlay" aria-hidden="true"></div>
   <div class="modal hidden" id="adminLogModal" role="dialog" aria-modal="true" aria-labelledby="adminLogTitle">
     <div class="modal-header">
@@ -267,6 +267,14 @@
       <button class="modal-close" id="adminLogClose" aria-label="閉じる">✕</button>
     </div>
     <div class="modal-body">
+      
+      <!-- 👑 新キャラ・武器 先行データ管理ボタンを一番上に配置 -->
+      <div style="margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.1);">
+        <button type="button" class="admin-auth-btn" id="openPreviewModalFromLogBtn" style="background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); width: 100%;">
+          👑 新キャラ・武器 先行データ管理を開く
+        </button>
+      </div>
+
       <p class="admin-note">更新情報の追加・編集・削除ができます。</p>
       <input type="hidden" id="adminLogEditIndex">
       <label>日付<br><input type="date" id="adminLogDate" class="admin-input"></label>
@@ -277,12 +285,6 @@
       </div>
       <div class="admin-news-list" id="adminNewsList" aria-live="polite"></div>
     </div>
-    <!-- 「🛠 更新情報の管理」モーダル内に追加 -->
-<div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.1);">
-  <button type="button" class="admin-auth-btn" id="openPreviewModalFromLogBtn" style="background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);">
-    👑 新キャラ・武器 先行データ管理を開く
-  </button>
-</div>
   </div>
 
   <script src="styles.js"></script>
