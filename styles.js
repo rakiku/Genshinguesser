@@ -407,7 +407,7 @@ function renderAdminNewsList() {
 }
 
 // ---------------------------------------------------------------------------
-// 👑 ビジュアル管理者ダッシュボード機能
+// 👑 ビジュアル管理者ダッシュボード機能（無限ループ防止・パス解決修正版）
 // ---------------------------------------------------------------------------
 function initAdminDashboard() {
   const LS_CUSTOM_PREVIEW_KEY = 'genshin-guesser-custom-previews-v2';
@@ -508,18 +508,46 @@ function initAdminDashboard() {
       `;
       card.title = `${item.name} (${item.isPublished ? '公開中' : '非公開'})`;
 
-      // 🖼️ 画像パスを正しく解決（マスターデータのパス優先、なければ files/日本語名.png）
-      let imgPath = item.iconUrl || `files/${item.name}.png`;
+      // 🖼️ パスの解決:
+      // トップページから見ているため `guesser/` を頭につける必要があるかを自動判定
+      let primaryPath = item.iconUrl || `files/${item.name}.png`;
+      if (primaryPath.startsWith('images/') || primaryPath.startsWith('files/')) {
+        primaryPath = 'guesser/' + primaryPath;
+      }
+      const secondaryPath = `files/${item.name}.png`;
 
-      card.innerHTML = `
-        <div style="position: relative; width: 100%; aspect-ratio: 1; border-radius: 4px; overflow: hidden; background: rgba(0,0,0,0.5);">
-          <img src="${imgPath}" alt="${item.name}" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.src='images/default.png';">
-          <span style="position: absolute; top: 2px; right: 2px; font-size: 9px; background: ${item.isPublished ? '#10b981' : '#ef4444'}; color: #fff; padding: 1px 3px; border-radius: 3px; z-index: 2;">
-            ${item.isPublished ? '公開' : '非公開'}
-          </span>
-        </div>
-        <div style="font-size: 11px; margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #fff;">${item.name}</div>
-      `;
+      const imgEl = document.createElement('img');
+      imgEl.src = primaryPath;
+      imgEl.alt = item.name;
+      imgEl.style.cssText = 'width: 100%; height: 100%; object-fit: contain;';
+
+      // 🛑 無限リクエスト（ループ）を回避する安全な画像フォールバック処理
+      let hasTriedSecondary = false;
+      imgEl.onerror = function() {
+        if (!hasTriedSecondary) {
+          hasTriedSecondary = true;
+          this.src = secondaryPath; // files/日本語名.png を再試行
+        } else {
+          this.onerror = null; // 無限ループを防ぐためエラーハンドラを削除
+          this.style.display = 'none'; // 読み込めない場合は画像を非表示にして文字だけ表示
+        }
+      };
+
+      const imgWrapper = document.createElement('div');
+      imgWrapper.style.cssText = 'position: relative; width: 100%; aspect-ratio: 1; border-radius: 4px; overflow: hidden; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center;';
+      
+      const badge = document.createElement('span');
+      badge.style.cssText = `position: absolute; top: 2px; right: 2px; font-size: 9px; background: ${item.isPublished ? '#10b981' : '#ef4444'}; color: #fff; padding: 1px 3px; border-radius: 3px; z-index: 2;`;
+      badge.textContent = item.isPublished ? '公開' : '非公開';
+
+      const nameLabel = document.createElement('div');
+      nameLabel.style.cssText = 'font-size: 11px; margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #fff;';
+      nameLabel.textContent = item.name;
+
+      imgWrapper.appendChild(imgEl);
+      imgWrapper.appendChild(badge);
+      card.appendChild(imgWrapper);
+      card.appendChild(nameLabel);
 
       card.addEventListener('click', () => loadItemIntoForm(item));
       grid.appendChild(card);
@@ -534,7 +562,6 @@ function initAdminDashboard() {
     document.getElementById('pvGenre').value = adminGenreTab ? adminGenreTab.value : 'character';
     document.getElementById('pvGenre').dispatchEvent(new Event('change'));
 
-    // フォーム内をリセット
     const inputs = document.querySelectorAll('#previewModal input, #previewModal select');
     inputs.forEach(input => {
       if (input.id !== 'pvId' && input.id !== 'pvName' && input.id !== 'pvIsPublished' && input.id !== 'pvGenre' && input.id !== 'adminGenreTab') {
