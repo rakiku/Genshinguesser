@@ -15,12 +15,9 @@ let newsItems = [];
 const ADMIN_CLICK_THRESHOLD = 10;
 const ADMIN_CLICK_WINDOW = 10000; // ms
 
-// ---------------------------------------------------------------------------
-// GitHub API 設定
-// ---------------------------------------------------------------------------
-const GITHUB_OWNER = 'rakiku';         // あなたのGitHubユーザー名
-const GITHUB_REPO  = 'Genshinguesser'; // リポジトリ名
-const GITHUB_PATH  = 'news.json';      // 更新情報を保存するJSONファイルのパス
+const GITHUB_OWNER = 'rakiku';
+const GITHUB_REPO  = 'Genshinguesser';
+const GITHUB_PATH  = 'news.json';
 
 // ---------------------------------------------------------------------------
 // Init
@@ -65,10 +62,7 @@ function bindGenreButtons() {
 }
 
 function buildGameUrl(mode) {
-  const params = new URLSearchParams({
-    mode,
-    genre: selectedGenre,
-  });
+  const params = new URLSearchParams({ mode, genre: selectedGenre });
   if (selectedGenre === 'weapon' && selectedRarity !== 'all') {
     params.set('rarity', selectedRarity);
   }
@@ -76,12 +70,12 @@ function buildGameUrl(mode) {
 }
 
 function updateModeLinks() {
-  const dailyBtn     = document.getElementById('startDailyBtn');
+  const dailyBtn = document.getElementById('startDailyBtn');
   const endlessBtn = document.getElementById('startEndlessBtn');
   const challengeBtn = document.getElementById('startChallengeBtn');
   const versusBtn = document.getElementById('startVersusBtn');
-  if (dailyBtn)     dailyBtn.href     = buildGameUrl('daily');
-  if (endlessBtn)   endlessBtn.href   = buildGameUrl('endless');
+  if (dailyBtn) dailyBtn.href = buildGameUrl('daily');
+  if (endlessBtn) endlessBtn.href = buildGameUrl('endless');
   if (challengeBtn) challengeBtn.href = buildGameUrl('challenge');
   if (versusBtn) versusBtn.href = buildGameUrl('versus');
 }
@@ -182,8 +176,7 @@ function resetAdminLogForm() {
   const editIndex = document.getElementById('adminLogEditIndex');
   const dateInput = document.getElementById('adminLogDate');
   if (dateInput) {
-    const today = new Date().toISOString().slice(0, 10);
-    dateInput.value = today;
+    dateInput.value = new Date().toISOString().slice(0, 10);
   }
   const content = document.getElementById('adminLogContent');
   if (content) content.value = '';
@@ -250,92 +243,20 @@ async function loadNewsFromStorage() {
   try {
     const raw = localStorage.getItem(LS_NEWS_KEY);
     const items = raw ? JSON.parse(raw) : DEFAULT_NEWS_ITEMS;
-    if (!Array.isArray(items) || items.length === 0) {
-      newsItems = [...DEFAULT_NEWS_ITEMS];
-    } else {
-      newsItems = items
-        .filter(item => item && item.date && item.text)
-        .map(item => ({ date: item.date, text: item.text }));
-    }
+    newsItems = Array.isArray(items) && items.length > 0 ? items : [...DEFAULT_NEWS_ITEMS];
   } catch (e) {
     newsItems = [...DEFAULT_NEWS_ITEMS];
   }
   renderNewsList();
-
-  try {
-    const url = `news.json?v=${new Date().getTime()}`;
-    const response = await fetch(url);
-    if (response.ok) {
-      const remoteItems = await response.json();
-      if (Array.isArray(remoteItems) && remoteItems.length > 0) {
-        newsItems = remoteItems;
-        localStorage.setItem(LS_NEWS_KEY, JSON.stringify(newsItems));
-        renderNewsList();
-      }
-    }
-  } catch (err) {
-    console.warn('GitHub上の最新情報の取得に失敗しました。', err);
-  }
 }
 
 async function saveNewsToStorage() {
   localStorage.setItem(LS_NEWS_KEY, JSON.stringify(newsItems));
   renderNewsList();
-
-  let token = localStorage.getItem('github_pat');
-  if (!token) {
-    token = prompt('【初回設定】GitHubのアクセストークン（github_pat_xxxx）を入力してください:');
-    if (!token) {
-      alert('トークン未入力のため、ブラウザのみで保存されました。');
-      return;
-    }
-    localStorage.setItem('github_pat', token.trim());
-  }
-
-  try {
-    const url = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${GITHUB_PATH}`;
-    let sha = null;
-    const res = await fetch(url, { headers: { 'Authorization': `token ${token}` } });
-    if (res.ok) {
-      const data = await res.json();
-      sha = data.sha;
-    }
-
-    const jsonString = JSON.stringify(newsItems, null, 2);
-    const base64Content = btoa(unescape(encodeURIComponent(jsonString)));
-
-    const putRes = await fetch(url, {
-      method: 'PUT',
-      headers: {
-        'Authorization': `token ${token}`,
-        'Accept': 'application/vnd.github.v3+json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        message: 'Update news.json via Admin Panel',
-        content: base64Content,
-        sha: sha
-      })
-    });
-
-    if (putRes.ok) {
-      alert('GitHubへの送信が完了しました！');
-    } else {
-      const errData = await putRes.json();
-      alert('GitHubへの保存に失敗しました: ' + (errData.message || 'Unknown Error'));
-      if (putRes.status === 401 || putRes.status === 403) {
-        localStorage.removeItem('github_pat');
-      }
-    }
-  } catch (err) {
-    console.error('通信エラー:', err);
-    alert('通信に失敗しました。');
-  }
 }
 
-function addNewsItem(date, text, prepend = true) {
-  if (prepend) newsItems.unshift({ date, text });
-  else newsItems.push({ date, text });
+function addNewsItem(date, text) {
+  newsItems.unshift({ date, text });
   renderNewsList();
 }
 
@@ -358,56 +279,25 @@ function renderNewsList() {
   newsItems.forEach(item => {
     const row = document.createElement('div');
     row.className = 'news-item';
-    const dateSpan = document.createElement('span');
-    dateSpan.className = 'news-date';
-    dateSpan.textContent = item.date;
-    const textSpan = document.createElement('span');
-    textSpan.className = 'news-text';
-    textSpan.textContent = item.text;
-    row.appendChild(dateSpan);
-    row.appendChild(textSpan);
+    row.innerHTML = `<span class="news-date">${item.date}</span><span class="news-text">${item.text}</span>`;
     list.appendChild(row);
   });
-  list.classList.toggle('is-scrollable', newsItems.length > 4);
 }
 
 function renderAdminNewsList() {
   const list = document.getElementById('adminNewsList');
   if (!list) return;
   list.innerHTML = '';
-
-  if (newsItems.length === 0) {
-    list.innerHTML = '<p class="admin-news-empty">更新情報はありません。</p>';
-    return;
-  }
-
   newsItems.forEach((item, index) => {
     const row = document.createElement('div');
     row.className = 'admin-news-item';
-    const meta = document.createElement('div');
-    meta.className = 'admin-news-meta';
-    meta.textContent = item.date;
-    const text = document.createElement('div');
-    text.className = 'admin-news-text';
-    text.textContent = item.text;
-    const actions = document.createElement('div');
-    actions.className = 'admin-news-actions';
-    ['edit', 'delete'].forEach(action => {
-      const button = document.createElement('button');
-      button.className = 'admin-news-btn';
-      button.type = 'button';
-      button.dataset.action = action;
-      button.dataset.index = String(index);
-      button.textContent = action === 'edit' ? '編集' : '削除';
-      actions.appendChild(button);
-    });
-    row.append(meta, text, actions);
+    row.innerHTML = `<div class="admin-news-meta">${item.date}</div><div class="admin-news-text">${item.text}</div><div class="admin-news-actions"><button class="admin-news-btn" data-action="edit" data-index="${index}">編集</button><button class="admin-news-btn" data-action="delete" data-index="${index}">削除</button></div>`;
     list.appendChild(row);
   });
 }
 
 // ---------------------------------------------------------------------------
-// 👑 ビジュアル管理者ダッシュボード機能（無限ループ防止・パス解決修正版）
+// 👑 ビジュアル管理者ダッシュボード機能（files/日本語名.png を直接参照）
 // ---------------------------------------------------------------------------
 function initAdminDashboard() {
   const LS_CUSTOM_PREVIEW_KEY = 'genshin-guesser-custom-previews-v2';
@@ -423,39 +313,25 @@ function initAdminDashboard() {
     });
   }
 
-  const previewClose = document.getElementById('previewClose');
-  if (previewClose) {
-    previewClose.addEventListener('click', () => {
-      document.getElementById('previewModal')?.classList.add('hidden');
-      document.getElementById('previewOverlay')?.classList.add('hidden');
-    });
-  }
+  document.getElementById('previewClose')?.addEventListener('click', () => {
+    document.getElementById('previewModal')?.classList.add('hidden');
+    document.getElementById('previewOverlay')?.classList.add('hidden');
+  });
 
-  const previewOverlay = document.getElementById('previewOverlay');
-  if (previewOverlay) {
-    previewOverlay.addEventListener('click', () => {
-      document.getElementById('previewModal')?.classList.add('hidden');
-      document.getElementById('previewOverlay')?.classList.add('hidden');
-    });
-  }
+  document.getElementById('previewOverlay')?.addEventListener('click', () => {
+    document.getElementById('previewModal')?.classList.add('hidden');
+    document.getElementById('previewOverlay')?.classList.add('hidden');
+  });
 
-  const adminGenreTab = document.getElementById('adminGenreTab');
-  if (adminGenreTab) {
-    adminGenreTab.addEventListener('change', () => {
-      renderAdminCardGrid();
-    });
-  }
+  document.getElementById('adminGenreTab')?.addEventListener('change', () => {
+    renderAdminCardGrid();
+  });
 
-  const pvGenre = document.getElementById('pvGenre');
-  if (pvGenre) {
-    pvGenre.addEventListener('change', (e) => {
-      const isChar = e.target.value === 'character';
-      const charGroup = document.getElementById('characterFieldsGroup');
-      const weaponGroup = document.getElementById('weaponFieldsGroup');
-      if (charGroup) charGroup.style.display = isChar ? 'flex' : 'none';
-      if (weaponGroup) weaponGroup.style.display = isChar ? 'none' : 'flex';
-    });
-  }
+  document.getElementById('pvGenre')?.addEventListener('change', (e) => {
+    const isChar = e.target.value === 'character';
+    document.getElementById('characterFieldsGroup').style.display = isChar ? 'flex' : 'none';
+    document.getElementById('weaponFieldsGroup').style.display = isChar ? 'none' : 'flex';
+  });
 
   document.getElementById('addNewItemBtn')?.addEventListener('click', () => {
     clearAdminForm();
@@ -466,8 +342,9 @@ function initAdminDashboard() {
     if (!grid) return;
     grid.innerHTML = '';
 
-    const currentGenre = adminGenreTab ? adminGenreTab.value : 'character';
+    const currentGenre = document.getElementById('adminGenreTab')?.value || 'character';
     
+    // マスターデータの取得
     let masterList = [];
     if (currentGenre === 'character' && typeof CHARACTERS !== 'undefined') {
       masterList = CHARACTERS.map(c => ({ ...c, genre: 'character', isPublished: true, isMaster: true }));
@@ -475,6 +352,7 @@ function initAdminDashboard() {
       masterList = WEAPONS.map(w => ({ ...w, genre: 'weapon', isPublished: true, isMaster: true }));
     }
 
+    // ローカルストレージのカスタムデータの取得
     let customList = [];
     try {
       const raw = localStorage.getItem(LS_CUSTOM_PREVIEW_KEY);
@@ -504,50 +382,21 @@ function initAdminDashboard() {
         padding: 4px;
         text-align: center;
         cursor: pointer;
-        transition: transform 0.1s;
       `;
       card.title = `${item.name} (${item.isPublished ? '公開中' : '非公開'})`;
 
-      // 🖼️ パスの解決:
-      // トップページから見ているため `guesser/` を頭につける必要があるかを自動判定
-      let primaryPath = item.iconUrl || `files/${item.name}.png`;
-      if (primaryPath.startsWith('images/') || primaryPath.startsWith('files/')) {
-        primaryPath = 'guesser/' + primaryPath;
-      }
-      const secondaryPath = `files/${item.name}.png`;
+      // 📁 「files/日本語名.png」を直接読み込む（シンプル＆ストレート）
+      const imgPath = `files/${item.name}.png`;
 
-      const imgEl = document.createElement('img');
-      imgEl.src = primaryPath;
-      imgEl.alt = item.name;
-      imgEl.style.cssText = 'width: 100%; height: 100%; object-fit: contain;';
-
-      // 🛑 無限リクエスト（ループ）を回避する安全な画像フォールバック処理
-      let hasTriedSecondary = false;
-      imgEl.onerror = function() {
-        if (!hasTriedSecondary) {
-          hasTriedSecondary = true;
-          this.src = secondaryPath; // files/日本語名.png を再試行
-        } else {
-          this.onerror = null; // 無限ループを防ぐためエラーハンドラを削除
-          this.style.display = 'none'; // 読み込めない場合は画像を非表示にして文字だけ表示
-        }
-      };
-
-      const imgWrapper = document.createElement('div');
-      imgWrapper.style.cssText = 'position: relative; width: 100%; aspect-ratio: 1; border-radius: 4px; overflow: hidden; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center;';
-      
-      const badge = document.createElement('span');
-      badge.style.cssText = `position: absolute; top: 2px; right: 2px; font-size: 9px; background: ${item.isPublished ? '#10b981' : '#ef4444'}; color: #fff; padding: 1px 3px; border-radius: 3px; z-index: 2;`;
-      badge.textContent = item.isPublished ? '公開' : '非公開';
-
-      const nameLabel = document.createElement('div');
-      nameLabel.style.cssText = 'font-size: 11px; margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #fff;';
-      nameLabel.textContent = item.name;
-
-      imgWrapper.appendChild(imgEl);
-      imgWrapper.appendChild(badge);
-      card.appendChild(imgWrapper);
-      card.appendChild(nameLabel);
+      card.innerHTML = `
+        <div style="position: relative; width: 100%; aspect-ratio: 1; border-radius: 4px; overflow: hidden; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center;">
+          <img src="${imgPath}" alt="${item.name}" style="width: 100%; height: 100%; object-fit: contain;">
+          <span style="position: absolute; top: 2px; right: 2px; font-size: 9px; background: ${item.isPublished ? '#10b981' : '#ef4444'}; color: #fff; padding: 1px 3px; border-radius: 3px; z-index: 2;">
+            ${item.isPublished ? '公開' : '非公開'}
+          </span>
+        </div>
+        <div style="font-size: 11px; margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #fff;">${item.name}</div>
+      `;
 
       card.addEventListener('click', () => loadItemIntoForm(item));
       grid.appendChild(card);
@@ -559,20 +408,18 @@ function initAdminDashboard() {
     document.getElementById('pvId').value = '';
     document.getElementById('pvName').value = '';
     document.getElementById('pvIsPublished').value = 'false';
-    document.getElementById('pvGenre').value = adminGenreTab ? adminGenreTab.value : 'character';
+    document.getElementById('pvGenre').value = document.getElementById('adminGenreTab')?.value || 'character';
     document.getElementById('pvGenre').dispatchEvent(new Event('change'));
 
-    const inputs = document.querySelectorAll('#previewModal input, #previewModal select');
-    inputs.forEach(input => {
-      if (input.id !== 'pvId' && input.id !== 'pvName' && input.id !== 'pvIsPublished' && input.id !== 'pvGenre' && input.id !== 'adminGenreTab') {
+    document.querySelectorAll('#previewModal input, #previewModal select').forEach(input => {
+      if (!['pvId', 'pvName', 'pvIsPublished', 'pvGenre', 'adminGenreTab'].includes(input.id)) {
         input.value = '';
       }
     });
   }
 
   function loadItemIntoForm(item) {
-    const isMaster = item.isMaster;
-    document.getElementById('formTitle').textContent = isMaster ? `✏️ 既存データの変更: ${item.name}` : `✏️ カスタムデータの編集: ${item.name}`;
+    document.getElementById('formTitle').textContent = item.isMaster ? `✏️ 既存データの変更: ${item.name}` : `✏️ カスタムデータの編集: ${item.name}`;
     document.getElementById('pvIsPublished').value = String(item.isPublished !== false);
     document.getElementById('pvGenre').value = item.genre || 'character';
     document.getElementById('pvGenre').dispatchEvent(new Event('change'));
@@ -614,101 +461,90 @@ function initAdminDashboard() {
     }
   }
 
-  const saveBtn = document.getElementById('savePreviewFormBtn');
-  if (saveBtn) {
-    saveBtn.addEventListener('click', () => {
-      const genreVal = document.getElementById('pvGenre')?.value || 'character';
-      const isPublished = document.getElementById('pvIsPublished')?.value === 'true';
-      const id = document.getElementById('pvId')?.value.trim().toLowerCase();
-      const name = document.getElementById('pvName')?.value.trim();
-      const rarity = Number(document.getElementById('pvRarity')?.value || 5);
+  document.getElementById('savePreviewFormBtn')?.addEventListener('click', () => {
+    const genreVal = document.getElementById('pvGenre')?.value || 'character';
+    const isPublished = document.getElementById('pvIsPublished')?.value === 'true';
+    const id = document.getElementById('pvId')?.value.trim().toLowerCase();
+    const name = document.getElementById('pvName')?.value.trim();
+    const rarity = Number(document.getElementById('pvRarity')?.value || 5);
 
-      if (!id || !name) {
-        alert('「ID」と「表示名」は必須です。');
+    if (!id || !name) {
+      alert('「ID」と「表示名」は必須です。');
+      return;
+    }
+
+    const newItem = {
+      id: id,
+      name: name,
+      displayNames: [name, id, name.toLowerCase()],
+      iconUrl: `files/${name}.png`,
+      rarity: rarity,
+      genre: genreVal,
+      isPublished: isPublished,
+    };
+
+    if (genreVal === 'character') {
+      newItem.element = document.getElementById('pvElement')?.value || '炎';
+      newItem.weapon = document.getElementById('pvCharWeapon')?.value.trim() || '';
+      newItem.country = document.getElementById('pvCountry')?.value.trim() || '';
+      newItem.birthday = document.getElementById('pvBirthday')?.value.trim() || '';
+      newItem.bodyType = document.getElementById('pvBodyType')?.value.trim() || '';
+      newItem.baseAtk = document.getElementById('pvCharBaseAtk')?.value.trim() || '';
+      newItem.baseHp = document.getElementById('pvCharBaseHp')?.value.trim() || '';
+      newItem.baseDef = document.getElementById('pvCharBaseDef')?.value.trim() || '';
+      newItem.role = document.getElementById('pvRole')?.value.trim() || '';
+      newItem.energy = Number(document.getElementById('pvEnergy')?.value) || 0;
+      newItem.ascensionStat = document.getElementById('pvAscensionStat')?.value.trim() || '';
+      newItem.specialty = document.getElementById('pvSpecialty')?.value.trim() || '';
+      newItem.talentBoss = document.getElementById('pvTalentBoss')?.value.trim() || '';
+      newItem.talentBook = document.getElementById('pvTalentBook')?.value.trim() || '';
+      newItem.talentWeekly = document.getElementById('pvTalentWeekly')?.value.trim() || '';
+      newItem.enemyMaterial = document.getElementById('pvEnemyMaterial')?.value.trim() || '';
+      newItem.originalDish = document.getElementById('pvOriginalDish')?.value.trim() || '';
+      newItem.isDistributed = document.getElementById('pvIsDistributed')?.value === 'true';
+      newItem.costume = document.getElementById('pvCostume')?.value === 'true';
+      newItem.version = document.getElementById('pvVersion')?.value.trim() || '';
+    } else {
+      newItem.weaponType = document.getElementById('pvWeaponType')?.value || '片手剣';
+      newItem.baseAtk = document.getElementById('pvBaseAtk')?.value.trim() || '';
+      newItem.subStat = document.getElementById('pvSubStat')?.value.trim() || '';
+      newItem.isDistributed = document.getElementById('pvWeaponDistributed')?.value === 'true';
+      newItem.weaponBreakMaterial = document.getElementById('pvWeaponBreak')?.value.trim() || '';
+      newItem.weaponEnemyMaterial = document.getElementById('pvWeaponEnemy')?.value.trim() || '';
+      newItem.weaponEliteMaterial = document.getElementById('pvWeaponElite')?.value.trim() || '';
+      newItem.version = document.getElementById('pvWeaponVersion')?.value.trim() || '';
+    }
+
+    try {
+      const raw = localStorage.getItem(LS_CUSTOM_PREVIEW_KEY);
+      const list = raw ? JSON.parse(raw) : [];
+      const idx = list.findIndex(x => x.id === newItem.id);
+      if (idx >= 0) list[idx] = newItem;
+      else list.push(newItem);
+      localStorage.setItem(LS_CUSTOM_PREVIEW_KEY, JSON.stringify(list));
+      renderAdminCardGrid();
+      alert(`✨ 「${name}」のデータを保存しました！\n（公開設定: ${isPublished ? '公開中 🟢' : '非公開 🔒'}）`);
+    } catch (e) {
+      alert('保存に失敗しました: ' + e.message);
+    }
+  });
+
+  document.getElementById('exportPreviewJsonBtn')?.addEventListener('click', () => {
+    try {
+      const raw = localStorage.getItem(LS_CUSTOM_PREVIEW_KEY);
+      if (!raw || JSON.parse(raw).length === 0) {
+        alert('変更または新規追加されたデータがありません。');
         return;
       }
-
-      const iconUrl = `files/${name}.png`;
-
-      const newItem = {
-        id: id,
-        name: name,
-        displayNames: [name, id, name.toLowerCase()],
-        iconUrl: iconUrl,
-        rarity: rarity,
-        genre: genreVal,
-        isPublished: isPublished,
-      };
-
-      if (genreVal === 'character') {
-        newItem.element = document.getElementById('pvElement')?.value || '炎';
-        newItem.weapon = document.getElementById('pvCharWeapon')?.value.trim() || '';
-        newItem.country = document.getElementById('pvCountry')?.value.trim() || '';
-        newItem.birthday = document.getElementById('pvBirthday')?.value.trim() || '';
-        newItem.bodyType = document.getElementById('pvBodyType')?.value.trim() || '';
-        newItem.baseAtk = document.getElementById('pvCharBaseAtk')?.value.trim() || '';
-        newItem.baseHp = document.getElementById('pvCharBaseHp')?.value.trim() || '';
-        newItem.baseDef = document.getElementById('pvCharBaseDef')?.value.trim() || '';
-        newItem.role = document.getElementById('pvRole')?.value.trim() || '';
-        newItem.energy = Number(document.getElementById('pvEnergy')?.value) || 0;
-        newItem.ascensionStat = document.getElementById('pvAscensionStat')?.value.trim() || '';
-        newItem.specialty = document.getElementById('pvSpecialty')?.value.trim() || '';
-        newItem.talentBoss = document.getElementById('pvTalentBoss')?.value.trim() || '';
-        newItem.talentBook = document.getElementById('pvTalentBook')?.value.trim() || '';
-        newItem.talentWeekly = document.getElementById('pvTalentWeekly')?.value.trim() || '';
-        newItem.enemyMaterial = document.getElementById('pvEnemyMaterial')?.value.trim() || '';
-        newItem.originalDish = document.getElementById('pvOriginalDish')?.value.trim() || '';
-        newItem.isDistributed = document.getElementById('pvIsDistributed')?.value === 'true';
-        newItem.costume = document.getElementById('pvCostume')?.value === 'true';
-        newItem.version = document.getElementById('pvVersion')?.value.trim() || '';
-      } else {
-        newItem.weaponType = document.getElementById('pvWeaponType')?.value || '片手剣';
-        newItem.baseAtk = document.getElementById('pvBaseAtk')?.value.trim() || '';
-        newItem.subStat = document.getElementById('pvSubStat')?.value.trim() || '';
-        newItem.isDistributed = document.getElementById('pvWeaponDistributed')?.value === 'true';
-        newItem.weaponBreakMaterial = document.getElementById('pvWeaponBreak')?.value.trim() || '';
-        newItem.weaponEnemyMaterial = document.getElementById('pvWeaponEnemy')?.value.trim() || '';
-        newItem.weaponEliteMaterial = document.getElementById('pvWeaponElite')?.value.trim() || '';
-        newItem.version = document.getElementById('pvWeaponVersion')?.value.trim() || '';
-      }
-
-      try {
-        const raw = localStorage.getItem(LS_CUSTOM_PREVIEW_KEY);
-        const list = raw ? JSON.parse(raw) : [];
-        const existingIndex = list.findIndex(x => x.id === newItem.id);
-        if (existingIndex >= 0) {
-          list[existingIndex] = newItem;
-        } else {
-          list.push(newItem);
-        }
-        localStorage.setItem(LS_CUSTOM_PREVIEW_KEY, JSON.stringify(list));
-        renderAdminCardGrid();
-        alert(`✨ 「${name}」のデータを保存しました！\n（公開設定: ${isPublished ? '公開中 🟢' : '非公開 🔒'}）`);
-      } catch (e) {
-        alert('保存に失敗しました: ' + e.message);
-      }
-    });
-  }
-
-  const exportBtn = document.getElementById('exportPreviewJsonBtn');
-  if (exportBtn) {
-    exportBtn.addEventListener('click', () => {
-      try {
-        const raw = localStorage.getItem(LS_CUSTOM_PREVIEW_KEY);
-        if (!raw || JSON.parse(raw).length === 0) {
-          alert('変更または新規追加されたデータがありません。');
-          return;
-        }
-        const blob = new Blob([raw], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'custom_characters_weapons.json';
-        a.click();
-        URL.revokeObjectURL(url);
-      } catch (e) {
-        alert('ダウンロードに失敗しました: ' + e.message);
-      }
-    });
-  }
+      const blob = new Blob([raw], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'custom_characters_weapons.json';
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch (e) {
+      alert('ダウンロードに失敗しました: ' + e.message);
+    }
+  });
 }
