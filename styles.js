@@ -432,3 +432,129 @@ function renderAdminNewsList() {
     list.appendChild(row);
   });
 }
+// 👑 更新情報の管理画面から新キャラ・武器管理者モードを開く＆管理機能
+document.addEventListener('DOMContentLoaded', () => {
+  const openBtn = document.getElementById('openPreviewModalFromLogBtn');
+  if (openBtn) {
+    openBtn.addEventListener('click', () => {
+      document.getElementById('adminLogModal')?.classList.add('hidden');
+      document.getElementById('adminLogOverlay')?.classList.add('hidden');
+      document.getElementById('previewModal')?.classList.remove('hidden');
+      document.getElementById('previewOverlay')?.classList.remove('hidden');
+    });
+  }
+
+  const previewClose = document.getElementById('previewClose');
+  if (previewClose) {
+    previewClose.addEventListener('click', () => {
+      document.getElementById('previewModal')?.classList.add('hidden');
+      document.getElementById('previewOverlay')?.classList.add('hidden');
+    });
+  }
+
+  const previewOverlay = document.getElementById('previewOverlay');
+  if (previewOverlay) {
+    previewOverlay.addEventListener('click', () => {
+      document.getElementById('previewModal')?.classList.add('hidden');
+      document.getElementById('previewOverlay')?.classList.add('hidden');
+    });
+  }
+
+  const pvGenre = document.getElementById('pvGenre');
+  if (pvGenre) {
+    pvGenre.addEventListener('change', (e) => {
+      const isChar = e.target.value === 'character';
+      const charGroup = document.getElementById('characterFieldsGroup');
+      const weaponGroup = document.getElementById('weaponFieldsGroup');
+      if (charGroup) charGroup.style.display = isChar ? 'flex' : 'none';
+      if (weaponGroup) weaponGroup.style.display = isChar ? 'none' : 'flex';
+    });
+  }
+
+  const saveBtn = document.getElementById('savePreviewFormBtn');
+  if (saveBtn) {
+    saveBtn.addEventListener('click', () => {
+      const genreVal = document.getElementById('pvGenre')?.value || 'character';
+      const isPublished = document.getElementById('pvIsPublished')?.value === 'true';
+      const id = document.getElementById('pvId')?.value.trim();
+      const name = document.getElementById('pvName')?.value.trim();
+      const iconUrl = document.getElementById('pvIconUrl')?.value.trim();
+      const rarity = Number(document.getElementById('pvRarity')?.value || 5);
+
+      if (!id || !name) {
+        alert('「ID」と「表示名」は必須です。');
+        return;
+      }
+
+      const newItem = {
+        id: id,
+        name: name,
+        displayNames: [name, id, name.toLowerCase()],
+        iconUrl: iconUrl || 'images/default.png',
+        rarity: rarity,
+        genre: genreVal,
+        isPublished: isPublished,
+        bannerType: document.getElementById('pvBannerType')?.value || 'limited',
+        isDistributed: document.getElementById('pvIsDistributed')?.value === 'true',
+      };
+
+      if (genreVal === 'character') {
+        newItem.element = document.getElementById('pvElement')?.value || '炎';
+        newItem.weapon = document.getElementById('pvCharWeapon')?.value.trim() || '';
+        newItem.country = document.getElementById('pvCountry')?.value || 'ナタ';
+        newItem.energy = Number(document.getElementById('pvEnergy')?.value) || 0;
+        newItem.birthMonth = Number(document.getElementById('pvBirthMonth')?.value) || 1;
+        newItem.talentBoss = document.getElementById('pvTalentBoss')?.value.trim() || '';
+        newItem.talentWeekly = document.getElementById('pvTalentWeekly')?.value.trim() || '';
+        newItem.talentBook = document.getElementById('pvTalentBook')?.value.trim() || '';
+        newItem.enemyMaterial = document.getElementById('pvEnemyMaterial')?.value.trim() || '';
+        newItem.costume = document.getElementById('pvCostume')?.value === 'true';
+      } else {
+        newItem.weaponType = document.getElementById('pvWeaponType')?.value || '片手剣';
+        newItem.baseAtk = Number(document.getElementById('pvBaseAtk')?.value) || document.getElementById('pvBaseAtk')?.value || '';
+        newItem.subStat = document.getElementById('pvSubStat')?.value.trim() || '';
+        newItem.weaponBreakMaterial = document.getElementById('pvWeaponBreak')?.value.trim() || '';
+        newItem.weaponEnemyMaterial = document.getElementById('pvWeaponEnemy')?.value.trim() || '';
+      }
+
+      try {
+        const LS_CUSTOM_PREVIEW_KEY = 'genshin-guesser-custom-previews-v2';
+        const raw = localStorage.getItem(LS_CUSTOM_PREVIEW_KEY);
+        const list = raw ? JSON.parse(raw) : [];
+        const existingIndex = list.findIndex(x => x.id === newItem.id);
+        if (existingIndex >= 0) {
+          list[existingIndex] = newItem;
+        } else {
+          list.push(newItem);
+        }
+        localStorage.setItem(LS_CUSTOM_PREVIEW_KEY, JSON.stringify(list));
+        alert(`✨ 「${name}」のデータを保存しました！（公開設定: ${isPublished ? '公開中' : '非公開'}）`);
+      } catch (e) {
+        alert('保存に失敗しました: ' + e.message);
+      }
+    });
+  }
+
+  const exportBtn = document.getElementById('exportPreviewJsonBtn');
+  if (exportBtn) {
+    exportBtn.addEventListener('click', () => {
+      try {
+        const LS_CUSTOM_PREVIEW_KEY = 'genshin-guesser-custom-previews-v2';
+        const raw = localStorage.getItem(LS_CUSTOM_PREVIEW_KEY);
+        if (!raw || JSON.parse(raw).length === 0) {
+          alert('保存されているデータがありません。');
+          return;
+        }
+        const blob = new Blob([raw], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'custom_characters_weapons.json';
+        a.click();
+        URL.revokeObjectURL(url);
+      } catch (e) {
+        alert('ダウンロードに失敗しました: ' + e.message);
+      }
+    });
+  }
+});
