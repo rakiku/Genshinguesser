@@ -17,7 +17,6 @@
     <div class="header-inner">
       <span class="header-logo"> 原神 Guesser</span>
       <nav class="header-nav">
-        <!-- 🟢 配信者の方へボタンを追加（ヘッダー） -->
         <button class="nav-btn" id="streamerBtn">配信者の方へ</button>
         <button class="nav-btn" id="howToBtn">遊び方</button>
         <button class="nav-btn" id="aboutBtn">このサイトについて</button>
@@ -86,7 +85,6 @@
           <span class="btn-icon">📚</span>
           <span class="btn-text">データベース</span>
         </a>
-        <!-- 🟢 配信者の方へボタンを追加（メインメニュー） -->
         <button class="sub-btn help-btn" id="streamerBtn2" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
           <span class="btn-icon">🎥</span>
           <span class="btn-text">配信者の方へ</span>
@@ -160,7 +158,6 @@
       <span class="footer-sep">|</span>
       <a href="faq.html" class="footer-link">FAQ</a>
       <span class="footer-sep">|</span>
-      <!-- 🟢 配信者の方へボタンを追加（フッター） -->
       <button class="footer-link-btn" id="streamerFooterBtn">配信者の方へ</button>
       <span class="footer-sep">|</span>
       <button class="footer-link-btn" id="howToFooterBtn">遊び方</button>
@@ -170,7 +167,7 @@
     <p class="footer-copy">原神Guesser — ファンメイド非公式サイト。原神は miHoYo / HoYoverse の登録商標です。</p>
   </footer>
 
-  <!-- 🟢 配信者向け注意事項モーダルを追加 -->
+  <!-- 配信者向け注意事項モーダル -->
   <div class="modal-overlay hidden" id="streamerOverlay" aria-hidden="true"></div>
   <div class="modal hidden" id="streamerModal" role="dialog" aria-modal="true" aria-labelledby="streamerTitle">
     <div class="modal-header">
@@ -253,13 +250,13 @@
       <button class="modal-close" id="adminAuthClose" aria-label="閉じる">✕</button>
     </div>
     <div class="modal-body">
-      <input type="password" id="adminPasswordInput" placeholder="４桁の管理者パスワードを入力" class="admin-input">
+      <input type="password" id="adminPasswordInput" placeholder="管理者パスワードを入力" class="admin-input">
       <button class="admin-auth-btn" id="adminAuthBtn">認証</button>
       <p class="admin-error hidden" id="adminAuthError">パスワードが違います</p>
     </div>
   </div>
 
- <!-- 管理者ログ追加モーダル -->
+  <!-- 管理者ログ追加モーダル -->
   <div class="modal-overlay hidden" id="adminLogOverlay" aria-hidden="true"></div>
   <div class="modal hidden" id="adminLogModal" role="dialog" aria-modal="true" aria-labelledby="adminLogTitle">
     <div class="modal-header">
@@ -287,210 +284,221 @@
     </div>
   </div>
 
-  <script src="styles.js"></script>
-
-<!-- 新キャラ・武器 詳細データ管理モーダル（ビジュアルダッシュボード版） -->
-<div class="modal-overlay hidden" id="previewOverlay" aria-hidden="true"></div>
-<div class="modal hidden" id="previewModal" role="dialog" aria-modal="true" aria-labelledby="previewTitle" style="max-width: 900px; width: 95%;">
-  <div class="modal-header">
-    <h2 class="modal-title" id="previewTitle">👑 新キャラ・武器 ビジュアル管理者ダッシュボード</h2>
-    <button class="modal-close" id="previewClose" aria-label="閉じる">✕</button>
-  </div>
-  <div class="modal-body" style="display: flex; gap: 20px; max-height: 75vh; overflow: hidden; flex-wrap: wrap;">
-    
-    <!-- 左側：キャラクター・武器のアイコン一覧（1枚目のイメージ） -->
-    <div style="flex: 1; min-width: 280px; display: flex; flex-direction: column; border-right: 1px solid rgba(255,255,255,0.1); padding-right: 15px;">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-        <h3 style="font-size: 16px; margin: 0;">登録データ一覧</h3>
-        <button type="button" class="admin-auth-btn" id="addNewItemBtn" style="padding: 4px 10px; font-size: 12px; background: #2563eb;">＋ 新規追加</button>
-      </div>
-      <div style="margin-bottom: 10px;">
-        <select id="adminGenreTab" class="modal-select admin-input" style="font-size: 13px;">
-          <option value="character">キャラクター一覧</option>
-          <option value="weapon">武器一覧</option>
-        </select>
-      </div>
-      <!-- アイコンが並ぶグリッド領域 -->
-      <div id="adminCardGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(75px, 1fr)); gap: 10px; overflow-y: auto; max-height: 55vh; padding: 4px;">
-        <!-- 動的にアイコンカードが生成されます -->
-      </div>
+  <!-- 新キャラ・武器 詳細データ管理モーダル（ビジュアルダッシュボード版） -->
+  <div class="modal-overlay hidden" id="previewOverlay" aria-hidden="true"></div>
+  <div class="modal hidden" id="previewModal" role="dialog" aria-modal="true" aria-labelledby="previewTitle" style="max-width: 900px; width: 95%;">
+    <div class="modal-header">
+      <h2 class="modal-title" id="previewTitle">👑 新キャラ・武器 ビジュアル管理者ダッシュボード</h2>
+      <button class="modal-close" id="previewClose" aria-label="閉じる">✕</button>
     </div>
-
-    <!-- 右側：詳細データ編集フォーム（2枚目の詳細カードのイメージ） -->
-    <div style="flex: 1.5; min-width: 320px; display: flex; flex-direction: column; overflow-y: auto; max-height: 72vh; padding-right: 5px;">
-      <h3 id="formTitle" style="font-size: 16px; margin-top: 0; color: #4ade80;">✏️ 詳細データの編集</h3>
+    <div class="modal-body" style="display: flex; gap: 20px; max-height: 75vh; overflow: hidden; flex-wrap: wrap;">
       
-      <div class="settings-list" style="display: flex; flex-direction: column; gap: 12px;">
+      <!-- 左側：キャラクター・武器のアイコン一覧 -->
+      <div style="flex: 1; min-width: 280px; display: flex; flex-direction: column; border-right: 1px solid rgba(255,255,255,0.1); padding-right: 15px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+          <h3 style="font-size: 16px; margin: 0;">登録データ一覧</h3>
+          <button type="button" class="admin-auth-btn" id="addNewItemBtn" style="padding: 4px 10px; font-size: 12px; background: #2563eb;">＋ 新規追加</button>
+        </div>
+        <div style="margin-bottom: 10px;">
+          <select id="adminGenreTab" class="modal-select admin-input" style="font-size: 13px;">
+            <option value="character">キャラクター一覧</option>
+            <option value="weapon">武器一覧</option>
+          </select>
+        </div>
+        <!-- アイコンが並ぶグリッド領域 -->
+        <div id="adminCardGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(75px, 1fr)); gap: 10px; overflow-y: auto; max-height: 55vh; padding: 4px;">
+          <!-- 動的にアイコンカードが生成されます -->
+        </div>
+      </div>
+
+      <!-- 右側：詳細データ編集フォーム -->
+      <div style="flex: 1.5; min-width: 320px; display: flex; flex-direction: column; overflow-y: auto; max-height: 72vh; padding-right: 5px;">
+        <h3 id="formTitle" style="font-size: 16px; margin-top: 0; color: #4ade80;">✏️ 詳細データの編集</h3>
         
-        <!-- 公開設定 -->
-        <div class="form-row" style="background: rgba(255,255,255,0.05); padding: 10px; border-radius: 6px; display: flex; justify-content: space-between; align-items: center;">
-          <label style="font-weight: bold; color: #4ade80;">📢 公開する (チェックで全体に反映):</label>
-          <select id="pvIsPublished" class="modal-select admin-input" style="width: 140px;">
-            <option value="true">はい（公開する）</option>
-            <option value="false" selected>いいえ（非公開）</option>
-          </select>
-        </div>
+        <div class="settings-list" style="display: flex; flex-direction: column; gap: 12px;">
+          
+          <!-- 公開設定 -->
+          <div class="form-row" style="background: rgba(255,255,255,0.05); padding: 10px; border-radius: 6px; display: flex; justify-content: space-between; align-items: center;">
+            <label style="font-weight: bold; color: #4ade80;">📢 公開する (チェックで全体に反映):</label>
+            <select id="pvIsPublished" class="modal-select admin-input" style="width: 140px;">
+              <option value="true">はい（公開する）</option>
+              <option value="false" selected>いいえ（非公開）</option>
+            </select>
+          </div>
 
-        <!-- 基本情報 -->
-        <div class="form-row">
-          <label>ID (半角英字 / filesの画像名に対応):</label>
-          <input type="text" id="pvId" class="admin-input" placeholder="例: mavuika (files/mavuika.png)">
-        </div>
-        <div class="form-row">
-          <label>表示名 (日本語名):</label>
-          <input type="text" id="pvName" class="admin-input" placeholder="例: マヴィカ">
-        </div>
-        <div class="form-row">
-          <label>レアリティ:</label>
-          <select id="pvRarity" class="modal-select admin-input">
-            <option value="5">★5</option>
-            <option value="4">★4</option>
-          </select>
-        </div>
+          <!-- 基本情報 -->
+          <div class="form-row">
+            <label>ID (半角英字):</label>
+            <input type="text" id="pvId" class="admin-input" placeholder="例: mavuika">
+          </div>
+          <div class="form-row">
+            <label>表示名 (日本語名 / 画像名に対応):</label>
+            <input type="text" id="pvName" class="admin-input" placeholder="例: マーヴィカ">
+          </div>
+          <div class="form-row">
+            <label>ジャンル:</label>
+            <select id="pvGenre" class="modal-select admin-input">
+              <option value="character">キャラクター</option>
+              <option value="weapon">武器</option>
+            </select>
+          </div>
+          <div class="form-row">
+            <label>レアリティ:</label>
+            <select id="pvRarity" class="modal-select admin-input">
+              <option value="5">★5</option>
+              <option value="4">★4</option>
+            </select>
+          </div>
 
-        <!-- キャラクター専用項目 -->
-        <div id="characterFieldsGroup" style="display: flex; flex-direction: column; gap: 12px;">
-          <div class="form-row">
-            <label>元素:</label>
-            <select id="pvElement" class="modal-select admin-input">
-              <option value="炎">炎</option><option value="水">水</option><option value="風">風</option>
-              <option value="雷">雷</option><option value="草">草</option><option value="氷">氷</option><option value="岩">岩</option>
-            </select>
+          <!-- キャラクター専用項目 -->
+          <div id="characterFieldsGroup" style="display: flex; flex-direction: column; gap: 12px;">
+            <div class="form-row">
+              <label>元素:</label>
+              <select id="pvElement" class="modal-select admin-input">
+                <option value="炎">炎</option><option value="水">水</option><option value="風">風</option>
+                <option value="雷">雷</option><option value="草">草</option><option value="氷">氷</option><option value="岩">岩</option>
+              </select>
+            </div>
+            <div class="form-row">
+              <label>武器種:</label>
+              <input type="text" id="pvCharWeapon" class="admin-input" placeholder="例: 両手剣">
+            </div>
+            <div class="form-row">
+              <label>所属 (国):</label>
+              <input type="text" id="pvCountry" class="admin-input" placeholder="例: ナタ">
+            </div>
+            <div class="form-row">
+              <label>誕生日:</label>
+              <input type="text" id="pvBirthday" class="admin-input" placeholder="例: 7月1日">
+            </div>
+            <div class="form-row">
+              <label>体型:</label>
+              <input type="text" id="pvBodyType" class="admin-input" placeholder="例: 長身女性">
+            </div>
+            <div class="form-row">
+              <label>基礎攻撃力:</label>
+              <input type="text" id="pvCharBaseAtk" class="admin-input" placeholder="例: 335">
+            </div>
+            <div class="form-row">
+              <label>基礎HP:</label>
+              <input type="text" id="pvCharBaseHp" class="admin-input" placeholder="例: 13,449">
+            </div>
+            <div class="form-row">
+              <label>基礎防御力:</label>
+              <input type="text" id="pvCharBaseDef" class="admin-input" placeholder="例: 759">
+            </div>
+            <div class="form-row">
+              <label>役割:</label>
+              <input type="text" id="pvRole" class="admin-input" placeholder="例: メインアタッカー">
+            </div>
+            <div class="form-row">
+              <label>元素エネルギー:</label>
+              <input type="number" id="pvEnergy" class="admin-input" placeholder="例: 70">
+            </div>
+            <div class="form-row">
+              <label>突破ステータス:</label>
+              <input type="text" id="pvAscensionStat" class="admin-input" placeholder="例: 会心ダメージ">
+            </div>
+            <div class="form-row">
+              <label>特産品:</label>
+              <input type="text" id="pvSpecialty" class="admin-input" placeholder="例: 特産品名">
+            </div>
+            <div class="form-row">
+              <label>突破ボス素材:</label>
+              <input type="text" id="pvTalentBoss" class="admin-input" placeholder="例: ボス素材名">
+            </div>
+            <div class="form-row">
+              <label>天賦本:</label>
+              <input type="text" id="pvTalentBook" class="admin-input" placeholder="例: 焚刃など">
+            </div>
+            <div class="form-row">
+              <label>週ボス素材:</label>
+              <input type="text" id="pvTalentWeekly" class="admin-input" placeholder="例: 週ボス素材名">
+            </div>
+            <div class="form-row">
+              <label>敵素材 (一般):</label>
+              <input type="text" id="pvEnemyMaterial" class="admin-input" placeholder="例: 敵素材名">
+            </div>
+            <div class="form-row">
+              <label>オリジナル料理:</label>
+              <input type="text" id="pvOriginalDish" class="admin-input" placeholder="例: 料理名">
+            </div>
+            <div class="form-row">
+              <label>配布キャラ:</label>
+              <select id="pvIsDistributed" class="modal-select admin-input">
+                <option value="false">いいえ</option>
+                <option value="true">はい</option>
+              </select>
+            </div>
+            <div class="form-row">
+              <label>衣装:</label>
+              <select id="pvCostume" class="modal-select admin-input">
+                <option value="false">なし</option>
+                <option value="true">あり</option>
+              </select>
+            </div>
+            <div class="form-row">
+              <label>実装バージョン:</label>
+              <input type="text" id="pvVersion" class="admin-input" placeholder="例: 5.3">
+            </div>
           </div>
-          <div class="form-row">
-            <label>武器種:</label>
-            <input type="text" id="pvCharWeapon" class="admin-input" placeholder="例: 両手剣">
-          </div>
-          <div class="form-row">
-            <label>所属 (国):</label>
-            <input type="text" id="pvCountry" class="admin-input" placeholder="例: ナタ">
-          </div>
-          <div class="form-row">
-            <label>誕生日:</label>
-            <input type="text" id="pvBirthday" class="admin-input" placeholder="例: 7月1日">
-          </div>
-          <div class="form-row">
-            <label>体型:</label>
-            <input type="text" id="pvBodyType" class="admin-input" placeholder="例: 長身女性">
-          </div>
-          <div class="form-row">
-            <label>基礎攻撃力:</label>
-            <input type="text" id="pvCharBaseAtk" class="admin-input" placeholder="例: 335">
-          </div>
-          <div class="form-row">
-            <label>基礎HP:</label>
-            <input type="text" id="pvCharBaseHp" class="admin-input" placeholder="例: 13,449">
-          </div>
-          <div class="form-row">
-            <label>基礎防御力:</label>
-            <input type="text" id="pvCharBaseDef" class="admin-input" placeholder="例: 759">
-          </div>
-          <div class="form-row">
-            <label>役割:</label>
-            <input type="text" id="pvRole" class="admin-input" placeholder="例: メインアタッカー">
-          </div>
-          <div class="form-row">
-            <label>元素エネルギー:</label>
-            <input type="number" id="pvEnergy" class="admin-input" placeholder="例: 70">
-          </div>
-          <div class="form-row">
-            <label>突破ステータス:</label>
-            <input type="text" id="pvAscensionStat" class="admin-input" placeholder="例: 会心ダメージ">
-          </div>
-          <div class="form-row">
-            <label>特産品:</label>
-            <input type="text" id="pvSpecialty" class="admin-input" placeholder="例: 特産品名">
-          </div>
-          <div class="form-row">
-            <label>突破ボス素材:</label>
-            <input type="text" id="pvTalentBoss" class="admin-input" placeholder="例: ボス素材名">
-          </div>
-          <div class="form-row">
-            <label>天賦本:</label>
-            <input type="text" id="pvTalentBook" class="admin-input" placeholder="例: 焚刃など">
-          </div>
-          <div class="form-row">
-            <label>週ボス素材:</label>
-            <input type="text" id="pvTalentWeekly" class="admin-input" placeholder="例: 週ボス素材名">
-          </div>
-          <div class="form-row">
-            <label>敵素材 (一般):</label>
-            <input type="text" id="pvEnemyMaterial" class="admin-input" placeholder="例: 敵素材名">
-          </div>
-          <div class="form-row">
-            <label>オリジナル料理:</label>
-            <input type="text" id="pvOriginalDish" class="admin-input" placeholder="例: 料理名">
-          </div>
-          <div class="form-row">
-            <label>配布キャラ:</label>
-            <select id="pvIsDistributed" class="modal-select admin-input">
-              <option value="false">いいえ</option>
-              <option value="true">はい</option>
-            </select>
-          </div>
-          <div class="form-row">
-            <label>衣装:</label>
-            <select id="pvCostume" class="modal-select admin-input">
-              <option value="false">なし</option>
-              <option value="true">あり</option>
-            </select>
-          </div>
-          <div class="form-row">
-            <label>実装バージョン:</label>
-            <input type="text" id="pvVersion" class="admin-input" placeholder="例: 5.3">
-          </div>
-        </div>
 
-        <!-- 武器専用項目 -->
-        <div id="weaponFieldsGroup" style="display: none; flex-direction: column; gap: 12px;">
-          <div class="form-row">
-            <label>武器種:</label>
-            <select id="pvWeaponType" class="modal-select admin-input">
-              <option value="片手剣">片手剣</option><option value="両手剣">両手剣</option>
-              <option value="長柄武器">長柄武器</option><option value="弓">弓</option><option value="法器">法器</option>
-            </select>
+          <!-- 武器専用項目 -->
+          <div id="weaponFieldsGroup" style="display: none; flex-direction: column; gap: 12px;">
+            <div class="form-row">
+              <label>武器種:</label>
+              <select id="pvWeaponType" class="modal-select admin-input">
+                <option value="片手剣">片手剣</option><option value="両手剣">両手剣</option>
+                <option value="長柄武器">長柄武器</option><option value="弓">弓</option><option value="法器">法器</option>
+              </select>
+            </div>
+            <div class="form-row">
+              <label>基礎攻撃力:</label>
+              <input type="text" id="pvBaseAtk" class="admin-input" placeholder="例: 608">
+            </div>
+            <div class="form-row">
+              <label>突破ステータス (サブステ):</label>
+              <input type="text" id="pvSubStat" class="admin-input" placeholder="例: 会心ダメージ">
+            </div>
+            <div class="form-row">
+              <label>配布武器:</label>
+              <select id="pvWeaponDistributed" class="modal-select admin-input">
+                <option value="false">なし</option>
+                <option value="true">あり</option>
+              </select>
+            </div>
+            <div class="form-row">
+              <label>武器突破素材:</label>
+              <input type="text" id="pvWeaponBreak" class="admin-input" placeholder="例: 突破素材名">
+            </div>
+            <div class="form-row">
+              <label>敵素材:</label>
+              <input type="text" id="pvWeaponEnemy" class="admin-input" placeholder="例: 敵素材名">
+            </div>
+            <div class="form-row">
+              <label>精鋭素材:</label>
+              <input type="text" id="pvWeaponElite" class="admin-input" placeholder="例: 精鋭素材名">
+            </div>
+            <div class="form-row">
+              <label>実装バージョン:</label>
+              <input type="text" id="pvWeaponVersion" class="admin-input" placeholder="例: 5.3">
+            </div>
           </div>
-          <div class="form-row">
-            <label>基礎攻撃力:</label>
-            <input type="text" id="pvBaseAtk" class="admin-input" placeholder="例: 608">
-          </div>
-          <div class="form-row">
-            <label>突破ステータス (サブステ):</label>
-            <input type="text" id="pvSubStat" class="admin-input" placeholder="例: 会心ダメージ">
-          </div>
-          <div class="form-row">
-            <label>配布武器:</label>
-            <select id="pvWeaponDistributed" class="modal-select admin-input">
-              <option value="false">なし</option>
-              <option value="true">あり</option>
-            </select>
-          </div>
-          <div class="form-row">
-            <label>武器突破素材:</label>
-            <input type="text" id="pvWeaponBreak" class="admin-input" placeholder="例: 突破素材名">
-          </div>
-          <div class="form-row">
-            <label>敵素材:</label>
-            <input type="text" id="pvWeaponEnemy" class="admin-input" placeholder="例: 敵素材名">
-          </div>
-          <div class="form-row">
-            <label>精鋭素材:</label>
-            <input type="text" id="pvWeaponElite" class="admin-input" placeholder="例: 精鋭素材名">
-          </div>
-          <div class="form-row">
-            <label>実装バージョン:</label>
-            <input type="text" id="pvWeaponVersion" class="admin-input" placeholder="例: 5.3">
-          </div>
-        </div>
 
+        </div>
+        
+        <!-- アクションボタン -->
+        <div class="admin-actions" style="margin-top: 20px; display: flex; gap: 10px; justify-content: flex-end; flex-wrap: wrap; padding-bottom: 10px;">
+          <button type="button" class="admin-auth-btn" id="savePreviewFormBtn" style="background: #10b981;">このデータを保存</button>
+          <button type="button" class="admin-auth-btn" id="exportPreviewJsonBtn" style="background-color: #2563eb;">📥 追加用JSONをダウンロード</button>
+        </div>
       </div>
-      
-      <!-- アクションボタン -->
-      <div class="admin-actions" style="margin-top: 20px; display: flex; gap: 10px; justify-content: flex-end; flex-wrap: wrap; padding-bottom: 10px;">
-        <button type="button" class="admin-auth-btn" id="savePreviewFormBtn" style="background: #10b981;">このデータを保存</button>
-        <button type="button" class="admin-auth-btn" id="exportPreviewJsonBtn" style="background-color: #2563eb;">📥 追加用JSONをダウンロード</button>
-      </div>
+
     </div>
-
   </div>
-</div>
+
+  <!-- スクリプトの読み込み（ページの最後に配置） -->
+  <script src="guesser/data.js"></script>
+  <script src="styles.js"></script>
+</body>
+</html>
