@@ -31,6 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
   bindModeButtons();
   bindModalButtons();
   bindAdminTrigger();
+  initAdminDashboard();
 });
 
 // ---------------------------------------------------------------------------
@@ -44,7 +45,6 @@ function bindGenreButtons() {
         b.classList.toggle('active', b.dataset.genre === selectedGenre);
         b.setAttribute('aria-pressed', String(b.dataset.genre === selectedGenre));
       });
-      // Show/hide rarity filter
       const rarityFilter = document.getElementById('rarityFilter');
       if (rarityFilter) {
         rarityFilter.classList.toggle('hidden', selectedGenre !== 'weapon');
@@ -76,12 +76,12 @@ function buildGameUrl(mode) {
 }
 
 function updateModeLinks() {
-  const dailyBtn   = document.getElementById('startDailyBtn');
+  const dailyBtn     = document.getElementById('startDailyBtn');
   const endlessBtn = document.getElementById('startEndlessBtn');
   const challengeBtn = document.getElementById('startChallengeBtn');
   const versusBtn = document.getElementById('startVersusBtn');
-  if (dailyBtn)    dailyBtn.href    = buildGameUrl('daily');
-  if (endlessBtn)  endlessBtn.href  = buildGameUrl('endless');
+  if (dailyBtn)     dailyBtn.href     = buildGameUrl('daily');
+  if (endlessBtn)   endlessBtn.href   = buildGameUrl('endless');
   if (challengeBtn) challengeBtn.href = buildGameUrl('challenge');
   if (versusBtn) versusBtn.href = buildGameUrl('versus');
 }
@@ -94,26 +94,22 @@ function bindModeButtons() {
 // Modals
 // ---------------------------------------------------------------------------
 function bindModalButtons() {
-  // How-to
   ['howToBtn', 'howToBtn2', 'howToFooterBtn'].forEach(id => {
     document.getElementById(id)?.addEventListener('click', () => openModal('howTo'));
   });
   document.getElementById('howToClose')?.addEventListener('click', () => closeModal('howTo'));
   document.getElementById('howToOverlay')?.addEventListener('click', () => closeModal('howTo'));
 
-  // About
   document.getElementById('aboutBtn')?.addEventListener('click', () => openModal('about'));
   document.getElementById('aboutClose')?.addEventListener('click', () => closeModal('about'));
   document.getElementById('aboutOverlay')?.addEventListener('click', () => closeModal('about'));
 
-  // 🟢 配信者の方へモーダル開閉の制御
   ['streamerBtn', 'streamerBtn2', 'streamerFooterBtn'].forEach(id => {
     document.getElementById(id)?.addEventListener('click', () => openModal('streamer'));
   });
   document.getElementById('streamerClose')?.addEventListener('click', () => closeModal('streamer'));
   document.getElementById('streamerOverlay')?.addEventListener('click', () => closeModal('streamer'));
 
-  // 🟢 Admin auth（省略せず元に戻しました）
   document.getElementById('adminAuthClose')?.addEventListener('click', () => closeModal('adminAuth'));
   document.getElementById('adminAuthOverlay')?.addEventListener('click', () => closeModal('adminAuth'));
   document.getElementById('adminAuthBtn')?.addEventListener('click', handleAdminAuth);
@@ -121,7 +117,6 @@ function bindModalButtons() {
     if (e.key === 'Enter') handleAdminAuth();
   });
 
-  // 🟢 Admin log（省略せず元に戻しました）
   document.getElementById('adminLogClose')?.addEventListener('click', () => closeModal('adminLog'));
   document.getElementById('adminLogOverlay')?.addEventListener('click', () => closeModal('adminLog'));
   document.getElementById('adminLogSaveBtn')?.addEventListener('click', handleAdminLogSave);
@@ -168,7 +163,6 @@ function handleAdminAuth() {
   const input = document.getElementById('adminPasswordInput');
   if (!input) return;
   const password = input.value;
-  // Use env variable if available (injected at build time), else default to 'password'
   const ADMIN_PASSWORD = (typeof ADMIN_LOG_PASSWORD !== 'undefined' && ADMIN_LOG_PASSWORD) ? ADMIN_LOG_PASSWORD : 'Liliavanrouge0101';
   if (password === ADMIN_PASSWORD) {
     closeModal('adminAuth');
@@ -214,7 +208,7 @@ function handleAdminLogSave() {
   } else {
     addNewsItem(date, text);
   }
-  saveNewsToStorage(); // 非同期に変更された保存処理を呼び出す
+  saveNewsToStorage();
   resetAdminLogForm();
   renderAdminNewsList();
 }
@@ -238,7 +232,7 @@ function handleAdminNewsAction(event) {
 
   if (button.dataset.action === 'delete' && window.confirm('この更新情報を削除しますか？')) {
     deleteNewsItem(index);
-    saveNewsToStorage(); // 非同期に変更された保存処理を呼び出す
+    saveNewsToStorage();
     resetAdminLogForm();
     renderAdminNewsList();
   }
@@ -252,13 +246,7 @@ const DEFAULT_NEWS_ITEMS = [
   { date: '2025-07-01', text: 'Genshin Guesser 公開！ キャラクター・武器の推測ゲームを楽しめます。' },
 ];
 
-/** 
- * 【同期/非同期併用】
- * ページ起動時にまずLocalStorageから前回のデータを表示し、
- * その後GitHubからキャッシュを避けて最新の「news.json」を読み込んで完全に同期します。
- */
 async function loadNewsFromStorage() {
-  // まずローカル(LocalStorage)から即時に読み込んで表示しておく（フォールバック）
   try {
     const raw = localStorage.getItem(LS_NEWS_KEY);
     const items = raw ? JSON.parse(raw) : DEFAULT_NEWS_ITEMS;
@@ -274,7 +262,6 @@ async function loadNewsFromStorage() {
   }
   renderNewsList();
 
-  // 次に、GitHub上の「news.json」から最新情報をキャッシュなし(?v=日付スタンプ)で動的に取得
   try {
     const url = `news.json?v=${new Date().getTime()}`;
     const response = await fetch(url);
@@ -282,42 +269,31 @@ async function loadNewsFromStorage() {
       const remoteItems = await response.json();
       if (Array.isArray(remoteItems) && remoteItems.length > 0) {
         newsItems = remoteItems;
-        localStorage.setItem(LS_NEWS_KEY, JSON.stringify(newsItems)); // ローカル側も同期
+        localStorage.setItem(LS_NEWS_KEY, JSON.stringify(newsItems));
         renderNewsList();
       }
     }
   } catch (err) {
-    console.warn('GitHub上の最新情報の取得に失敗しました。ローカルデータを使用します。', err);
+    console.warn('GitHub上の最新情報の取得に失敗しました。', err);
   }
 }
 
-/**
- * 【非同期・GitHub完全同期】
- * 変更があった際、ローカルのLocalStorageに保存すると同時に、
- * あなたのGitHubへニュースデータをPUTリクエストで直接上書き保存（コミット）します。
- */
 async function saveNewsToStorage() {
-  // 1. ローカル側の表示を更新
   localStorage.setItem(LS_NEWS_KEY, JSON.stringify(newsItems));
   renderNewsList();
 
-  // 2. ブラウザに保存されているGitHubトークンを取得
   let token = localStorage.getItem('github_pat');
   if (!token) {
-    // 保存されていない（初回のみ）トークンの入力を求める
     token = prompt('【初回設定】GitHubのアクセストークン（github_pat_xxxx）を入力してください:');
     if (!token) {
-      alert('トークン未入力のため、あなたのブラウザのみで保存されました。他の全員に反映させるにはトークンが必要です。');
+      alert('トークン未入力のため、ブラウザのみで保存されました。');
       return;
     }
-    // あなたのPCのLocalStorageにだけ保存
     localStorage.setItem('github_pat', token.trim());
   }
 
   try {
     const url = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${GITHUB_PATH}`;
-    
-    // A. 現在のファイルのsha（ハッシュ値）を取得（GitHub APIの上書きに必須）
     let sha = null;
     const res = await fetch(url, { headers: { 'Authorization': `token ${token}` } });
     if (res.ok) {
@@ -325,11 +301,9 @@ async function saveNewsToStorage() {
       sha = data.sha;
     }
 
-    // B. 日本語対応のBase64エンコード
     const jsonString = JSON.stringify(newsItems, null, 2);
     const base64Content = btoa(unescape(encodeURIComponent(jsonString)));
 
-    // C. GitHubへPUTして直接上書きコミット
     const putRes = await fetch(url, {
       method: 'PUT',
       headers: {
@@ -345,18 +319,17 @@ async function saveNewsToStorage() {
     });
 
     if (putRes.ok) {
-      alert('GitHubへの送信が完了しました！約1〜2分で全員に反映されます。');
+      alert('GitHubへの送信が完了しました！');
     } else {
       const errData = await putRes.json();
       alert('GitHubへの保存に失敗しました: ' + (errData.message || 'Unknown Error'));
-      // トークンエラー（期限切れなど）の場合は、次回のために保存トークンを削除する
       if (putRes.status === 401 || putRes.status === 403) {
         localStorage.removeItem('github_pat');
       }
     }
   } catch (err) {
-    console.error('保存処理中に通信エラー:', err);
-    alert('通信に失敗したため、他のプレイヤーへ同期できませんでした。');
+    console.error('通信エラー:', err);
+    alert('通信に失敗しました。');
   }
 }
 
@@ -432,8 +405,11 @@ function renderAdminNewsList() {
     list.appendChild(row);
   });
 }
-// 👑 新キャラ・武器 ビジュアル管理者ダッシュボードのロジック
-document.addEventListener('DOMContentLoaded', () => {
+
+// ---------------------------------------------------------------------------
+// 👑 ビジュアル管理者ダッシュボード機能
+// ---------------------------------------------------------------------------
+function initAdminDashboard() {
   const LS_CUSTOM_PREVIEW_KEY = 'genshin-guesser-custom-previews-v2';
 
   const openBtn = document.getElementById('openPreviewModalFromLogBtn');
@@ -481,13 +457,10 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // ➕ 新規追加ボタン（新キャラ・武器の実装用）
   document.getElementById('addNewItemBtn')?.addEventListener('click', () => {
     clearAdminForm();
-    document.getElementById('formTitle').textContent = '＋ 新規データの追加（実装）';
   });
 
-  // 🖼️ データベース風の画像付きグリッド一覧を描画
   function renderAdminCardGrid() {
     const grid = document.getElementById('adminCardGrid');
     if (!grid) return;
@@ -495,7 +468,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const currentGenre = adminGenreTab ? adminGenreTab.value : 'character';
     
-    // 1. 既存のマスターデータ（CHARACTERS / WEAPONS）を取得
     let masterList = [];
     if (currentGenre === 'character' && typeof CHARACTERS !== 'undefined') {
       masterList = CHARACTERS.map(c => ({ ...c, genre: 'character', isPublished: true, isMaster: true }));
@@ -503,7 +475,6 @@ document.addEventListener('DOMContentLoaded', () => {
       masterList = WEAPONS.map(w => ({ ...w, genre: 'weapon', isPublished: true, isMaster: true }));
     }
 
-    // 2. ローカルのカスタムデータ（新規追加・変更分）を取得
     let customList = [];
     try {
       const raw = localStorage.getItem(LS_CUSTOM_PREVIEW_KEY);
@@ -513,7 +484,6 @@ document.addEventListener('DOMContentLoaded', () => {
       customList = [];
     }
 
-    // カスタムデータでマスターデータを上書き、または統合
     const map = new Map();
     masterList.forEach(item => map.set(item.id, item));
     customList.forEach(item => map.set(item.id, item));
@@ -531,23 +501,24 @@ document.addEventListener('DOMContentLoaded', () => {
         background: rgba(255,255,255,0.05);
         border: 2px solid ${item.isPublished ? '#4ade80' : '#f87171'};
         border-radius: 8px;
-        padding: 6px;
+        padding: 4px;
         text-align: center;
         cursor: pointer;
         transition: transform 0.1s;
       `;
       card.title = `${item.name} (${item.isPublished ? '公開中' : '非公開'})`;
 
-      // 📁 files/日本語名.png を自動適用
-      const imgPath = item.iconUrl || `files/${item.name}.png`;
+      // 🖼️ 画像パスを正しく解決（マスターデータのパス優先、なければ files/日本語名.png）
+      let imgPath = item.iconUrl || `files/${item.name}.png`;
+
       card.innerHTML = `
-        <div style="position: relative; width: 100%; aspect-ratio: 1; border-radius: 4px; overflow: hidden; background: rgba(0,0,0,0.3);">
+        <div style="position: relative; width: 100%; aspect-ratio: 1; border-radius: 4px; overflow: hidden; background: rgba(0,0,0,0.5);">
           <img src="${imgPath}" alt="${item.name}" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.src='images/default.png';">
-          <span style="position: absolute; top: 2px; right: 2px; font-size: 9px; background: ${item.isPublished ? '#10b981' : '#ef4444'}; color: #fff; padding: 1px 3px; border-radius: 3px;">
+          <span style="position: absolute; top: 2px; right: 2px; font-size: 9px; background: ${item.isPublished ? '#10b981' : '#ef4444'}; color: #fff; padding: 1px 3px; border-radius: 3px; z-index: 2;">
             ${item.isPublished ? '公開' : '非公開'}
           </span>
         </div>
-        <div style="font-size: 11px; margin-top: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #fff;">${item.name}</div>
+        <div style="font-size: 11px; margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #fff;">${item.name}</div>
       `;
 
       card.addEventListener('click', () => loadItemIntoForm(item));
@@ -559,9 +530,17 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('formTitle').textContent = '＋ 新規データの追加（実装）';
     document.getElementById('pvId').value = '';
     document.getElementById('pvName').value = '';
-    document.getElementById('pvIsPublished').value = 'false'; // 新規追加時は初期で「非公開」
+    document.getElementById('pvIsPublished').value = 'false';
     document.getElementById('pvGenre').value = adminGenreTab ? adminGenreTab.value : 'character';
     document.getElementById('pvGenre').dispatchEvent(new Event('change'));
+
+    // フォーム内をリセット
+    const inputs = document.querySelectorAll('#previewModal input, #previewModal select');
+    inputs.forEach(input => {
+      if (input.id !== 'pvId' && input.id !== 'pvName' && input.id !== 'pvIsPublished' && input.id !== 'pvGenre' && input.id !== 'adminGenreTab') {
+        input.value = '';
+      }
+    });
   }
 
   function loadItemIntoForm(item) {
@@ -608,7 +587,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // 💾 データの保存（既存データの変更 OR 新規実装の保存）
   const saveBtn = document.getElementById('savePreviewFormBtn');
   if (saveBtn) {
     saveBtn.addEventListener('click', () => {
@@ -623,7 +601,6 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
-      // 📁 files/日本語名.png を自動紐づけ
       const iconUrl = `files/${name}.png`;
 
       const newItem = {
@@ -679,14 +656,13 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         localStorage.setItem(LS_CUSTOM_PREVIEW_KEY, JSON.stringify(list));
         renderAdminCardGrid();
-        alert(`✨ 「${name}」のデータを保存しました！\n画像: files/${name}.png\n（公開設定: ${isPublished ? '公開中 🟢' : '非公開 🔒'}）`);
+        alert(`✨ 「${name}」のデータを保存しました！\n（公開設定: ${isPublished ? '公開中 🟢' : '非公開 🔒'}）`);
       } catch (e) {
         alert('保存に失敗しました: ' + e.message);
       }
     });
   }
 
-  // 📥 JSONエクスポート
   const exportBtn = document.getElementById('exportPreviewJsonBtn');
   if (exportBtn) {
     exportBtn.addEventListener('click', () => {
@@ -708,4 +684,4 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   }
-});
+}
