@@ -432,8 +432,10 @@ function renderAdminNewsList() {
     list.appendChild(row);
   });
 }
-// 👑 更新情報の管理画面から新キャラ・武器管理者モードを開く＆管理機能
+// 👑 新キャラ・武器 ビジュアル管理者ダッシュボードのロジック
 document.addEventListener('DOMContentLoaded', () => {
+  const LS_CUSTOM_PREVIEW_KEY = 'genshin-guesser-custom-previews-v2';
+
   const openBtn = document.getElementById('openPreviewModalFromLogBtn');
   if (openBtn) {
     openBtn.addEventListener('click', () => {
@@ -441,6 +443,7 @@ document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('adminLogOverlay')?.classList.add('hidden');
       document.getElementById('previewModal')?.classList.remove('hidden');
       document.getElementById('previewOverlay')?.classList.remove('hidden');
+      renderAdminCardGrid();
     });
   }
 
@@ -460,6 +463,13 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  const adminGenreTab = document.getElementById('adminGenreTab');
+  if (adminGenreTab) {
+    adminGenreTab.addEventListener('change', () => {
+      renderAdminCardGrid();
+    });
+  }
+
   const pvGenre = document.getElementById('pvGenre');
   if (pvGenre) {
     pvGenre.addEventListener('change', (e) => {
@@ -471,14 +481,123 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // 新規追加ボタン
+  document.getElementById('addNewItemBtn')?.addEventListener('click', () => {
+    clearAdminForm();
+    document.getElementById('formTitle').textContent = '＋ 新規データの追加';
+  });
+
+  // 管理画面のカードグリッドを描画
+  function renderAdminCardGrid() {
+    const grid = document.getElementById('adminCardGrid');
+    if (!grid) return;
+    grid.innerHTML = '';
+
+    const currentGenre = adminGenreTab ? adminGenreTab.value : 'character';
+    
+    let list = [];
+    try {
+      const raw = localStorage.getItem(LS_CUSTOM_PREVIEW_KEY);
+      const customList = raw ? JSON.parse(raw) : [];
+      list = customList.filter(item => item.genre === currentGenre);
+    } catch (e) {
+      list = [];
+    }
+
+    if (list.length === 0) {
+      grid.innerHTML = '<p style="font-size: 12px; color: #aaa; grid-column: span 3; text-align: center; padding: 20px;">登録データがありません。「新規追加」からIDと名前を入力してください。</p>';
+      return;
+    }
+
+    list.forEach(item => {
+      const card = document.createElement('div');
+      card.style.cssText = `
+        background: rgba(255,255,255,0.05);
+        border: 2px solid ${item.isPublished ? '#4ade80' : 'rgba(255,255,255,0.2)'};
+        border-radius: 8px;
+        padding: 6px;
+        text-align: center;
+        cursor: pointer;
+        transition: transform 0.1s;
+      `;
+      card.title = `${item.name} (${item.isPublished ? '公開中' : '非公開'})`;
+
+      // 📁 files/日本語名.png を自動適用
+      const imgPath = item.iconUrl || `files/${item.name}.png`;
+      card.innerHTML = `
+        <div style="position: relative; width: 100%; aspect-ratio: 1; border-radius: 4px; overflow: hidden; background: rgba(0,0,0,0.3);">
+          <img src="${imgPath}" alt="${item.name}" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.src='images/default.png';">
+          <span style="position: absolute; top: 2px; right: 2px; font-size: 10px; background: ${item.isPublished ? '#10b981' : '#6b7280'}; color: #fff; padding: 1px 4px; border-radius: 3px;">
+            ${item.isPublished ? '公開' : '下書き'}
+          </span>
+        </div>
+        <div style="font-size: 11px; margin-top: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #fff;">${item.name}</div>
+      `;
+
+      card.addEventListener('click', () => loadItemIntoForm(item));
+      grid.appendChild(card);
+    });
+  }
+
+  function clearAdminForm() {
+    document.getElementById('pvId').value = '';
+    document.getElementById('pvName').value = '';
+    document.getElementById('pvIsPublished').value = 'false';
+    document.getElementById('pvGenre').value = adminGenreTab ? adminGenreTab.value : 'character';
+    document.getElementById('pvGenre').dispatchEvent(new Event('change'));
+  }
+
+  function loadItemIntoForm(item) {
+    document.getElementById('formTitle').textContent = `✏️ 編集中: ${item.name}`;
+    document.getElementById('pvIsPublished').value = String(!!item.isPublished);
+    document.getElementById('pvGenre').value = item.genre || 'character';
+    document.getElementById('pvGenre').dispatchEvent(new Event('change'));
+    
+    document.getElementById('pvId').value = item.id || '';
+    document.getElementById('pvName').value = item.name || '';
+    document.getElementById('pvRarity').value = String(item.rarity || 5);
+
+    if (item.genre === 'character') {
+      document.getElementById('pvElement').value = item.element || '炎';
+      document.getElementById('pvCharWeapon').value = item.weapon || '';
+      document.getElementById('pvCountry').value = item.country || '';
+      document.getElementById('pvBirthday').value = item.birthday || '';
+      document.getElementById('pvBodyType').value = item.bodyType || '';
+      document.getElementById('pvCharBaseAtk').value = item.baseAtk || '';
+      document.getElementById('pvCharBaseHp').value = item.baseHp || '';
+      document.getElementById('pvCharBaseDef').value = item.baseDef || '';
+      document.getElementById('pvRole').value = item.role || '';
+      document.getElementById('pvEnergy').value = item.energy || '';
+      document.getElementById('pvAscensionStat').value = item.ascensionStat || '';
+      document.getElementById('pvSpecialty').value = item.specialty || '';
+      document.getElementById('pvTalentBoss').value = item.talentBoss || '';
+      document.getElementById('pvTalentBook').value = item.talentBook || '';
+      document.getElementById('pvTalentWeekly').value = item.talentWeekly || '';
+      document.getElementById('pvEnemyMaterial').value = item.enemyMaterial || '';
+      document.getElementById('pvOriginalDish').value = item.originalDish || '';
+      document.getElementById('pvIsDistributed').value = String(!!item.isDistributed);
+      document.getElementById('pvCostume').value = String(!!item.costume);
+      document.getElementById('pvVersion').value = item.version || '';
+    } else {
+      document.getElementById('pvWeaponType').value = item.weaponType || '片手剣';
+      document.getElementById('pvBaseAtk').value = item.baseAtk || '';
+      document.getElementById('pvSubStat').value = item.subStat || '';
+      document.getElementById('pvWeaponDistributed').value = String(!!item.isDistributed);
+      document.getElementById('pvWeaponBreak').value = item.weaponBreakMaterial || '';
+      document.getElementById('pvWeaponEnemy').value = item.weaponEnemyMaterial || '';
+      document.getElementById('pvWeaponElite').value = item.weaponEliteMaterial || '';
+      document.getElementById('pvWeaponVersion').value = item.version || '';
+    }
+  }
+
+  // データの保存
   const saveBtn = document.getElementById('savePreviewFormBtn');
   if (saveBtn) {
     saveBtn.addEventListener('click', () => {
       const genreVal = document.getElementById('pvGenre')?.value || 'character';
       const isPublished = document.getElementById('pvIsPublished')?.value === 'true';
-      const id = document.getElementById('pvId')?.value.trim();
+      const id = document.getElementById('pvId')?.value.trim().toLowerCase();
       const name = document.getElementById('pvName')?.value.trim();
-      const iconUrl = document.getElementById('pvIconUrl')?.value.trim();
       const rarity = Number(document.getElementById('pvRarity')?.value || 5);
 
       if (!id || !name) {
@@ -486,39 +605,52 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
+      // 📁 files/日本語名.png を自動適用
+      const iconUrl = `files/${name}.png`;
+
       const newItem = {
         id: id,
         name: name,
         displayNames: [name, id, name.toLowerCase()],
-        iconUrl: iconUrl || 'images/default.png',
+        iconUrl: iconUrl,
         rarity: rarity,
         genre: genreVal,
         isPublished: isPublished,
-        bannerType: document.getElementById('pvBannerType')?.value || 'limited',
-        isDistributed: document.getElementById('pvIsDistributed')?.value === 'true',
       };
 
       if (genreVal === 'character') {
         newItem.element = document.getElementById('pvElement')?.value || '炎';
         newItem.weapon = document.getElementById('pvCharWeapon')?.value.trim() || '';
-        newItem.country = document.getElementById('pvCountry')?.value || 'ナタ';
+        newItem.country = document.getElementById('pvCountry')?.value.trim() || '';
+        newItem.birthday = document.getElementById('pvBirthday')?.value.trim() || '';
+        newItem.bodyType = document.getElementById('pvBodyType')?.value.trim() || '';
+        newItem.baseAtk = document.getElementById('pvCharBaseAtk')?.value.trim() || '';
+        newItem.baseHp = document.getElementById('pvCharBaseHp')?.value.trim() || '';
+        newItem.baseDef = document.getElementById('pvCharBaseDef')?.value.trim() || '';
+        newItem.role = document.getElementById('pvRole')?.value.trim() || '';
         newItem.energy = Number(document.getElementById('pvEnergy')?.value) || 0;
-        newItem.birthMonth = Number(document.getElementById('pvBirthMonth')?.value) || 1;
+        newItem.ascensionStat = document.getElementById('pvAscensionStat')?.value.trim() || '';
+        newItem.specialty = document.getElementById('pvSpecialty')?.value.trim() || '';
         newItem.talentBoss = document.getElementById('pvTalentBoss')?.value.trim() || '';
-        newItem.talentWeekly = document.getElementById('pvTalentWeekly')?.value.trim() || '';
         newItem.talentBook = document.getElementById('pvTalentBook')?.value.trim() || '';
+        newItem.talentWeekly = document.getElementById('pvTalentWeekly')?.value.trim() || '';
         newItem.enemyMaterial = document.getElementById('pvEnemyMaterial')?.value.trim() || '';
+        newItem.originalDish = document.getElementById('pvOriginalDish')?.value.trim() || '';
+        newItem.isDistributed = document.getElementById('pvIsDistributed')?.value === 'true';
         newItem.costume = document.getElementById('pvCostume')?.value === 'true';
+        newItem.version = document.getElementById('pvVersion')?.value.trim() || '';
       } else {
         newItem.weaponType = document.getElementById('pvWeaponType')?.value || '片手剣';
-        newItem.baseAtk = Number(document.getElementById('pvBaseAtk')?.value) || document.getElementById('pvBaseAtk')?.value || '';
+        newItem.baseAtk = document.getElementById('pvBaseAtk')?.value.trim() || '';
         newItem.subStat = document.getElementById('pvSubStat')?.value.trim() || '';
+        newItem.isDistributed = document.getElementById('pvWeaponDistributed')?.value === 'true';
         newItem.weaponBreakMaterial = document.getElementById('pvWeaponBreak')?.value.trim() || '';
         newItem.weaponEnemyMaterial = document.getElementById('pvWeaponEnemy')?.value.trim() || '';
+        newItem.weaponEliteMaterial = document.getElementById('pvWeaponElite')?.value.trim() || '';
+        newItem.version = document.getElementById('pvWeaponVersion')?.value.trim() || '';
       }
 
       try {
-        const LS_CUSTOM_PREVIEW_KEY = 'genshin-guesser-custom-previews-v2';
         const raw = localStorage.getItem(LS_CUSTOM_PREVIEW_KEY);
         const list = raw ? JSON.parse(raw) : [];
         const existingIndex = list.findIndex(x => x.id === newItem.id);
@@ -528,18 +660,19 @@ document.addEventListener('DOMContentLoaded', () => {
           list.push(newItem);
         }
         localStorage.setItem(LS_CUSTOM_PREVIEW_KEY, JSON.stringify(list));
-        alert(`✨ 「${name}」のデータを保存しました！（公開設定: ${isPublished ? '公開中' : '非公開'}）`);
+        renderAdminCardGrid();
+        alert(`✨ 「${name}」を保存しました！\n画像: files/${name}.png\n（公開設定: ${isPublished ? '公開中 🟢' : '非公開（下書き） 🔒'}）`);
       } catch (e) {
         alert('保存に失敗しました: ' + e.message);
       }
     });
   }
 
+  // 📥 JSONエクスポート
   const exportBtn = document.getElementById('exportPreviewJsonBtn');
   if (exportBtn) {
     exportBtn.addEventListener('click', () => {
       try {
-        const LS_CUSTOM_PREVIEW_KEY = 'genshin-guesser-custom-previews-v2';
         const raw = localStorage.getItem(LS_CUSTOM_PREVIEW_KEY);
         if (!raw || JSON.parse(raw).length === 0) {
           alert('保存されているデータがありません。');
