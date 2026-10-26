@@ -994,6 +994,7 @@ const WEAPON_READINGS = {
   "風に遊ぶ弦": ["かぜにあそぶげん"],
   "雪に沈む心": ["ゆきにしずむこころ"],
   "新たなる枝": ["あらたなるえだ"],
+  "秘星の聖典": ["ひせいのせいてん", "みてぃやもち"],
 };
 
 const WEAPON_SOURCE_OVERRIDES = {
@@ -1169,6 +1170,7 @@ const WEAPON_SOURCE_OVERRIDES = {
   "新たなる枝": { rarity: 4, weaponType: "片手剣" },
   "雪に沈む心": { rarity: 4, weaponType: "法器" },
   "風に遊ぶ弦": { rarity: 4, weaponType: "弓" },
+  "秘星の聖典": { rarity: 5, weaponType: "法器" },
   };
 
 // 武器の実装バージョンデータの定義
@@ -1426,6 +1428,7 @@ const weaponReleaseVersionMap = {
   "風に遊ぶ弦": "7.1",
   "雪に沈む心": "7.1",
   "新たなる枝": "7.1",
+  "秘星の聖典": "7.2",
 };
 
 
@@ -1647,6 +1650,7 @@ const WEAPON_ATTRS = {
   '冬極の白星':        { rarity: 5, weaponType: '弓', enemyMaterial: 'フライムの乾核',     ascension_stat: '会心率', is_distributed: false },
 
   // ★5 法器
+  '秘星の聖典':  { rarity: 5, weaponType: '法器', enemyMaterial: '',   ascension_stat: '', is_distributed: false },
   '旋流の讃美歌':  { rarity: 5, weaponType: '法器', enemyMaterial: '沈積片',   ascension_stat: 'HP', is_distributed: false },
   '帳の夜曲':          { rarity: 5, weaponType: '法器', enemyMaterial: '破損した徽章',     ascension_stat: '会心ダメージ', is_distributed: false },
   '真言の匣':          { rarity: 5, weaponType: '法器', enemyMaterial: 'キノコンの胞子',   ascension_stat: '会心ダメージ', is_distributed: false },
