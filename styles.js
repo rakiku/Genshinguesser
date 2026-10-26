@@ -481,13 +481,13 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // 新規追加ボタン
+  // ➕ 新規追加ボタン（新キャラ・武器の実装用）
   document.getElementById('addNewItemBtn')?.addEventListener('click', () => {
     clearAdminForm();
-    document.getElementById('formTitle').textContent = '＋ 新規データの追加';
+    document.getElementById('formTitle').textContent = '＋ 新規データの追加（実装）';
   });
 
-  // 管理画面のカードグリッドを描画
+  // 🖼️ データベース風の画像付きグリッド一覧を描画
   function renderAdminCardGrid() {
     const grid = document.getElementById('adminCardGrid');
     if (!grid) return;
@@ -495,25 +495,41 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const currentGenre = adminGenreTab ? adminGenreTab.value : 'character';
     
-    let list = [];
-    try {
-      const raw = localStorage.getItem(LS_CUSTOM_PREVIEW_KEY);
-      const customList = raw ? JSON.parse(raw) : [];
-      list = customList.filter(item => item.genre === currentGenre);
-    } catch (e) {
-      list = [];
+    // 1. 既存のマスターデータ（CHARACTERS / WEAPONS）を取得
+    let masterList = [];
+    if (currentGenre === 'character' && typeof CHARACTERS !== 'undefined') {
+      masterList = CHARACTERS.map(c => ({ ...c, genre: 'character', isPublished: true, isMaster: true }));
+    } else if (currentGenre === 'weapon' && typeof WEAPONS !== 'undefined') {
+      masterList = WEAPONS.map(w => ({ ...w, genre: 'weapon', isPublished: true, isMaster: true }));
     }
 
-    if (list.length === 0) {
-      grid.innerHTML = '<p style="font-size: 12px; color: #aaa; grid-column: span 3; text-align: center; padding: 20px;">登録データがありません。「新規追加」からIDと名前を入力してください。</p>';
+    // 2. ローカルのカスタムデータ（新規追加・変更分）を取得
+    let customList = [];
+    try {
+      const raw = localStorage.getItem(LS_CUSTOM_PREVIEW_KEY);
+      const parsed = raw ? JSON.parse(raw) : [];
+      customList = parsed.filter(item => item.genre === currentGenre);
+    } catch (e) {
+      customList = [];
+    }
+
+    // カスタムデータでマスターデータを上書き、または統合
+    const map = new Map();
+    masterList.forEach(item => map.set(item.id, item));
+    customList.forEach(item => map.set(item.id, item));
+
+    const combinedList = Array.from(map.values());
+
+    if (combinedList.length === 0) {
+      grid.innerHTML = '<p style="font-size: 12px; color: #aaa; grid-column: span 3; text-align: center; padding: 20px;">データがありません。</p>';
       return;
     }
 
-    list.forEach(item => {
+    combinedList.forEach(item => {
       const card = document.createElement('div');
       card.style.cssText = `
         background: rgba(255,255,255,0.05);
-        border: 2px solid ${item.isPublished ? '#4ade80' : 'rgba(255,255,255,0.2)'};
+        border: 2px solid ${item.isPublished ? '#4ade80' : '#f87171'};
         border-radius: 8px;
         padding: 6px;
         text-align: center;
@@ -527,8 +543,8 @@ document.addEventListener('DOMContentLoaded', () => {
       card.innerHTML = `
         <div style="position: relative; width: 100%; aspect-ratio: 1; border-radius: 4px; overflow: hidden; background: rgba(0,0,0,0.3);">
           <img src="${imgPath}" alt="${item.name}" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.src='images/default.png';">
-          <span style="position: absolute; top: 2px; right: 2px; font-size: 10px; background: ${item.isPublished ? '#10b981' : '#6b7280'}; color: #fff; padding: 1px 4px; border-radius: 3px;">
-            ${item.isPublished ? '公開' : '下書き'}
+          <span style="position: absolute; top: 2px; right: 2px; font-size: 9px; background: ${item.isPublished ? '#10b981' : '#ef4444'}; color: #fff; padding: 1px 3px; border-radius: 3px;">
+            ${item.isPublished ? '公開' : '非公開'}
           </span>
         </div>
         <div style="font-size: 11px; margin-top: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #fff;">${item.name}</div>
@@ -540,16 +556,18 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function clearAdminForm() {
+    document.getElementById('formTitle').textContent = '＋ 新規データの追加（実装）';
     document.getElementById('pvId').value = '';
     document.getElementById('pvName').value = '';
-    document.getElementById('pvIsPublished').value = 'false';
+    document.getElementById('pvIsPublished').value = 'false'; // 新規追加時は初期で「非公開」
     document.getElementById('pvGenre').value = adminGenreTab ? adminGenreTab.value : 'character';
     document.getElementById('pvGenre').dispatchEvent(new Event('change'));
   }
 
   function loadItemIntoForm(item) {
-    document.getElementById('formTitle').textContent = `✏️ 編集中: ${item.name}`;
-    document.getElementById('pvIsPublished').value = String(!!item.isPublished);
+    const isMaster = item.isMaster;
+    document.getElementById('formTitle').textContent = isMaster ? `✏️ 既存データの変更: ${item.name}` : `✏️ カスタムデータの編集: ${item.name}`;
+    document.getElementById('pvIsPublished').value = String(item.isPublished !== false);
     document.getElementById('pvGenre').value = item.genre || 'character';
     document.getElementById('pvGenre').dispatchEvent(new Event('change'));
     
@@ -590,7 +608,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // データの保存
+  // 💾 データの保存（既存データの変更 OR 新規実装の保存）
   const saveBtn = document.getElementById('savePreviewFormBtn');
   if (saveBtn) {
     saveBtn.addEventListener('click', () => {
@@ -605,7 +623,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
-      // 📁 files/日本語名.png を自動適用
+      // 📁 files/日本語名.png を自動紐づけ
       const iconUrl = `files/${name}.png`;
 
       const newItem = {
@@ -661,7 +679,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         localStorage.setItem(LS_CUSTOM_PREVIEW_KEY, JSON.stringify(list));
         renderAdminCardGrid();
-        alert(`✨ 「${name}」を保存しました！\n画像: files/${name}.png\n（公開設定: ${isPublished ? '公開中 🟢' : '非公開（下書き） 🔒'}）`);
+        alert(`✨ 「${name}」のデータを保存しました！\n画像: files/${name}.png\n（公開設定: ${isPublished ? '公開中 🟢' : '非公開 🔒'}）`);
       } catch (e) {
         alert('保存に失敗しました: ' + e.message);
       }
@@ -675,7 +693,7 @@ document.addEventListener('DOMContentLoaded', () => {
       try {
         const raw = localStorage.getItem(LS_CUSTOM_PREVIEW_KEY);
         if (!raw || JSON.parse(raw).length === 0) {
-          alert('保存されているデータがありません。');
+          alert('変更または新規追加されたデータがありません。');
           return;
         }
         const blob = new Blob([raw], { type: 'application/json' });
