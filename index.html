@@ -259,65 +259,26 @@
     </div>
   </div>
 
-<!-- 管理者ログ追加 ＆ データ管理モーダル -->
+  <!-- 管理者ログ追加モーダル -->
   <div class="modal-overlay hidden" id="adminLogOverlay" aria-hidden="true"></div>
   <div class="modal hidden" id="adminLogModal" role="dialog" aria-modal="true" aria-labelledby="adminLogTitle">
     <div class="modal-header">
-      <h2 class="modal-title" id="adminLogTitle">🛠 管理者パネル</h2>
+      <h2 class="modal-title" id="adminLogTitle">🛠 更新情報の管理</h2>
       <button class="modal-close" id="adminLogClose" aria-label="閉じる">✕</button>
     </div>
     <div class="modal-body">
-
-      <!-- 🟢 タブ切り替えボタン -->
-      <div class="admin-main-tabs" style="display: flex; gap: 10px; margin-bottom: 15px;">
-        <button class="admin-tab-btn active" id="tabNewsBtn" type="button" style="flex: 1; padding: 8px; cursor: pointer;">更新情報の管理</button>
-        <button class="admin-tab-btn" id="tabDataBtn" type="button" style="flex: 1; padding: 8px; cursor: pointer;">データ管理</button>
+      <p class="admin-note">更新情報の追加・編集・削除ができます。</p>
+      <input type="hidden" id="adminLogEditIndex">
+      <label>日付<br><input type="date" id="adminLogDate" class="admin-input"></label>
+      <label>内容<br><textarea id="adminLogContent" class="admin-textarea" rows="3" placeholder="更新内容を入力"></textarea></label>
+      <div class="admin-actions">
+        <button class="admin-auth-btn" id="adminLogSaveBtn">追加する</button>
+        <button class="admin-secondary-btn hidden" id="adminLogCancelBtn" type="button">編集をやめる</button>
       </div>
-
-      <!-- ▼ パーン1：更新情報の管理（既存の機能） -->
-      <div id="adminPaneNews" class="admin-pane">
-        <p class="admin-note">更新情報の追加・編集・削除ができます。</p>
-        <input type="hidden" id="adminLogEditIndex">
-        <label>日付<br><input type="date" id="adminLogDate" class="admin-input"></label>
-        <label>内容<br><textarea id="adminLogContent" class="admin-textarea" rows="3" placeholder="更新内容を入力"></textarea></label>
-        <div class="admin-actions">
-          <button class="admin-auth-btn" id="adminLogSaveBtn">追加する</button>
-          <button class="admin-secondary-btn hidden" id="adminLogCancelBtn" type="button">編集をやめる</button>
-        </div>
-        <div class="admin-news-list" id="adminNewsList" aria-live="polite"></div>
-      </div>
-
-      <!-- ▼ パーン2：データ管理（新規追加部分） -->
-      <div id="adminPaneData" class="admin-pane hidden" style="display: none;">
-        <!-- キャラクター / 武器 切り替えボタン（3枚目の画像） -->
-        <div class="genre-buttons" style="margin-bottom: 15px; display: flex; justify-content: center; gap: 10px;">
-          <button class="genre-btn active" id="adminDataCharBtn" type="button">👤 キャラクター</button>
-          <button class="genre-btn" id="adminDataWeaponBtn" type="button">⚔️ 武器</button>
-        </div>
-
-        <!-- カード一覧が表示されるグリッド（2枚目の画像） -->
-        <div id="adminDataGrid" class="character-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; max-height: 400px; overflow-y: auto;">
-          <!-- JavaScriptでカードが動的に挿入されます -->
-        </div>
-      </div>
-
+      <div class="admin-news-list" id="adminNewsList" aria-live="polite"></div>
     </div>
   </div>
 
-<!-- 🟢 各データ詳細表示用のサブモーダル（4枚目の画像用） -->
-  <div class="modal-overlay hidden" id="adminDetailOverlay" aria-hidden="true"></div>
-  <div class="modal hidden" id="adminDetailModal" role="dialog" aria-modal="true">
-    <div class="modal-header">
-      <h2 class="modal-title" id="adminDetailTitle">詳細データ</h2>
-      <button class="modal-close" id="adminDetailClose" aria-label="閉じる">✕</button>
-    </div>
-    <div class="modal-body" id="adminDetailBody" style="max-height: 450px; overflow-y: auto;">
-      <!-- 詳細データがここに流し込まれます -->
-    </div>
-  </div>
-
-  <!-- 🟢 data.js と styles.js を順番に1回ずつ読み込む -->
-  <script src="guesser/data.js"></script>
   <script src="styles.js"></script>
 </body>
 </html>
