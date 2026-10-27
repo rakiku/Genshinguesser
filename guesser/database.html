@@ -142,11 +142,11 @@
 
   <main class="app-main" role="main">
 
-    <!-- タブ切替 ＆ 管理者ボタン -->
+    <!-- タブ切替 ＆ 隠し管理者トリガー（歯車アイコンのみ） -->
     <div class="db-header">
       <button class="db-tab active" data-tab="character">👤 キャラクター</button>
       <button class="db-tab" data-tab="weapon">⚔ 武器</button>
-      <button class="db-tab" id="dbAdminTrigger" type="button" style="margin-left: auto; background: #21262d; border-color: var(--accent-dim);">⚙️ 管理者</button>
+      <button class="db-tab" id="dbAdminTrigger" type="button" aria-label="管理者メニュー" style="margin-left: auto; background: transparent; border-color: transparent; color: var(--text-muted); cursor: default;">⚙️</button>
     </div>
 
     <!-- キャラクターフィルタ（詳細マルチ構成） -->
@@ -825,23 +825,31 @@
     }
 
     // ---------------------------------------------------------------------------
-    // 管理者モード機能の統合ロジック
+    // 隠し管理者モード機能（10回連続クリック ＆ 歯車マークのみ）
     // ---------------------------------------------------------------------------
+    let adminClickCount = 0;
+    let adminClickTimer = null;
+    const ADMIN_CLICK_THRESHOLD = 10;
+    const ADMIN_CLICK_WINDOW = 10000; // 10秒以内
     let adminCurrentCategory = 'character';
     let newsItems = [];
     const LS_NEWS_KEY = 'genshin-guesser-news';
     const DEFAULT_NEWS_ITEMS = [{ date: '2025-07-01', text: 'Genshin Guesser 公開！' }];
 
     function bindAdminFeatures() {
-      // データベース上の「管理者」ボタンクリックで認証モーダルを開く
-      document.getElementById('dbAdminTrigger')?.addEventListener('click', () => {
-        const input = document.getElementById('adminPasswordInput');
-        if (input) input.value = '';
-        document.getElementById('adminAuthError')?.classList.add('hidden');
-        document.getElementById('adminAuthModal')?.classList.remove('hidden');
-        document.getElementById('adminAuthOverlay')?.classList.remove('hidden');
-        setTimeout(() => input?.focus(), 100);
-      });
+      const trigger = document.getElementById('dbAdminTrigger');
+      if (trigger) {
+        trigger.addEventListener('click', () => {
+          adminClickCount++;
+          if (adminClickTimer) clearTimeout(adminClickTimer);
+          adminClickTimer = setTimeout(() => { adminClickCount = 0; }, ADMIN_CLICK_WINDOW);
+          if (adminClickCount >= ADMIN_CLICK_THRESHOLD) {
+            adminClickCount = 0;
+            clearTimeout(adminClickTimer);
+            openAdminAuth();
+          }
+        });
+      }
 
       // 認証モーダル閉じる
       document.getElementById('adminAuthClose')?.addEventListener('click', () => closeAdminModal('adminAuth'));
@@ -901,6 +909,15 @@
       document.getElementById('adminNewsList')?.addEventListener('click', handleAdminNewsAction);
 
       loadNewsFromStorage();
+    }
+
+    function openAdminAuth() {
+      const input = document.getElementById('adminPasswordInput');
+      if (input) input.value = '';
+      document.getElementById('adminAuthError')?.classList.add('hidden');
+      document.getElementById('adminAuthModal')?.classList.remove('hidden');
+      document.getElementById('adminAuthOverlay')?.classList.remove('hidden');
+      setTimeout(() => input?.focus(), 100);
     }
 
     function closeAdminModal(name) {
