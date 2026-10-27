@@ -40,12 +40,11 @@
       padding: 0.35rem 0.5rem;
       border: 1px solid var(--border);
       border-radius: 6px;
-      background: #ffffff; /* 背景を白に固定 */
-      color: #000000;      /* 文字色を黒に固定 */
+      background: #ffffff;
+      color: #000000;
       font-size: 0.8rem;
       cursor: pointer;
     }
-    /* プルダウンメニュー内の選択肢も確実に黒文字にする */
     .filter-select option {
       background: #ffffff;
       color: #000000;
@@ -54,8 +53,8 @@
       padding: 0.35rem 0.5rem;
       border: 1px solid var(--border);
       border-radius: 6px;
-      background: #ffffff; /* 背景を白に固定 */
-      color: #000000;      /* 文字色を黒に固定 */
+      background: #ffffff;
+      color: #000000;
       font-size: 0.8rem;
     }
     .filter-input:focus {
@@ -99,7 +98,7 @@
     .rarity-1 { border-color:#f5f7fb; }
     .empty-msg { text-align:center; color:#fff; padding:2rem; }
     
-    /* ---- 詳細モーダル ---- */
+    /* ---- 詳細モーダル等 ---- */
     .db-modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,.72); z-index:300; }
     .db-modal { position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); width:min(92vw,720px); max-height:88vh; overflow-y:auto; background:var(--surface); border:1px solid var(--border); border-radius:14px; box-shadow:var(--shadow); z-index:301; padding:1rem; color:#fff; }
     .db-modal-head { display:flex; align-items:center; gap:.8rem; margin-bottom:1rem; }
@@ -116,6 +115,17 @@
     .db-detail-item { font-size:.82rem; }
     .db-detail-item b { color:#fff; display:block; margin-bottom:.15rem; font-weight:700; }
     .db-detail-item span { color:#fff; }
+
+    /* 管理者パネル用追加スタイル */
+    .admin-input, .admin-textarea { width: 100%; padding: 0.5rem; background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; color: #fff; margin-top: 0.3rem; margin-bottom: 0.8rem; font-family: inherit; }
+    .admin-auth-btn { width: 100%; padding: 0.6rem; background: var(--accent); border: none; border-radius: 6px; color: #111; font-weight: bold; cursor: pointer; }
+    .admin-secondary-btn { background: #7f8c8d; color: #fff; border: none; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; }
+    .admin-news-item { background: var(--surface2); border: 1px solid var(--border); padding: 0.6rem; border-radius: 6px; margin-bottom: 0.5rem; display: flex; justify-content: space-between; align-items: center; gap: 0.5rem; }
+    .admin-news-meta { font-size: 0.75rem; color: #aaa; min-width: 80px; }
+    .admin-news-text { flex: 1; font-size: 0.85rem; overflow: hidden; text-overflow: ellipsis; }
+    .admin-news-actions { display: flex; gap: 4px; }
+    .admin-news-btn { background: var(--border); border: none; color: #fff; padding: 0.25rem 0.5rem; border-radius: 4px; cursor: pointer; font-size: 0.75rem; }
+    .admin-error { color: #f85149; font-size: 0.85rem; text-align: center; margin-top: 0.5rem; }
     @media (max-width: 560px) {
       .db-modal { left:.8rem; right:.8rem; width:auto; transform:translate(0,-50%); }
     }
@@ -132,10 +142,11 @@
 
   <main class="app-main" role="main">
 
-    <!-- タブ切替 -->
+    <!-- タブ切替 ＆ 管理者ボタン -->
     <div class="db-header">
       <button class="db-tab active" data-tab="character">👤 キャラクター</button>
       <button class="db-tab" data-tab="weapon">⚔ 武器</button>
+      <button class="db-tab" id="dbAdminTrigger" type="button" style="margin-left: auto; background: #21262d; border-color: var(--accent-dim);">⚙️ 管理者</button>
     </div>
 
     <!-- キャラクターフィルタ（詳細マルチ構成） -->
@@ -313,6 +324,7 @@
     <p><a href="../index.html">← メニューへ戻る</a></p>
   </footer>
 
+  <!-- 既存の詳細モーダル -->
   <div class="db-modal-overlay hidden" id="detailOverlay" aria-hidden="true"></div>
   <section class="db-modal hidden" id="detailModal" role="dialog" aria-modal="true" aria-labelledby="detailTitle">
     <div class="db-modal-head">
@@ -327,6 +339,67 @@
       <div class="db-detail-grid" id="detailGrid"></div>
     </div>
   </section>
+
+  <!-- 🔐 管理者認証モーダル -->
+  <div class="db-modal-overlay hidden" id="adminAuthOverlay" aria-hidden="true"></div>
+  <div class="db-modal hidden" id="adminAuthModal" role="dialog" aria-modal="true" aria-labelledby="adminAuthTitle">
+    <div class="db-modal-head">
+      <h2 class="db-modal-title" id="adminAuthTitle">🔐 管理者認証</h2>
+      <button class="db-modal-close" id="adminAuthClose" type="button" aria-label="閉じる">✕</button>
+    </div>
+    <div class="db-modal-body">
+      <input type="password" id="adminPasswordInput" placeholder="管理者パスワードを入力" class="admin-input">
+      <button class="admin-auth-btn" id="adminAuthBtn" type="button">認証</button>
+      <p class="admin-error hidden" id="adminAuthError">パスワードが違います</p>
+    </div>
+  </div>
+
+  <!-- 🛠 管理者パネルモーダル（更新情報管理 ＆ データ管理） -->
+  <div class="db-modal-overlay hidden" id="adminLogOverlay" aria-hidden="true"></div>
+  <div class="db-modal hidden" id="adminLogModal" role="dialog" aria-modal="true" aria-labelledby="adminLogTitle">
+    <div class="db-modal-head">
+      <h2 class="db-modal-title" id="adminLogTitle">🛠 管理者パネル</h2>
+      <button class="db-modal-close" id="adminLogClose" type="button" aria-label="閉じる">✕</button>
+    </div>
+    <div class="db-modal-body">
+      <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+        <button class="db-tab active" id="tabNewsBtn" type="button" style="flex: 1;">更新情報の管理</button>
+        <button class="db-tab" id="tabDataBtn" type="button" style="flex: 1;">データ管理</button>
+      </div>
+
+      <!-- パーン1：更新情報 -->
+      <div id="adminPaneNews">
+        <p style="font-size: 0.8rem; color: #aaa; margin-bottom: 0.8rem;">更新情報の追加・編集・削除ができます。</p>
+        <input type="hidden" id="adminLogEditIndex">
+        <label style="font-size: 0.8rem;">日付<br><input type="date" id="adminLogDate" class="admin-input"></label>
+        <label style="font-size: 0.8rem;">内容<br><textarea id="adminLogContent" class="admin-textarea" rows="3" placeholder="更新内容を入力"></textarea></label>
+        <div style="display: flex; gap: 8px; margin-bottom: 1rem;">
+          <button class="admin-auth-btn" id="adminLogSaveBtn" type="button">追加する</button>
+          <button class="admin-secondary-btn hidden" id="adminLogCancelBtn" type="button">編集をやめる</button>
+        </div>
+        <div id="adminNewsList" style="max-height: 200px; overflow-y: auto;"></div>
+      </div>
+
+      <!-- パーン2：データ管理 -->
+      <div id="adminPaneData" class="hidden" style="display: none;">
+        <div style="margin-bottom: 15px; display: flex; justify-content: center; gap: 10px;">
+          <button class="db-tab active" id="adminDataCharBtn" type="button">👤 キャラクター</button>
+          <button class="db-tab" id="adminDataWeaponBtn" type="button">⚔️ 武器</button>
+        </div>
+        <div id="adminDataGrid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; max-height: 380px; overflow-y: auto;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- データ詳細確認用サブモーダル -->
+  <div class="db-modal-overlay hidden" id="adminDetailOverlay" aria-hidden="true"></div>
+  <div class="db-modal hidden" id="adminDetailModal" role="dialog" aria-modal="true">
+    <div class="db-modal-head">
+      <h2 class="db-modal-title" id="adminDetailTitle">詳細データ</h2>
+      <button class="db-modal-close" id="adminDetailClose" type="button" aria-label="閉じる">✕</button>
+    </div>
+    <div class="db-modal-body" id="adminDetailBody" style="max-height: 420px; overflow-y: auto;"></div>
+  </div>
 
   <script src="data.js"></script>
   <script>
@@ -381,13 +454,14 @@
       bindAdvancedFilters();
       bindDetailModal();
       renderGrid();
+      bindAdminFeatures(); // 管理者機能の初期化
     });
 
     function bindTabs() {
-      document.querySelectorAll('.db-tab').forEach(btn => {
+      document.querySelectorAll('.db-tab[data-tab]').forEach(btn => {
         btn.addEventListener('click', () => {
           currentTab = btn.dataset.tab;
-          document.querySelectorAll('.db-tab').forEach(b => b.classList.toggle('active', b.dataset.tab === currentTab));
+          document.querySelectorAll('.db-tab[data-tab]').forEach(b => b.classList.toggle('active', b.dataset.tab === currentTab));
           document.getElementById('charFilters').style.display = currentTab === 'character' ? '' : 'none';
           document.getElementById('weaponFilters').style.display = currentTab === 'weapon' ? '' : 'none';
           renderGrid();
@@ -395,22 +469,16 @@
       });
     }
 
-    /** 
-     * CHARACTERS / WEAPONS の定義データから自動的にユニークな絞り込み用選択肢を抽出し、
-     * HTML上のプルダウンメニュー（<select>）に反映する
-     */
     function initAdvancedFilters() {
       function parseReleaseVersionNum(str) {
         if (typeof parseReleaseVersion === 'function') return parseReleaseVersion(str);
         return parseFloat(str) || 0;
       }
 
-      // キャラクター選択肢の抽出
       populateSelect('char-country', jpSort([...new Set(CHARACTERS.map(c => c.country))].filter(Boolean)));
       populateSelect('char-weapon', jpSort([...new Set(CHARACTERS.map(c => c.weapon))].filter(Boolean)));
       populateSelect('char-element', jpSort([...new Set(CHARACTERS.map(c => c.element))].filter(Boolean)));
       
-      // 誕生月のソート（「1月」「2月」...「12月」の数字順）
       const months = [...new Set(CHARACTERS.map(c => c.birthMonth))].filter(Boolean).sort((a, b) => {
         const aNum = parseInt(a.replace(/[０-９]/g, s => String.fromCharCode(s.charCodeAt(0) - 0xfee0))) || 99;
         const bNum = parseInt(b.replace(/[０-９]/g, s => String.fromCharCode(s.charCodeAt(0) - 0xfee0))) || 99;
@@ -418,7 +486,6 @@
       });
       populateSelect('char-birthMonth', months);
       
-      // 実装バージョンのソート
       const versions = [...new Set(CHARACTERS.map(c => c.releaseVersionLabel))].filter(Boolean).sort((a, b) => parseReleaseVersionNum(a) - parseReleaseVersionNum(b));
       populateSelect('char-releaseVersion', versions);
       
@@ -434,7 +501,6 @@
       populateSelect('char-talentWeekly', jpSort([...new Set(CHARACTERS.map(c => c.talentWeekly))].filter(Boolean)));
       populateSelect('char-specialDish', jpSort([...new Set(CHARACTERS.map(c => c.specialDish))].filter(Boolean)));
 
-      // 武器選択肢の抽出
       populateSelect('w-type', jpSort([...new Set(WEAPONS.map(w => w.weaponType))].filter(Boolean)));
       populateSelect('w-rarity', [...new Set(WEAPONS.map(w => w.rarity))].filter(v => v !== undefined).sort((a, b) => b - a).map(String));
       populateSelect('w-ascensionStat', jpSort([...new Set(WEAPONS.map(w => w.ascensionStat))].filter(Boolean)));
@@ -458,9 +524,7 @@
       });
     }
 
-    /** フィルターイベントの紐付け */
     function bindAdvancedFilters() {
-      // テキスト入力の監視
       document.getElementById('char-name-input')?.addEventListener('input', e => {
         activeFilters.charName = e.target.value.trim().toLowerCase();
         scheduleRenderGrid();
@@ -478,7 +542,6 @@
         scheduleRenderGrid();
       });
 
-      // キャラクター側セレクトボックスの監視
       const charFields = [
         'country', 'weapon', 'element', 'birthMonth', 'releaseVersion',
         'rarity', 'body', 'role', 'energy', 'talentBoss', 'localSpecialty',
@@ -494,7 +557,6 @@
         });
       });
 
-      // 武器側セレクトボックスの監視
       const wFields = ['type', 'rarity', 'ascensionStat', 'weaponBreakMaterial', 'enemyMaterial', 'weaponEnemyMaterial', 'releaseVersion', 'distributed'];
       wFields.forEach(field => {
         const id = 'w-' + field;
@@ -505,12 +567,10 @@
         });
       });
 
-      // リセットボタン
       document.getElementById('char-reset-btn')?.addEventListener('click', () => resetAllFilters('character'));
       document.getElementById('w-reset-btn')?.addEventListener('click', () => resetAllFilters('weapon'));
     }
 
-    /** 各Tabのフィルターリセット処理 */
     function resetAllFilters(tab) {
       if (tab === 'character') {
         const charFields = [
@@ -559,7 +619,6 @@
       }, QUERY_DEBOUNCE_MS);
     }
 
-    /** グリッド再描画（高機能絞り込み） */
     function renderGrid() {
       const grid = document.getElementById('dbGrid');
       grid.innerHTML = '';
@@ -763,6 +822,233 @@
       image.alt = item.name;
       image.addEventListener('error', () => image.replaceWith(wrap), { once: true });
       return image;
+    }
+
+    // ---------------------------------------------------------------------------
+    // 管理者モード機能の統合ロジック
+    // ---------------------------------------------------------------------------
+    let adminCurrentCategory = 'character';
+    let newsItems = [];
+    const LS_NEWS_KEY = 'genshin-guesser-news';
+    const DEFAULT_NEWS_ITEMS = [{ date: '2025-07-01', text: 'Genshin Guesser 公開！' }];
+
+    function bindAdminFeatures() {
+      // データベース上の「管理者」ボタンクリックで認証モーダルを開く
+      document.getElementById('dbAdminTrigger')?.addEventListener('click', () => {
+        const input = document.getElementById('adminPasswordInput');
+        if (input) input.value = '';
+        document.getElementById('adminAuthError')?.classList.add('hidden');
+        document.getElementById('adminAuthModal')?.classList.remove('hidden');
+        document.getElementById('adminAuthOverlay')?.classList.remove('hidden');
+        setTimeout(() => input?.focus(), 100);
+      });
+
+      // 認証モーダル閉じる
+      document.getElementById('adminAuthClose')?.addEventListener('click', () => closeAdminModal('adminAuth'));
+      document.getElementById('adminAuthOverlay')?.addEventListener('click', () => closeAdminModal('adminAuth'));
+      document.getElementById('adminAuthBtn')?.addEventListener('click', handleAdminAuth);
+      document.getElementById('adminPasswordInput')?.addEventListener('keydown', e => {
+        if (e.key === 'Enter') handleAdminAuth();
+      });
+
+      // 管理パネル閉じる
+      document.getElementById('adminLogClose')?.addEventListener('click', () => closeAdminModal('adminLog'));
+      document.getElementById('adminLogOverlay')?.addEventListener('click', () => closeAdminModal('adminLog'));
+
+      // タブ切替（更新情報 vs データ管理）
+      const tabNewsBtn = document.getElementById('tabNewsBtn');
+      const tabDataBtn = document.getElementById('tabDataBtn');
+      const paneNews = document.getElementById('adminPaneNews');
+      const paneData = document.getElementById('adminPaneData');
+
+      tabNewsBtn?.addEventListener('click', () => {
+        tabNewsBtn.classList.add('active');
+        tabDataBtn.classList.remove('active');
+        paneNews.style.display = 'block';
+        paneData.style.display = 'none';
+      });
+
+      tabDataBtn?.addEventListener('click', () => {
+        tabDataBtn.classList.add('active');
+        tabNewsBtn.classList.remove('active');
+        paneNews.style.display = 'none';
+        paneData.style.display = 'block';
+        renderAdminDataGrid();
+      });
+
+      // キャラクター / 武器 切り替え（管理パネル内）
+      document.getElementById('adminDataCharBtn')?.addEventListener('click', () => {
+        adminCurrentCategory = 'character';
+        document.getElementById('adminDataCharBtn').classList.add('active');
+        document.getElementById('adminDataWeaponBtn').classList.remove('active');
+        renderAdminDataGrid();
+      });
+
+      document.getElementById('adminDataWeaponBtn')?.addEventListener('click', () => {
+        adminCurrentCategory = 'weapon';
+        document.getElementById('adminDataWeaponBtn').classList.add('active');
+        document.getElementById('adminDataCharBtn').classList.remove('active');
+        renderAdminDataGrid();
+      });
+
+      // 詳細モーダル閉じる
+      document.getElementById('adminDetailClose')?.addEventListener('click', closeAdminDetailModal);
+      document.getElementById('adminDetailOverlay')?.addEventListener('click', closeAdminDetailModal);
+
+      // ニュース保存・アクション
+      document.getElementById('adminLogSaveBtn')?.addEventListener('click', handleAdminLogSave);
+      document.getElementById('adminLogCancelBtn')?.addEventListener('click', resetAdminLogForm);
+      document.getElementById('adminNewsList')?.addEventListener('click', handleAdminNewsAction);
+
+      loadNewsFromStorage();
+    }
+
+    function closeAdminModal(name) {
+      document.getElementById(name + 'Modal')?.classList.add('hidden');
+      document.getElementById(name + 'Overlay')?.classList.add('hidden');
+    }
+
+    function handleAdminAuth() {
+      const input = document.getElementById('adminPasswordInput');
+      if (!input) return;
+      if (input.value === 'Liliavanrouge0101') {
+        closeAdminModal('adminAuth');
+        resetAdminLogForm();
+        renderAdminNewsList();
+        document.getElementById('adminLogModal')?.classList.remove('hidden');
+        document.getElementById('adminLogOverlay')?.classList.remove('hidden');
+      } else {
+        document.getElementById('adminAuthError')?.classList.remove('hidden');
+      }
+    }
+
+    async function loadNewsFromStorage() {
+      try {
+        const raw = localStorage.getItem(LS_NEWS_KEY);
+        const items = raw ? JSON.parse(raw) : DEFAULT_NEWS_ITEMS;
+        newsItems = Array.isArray(items) && items.length > 0 ? items : [...DEFAULT_NEWS_ITEMS];
+      } catch (e) {
+        newsItems = [...DEFAULT_NEWS_ITEMS];
+      }
+    }
+
+    function resetAdminLogForm() {
+      document.getElementById('adminLogEditIndex').value = '';
+      const dateInput = document.getElementById('adminLogDate');
+      if (dateInput) dateInput.value = new Date().toISOString().slice(0, 10);
+      const content = document.getElementById('adminLogContent');
+      if (content) content.value = '';
+      document.getElementById('adminLogSaveBtn').textContent = '追加する';
+      document.getElementById('adminLogCancelBtn')?.classList.add('hidden');
+    }
+
+    function handleAdminLogSave() {
+      const editIndex = document.getElementById('adminLogEditIndex').value;
+      const date = document.getElementById('adminLogDate').value.trim();
+      const text = document.getElementById('adminLogContent').value.trim();
+      if (!date || !text) { alert('日付と内容を入力してください。'); return; }
+      if (editIndex !== '') {
+        newsItems[Number(editIndex)] = { date, text };
+      } else {
+        newsItems.unshift({ date, text });
+      }
+      localStorage.setItem(LS_NEWS_KEY, JSON.stringify(newsItems));
+      resetAdminLogForm();
+      renderAdminNewsList();
+    }
+
+    function handleAdminNewsAction(event) {
+      const button = event.target.closest('[data-action]');
+      if (!button) return;
+      const index = Number(button.dataset.index);
+      if (button.dataset.action === 'edit') {
+        const item = newsItems[index];
+        document.getElementById('adminLogEditIndex').value = String(index);
+        document.getElementById('adminLogDate').value = item.date;
+        document.getElementById('adminLogContent').value = item.text;
+        document.getElementById('adminLogSaveBtn').textContent = '更新する';
+        document.getElementById('adminLogCancelBtn')?.classList.remove('hidden');
+      } else if (button.dataset.action === 'delete' && window.confirm('削除しますか？')) {
+        newsItems.splice(index, 1);
+        if (newsItems.length === 0) newsItems = [...DEFAULT_NEWS_ITEMS];
+        localStorage.setItem(LS_NEWS_KEY, JSON.stringify(newsItems));
+        resetAdminLogForm();
+        renderAdminNewsList();
+      }
+    }
+
+    function renderAdminNewsList() {
+      const list = document.getElementById('adminNewsList');
+      if (!list) return;
+      list.innerHTML = '';
+      newsItems.forEach((item, index) => {
+        const row = document.createElement('div');
+        row.className = 'admin-news-item';
+        row.innerHTML = `
+          <div class="admin-news-meta">${item.date}</div>
+          <div class="admin-news-text">${item.text}</div>
+          <div class="admin-news-actions">
+            <button class="admin-news-btn" data-action="edit" data-index="${index}">編集</button>
+            <button class="admin-news-btn" data-action="delete" data-index="${index}">削除</button>
+          </div>
+        `;
+        list.appendChild(row);
+      });
+    }
+
+    function renderAdminDataGrid() {
+      const grid = document.getElementById('adminDataGrid');
+      if (!grid) return;
+      grid.innerHTML = '';
+      const dataset = adminCurrentCategory === 'character' ? CHARACTERS : WEAPONS;
+
+      dataset.forEach(item => {
+        const card = document.createElement('div');
+        card.style.cssText = 'background:#222; border:1.5px solid #444; border-radius:8px; padding:6px; text-align:center; cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:4px;';
+        const imgSrc = item.iconUrl || '';
+        card.innerHTML = `
+          <div style="width:45px; height:45px; background:rgba(255,255,255,0.05); border-radius:6px; display:flex; align-items:center; justify-content:center; overflow:hidden;">
+            ${imgSrc ? `<img src="${imgSrc}" style="width:100%; height:100%; object-fit:cover;">` : `<span>👤</span>`}
+          </div>
+          <div style="font-size:10px; color:#fff; width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${item.name}</div>
+        `;
+        card.addEventListener('click', () => openAdminDetailModal(item));
+        grid.appendChild(card);
+      });
+    }
+
+    function openAdminDetailModal(item) {
+      document.getElementById('adminDetailTitle').textContent = `${item.name} の詳細`;
+      const body = document.getElementById('adminDetailBody');
+      const imgSrc = item.iconUrl || '';
+      let html = `
+        <div style="display:flex; gap:12px; align-items:center; margin-bottom:12px;">
+          <div style="width:70px; height:70px; background:rgba(255,255,255,0.05); border-radius:8px; display:flex; align-items:center; justify-content:center; overflow:hidden; flex-shrink:0;">
+            ${imgSrc ? `<img src="${imgSrc}" style="width:100%; height:100%; object-fit:cover;">` : `<span>👤</span>`}
+          </div>
+          <div>
+            <p style="margin:0 0 4px 0; font-size:0.9rem;"><strong>名前:</strong> ${item.name}</p>
+            <p style="margin:0 0 4px 0; font-size:0.9rem;"><strong>レアリティ:</strong> ★${item.rarity || '-'}</p>
+            <p style="margin:0; font-size:0.9rem;"><strong>${adminCurrentCategory === 'character' ? '元素' : '武器種'}:</strong> ${item.element || item.weaponType || '-'}</p>
+          </div>
+        </div>
+        <hr style="border-color:#444; margin-bottom:10px;">
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px; font-size:12px;">
+      `;
+      for (const [key, value] of Object.entries(item)) {
+        if (['name', 'iconUrl', 'id'].includes(key) || value === undefined || value === null || value === '') continue;
+        let displayVal = Array.isArray(value) ? value.filter(Boolean).join(' / ') : (typeof value === 'boolean' ? (value ? 'あり' : 'なし') : value);
+        html += `<div><strong style="color:#95a5a6; display:block; font-size:10px;">${key}</strong><span>${displayVal}</span></div>`;
+      }
+      html += `</div>`;
+      body.innerHTML = html;
+      document.getElementById('adminDetailModal')?.classList.remove('hidden');
+      document.getElementById('adminDetailOverlay')?.classList.remove('hidden');
+    }
+
+    function closeAdminDetailModal() {
+      document.getElementById('adminDetailModal')?.classList.add('hidden');
+      document.getElementById('adminDetailOverlay')?.classList.add('hidden');
     }
   </script>
 </body>
