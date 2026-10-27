@@ -31,6 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
   bindModeButtons();
   bindModalButtons();
   bindAdminTrigger();
+  bindAdminDataManagement();
 });
 
 // ---------------------------------------------------------------------------
@@ -431,4 +432,125 @@ function renderAdminNewsList() {
     row.append(meta, text, actions);
     list.appendChild(row);
   });
+}
+// ---------------------------------------------------------------------------
+// 管理者パネル：タブおよびデータ管理機能の追加ロジック
+// ---------------------------------------------------------------------------
+
+let adminCurrentCategory = 'character'; // 初期値はキャラクター
+
+// モーダルが開いたときや初期化時にバインドする処理
+function bindAdminDataManagement() {
+  // メインタブ切り替え（更新情報 ⇄ データ管理）
+  const tabNewsBtn = document.getElementById('tabNewsBtn');
+  const tabDataBtn = document.getElementById('tabDataBtn');
+  const paneNews = document.getElementById('adminPaneNews');
+  const paneData = document.getElementById('adminPaneData');
+
+  tabNewsBtn?.addEventListener('click', () => {
+    tabNewsBtn.classList.add('active');
+    tabDataBtn.classList.remove('active');
+    paneNews.style.display = 'block';
+    paneData.style.display = 'none';
+  });
+
+  tabDataBtn?.addEventListener('click', () => {
+    tabDataBtn.classList.add('active');
+    tabNewsBtn.classList.remove('active');
+    paneNews.style.display = 'none';
+    paneData.style.display = 'block';
+    renderAdminDataGrid(); // データ管理画面を開いたときに一覧を描画
+  });
+
+  // キャラクター / 武器 の切り替えボタン
+  document.getElementById('adminDataCharBtn')?.addEventListener('click', () => {
+    adminCurrentCategory = 'character';
+    document.getElementById('adminDataCharBtn').classList.add('active');
+    document.getElementById('adminDataWeaponBtn').classList.remove('active');
+    renderAdminDataGrid();
+  });
+
+  document.getElementById('adminDataWeaponBtn')?.addEventListener('click', () => {
+    adminCurrentCategory = 'weapon';
+    document.getElementById('adminDataWeaponBtn').classList.add('active');
+    document.getElementById('adminDataCharBtn').classList.remove('active');
+    renderAdminDataGrid();
+  });
+
+  // 詳細モーダルを閉じる処理
+  document.getElementById('adminDetailClose')?.addEventListener('click', closeAdminDetailModal);
+  document.getElementById('adminDetailOverlay')?.addEventListener('click', closeAdminDetailModal);
+}
+
+// カード一覧を描画する関数（2枚目の画像イメージ）
+function renderAdminDataGrid() {
+  const grid = document.getElementById('adminDataGrid');
+  if (!grid) return;
+  grid.innerHTML = '';
+
+  // ※注意: ゲーム内で読み込んでいるデータ配列変数（例: charactersData, weaponsData 等）に合わせて調整してください
+  // ここでは一般的なデータ構造を想定しています
+  const dataset = (adminCurrentCategory === 'character') 
+    ? (typeof charactersData !== 'undefined' ? charactersData : []) 
+    : (typeof weaponsData !== 'undefined' ? weaponsData : []);
+
+  if (dataset.length === 0) {
+    grid.innerHTML = '<p style="grid-column: span 3; text-align: center; color: #aaa;">データが見つかりません（data.jsの読み込みを確認してください）</p>';
+    return;
+  }
+
+  dataset.forEach((item) => {
+    const card = document.createElement('div');
+    card.className = 'admin-data-card';
+    card.style.cssText = 'background: #222; border: 1px solid #444; border-radius: 8px; padding: 8px; text-align: center; cursor: pointer;';
+    
+    card.innerHTML = `
+      <img src="${item.image || '../files/characters/default.png'}" alt="${item.name}" style="width: 60px; height: 60px; object-fit: contain; border-radius: 4px;">
+      <div style="font-size: 12px; color: #fff; margin-top: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${item.name}</div>
+    `;
+
+    // カードをクリックしたら詳細モーダルを開く（4枚目の画像）
+    card.addEventListener('click', () => openAdminDetailModal(item));
+    grid.appendChild(card);
+  });
+}
+
+// 詳細モーダルを開く関数（4枚目の画像イメージ）
+function openAdminDetailModal(item) {
+  const title = document.getElementById('adminDetailTitle');
+  const body = document.getElementById('adminDetailBody');
+  if (!title || !body) return;
+
+  title.textContent = `${item.name} の詳細`;
+  
+  // 保持しているすべてのプロパティをリストや表形式で表示
+  let html = `
+    <div style="display: flex; gap: 15px; align-items: center; margin-bottom: 15px;">
+      <img src="${item.image || ''}" style="width: 80px; height: 80px; object-fit: contain; background: #333; border-radius: 8px;">
+      <div>
+        <p><strong>名前:</strong> ${item.name}</p>
+        <p><strong>レアリティ:</strong> ★${item.rarity || '-'}</p>
+        <p><strong>元素/タイプ:</strong> ${item.element || item.type || '-'}</p>
+      </div>
+    </div>
+    <hr style="border-color: #444; margin-bottom: 10px;">
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 13px;">
+  `;
+
+  // itemオブジェクトに含まれるプロパティを自動で展開して表示
+  for (const [key, value] of Object.entries(item)) {
+    if (['name', 'image', 'id'].includes(key)) continue;
+    html += `<div><strong>${key}:</strong> ${value}</div>`;
+  }
+
+  html += `</div>`;
+  body.innerHTML = html;
+
+  document.getElementById('adminDetailModal')?.classList.remove('hidden');
+  document.getElementById('adminDetailOverlay')?.classList.remove('hidden');
+}
+
+function closeAdminDetailModal() {
+  document.getElementById('adminDetailModal')?.classList.add('hidden');
+  document.getElementById('adminDetailOverlay')?.classList.add('hidden');
 }
