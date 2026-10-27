@@ -36,20 +36,7 @@
       color: var(--text-muted, #95a5a6);
       font-weight: 700;
     }
-    .filter-select {
-      padding: 0.35rem 0.5rem;
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      background: #ffffff;
-      color: #000000;
-      font-size: 0.8rem;
-      cursor: pointer;
-    }
-    .filter-select option {
-      background: #ffffff;
-      color: #000000;
-    }
-    .filter-input {
+    .filter-select, .filter-input {
       padding: 0.35rem 0.5rem;
       border: 1px solid var(--border);
       border-radius: 6px;
@@ -57,31 +44,11 @@
       color: #000000;
       font-size: 0.8rem;
     }
-    .filter-input:focus {
-      border-color: var(--accent);
-      outline: none;
-    }
-    .filter-btn-row {
-      grid-column: 1 / -1;
-      display: flex;
-      justify-content: flex-end;
-      margin-top: 0.4rem;
-    }
-    .reset-btn {
-      padding: .45rem 1rem;
-      background: #7f8c8d;
-      border: none;
-      border-radius: 8px;
-      color: #fff;
-      font-family: inherit;
-      font-size: .8rem;
-      cursor: pointer;
-      font-weight: bold;
-      transition: background 0.15s;
-    }
-    .reset-btn:hover {
-      background: #95a5a6;
-    }
+    .filter-select option { background: #ffffff; color: #000000; }
+    .filter-input:focus { border-color: var(--accent); outline: none; }
+    .filter-btn-row { grid-column: 1 / -1; display: flex; justify-content: flex-end; margin-top: 0.4rem; }
+    .reset-btn { padding: .45rem 1rem; background: #7f8c8d; border: none; border-radius: 8px; color: #fff; font-family: inherit; font-size: .8rem; cursor: pointer; font-weight: bold; transition: background 0.15s; }
+    .reset-btn:hover { background: #95a5a6; }
 
     /* ---- カード・グリッド表示 ---- */
     .db-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(170px,1fr)); gap:.75rem; }
@@ -98,37 +65,31 @@
     .rarity-1 { border-color:#f5f7fb; }
     .empty-msg { text-align:center; color:#fff; padding:2rem; }
     
-    /* ---- 詳細モーダル等 ---- */
+    /* ---- 詳細モーダル (編集フォーム対応) ---- */
     .db-modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,.72); z-index:300; }
-    .db-modal { position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); width:min(92vw,720px); max-height:88vh; overflow-y:auto; background:var(--surface); border:1px solid var(--border); border-radius:14px; box-shadow:var(--shadow); z-index:301; padding:1rem; color:#fff; }
+    .db-modal { position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); width:min(94vw,760px); max-height:88vh; overflow-y:auto; background:var(--surface); border:1px solid var(--border); border-radius:14px; box-shadow:var(--shadow); z-index:301; padding:1.2rem; color:#fff; }
     .db-modal-head { display:flex; align-items:center; gap:.8rem; margin-bottom:1rem; }
-    .db-modal-title { font-size:1.05rem; color:#fff; }
-    .db-modal-close { margin-left:auto; background:transparent; border:1px solid var(--border); border-radius:8px; color:#fff; cursor:pointer; font-family:inherit; padding:.35rem .7rem; }
+    .db-modal-title { font-size:1.1rem; color:#fff; font-weight:700; }
+    .db-modal-close { margin-left:auto; background:transparent; border:1px solid var(--border); border-radius:8px; color:#fff; cursor:pointer; font-family:inherit; padding:.35rem .8rem; }
     .db-modal-body { display:grid; gap:1rem; }
     .db-modal-hero { display:flex; gap:1rem; align-items:center; flex-wrap:wrap; }
-    .db-modal-image-wrap { width:min(180px,100%); aspect-ratio:1/1; border-radius:12px; overflow:hidden; background:rgba(255,255,255,.05); display:flex; align-items:center; justify-content:center; }
+    .db-modal-image-wrap { width:min(140px,100%); aspect-ratio:1/1; border-radius:12px; overflow:hidden; background:rgba(255,255,255,.05); display:flex; align-items:center; justify-content:center; }
     .db-modal-image { width:100%; height:100%; object-fit:cover; }
     .db-modal-fallback { font-size:3rem; color:#fff; }
-    .db-modal-summary { display:grid; gap:.35rem; }
-    .db-modal-summary p { color:#fff; }
-    .db-detail-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); gap:.5rem .8rem; }
-    .db-detail-item { font-size:.82rem; }
-    .db-detail-item b { color:#fff; display:block; margin-bottom:.15rem; font-weight:700; }
-    .db-detail-item span { color:#fff; }
+    .db-modal-summary { display:grid; gap:.35rem; flex:1; }
+    .db-detail-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); gap:.6rem 1rem; }
+    .db-detail-item { font-size:.82rem; display:flex; flex-direction:column; gap:.2rem; }
+    .db-detail-item b { color:var(--text-muted, #95a5a6); font-weight:700; font-size:.75rem; }
+    .db-edit-input, .db-edit-select { padding:0.4rem 0.6rem; background:var(--surface2); border:1px solid var(--border); border-radius:6px; color:#fff; font-family:inherit; font-size:0.85rem; width:100%; }
+    .db-edit-input:focus, .db-edit-select:focus { border-color:var(--accent); outline:none; }
+    .db-save-row { display:flex; justify-content:flex-end; margin-top:1rem; gap:.5rem; }
+    .db-save-btn { padding:.5rem 1.2rem; background:var(--accent); border:none; border-radius:8px; color:#111; font-weight:bold; cursor:pointer; font-size:.9rem; }
+    .db-save-btn:hover { opacity:.85; }
 
-    /* 管理者パネル用追加スタイル */
-    .admin-input, .admin-textarea { width: 100%; padding: 0.5rem; background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; color: #fff; margin-top: 0.3rem; margin-bottom: 0.8rem; font-family: inherit; }
+    /* 管理者認証モーダル */
+    .admin-input { width: 100%; padding: 0.5rem; background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; color: #fff; margin-top: 0.3rem; margin-bottom: 0.8rem; font-family: inherit; }
     .admin-auth-btn { width: 100%; padding: 0.6rem; background: var(--accent); border: none; border-radius: 6px; color: #111; font-weight: bold; cursor: pointer; }
-    .admin-secondary-btn { background: #7f8c8d; color: #fff; border: none; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; }
-    .admin-news-item { background: var(--surface2); border: 1px solid var(--border); padding: 0.6rem; border-radius: 6px; margin-bottom: 0.5rem; display: flex; justify-content: space-between; align-items: center; gap: 0.5rem; }
-    .admin-news-meta { font-size: 0.75rem; color: #aaa; min-width: 80px; }
-    .admin-news-text { flex: 1; font-size: 0.85rem; overflow: hidden; text-overflow: ellipsis; }
-    .admin-news-actions { display: flex; gap: 4px; }
-    .admin-news-btn { background: var(--border); border: none; color: #fff; padding: 0.25rem 0.5rem; border-radius: 4px; cursor: pointer; font-size: 0.75rem; }
     .admin-error { color: #f85149; font-size: 0.85rem; text-align: center; margin-top: 0.5rem; }
-    @media (max-width: 560px) {
-      .db-modal { left:.8rem; right:.8rem; width:auto; transform:translate(0,-50%); }
-    }
   </style>
 </head>
 <body>
@@ -142,176 +103,56 @@
 
   <main class="app-main" role="main">
 
-    <!-- タブ切替 ＆ 隠し管理者トリガー（歯車アイコンのみ） -->
+    <!-- タブ切替 ＆ 隠し管理者トリガー（歯車アイコンを10回連続クリック） -->
     <div class="db-header">
       <button class="db-tab active" data-tab="character">👤 キャラクター</button>
       <button class="db-tab" data-tab="weapon">⚔ 武器</button>
       <button class="db-tab" id="dbAdminTrigger" type="button" aria-label="管理者メニュー" style="margin-left: auto; background: transparent; border-color: transparent; color: var(--text-muted); cursor: default;">⚙️</button>
     </div>
 
-    <!-- キャラクターフィルタ（詳細マルチ構成） -->
+    <!-- キャラクターフィルタ -->
     <div id="charFilters">
       <div class="filter-grid">
-        <div class="filter-item">
-          <label for="char-name-input">名前</label>
-          <input id="char-name-input" class="filter-input" type="text" placeholder="名前検索">
-        </div>
-        <div class="filter-item">
-          <label for="char-country">国</label>
-          <select id="char-country" class="filter-select"><option value="all">すべて</option></select>
-        </div>
-        <div class="filter-item">
-          <label for="char-weapon">武器種</label>
-          <select id="char-weapon" class="filter-select"><option value="all">すべて</option></select>
-        </div>
-        <div class="filter-item">
-          <label for="char-element">元素</label>
-          <select id="char-element" class="filter-select"><option value="all">すべて</option></select>
-        </div>
-        <div class="filter-item">
-          <label for="char-birthMonth">誕生月</label>
-          <select id="char-birthMonth" class="filter-select"><option value="all">すべて</option></select>
-        </div>
-        <div class="filter-item">
-          <label for="char-releaseVersion">実装Ver</label>
-          <select id="char-releaseVersion" class="filter-select"><option value="all">すべて</option></select>
-        </div>
-        <div class="filter-item">
-          <label for="char-rarity">レアリティ</label>
-          <select id="char-rarity" class="filter-select"><option value="all">すべて</option></select>
-        </div>
-        <div class="filter-item">
-          <label for="char-body">体型</label>
-          <select id="char-body" class="filter-select"><option value="all">すべて</option></select>
-        </div>
-        <div class="filter-item">
-          <label for="char-role">役割</label>
-          <select id="char-role" class="filter-select"><option value="all">すべて</option></select>
-        </div>
-        <div class="filter-item">
-          <label for="char-energy">エネルギー</label>
-          <select id="char-energy" class="filter-select"><option value="all">すべて</option></select>
-        </div>
-        <div class="filter-item">
-          <label for="char-talentBoss">ボス素材</label>
-          <select id="char-talentBoss" class="filter-select"><option value="all">すべて</option></select>
-        </div>
-        <div class="filter-item">
-          <label for="char-localSpecialty">特産品</label>
-          <select id="char-localSpecialty" class="filter-select"><option value="all">すべて</option></select>
-        </div>
-        <div class="filter-item">
-          <label for="char-enemyMaterial">敵素材</label>
-          <select id="char-enemyMaterial" class="filter-select"><option value="all">すべて</option></select>
-        </div>
-        <div class="filter-item">
-          <label for="char-ascensionStat">突破ステータス</label>
-          <select id="char-ascensionStat" class="filter-select"><option value="all">すべて</option></select>
-        </div>
-        <div class="filter-item">
-          <label for="char-talentBook">天賦本</label>
-          <select id="char-talentBook" class="filter-select"><option value="all">すべて</option></select>
-        </div>
-        <div class="filter-item">
-          <label for="char-talentWeekly">週ボス素材</label>
-          <select id="char-talentWeekly" class="filter-select"><option value="all">すべて</option></select>
-        </div>
-        <div class="filter-item">
-          <label for="char-specialDish">料理種別</label>
-          <select id="char-specialDish" class="filter-select"><option value="all">すべて</option></select>
-        </div>
-        <div class="filter-item">
-          <label for="char-distributed">配布</label>
-          <select id="char-distributed" class="filter-select">
-            <option value="all">すべて</option>
-            <option value="true">あり</option>
-            <option value="false">なし</option>
-          </select>
-        </div>
-        <div class="filter-item">
-          <label for="char-trainingRoad">鍛錬の道</label>
-          <select id="char-trainingRoad" class="filter-select">
-            <option value="all">すべて</option>
-            <option value="true">あり</option>
-            <option value="false">なし</option>
-          </select>
-        </div>
-        <div class="filter-item">
-          <label for="char-trace">軌跡</label>
-          <select id="char-trace" class="filter-select">
-            <option value="all">すべて</option>
-            <option value="true">あり</option>
-            <option value="false">なし</option>
-          </select>
-        </div>
-        <div class="filter-item">
-          <label for="char-costume">別衣装</label>
-          <select id="char-costume" class="filter-select">
-            <option value="all">すべて</option>
-            <option value="true">あり</option>
-            <option value="false">なし</option>
-          </select>
-        </div>
-        <div class="filter-item">
-          <label for="charQuery">キャラ名を検索</label>
-          <input id="charQuery" class="filter-input" type="text" placeholder="全項目を対象に検索">
-        </div>
-        <div class="filter-btn-row">
-          <button id="char-reset-btn" class="reset-btn" type="button">フィルターをリセット</button>
-        </div>
+        <div class="filter-item"><label for="char-name-input">名前</label><input id="char-name-input" class="filter-input" type="text" placeholder="名前検索"></div>
+        <div class="filter-item"><label for="char-country">国</label><select id="char-country" class="filter-select"><option value="all">すべて</option></select></div>
+        <div class="filter-item"><label for="char-weapon">武器種</label><select id="char-weapon" class="filter-select"><option value="all">すべて</option></select></div>
+        <div class="filter-item"><label for="char-element">元素</label><select id="char-element" class="filter-select"><option value="all">すべて</option></select></div>
+        <div class="filter-item"><label for="char-birthMonth">誕生月</label><select id="char-birthMonth" class="filter-select"><option value="all">すべて</option></select></div>
+        <div class="filter-item"><label for="char-releaseVersion">実装Ver</label><select id="char-releaseVersion" class="filter-select"><option value="all">すべて</option></select></div>
+        <div class="filter-item"><label for="char-rarity">レアリティ</label><select id="char-rarity" class="filter-select"><option value="all">すべて</option></select></div>
+        <div class="filter-item"><label for="char-body">体型</label><select id="char-body" class="filter-select"><option value="all">すべて</option></select></div>
+        <div class="filter-item"><label for="char-role">役割</label><select id="char-role" class="filter-select"><option value="all">すべて</option></select></div>
+        <div class="filter-item"><label for="char-energy">エネルギー</label><select id="char-energy" class="filter-select"><option value="all">すべて</option></select></div>
+        <div class="filter-item"><label for="char-talentBoss">ボス素材</label><select id="char-talentBoss" class="filter-select"><option value="all">すべて</option></select></div>
+        <div class="filter-item"><label for="char-localSpecialty">特産品</label><select id="char-localSpecialty" class="filter-select"><option value="all">すべて</option></select></div>
+        <div class="filter-item"><label for="char-enemyMaterial">敵素材</label><select id="char-enemyMaterial" class="filter-select"><option value="all">すべて</option></select></div>
+        <div class="filter-item"><label for="char-ascensionStat">突破ステータス</label><select id="char-ascensionStat" class="filter-select"><option value="all">すべて</option></select></div>
+        <div class="filter-item"><label for="char-talentBook">天賦本</label><select id="char-talentBook" class="filter-select"><option value="all">すべて</option></select></div>
+        <div class="filter-item"><label for="char-talentWeekly">週ボス素材</label><select id="char-talentWeekly" class="filter-select"><option value="all">すべて</option></select></div>
+        <div class="filter-item"><label for="char-specialDish">料理種別</label><select id="char-specialDish" class="filter-select"><option value="all">すべて</option></select></div>
+        <div class="filter-item"><label for="char-distributed">配布</label><select id="char-distributed" class="filter-select"><option value="all">すべて</option><option value="true">あり</option><option value="false">なし</option></select></div>
+        <div class="filter-item"><label for="char-trainingRoad">鍛錬の道</label><select id="char-trainingRoad" class="filter-select"><option value="all">すべて</option><option value="true">あり</option><option value="false">なし</option></select></div>
+        <div class="filter-item"><label for="char-trace">軌跡</label><select id="char-trace" class="filter-select"><option value="all">すべて</option><option value="true">あり</option><option value="false">なし</option></select></div>
+        <div class="filter-item"><label for="char-costume">別衣装</label><select id="char-costume" class="filter-select"><option value="all">すべて</option><option value="true">あり</option><option value="false">なし</option></select></div>
+        <div class="filter-item"><label for="charQuery">キャラ名を検索</label><input id="charQuery" class="filter-input" type="text" placeholder="全項目を対象に検索"></div>
+        <div class="filter-btn-row"><button id="char-reset-btn" class="reset-btn" type="button">フィルターをリセット</button></div>
       </div>
     </div>
 
-    <!-- 武器フィルタ（詳細マルチ構成） -->
+    <!-- 武器フィルタ -->
     <div id="weaponFilters" style="display:none;">
       <div class="filter-grid">
-        <div class="filter-item">
-          <label for="w-name-input">名前</label>
-          <input id="w-name-input" class="filter-input" type="text" placeholder="名前検索">
-        </div>
-        <div class="filter-item">
-          <label for="w-type">武器種</label>
-          <select id="w-type" class="filter-select"><option value="all">すべて</option></select>
-        </div>
-        <div class="filter-item">
-          <label for="w-rarity">レアリティ</label>
-          <select id="w-rarity" class="filter-select"><option value="all">すべて</option></select>
-        </div>
-        <div class="filter-item">
-          <label for="w-ascensionStat">突破ステータス</label>
-          <select id="w-ascensionStat" class="filter-select"><option value="all">すべて</option></select>
-        </div>
-        <div class="filter-item">
-          <label for="w-weaponBreakMaterial">武器突破素材</label>
-          <select id="w-weaponBreakMaterial" class="filter-select"><option value="all">すべて</option></select>
-        </div>
-        <div class="filter-item">
-          <label for="w-enemyMaterial">敵素材</label>
-          <select id="w-enemyMaterial" class="filter-select"><option value="all">すべて</option></select>
-        </div>
-        <div class="filter-item">
-          <label for="w-weaponEnemyMaterial">精鋭素材</label>
-          <select id="w-weaponEnemyMaterial" class="filter-select"><option value="all">すべて</option></select>
-        </div>
-        <div class="filter-item">
-          <label for="w-releaseVersion">実装Ver</label>
-          <select id="w-releaseVersion" class="filter-select"><option value="all">すべて</option></select>
-        </div>
-        <div class="filter-item">
-          <label for="w-distributed">配布武器</label>
-          <select id="w-distributed" class="filter-select">
-            <option value="all">すべて</option>
-            <option value="true">あり</option>
-            <option value="false">なし</option>
-          </select>
-        </div>
-        <div class="filter-item" style="grid-column: 1 / -1;">
-          <label for="weaponQuery">全要素キーワード</label>
-          <input id="weaponQuery" class="filter-input" type="text" placeholder="全項目を対象に検索">
-        </div>
-        <div class="filter-btn-row">
-          <button id="w-reset-btn" class="reset-btn" type="button">フィルターをリセット</button>
-        </div>
+        <div class="filter-item"><label for="w-name-input">名前</label><input id="w-name-input" class="filter-input" type="text" placeholder="名前検索"></div>
+        <div class="filter-item"><label for="w-type">武器種</label><select id="w-type" class="filter-select"><option value="all">すべて</option></select></div>
+        <div class="filter-item"><label for="w-rarity">レアリティ</label><select id="w-rarity" class="filter-select"><option value="all">すべて</option></select></div>
+        <div class="filter-item"><label for="w-ascensionStat">突破ステータス</label><select id="w-ascensionStat" class="filter-select"><option value="all">すべて</option></select></div>
+        <div class="filter-item"><label for="w-weaponBreakMaterial">武器突破素材</label><select id="w-weaponBreakMaterial" class="filter-select"><option value="all">すべて</option></select></div>
+        <div class="filter-item"><label for="w-enemyMaterial">敵素材</label><select id="w-enemyMaterial" class="filter-select"><option value="all">すべて</option></select></div>
+        <div class="filter-item"><label for="w-weaponEnemyMaterial">精鋭素材</label><select id="w-weaponEnemyMaterial" class="filter-select"><option value="all">すべて</option></select></div>
+        <div class="filter-item"><label for="w-releaseVersion">実装Ver</label><select id="w-releaseVersion" class="filter-select"><option value="all">すべて</option></select></div>
+        <div class="filter-item"><label for="w-distributed">配布武器</label><select id="w-distributed" class="filter-select"><option value="all">すべて</option><option value="true">あり</option><option value="false">なし</option></select></div>
+        <div class="filter-item" style="grid-column: 1 / -1;"><label for="weaponQuery">全要素キーワード</label><input id="weaponQuery" class="filter-input" type="text" placeholder="全項目を対象に検索"></div>
+        <div class="filter-btn-row"><button id="w-reset-btn" class="reset-btn" type="button">フィルターをリセット</button></div>
       </div>
     </div>
 
@@ -324,7 +165,7 @@
     <p><a href="../index.html">← メニューへ戻る</a></p>
   </footer>
 
-  <!-- 既存の詳細モーダル -->
+  <!-- 詳細・編集モーダル -->
   <div class="db-modal-overlay hidden" id="detailOverlay" aria-hidden="true"></div>
   <section class="db-modal hidden" id="detailModal" role="dialog" aria-modal="true" aria-labelledby="detailTitle">
     <div class="db-modal-head">
@@ -336,7 +177,12 @@
         <div class="db-modal-image-wrap" id="detailImageWrap"></div>
         <div class="db-modal-summary" id="detailSummary"></div>
       </div>
-      <div class="db-detail-grid" id="detailGrid"></div>
+      <form id="detailEditForm">
+        <div class="db-detail-grid" id="detailGrid"></div>
+        <div class="db-save-row">
+          <button type="submit" class="db-save-btn">変更を保存</button>
+        </div>
+      </form>
     </div>
   </section>
 
@@ -354,107 +200,55 @@
     </div>
   </div>
 
-  <!-- 🛠 管理者パネルモーダル（更新情報管理 ＆ データ管理） -->
-  <div class="db-modal-overlay hidden" id="adminLogOverlay" aria-hidden="true"></div>
-  <div class="db-modal hidden" id="adminLogModal" role="dialog" aria-modal="true" aria-labelledby="adminLogTitle">
-    <div class="db-modal-head">
-      <h2 class="db-modal-title" id="adminLogTitle">🛠 管理者パネル</h2>
-      <button class="db-modal-close" id="adminLogClose" type="button" aria-label="閉じる">✕</button>
-    </div>
-    <div class="db-modal-body">
-      <div style="display: flex; gap: 10px; margin-bottom: 10px;">
-        <button class="db-tab active" id="tabNewsBtn" type="button" style="flex: 1;">更新情報の管理</button>
-        <button class="db-tab" id="tabDataBtn" type="button" style="flex: 1;">データ管理</button>
-      </div>
-
-      <!-- パーン1：更新情報 -->
-      <div id="adminPaneNews">
-        <p style="font-size: 0.8rem; color: #aaa; margin-bottom: 0.8rem;">更新情報の追加・編集・削除ができます。</p>
-        <input type="hidden" id="adminLogEditIndex">
-        <label style="font-size: 0.8rem;">日付<br><input type="date" id="adminLogDate" class="admin-input"></label>
-        <label style="font-size: 0.8rem;">内容<br><textarea id="adminLogContent" class="admin-textarea" rows="3" placeholder="更新内容を入力"></textarea></label>
-        <div style="display: flex; gap: 8px; margin-bottom: 1rem;">
-          <button class="admin-auth-btn" id="adminLogSaveBtn" type="button">追加する</button>
-          <button class="admin-secondary-btn hidden" id="adminLogCancelBtn" type="button">編集をやめる</button>
-        </div>
-        <div id="adminNewsList" style="max-height: 200px; overflow-y: auto;"></div>
-      </div>
-
-      <!-- パーン2：データ管理 -->
-      <div id="adminPaneData" class="hidden" style="display: none;">
-        <div style="margin-bottom: 15px; display: flex; justify-content: center; gap: 10px;">
-          <button class="db-tab active" id="adminDataCharBtn" type="button">👤 キャラクター</button>
-          <button class="db-tab" id="adminDataWeaponBtn" type="button">⚔️ 武器</button>
-        </div>
-        <div id="adminDataGrid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; max-height: 380px; overflow-y: auto;"></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- データ詳細確認用サブモーダル -->
-  <div class="db-modal-overlay hidden" id="adminDetailOverlay" aria-hidden="true"></div>
-  <div class="db-modal hidden" id="adminDetailModal" role="dialog" aria-modal="true">
-    <div class="db-modal-head">
-      <h2 class="db-modal-title" id="adminDetailTitle">詳細データ</h2>
-      <button class="db-modal-close" id="adminDetailClose" type="button" aria-label="閉じる">✕</button>
-    </div>
-    <div class="db-modal-body" id="adminDetailBody" style="max-height: 420px; overflow-y: auto;"></div>
-  </div>
-
   <script src="data.js"></script>
   <script>
     'use strict';
     let currentTab = 'character';
-    
-    // フィルターの初期ステータス
+    let currentEditingItem = null;
+    let isAdminMode = false;
+    const LS_CUSTOM_DATA_KEY = 'genshin-guesser-custom-data-v1';
+
+    // 起動時にLocalStorageからカスタムデータを適用
+    function applyCustomData() {
+      try {
+        const raw = localStorage.getItem(LS_CUSTOM_DATA_KEY);
+        if (!raw) return;
+        const customMap = JSON.parse(raw);
+        if (typeof CHARACTERS !== 'undefined') {
+          CHARACTERS.forEach(c => {
+            if (customMap[c.id]) Object.assign(c, customMap[c.id]);
+          });
+        }
+        if (typeof WEAPONS !== 'undefined') {
+          WEAPONS.forEach(w => {
+            if (customMap[w.id]) Object.assign(w, customMap[w.id]);
+          });
+        }
+      } catch (e) { /* ignore */ }
+    }
+
     const activeFilters = { 
-      charName: '',
-      charCountry: 'all',
-      charWeapon: 'all',
-      charElement: 'all',
-      charBirthMonth: 'all',
-      charReleaseVersion: 'all',
-      charRarity: 'all',
-      charBody: 'all',
-      charRole: 'all',
-      charEnergy: 'all',
-      charTalentBoss: 'all',
-      charLocalSpecialty: 'all',
-      charEnemyMaterial: 'all',
-      charAscensionStat: 'all',
-      charTalentBook: 'all',
-      charTalentWeekly: 'all',
-      charSpecialDish: 'all',
-      charDistributed: 'all',
-      charTrainingRoad: 'all',
-      charTrace: 'all',
-      charCostume: 'all',
-      charQuery: '',
-      
-      wName: '',
-      wType: 'all',
-      wRarity: 'all',
-      wAscensionStat: 'all',
-      wWeaponBreakMaterial: 'all',
-      wEnemyMaterial: 'all',
-      wWeaponEnemyMaterial: 'all',
-      wReleaseVersion: 'all',
-      wDistributed: 'all',
-      wQuery: ''
+      charName: '', charCountry: 'all', charWeapon: 'all', charElement: 'all', charBirthMonth: 'all',
+      charReleaseVersion: 'all', charRarity: 'all', charBody: 'all', charRole: 'all', charEnergy: 'all',
+      charTalentBoss: 'all', charLocalSpecialty: 'all', charEnemyMaterial: 'all', charAscensionStat: 'all',
+      charTalentBook: 'all', charTalentWeekly: 'all', charSpecialDish: 'all', charDistributed: 'all',
+      charTrainingRoad: 'all', charTrace: 'all', charCostume: 'all', charQuery: '',
+      wName: '', wType: 'all', wRarity: 'all', wAscensionStat: 'all', wWeaponBreakMaterial: 'all',
+      wEnemyMaterial: 'all', wWeaponEnemyMaterial: 'all', wReleaseVersion: 'all', wDistributed: 'all', wQuery: ''
     };
     
     const QUERY_DEBOUNCE_MS = 120;
     let queryDebounceTimer = null;
-
     const jpSort = (list) => [...list].sort((a, b) => String(a).localeCompare(String(b), 'ja'));
 
     document.addEventListener('DOMContentLoaded', () => {
+      applyCustomData();
       bindTabs();
       initAdvancedFilters();
       bindAdvancedFilters();
       bindDetailModal();
       renderGrid();
-      bindAdminFeatures(); // 管理者機能の初期化
+      bindAdminAuthTrigger();
     });
 
     function bindTabs() {
@@ -474,7 +268,6 @@
         if (typeof parseReleaseVersion === 'function') return parseReleaseVersion(str);
         return parseFloat(str) || 0;
       }
-
       populateSelect('char-country', jpSort([...new Set(CHARACTERS.map(c => c.country))].filter(Boolean)));
       populateSelect('char-weapon', jpSort([...new Set(CHARACTERS.map(c => c.weapon))].filter(Boolean)));
       populateSelect('char-element', jpSort([...new Set(CHARACTERS.map(c => c.element))].filter(Boolean)));
@@ -585,12 +378,9 @@
           if (el) el.value = 'all';
           activeFilters['char' + field.charAt(0).toUpperCase() + field.slice(1)] = 'all';
         });
-        const nameInput = document.getElementById('char-name-input');
-        if (nameInput) nameInput.value = '';
+        document.getElementById('char-name-input').value = '';
         activeFilters.charName = '';
-
-        const queryInput = document.getElementById('charQuery');
-        if (queryInput) queryInput.value = '';
+        document.getElementById('charQuery').value = '';
         activeFilters.charQuery = '';
       } else {
         const wFields = ['type', 'rarity', 'ascensionStat', 'weaponBreakMaterial', 'enemyMaterial', 'weaponEnemyMaterial', 'releaseVersion', 'distributed'];
@@ -600,12 +390,9 @@
           if (el) el.value = 'all';
           activeFilters['w' + field.charAt(0).toUpperCase() + field.slice(1)] = 'all';
         });
-        const nameInput = document.getElementById('w-name-input');
-        if (nameInput) nameInput.value = '';
+        document.getElementById('w-name-input').value = '';
         activeFilters.wName = '';
-
-        const queryInput = document.getElementById('weaponQuery');
-        if (queryInput) queryInput.value = '';
+        document.getElementById('weaponQuery').value = '';
         activeFilters.wQuery = '';
       }
       renderGrid();
@@ -647,7 +434,6 @@
           if (activeFilters.charTrainingRoad !== 'all' && String(c.trainingRoad) !== activeFilters.charTrainingRoad) return false;
           if (activeFilters.charTrace !== 'all' && String(c.trace) !== activeFilters.charTrace) return false;
           if (activeFilters.charCostume !== 'all' && String(c.costume) !== activeFilters.charCostume) return false;
-          
           if (!matchesAllFields(c, activeFilters.charQuery)) return false;
           return true;
         });
@@ -662,7 +448,6 @@
           if (activeFilters.wWeaponEnemyMaterial !== 'all' && w.weaponEnemyMaterial !== activeFilters.wWeaponEnemyMaterial) return false;
           if (activeFilters.wReleaseVersion !== 'all' && w.releaseVersionLabel !== activeFilters.wReleaseVersion) return false;
           if (activeFilters.wDistributed !== 'all' && String(w.isDistributed) !== activeFilters.wDistributed) return false;
-          
           if (!matchesAllFields(w, activeFilters.wQuery)) return false;
           return true;
         });
@@ -701,6 +486,7 @@
     }
 
     function showDetail(item, selectedCard) {
+      currentEditingItem = item;
       document.querySelectorAll('.db-card').forEach(card => card.classList.toggle('active', card === selectedCard));
       document.getElementById('detailTitle').textContent = item.name + ' の詳細';
       const detailGrid = document.getElementById('detailGrid');
@@ -711,62 +497,96 @@
       detailImageWrap.innerHTML = '';
       detailImageWrap.appendChild(buildImageNode(item, 'db-modal-image'));
 
-      [
-        ['名前', item.name],
-        ['レアリティ', `★${item.rarity}`],
-        [currentTab === 'character' ? '元素' : '武器種', currentTab === 'character' ? item.element : item.weaponType],
-      ].forEach(([label, value]) => {
+      // 管理者モードの場合のみ保存ボタンを表示する
+      const saveBtnRow = document.querySelector('.db-save-row');
+      if (saveBtnRow) saveBtnRow.style.display = isAdminMode ? 'flex' : 'none';
+
+      // 上部のサマリ情報（名前、レアリティ、元素/武器種）
+      const basicFields = [
+        ['name', '名前', item.name, 'text'],
+        ['rarity', 'レアリティ', item.rarity, 'number'],
+        [currentTab === 'character' ? 'element' : 'weaponType', currentTab === 'character' ? '元素' : '武器種', currentTab === 'character' ? item.element : item.weaponType, 'text']
+      ];
+
+      basicFields.forEach(([key, label, val]) => {
         const line = document.createElement('p');
-        line.textContent = `${label}: ${value}`;
+        if (isAdminMode) {
+          line.innerHTML = `<b>${label}:</b> <input type="text" class="db-edit-input" data-key="${key}" value="${val !== undefined ? val : ''}" style="display:inline-block; width:auto; margin-left:6px;">`;
+        } else {
+          line.textContent = `${label}: ${key === 'rarity' ? '★' + val : val}`;
+        }
         detailSummary.appendChild(line);
       });
 
+      // 詳細グリッドの項目
       const entries = getDetailEntries(item);
-      entries.forEach(([label, value]) => {
-        if (value === undefined || value === null || value === '') return;
+      entries.forEach(([key, label, value]) => {
+        if (!key) return;
         const box = document.createElement('div');
         box.className = 'db-detail-item';
-        box.innerHTML = `<b>${label}</b><span>${value}</span>`;
+        
+        if (isAdminMode) {
+          // 管理者モード：編集可能なフォーム
+          let inputHtml = '';
+          if (typeof value === 'boolean' || ['distributed', 'costume', 'trace', 'trainingRoad', 'isDistributed'].includes(key)) {
+            const boolVal = Boolean(value);
+            inputHtml = `
+              <select class="db-edit-select" data-key="${key}">
+                <option value="true" ${boolVal ? 'selected' : ''}>あり / はい</option>
+                <option value="false" ${!boolVal ? 'selected' : ''}>なし / いいえ</option>
+              </select>`;
+          } else {
+            inputHtml = `<input type="text" class="db-edit-input" data-key="${key}" value="${value !== undefined && value !== null ? value : ''}">`;
+          }
+          box.innerHTML = `<b>${label}</b>${inputHtml}`;
+        } else {
+          // 通常閲覧モード
+          let displayVal = value;
+          if (typeof value === 'boolean') displayVal = value ? 'あり' : 'なし';
+          if (Array.isArray(value)) displayVal = value.filter(Boolean).join(' / ');
+          box.innerHTML = `<b>${label}</b><span>${displayVal !== undefined && displayVal !== null && displayVal !== '' ? displayVal : '—'}</span>`;
+        }
         detailGrid.appendChild(box);
       });
+
       openDetailModal();
     }
 
     function getDetailEntries(item) {
       if (currentTab === 'character') {
         return [
-          ['所属', item.country],
-          ['誕生日', item.birthday],
-          ['体型', item.bodyLabel],
-          ['基礎攻撃力', item.baseAtkLabel || item.baseAtk],
-          ['基礎HP', item.baseHpLabel || item.baseHp],
-          ['基礎防御力', item.baseDefLabel || item.baseDef],
-          ['役割', (item.role || []).filter(Boolean).join(' / ')],
-          ['元素エネルギー', item.energy],
-          ['突破ステータス', item.ascensionStat],
-          ['特産品', item.localSpecialty],
-          ['突破ボス素材', item.talentBoss],
-          ['天賦本', item.talentBook],
-          ['週ボス素材', item.talentWeekly],
-          ['敵素材', item.enemyMaterial],
-          ['オリジナル料理', item.specialDish],
-          ['配布キャラ', item.distributed ? 'はい' : 'いいえ'],
-          ['衣装', item.costume ? 'あり' : 'なし'],
-          ['軌跡の有無', item.trace ? 'あり' : 'なし'],
-          ['鍛錬の道', item.trainingRoad ? 'あり' : 'なし'],
-          ['実装バージョン', item.releaseVersionLabel],
+          ['country', '所属', item.country],
+          ['birthday', '誕生日', item.birthday],
+          ['bodyLabel', '体型', item.bodyLabel],
+          ['baseAtk', '基礎攻撃力', item.baseAtkLabel || item.baseAtk],
+          ['baseHp', '基礎HP', item.baseHpLabel || item.baseHp],
+          ['baseDef', '基礎防御力', item.baseDefLabel || item.baseDef],
+          ['role', '役割', (item.role || []).filter(Boolean).join(' / ')],
+          ['energy', '元素エネルギー', item.energy],
+          ['ascensionStat', '突破ステータス', item.ascensionStat],
+          ['localSpecialty', '特産品', item.localSpecialty],
+          ['talentBoss', '突破ボス素材', item.talentBoss],
+          ['talentBook', '天賦本', item.talentBook],
+          ['talentWeekly', '週ボス素材', item.talentWeekly],
+          ['enemyMaterial', '敵素材', item.enemyMaterial],
+          ['specialDish', 'オリジナル料理', item.specialDish],
+          ['distributed', '配布キャラ', item.distributed],
+          ['costume', '衣装', item.costume],
+          ['trace', '軌跡の有無', item.trace],
+          ['trainingRoad', '鍛錬の道', item.trainingRoad],
+          ['releaseVersionLabel', '実装バージョン', item.releaseVersionLabel],
         ];
       }
 
       return [
-        ['武器種', item.weaponType],
-        ['基礎攻撃力', item.baseAtk],
-        ['突破ステータス', item.ascensionStat],
-        ['配布武器', item.isDistributed ? 'あり' : 'なし'],
-        ['武器突破素材', item.weaponBreakMaterial],
-        ['敵素材', item.enemyMaterial],
-        ['精鋭素材', item.weaponEnemyMaterial],
-        ['実装バージョン', item.releaseVersionLabel],
+        ['weaponType', '武器種', item.weaponType],
+        ['baseAtk', '基礎攻撃力', item.baseAtk],
+        ['ascensionStat', '突破ステータス', item.ascensionStat],
+        ['isDistributed', '配布武器', item.isDistributed],
+        ['weaponBreakMaterial', '武器突破素材', item.weaponBreakMaterial],
+        ['enemyMaterial', '敵素材', item.enemyMaterial],
+        ['weaponEnemyMaterial', '精鋭素材', item.weaponEnemyMaterial],
+        ['releaseVersionLabel', '実装バージョン', item.releaseVersionLabel],
       ];
     }
 
@@ -795,6 +615,44 @@
     function bindDetailModal() {
       document.getElementById('detailClose').addEventListener('click', closeDetailModal);
       document.getElementById('detailOverlay').addEventListener('click', closeDetailModal);
+      
+      // フォーム送信（変更の保存処理）
+      document.getElementById('detailEditForm')?.addEventListener('submit', e => {
+        e.preventDefault();
+        if (!currentEditingItem) return;
+
+        const inputs = document.querySelectorAll('.db-edit-input, .db-edit-select');
+        const updates = {};
+
+        inputs.forEach(el => {
+          const key = el.dataset.key;
+          if (!key) return;
+          let val = el.value;
+          if (val === 'true') val = true;
+          else if (val === 'false') val = false;
+          else if (!isNaN(val) && val !== '' && key === 'rarity') val = Number(val);
+          updates[key] = val;
+        });
+
+        // メモリ上のオブジェクトを更新
+        Object.assign(currentEditingItem, updates);
+
+        // LocalStorageに保存
+        try {
+          const raw = localStorage.getItem(LS_CUSTOM_DATA_KEY);
+          const customMap = raw ? JSON.parse(raw) : {};
+          if (!customMap[currentEditingItem.id]) customMap[currentEditingItem.id] = {};
+          Object.assign(customMap[currentEditingItem.id], updates);
+          localStorage.setItem(LS_CUSTOM_DATA_KEY, JSON.stringify(customMap));
+        } catch (err) {
+          alert('保存に失敗しました。');
+          return;
+        }
+
+        alert('変更を保存しました！');
+        closeDetailModal();
+        renderGrid();
+      });
     }
 
     function openDetailModal() {
@@ -807,6 +665,7 @@
       document.getElementById('detailModal').classList.add('hidden');
       document.getElementById('detailOverlay').classList.add('hidden');
       document.getElementById('detailOverlay').setAttribute('aria-hidden', 'true');
+      currentEditingItem = null;
     }
 
     function buildImageNode(item, className) {
@@ -825,18 +684,14 @@
     }
 
     // ---------------------------------------------------------------------------
-    // 隠し管理者モード機能（10回連続クリック ＆ 歯車マークのみ）
+    // 10回連続クリックによる隠し管理者モード認証
     // ---------------------------------------------------------------------------
     let adminClickCount = 0;
     let adminClickTimer = null;
     const ADMIN_CLICK_THRESHOLD = 10;
-    const ADMIN_CLICK_WINDOW = 10000; // 10秒以内
-    let adminCurrentCategory = 'character';
-    let newsItems = [];
-    const LS_NEWS_KEY = 'genshin-guesser-news';
-    const DEFAULT_NEWS_ITEMS = [{ date: '2025-07-01', text: 'Genshin Guesser 公開！' }];
+    const ADMIN_CLICK_WINDOW = 10000;
 
-    function bindAdminFeatures() {
+    function bindAdminAuthTrigger() {
       const trigger = document.getElementById('dbAdminTrigger');
       if (trigger) {
         trigger.addEventListener('click', () => {
@@ -851,64 +706,12 @@
         });
       }
 
-      // 認証モーダル閉じる
-      document.getElementById('adminAuthClose')?.addEventListener('click', () => closeAdminModal('adminAuth'));
-      document.getElementById('adminAuthOverlay')?.addEventListener('click', () => closeAdminModal('adminAuth'));
+      document.getElementById('adminAuthClose')?.addEventListener('click', closeAdminAuthModal);
+      document.getElementById('adminAuthOverlay')?.addEventListener('click', closeAdminAuthModal);
       document.getElementById('adminAuthBtn')?.addEventListener('click', handleAdminAuth);
       document.getElementById('adminPasswordInput')?.addEventListener('keydown', e => {
         if (e.key === 'Enter') handleAdminAuth();
       });
-
-      // 管理パネル閉じる
-      document.getElementById('adminLogClose')?.addEventListener('click', () => closeAdminModal('adminLog'));
-      document.getElementById('adminLogOverlay')?.addEventListener('click', () => closeAdminModal('adminLog'));
-
-      // タブ切替（更新情報 vs データ管理）
-      const tabNewsBtn = document.getElementById('tabNewsBtn');
-      const tabDataBtn = document.getElementById('tabDataBtn');
-      const paneNews = document.getElementById('adminPaneNews');
-      const paneData = document.getElementById('adminPaneData');
-
-      tabNewsBtn?.addEventListener('click', () => {
-        tabNewsBtn.classList.add('active');
-        tabDataBtn.classList.remove('active');
-        paneNews.style.display = 'block';
-        paneData.style.display = 'none';
-      });
-
-      tabDataBtn?.addEventListener('click', () => {
-        tabDataBtn.classList.add('active');
-        tabNewsBtn.classList.remove('active');
-        paneNews.style.display = 'none';
-        paneData.style.display = 'block';
-        renderAdminDataGrid();
-      });
-
-      // キャラクター / 武器 切り替え（管理パネル内）
-      document.getElementById('adminDataCharBtn')?.addEventListener('click', () => {
-        adminCurrentCategory = 'character';
-        document.getElementById('adminDataCharBtn').classList.add('active');
-        document.getElementById('adminDataWeaponBtn').classList.remove('active');
-        renderAdminDataGrid();
-      });
-
-      document.getElementById('adminDataWeaponBtn')?.addEventListener('click', () => {
-        adminCurrentCategory = 'weapon';
-        document.getElementById('adminDataWeaponBtn').classList.add('active');
-        document.getElementById('adminDataCharBtn').classList.remove('active');
-        renderAdminDataGrid();
-      });
-
-      // 詳細モーダル閉じる
-      document.getElementById('adminDetailClose')?.addEventListener('click', closeAdminDetailModal);
-      document.getElementById('adminDetailOverlay')?.addEventListener('click', closeAdminDetailModal);
-
-      // ニュース保存・アクション
-      document.getElementById('adminLogSaveBtn')?.addEventListener('click', handleAdminLogSave);
-      document.getElementById('adminLogCancelBtn')?.addEventListener('click', resetAdminLogForm);
-      document.getElementById('adminNewsList')?.addEventListener('click', handleAdminNewsAction);
-
-      loadNewsFromStorage();
     }
 
     function openAdminAuth() {
@@ -920,152 +723,21 @@
       setTimeout(() => input?.focus(), 100);
     }
 
-    function closeAdminModal(name) {
-      document.getElementById(name + 'Modal')?.classList.add('hidden');
-      document.getElementById(name + 'Overlay')?.classList.add('hidden');
+    function closeAdminAuthModal() {
+      document.getElementById('adminAuthModal')?.classList.add('hidden');
+      document.getElementById('adminAuthOverlay')?.classList.add('hidden');
     }
 
     function handleAdminAuth() {
       const input = document.getElementById('adminPasswordInput');
       if (!input) return;
       if (input.value === 'Liliavanrouge0101') {
-        closeAdminModal('adminAuth');
-        resetAdminLogForm();
-        renderAdminNewsList();
-        document.getElementById('adminLogModal')?.classList.remove('hidden');
-        document.getElementById('adminLogOverlay')?.classList.remove('hidden');
+        isAdminMode = true;
+        closeAdminAuthModal();
+        alert('管理者モードが有効になりました。キャラクターや武器の詳細画面からデータを編集・保存できます。');
       } else {
         document.getElementById('adminAuthError')?.classList.remove('hidden');
       }
-    }
-
-    async function loadNewsFromStorage() {
-      try {
-        const raw = localStorage.getItem(LS_NEWS_KEY);
-        const items = raw ? JSON.parse(raw) : DEFAULT_NEWS_ITEMS;
-        newsItems = Array.isArray(items) && items.length > 0 ? items : [...DEFAULT_NEWS_ITEMS];
-      } catch (e) {
-        newsItems = [...DEFAULT_NEWS_ITEMS];
-      }
-    }
-
-    function resetAdminLogForm() {
-      document.getElementById('adminLogEditIndex').value = '';
-      const dateInput = document.getElementById('adminLogDate');
-      if (dateInput) dateInput.value = new Date().toISOString().slice(0, 10);
-      const content = document.getElementById('adminLogContent');
-      if (content) content.value = '';
-      document.getElementById('adminLogSaveBtn').textContent = '追加する';
-      document.getElementById('adminLogCancelBtn')?.classList.add('hidden');
-    }
-
-    function handleAdminLogSave() {
-      const editIndex = document.getElementById('adminLogEditIndex').value;
-      const date = document.getElementById('adminLogDate').value.trim();
-      const text = document.getElementById('adminLogContent').value.trim();
-      if (!date || !text) { alert('日付と内容を入力してください。'); return; }
-      if (editIndex !== '') {
-        newsItems[Number(editIndex)] = { date, text };
-      } else {
-        newsItems.unshift({ date, text });
-      }
-      localStorage.setItem(LS_NEWS_KEY, JSON.stringify(newsItems));
-      resetAdminLogForm();
-      renderAdminNewsList();
-    }
-
-    function handleAdminNewsAction(event) {
-      const button = event.target.closest('[data-action]');
-      if (!button) return;
-      const index = Number(button.dataset.index);
-      if (button.dataset.action === 'edit') {
-        const item = newsItems[index];
-        document.getElementById('adminLogEditIndex').value = String(index);
-        document.getElementById('adminLogDate').value = item.date;
-        document.getElementById('adminLogContent').value = item.text;
-        document.getElementById('adminLogSaveBtn').textContent = '更新する';
-        document.getElementById('adminLogCancelBtn')?.classList.remove('hidden');
-      } else if (button.dataset.action === 'delete' && window.confirm('削除しますか？')) {
-        newsItems.splice(index, 1);
-        if (newsItems.length === 0) newsItems = [...DEFAULT_NEWS_ITEMS];
-        localStorage.setItem(LS_NEWS_KEY, JSON.stringify(newsItems));
-        resetAdminLogForm();
-        renderAdminNewsList();
-      }
-    }
-
-    function renderAdminNewsList() {
-      const list = document.getElementById('adminNewsList');
-      if (!list) return;
-      list.innerHTML = '';
-      newsItems.forEach((item, index) => {
-        const row = document.createElement('div');
-        row.className = 'admin-news-item';
-        row.innerHTML = `
-          <div class="admin-news-meta">${item.date}</div>
-          <div class="admin-news-text">${item.text}</div>
-          <div class="admin-news-actions">
-            <button class="admin-news-btn" data-action="edit" data-index="${index}">編集</button>
-            <button class="admin-news-btn" data-action="delete" data-index="${index}">削除</button>
-          </div>
-        `;
-        list.appendChild(row);
-      });
-    }
-
-    function renderAdminDataGrid() {
-      const grid = document.getElementById('adminDataGrid');
-      if (!grid) return;
-      grid.innerHTML = '';
-      const dataset = adminCurrentCategory === 'character' ? CHARACTERS : WEAPONS;
-
-      dataset.forEach(item => {
-        const card = document.createElement('div');
-        card.style.cssText = 'background:#222; border:1.5px solid #444; border-radius:8px; padding:6px; text-align:center; cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:4px;';
-        const imgSrc = item.iconUrl || '';
-        card.innerHTML = `
-          <div style="width:45px; height:45px; background:rgba(255,255,255,0.05); border-radius:6px; display:flex; align-items:center; justify-content:center; overflow:hidden;">
-            ${imgSrc ? `<img src="${imgSrc}" style="width:100%; height:100%; object-fit:cover;">` : `<span>👤</span>`}
-          </div>
-          <div style="font-size:10px; color:#fff; width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${item.name}</div>
-        `;
-        card.addEventListener('click', () => openAdminDetailModal(item));
-        grid.appendChild(card);
-      });
-    }
-
-    function openAdminDetailModal(item) {
-      document.getElementById('adminDetailTitle').textContent = `${item.name} の詳細`;
-      const body = document.getElementById('adminDetailBody');
-      const imgSrc = item.iconUrl || '';
-      let html = `
-        <div style="display:flex; gap:12px; align-items:center; margin-bottom:12px;">
-          <div style="width:70px; height:70px; background:rgba(255,255,255,0.05); border-radius:8px; display:flex; align-items:center; justify-content:center; overflow:hidden; flex-shrink:0;">
-            ${imgSrc ? `<img src="${imgSrc}" style="width:100%; height:100%; object-fit:cover;">` : `<span>👤</span>`}
-          </div>
-          <div>
-            <p style="margin:0 0 4px 0; font-size:0.9rem;"><strong>名前:</strong> ${item.name}</p>
-            <p style="margin:0 0 4px 0; font-size:0.9rem;"><strong>レアリティ:</strong> ★${item.rarity || '-'}</p>
-            <p style="margin:0; font-size:0.9rem;"><strong>${adminCurrentCategory === 'character' ? '元素' : '武器種'}:</strong> ${item.element || item.weaponType || '-'}</p>
-          </div>
-        </div>
-        <hr style="border-color:#444; margin-bottom:10px;">
-        <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px; font-size:12px;">
-      `;
-      for (const [key, value] of Object.entries(item)) {
-        if (['name', 'iconUrl', 'id'].includes(key) || value === undefined || value === null || value === '') continue;
-        let displayVal = Array.isArray(value) ? value.filter(Boolean).join(' / ') : (typeof value === 'boolean' ? (value ? 'あり' : 'なし') : value);
-        html += `<div><strong style="color:#95a5a6; display:block; font-size:10px;">${key}</strong><span>${displayVal}</span></div>`;
-      }
-      html += `</div>`;
-      body.innerHTML = html;
-      document.getElementById('adminDetailModal')?.classList.remove('hidden');
-      document.getElementById('adminDetailOverlay')?.classList.remove('hidden');
-    }
-
-    function closeAdminDetailModal() {
-      document.getElementById('adminDetailModal')?.classList.add('hidden');
-      document.getElementById('adminDetailOverlay')?.classList.add('hidden');
     }
   </script>
 </body>
