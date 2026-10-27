@@ -26,16 +26,8 @@
       border-radius: 10px;
       padding: 1rem;
     }
-    .filter-item {
-      display: flex;
-      flex-direction: column;
-      gap: 0.25rem;
-    }
-    .filter-item label {
-      font-size: 0.72rem;
-      color: var(--text-muted, #95a5a6);
-      font-weight: 700;
-    }
+    .filter-item { display: flex; flex-direction: column; gap: 0.25rem; }
+    .filter-item label { font-size: 0.72rem; color: var(--text-muted, #95a5a6); font-weight: 700; }
     .filter-select, .filter-input {
       padding: 0.35rem 0.5rem;
       border: 1px solid var(--border);
@@ -65,7 +57,7 @@
     .rarity-1 { border-color:#f5f7fb; }
     .empty-msg { text-align:center; color:#fff; padding:2rem; }
     
-    /* ---- 詳細モーダル (編集フォーム対応) ---- */
+    /* ---- 詳細モーダル ---- */
     .db-modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,.72); z-index:300; }
     .db-modal { position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); width:min(94vw,760px); max-height:88vh; overflow-y:auto; background:var(--surface); border:1px solid var(--border); border-radius:14px; box-shadow:var(--shadow); z-index:301; padding:1.2rem; color:#fff; }
     .db-modal-head { display:flex; align-items:center; gap:.8rem; margin-bottom:1rem; }
@@ -87,9 +79,10 @@
     .db-save-btn:hover { opacity:.85; }
 
     /* 管理者認証モーダル */
-    .admin-input { width: 100%; padding: 0.5rem; background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; color: #fff; margin-top: 0.3rem; margin-bottom: 0.8rem; font-family: inherit; }
+    .admin-input { width: 100%; padding: 0.5rem; background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; color: #fff; margin-top: 0.3rem; margin-bottom: 0.8rem; font-family: inherit; font-size: 0.9rem; }
     .admin-auth-btn { width: 100%; padding: 0.6rem; background: var(--accent); border: none; border-radius: 6px; color: #111; font-weight: bold; cursor: pointer; }
     .admin-error { color: #f85149; font-size: 0.85rem; text-align: center; margin-top: 0.5rem; }
+    .admin-label { font-size: 0.8rem; color: var(--text-muted); display: block; margin-top: 0.5rem; margin-bottom: 0.2rem; font-weight: bold; }
   </style>
 </head>
 <body>
@@ -179,8 +172,8 @@
       </div>
       <form id="detailEditForm">
         <div class="db-detail-grid" id="detailGrid"></div>
-        <div class="db-save-row">
-          <button type="submit" class="db-save-btn">変更を保存</button>
+        <div class="db-save-row" style="display:none;">
+          <button type="submit" class="db-save-btn">GitHubへコミット（全ユーザーに反映）</button>
         </div>
       </form>
     </div>
@@ -194,7 +187,13 @@
       <button class="db-modal-close" id="adminAuthClose" type="button" aria-label="閉じる">✕</button>
     </div>
     <div class="db-modal-body">
-      <input type="password" id="adminPasswordInput" placeholder="4ケタのパスワードを入力" class="admin-input">
+      <label class="admin-label" for="adminPasswordInput">管理者パスワード</label>
+      <input type="password" id="adminPasswordInput" placeholder="パスワードを入力" class="admin-input">
+      
+      <label class="admin-label" for="githubTokenInput">GitHub Personal Access Token (PAT)</label>
+      <input type="password" id="githubTokenInput" placeholder="ghp_xxxxxxxxxxxx" class="admin-input">
+      <p style="font-size:0.75rem; color:#aaa; margin-top:-0.4rem; margin-bottom:0.8rem;">※全ユーザーへの自動反映（GitHubコミット）に必要です（repo権限）</p>
+
       <button class="admin-auth-btn" id="adminAuthBtn" type="button">認証</button>
       <p class="admin-error hidden" id="adminAuthError">パスワードが違います</p>
     </div>
@@ -206,26 +205,11 @@
     let currentTab = 'character';
     let currentEditingItem = null;
     let isAdminMode = false;
-    const LS_CUSTOM_DATA_KEY = 'genshin-guesser-custom-data-v1';
+    let githubToken = localStorage.getItem('github_pat') || '';
 
-    // 起動時にLocalStorageからカスタムデータを適用
-    function applyCustomData() {
-      try {
-        const raw = localStorage.getItem(LS_CUSTOM_DATA_KEY);
-        if (!raw) return;
-        const customMap = JSON.parse(raw);
-        if (typeof CHARACTERS !== 'undefined') {
-          CHARACTERS.forEach(c => {
-            if (customMap[c.id]) Object.assign(c, customMap[c.id]);
-          });
-        }
-        if (typeof WEAPONS !== 'undefined') {
-          WEAPONS.forEach(w => {
-            if (customMap[w.id]) Object.assign(w, customMap[w.id]);
-          });
-        }
-      } catch (e) { /* ignore */ }
-    }
+    const GITHUB_REPO_OWNER = 'rakiku';
+    const GITHUB_REPO_NAME = 'Genshinguesser';
+    const GITHUB_FILE_PATH = 'guesser/data.js';
 
     const activeFilters = { 
       charName: '', charCountry: 'all', charWeapon: 'all', charElement: 'all', charBirthMonth: 'all',
@@ -242,7 +226,6 @@
     const jpSort = (list) => [...list].sort((a, b) => String(a).localeCompare(String(b), 'ja'));
 
     document.addEventListener('DOMContentLoaded', () => {
-      applyCustomData();
       bindTabs();
       initAdvancedFilters();
       bindAdvancedFilters();
@@ -497,15 +480,13 @@
       detailImageWrap.innerHTML = '';
       detailImageWrap.appendChild(buildImageNode(item, 'db-modal-image'));
 
-      // 管理者モードの場合のみ保存ボタンを表示する
       const saveBtnRow = document.querySelector('.db-save-row');
       if (saveBtnRow) saveBtnRow.style.display = isAdminMode ? 'flex' : 'none';
 
-      // 上部のサマリ情報（名前、レアリティ、元素/武器種）
       const basicFields = [
-        ['name', '名前', item.name, 'text'],
-        ['rarity', 'レアリティ', item.rarity, 'number'],
-        [currentTab === 'character' ? 'element' : 'weaponType', currentTab === 'character' ? '元素' : '武器種', currentTab === 'character' ? item.element : item.weaponType, 'text']
+        ['name', '名前', item.name],
+        ['rarity', 'レアリティ', item.rarity],
+        [currentTab === 'character' ? 'element' : 'weaponType', currentTab === 'character' ? '元素' : '武器種', currentTab === 'character' ? item.element : item.weaponType]
       ];
 
       basicFields.forEach(([key, label, val]) => {
@@ -518,7 +499,6 @@
         detailSummary.appendChild(line);
       });
 
-      // 詳細グリッドの項目
       const entries = getDetailEntries(item);
       entries.forEach(([key, label, value]) => {
         if (!key) return;
@@ -526,7 +506,6 @@
         box.className = 'db-detail-item';
         
         if (isAdminMode) {
-          // 管理者モード：編集可能なフォーム
           let inputHtml = '';
           if (typeof value === 'boolean' || ['distributed', 'costume', 'trace', 'trainingRoad', 'isDistributed'].includes(key)) {
             const boolVal = Boolean(value);
@@ -540,7 +519,6 @@
           }
           box.innerHTML = `<b>${label}</b>${inputHtml}`;
         } else {
-          // 通常閲覧モード
           let displayVal = value;
           if (typeof value === 'boolean') displayVal = value ? 'あり' : 'なし';
           if (Array.isArray(value)) displayVal = value.filter(Boolean).join(' / ');
@@ -616,10 +594,13 @@
       document.getElementById('detailClose').addEventListener('click', closeDetailModal);
       document.getElementById('detailOverlay').addEventListener('click', closeDetailModal);
       
-      // フォーム送信（変更の保存処理）
-      document.getElementById('detailEditForm')?.addEventListener('submit', e => {
+      document.getElementById('detailEditForm')?.addEventListener('submit', async e => {
         e.preventDefault();
         if (!currentEditingItem) return;
+        if (!githubToken) {
+          alert('GitHub Tokenが設定されていません。管理者に再認証してください。');
+          return;
+        }
 
         const inputs = document.querySelectorAll('.db-edit-input, .db-edit-select');
         const updates = {};
@@ -634,24 +615,53 @@
           updates[key] = val;
         });
 
-        // メモリ上のオブジェクトを更新
         Object.assign(currentEditingItem, updates);
 
-        // LocalStorageに保存
         try {
-          const raw = localStorage.getItem(LS_CUSTOM_DATA_KEY);
-          const customMap = raw ? JSON.parse(raw) : {};
-          if (!customMap[currentEditingItem.id]) customMap[currentEditingItem.id] = {};
-          Object.assign(customMap[currentEditingItem.id], updates);
-          localStorage.setItem(LS_CUSTOM_DATA_KEY, JSON.stringify(customMap));
-        } catch (err) {
-          alert('保存に失敗しました。');
-          return;
-        }
+          const submitBtn = document.querySelector('.db-save-btn');
+          submitBtn.disabled = true;
+          submitBtn.textContent = 'GitHubにコミット中...';
 
-        alert('変更を保存しました！');
-        closeDetailModal();
-        renderGrid();
+          const fileRes = await fetch(`https://api.github.com/repos/${GITHUB_REPO_OWNER}/${GITHUB_REPO_NAME}/contents/${GITHUB_FILE_PATH}`, {
+            headers: { 'Authorization': `bearer ${githubToken}` }
+          });
+          if (!fileRes.ok) throw new Error('GitHubファイルの取得に失敗しました。トークン権限をご確認ください。');
+          const fileData = await fileRes.json();
+          const sha = fileData.sha;
+
+          const fileContentStr = `const CHARACTERS = ${JSON.stringify(CHARACTERS, null, 2)};\n\nconst WEAPONS = ${JSON.stringify(WEAPONS, null, 2)};`;
+          const base64Content = btoa(unescape(encodeURIComponent(fileContentStr)));
+
+          const putRes = await fetch(`https://api.github.com/repos/${GITHUB_REPO_OWNER}/${GITHUB_REPO_NAME}/contents/${GITHUB_FILE_PATH}`, {
+            method: 'PUT',
+            headers: {
+              'Authorization': `bearer ${githubToken}`,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              message: `Update ${currentEditingItem.name} via Admin Panel`,
+              content: base64Content,
+              sha: sha
+            })
+          });
+
+          if (putRes.ok) {
+            alert('GitHubリポジトリへ正常にコミットされました！数分後に全ユーザーへ反映されます。');
+            closeDetailModal();
+            renderGrid();
+          } else {
+            const errJson = await putRes.json();
+            alert('コミットに失敗しました: ' + (errJson.message || 'エラーが発生しました'));
+          }
+        } catch (err) {
+          alert('エラーが発生しました: ' + err.message);
+        } finally {
+          const submitBtn = document.querySelector('.db-save-btn');
+          if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'GitHubへコミット（全ユーザーに反映）';
+          }
+        }
       });
     }
 
@@ -683,9 +693,6 @@
       return image;
     }
 
-    // ---------------------------------------------------------------------------
-    // 10回連続クリックによる隠し管理者モード認証
-    // ---------------------------------------------------------------------------
     let adminClickCount = 0;
     let adminClickTimer = null;
     const ADMIN_CLICK_THRESHOLD = 10;
@@ -717,6 +724,8 @@
     function openAdminAuth() {
       const input = document.getElementById('adminPasswordInput');
       if (input) input.value = '';
+      const tokenInput = document.getElementById('githubTokenInput');
+      if (tokenInput) tokenInput.value = githubToken;
       document.getElementById('adminAuthError')?.classList.add('hidden');
       document.getElementById('adminAuthModal')?.classList.remove('hidden');
       document.getElementById('adminAuthOverlay')?.classList.remove('hidden');
@@ -730,11 +739,17 @@
 
     function handleAdminAuth() {
       const input = document.getElementById('adminPasswordInput');
+      const tokenInput = document.getElementById('githubTokenInput');
       if (!input) return;
+
       if (input.value === 'Liliavanrouge0101') {
+        if (tokenInput && tokenInput.value.trim()) {
+          githubToken = tokenInput.value.trim();
+          localStorage.setItem('github_pat', githubToken);
+        }
         isAdminMode = true;
         closeAdminAuthModal();
-        alert('管理者モードが有効になりました。キャラクターや武器の詳細画面からデータを編集・保存できます。');
+        alert('管理者モードが有効化されました。詳細画面から編集して「GitHubへコミット」を行うと全ユーザーに反映されます。');
       } else {
         document.getElementById('adminAuthError')?.classList.remove('hidden');
       }
