@@ -441,7 +441,6 @@ let adminCurrentCategory = 'character'; // 初期値はキャラクター
 
 // モーダルが開いたときや初期化時にバインドする処理
 function bindAdminDataManagement() {
-  // メインタブ切り替え（更新情報 ⇄ データ管理）
   const tabNewsBtn = document.getElementById('tabNewsBtn');
   const tabDataBtn = document.getElementById('tabDataBtn');
   const paneNews = document.getElementById('adminPaneNews');
@@ -488,25 +487,28 @@ function renderAdminDataGrid() {
   if (!grid) return;
   grid.innerHTML = '';
 
-  // ※注意: ゲーム内で読み込んでいるデータ配列変数（例: charactersData, weaponsData 等）に合わせて調整してください
-  // ここでは一般的なデータ構造を想定しています
+  // guesser/data.js で定義されているグローバル変数からデータを取得
   const dataset = (adminCurrentCategory === 'character') 
-    ? (typeof charactersData !== 'undefined' ? charactersData : []) 
-    : (typeof weaponsData !== 'undefined' ? weaponsData : []);
+    ? (typeof CHARACTERS !== 'undefined' ? CHARACTERS : []) 
+    : (typeof WEAPONS !== 'undefined' ? WEAPONS : []);
 
   if (dataset.length === 0) {
-    grid.innerHTML = '<p style="grid-column: span 3; text-align: center; color: #aaa;">データが見つかりません（data.jsの読み込みを確認してください）</p>';
+    grid.innerHTML = '<p style="grid-column: span 3; text-align: center; color: #aaa;">データが見つかりません</p>';
     return;
   }
 
   dataset.forEach((item) => {
     const card = document.createElement('div');
-    card.className = 'admin-data-card';
-    card.style.cssText = 'background: #222; border: 1px solid #444; border-radius: 8px; padding: 8px; text-align: center; cursor: pointer;';
+    card.className = 'admin-data-card rarity-' + item.rarity;
+    card.style.cssText = 'background: #222; border: 1.5px solid #444; border-radius: 8px; padding: 8px; text-align: center; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px;';
     
+    // 画像の表示（database.html と同様に iconUrl を使用、なければフォールバック）
+    const imgSrc = item.iconUrl || '';
     card.innerHTML = `
-      <img src="${item.image || '../files/characters/default.png'}" alt="${item.name}" style="width: 60px; height: 60px; object-fit: contain; border-radius: 4px;">
-      <div style="font-size: 12px; color: #fff; margin-top: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${item.name}</div>
+      <div style="width: 50px; height: 50px; background: rgba(255,255,255,0.05); border-radius: 6px; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+        ${imgSrc ? `<img src="${imgSrc}" alt="${item.name}" style="width: 100%; height: 100%; object-fit: cover;">` : `<span style="font-size: 1.5rem;">${adminCurrentCategory === 'character' ? '👤' : '⚔'}</span>`}
+      </div>
+      <div style="font-size: 11px; color: #fff; width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${item.name}</div>
     `;
 
     // カードをクリックしたら詳細モーダルを開く（4枚目の画像）
@@ -523,24 +525,36 @@ function openAdminDetailModal(item) {
 
   title.textContent = `${item.name} の詳細`;
   
-  // 保持しているすべてのプロパティをリストや表形式で表示
+  const imgSrc = item.iconUrl || '';
   let html = `
     <div style="display: flex; gap: 15px; align-items: center; margin-bottom: 15px;">
-      <img src="${item.image || ''}" style="width: 80px; height: 80px; object-fit: contain; background: #333; border-radius: 8px;">
+      <div style="width: 80px; height: 80px; background: rgba(255,255,255,0.05); border-radius: 8px; display: flex; align-items: center; justify-content: center; overflow: hidden; flex-shrink: 0;">
+        ${imgSrc ? `<img src="${imgSrc}" style="width: 100%; height: 100%; object-fit: cover;">` : `<span style="font-size: 2.5rem;">👤</span>`}
+      </div>
       <div>
-        <p><strong>名前:</strong> ${item.name}</p>
-        <p><strong>レアリティ:</strong> ★${item.rarity || '-'}</p>
-        <p><strong>元素/タイプ:</strong> ${item.element || item.type || '-'}</p>
+        <p style="margin: 0 0 4px 0;"><strong>名前:</strong> ${item.name}</p>
+        <p style="margin: 0 0 4px 0;"><strong>レアリティ:</strong> ★${item.rarity || '-'}</p>
+        <p style="margin: 0;"><strong>${adminCurrentCategory === 'character' ? '元素' : '武器種'}:</strong> ${item.element || item.weaponType || '-'}</p>
       </div>
     </div>
     <hr style="border-color: #444; margin-bottom: 10px;">
     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 13px;">
   `;
 
-  // itemオブジェクトに含まれるプロパティを自動で展開して表示
+  // itemオブジェクトに含まれるすべてのプロパティを自動で展開して表示
   for (const [key, value] of Object.entries(item)) {
-    if (['name', 'image', 'id'].includes(key)) continue;
-    html += `<div><strong>${key}:</strong> ${value}</div>`;
+    if (['name', 'iconUrl', 'id'].includes(key)) continue;
+    if (value === undefined || value === null || value === '') continue;
+    
+    // 配列やオブジェクトの場合は文字列化する
+    let displayVal = value;
+    if (Array.isArray(value)) {
+      displayVal = value.filter(Boolean).join(' / ');
+    } else if (typeof value === 'boolean') {
+      displayVal = value ? 'あり' : 'なし';
+    }
+    
+    html += `<div><strong style="color: #95a5a6; display: block; font-size: 11px;">${key}</strong><span>${displayVal}</span></div>`;
   }
 
   html += `</div>`;
