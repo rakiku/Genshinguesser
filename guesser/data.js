@@ -226,265 +226,134 @@ const CHARACTER_READINGS = {
 };
 
 // ---------------------------------------------------------------------------
-// 生データ（script.js の characters 配列を参照してここにコピー）
+// 生データ（2枚目の内容に置き換え）
 // ---------------------------------------------------------------------------
 const RAW_CHARACTERS = [
-  { name: "ジン", country: "モンド", weapon: "片手剣", element: "風", birth_month: "３月", birthday: "3月14日", rarity: ['☆５', '恒常☆５'], body: "長身女性", role: ["オフフィールドライフキーパー"], energy: 80, talent_boss: "無相の風", local_specialty: "蒲公英の種", ascension_stat: "与える治療効果", distributed: false, talent_book: "抗争", talent_weekly: "東風の羽根", special_dish: "継続回復系", trace: true, costume: true, enemy_material: ["破損した仮面"], training_road: true, release_version: "1.0" },
-  { name: "アンバー", country: "モンド", weapon: "弓", element: "炎", birth_month: "８月", birthday: "8月10日", rarity: ['☆４'], body: "中身女性", role: ["オフフィールドアタッカー"], energy: 40, talent_boss: "爆炎樹", local_specialty: "イグサ", ascension_stat: "攻撃力", distributed: true, talent_book: "自由", talent_weekly: "東風の吐息", special_dish: "復活系", trace: false, costume: true, enemy_material: ["牢固な矢先"], training_road: false, release_version: "1.0" },
-  { name: "リサ", country: "モンド", weapon: "法器", element: "雷", birth_month: "６月", birthday: "6月9日", rarity: ['☆４'], body: "長身女性", role: ["オフフィールドアタッカー"], energy: 80, talent_boss: "無相の雷", local_specialty: "ヴァルベリー", ascension_stat: "元素熟知", distributed: true, talent_book: "詩文", talent_weekly: "東風の爪", special_dish: "継続回復系", trace: false, costume: true, enemy_material: ["スライムの液体"], training_road: false, release_version: "1.0" },
-  { name: "ガイア", country: "モンド", weapon: "片手剣", element: "氷", birth_month: "１１月", birthday: "11月30日", rarity: ['☆４'], body: "長身男性", role: ["オンフィールドアタッカー"], energy: 60, talent_boss: "急凍樹", local_specialty: "ドドリアン", ascension_stat: "元素チャージ効率", distributed: true, talent_book: "詩文", talent_weekly: "北風の魂箱", special_dish: "回復系", trace: false, costume: true, enemy_material: ["宝探しの鴉マーク"], training_road: false, release_version: "1.0" },
-  { name: "バーバラ", country: "モンド", weapon: "法器", element: "水", birth_month: "７月", birthday: "7月5日", rarity: ['☆４'], body: "中身女性", role: ["オフフィールドライフキーパー"], energy: 80, talent_boss: "純水精霊", local_specialty: "慕風のマッシュルーム", ascension_stat: "HP", distributed: true, talent_book: "自由", talent_weekly: "北風のリング", special_dish: "スタミナ軽減系", trace: false, costume: true, enemy_material: ["占いの絵巻"], training_road: false, release_version: "1.0" },
-  { name: "ディルック", country: "モンド", weapon: "両手剣", element: "炎", birth_month: "４月", birthday: "4月30日", rarity: ['☆５', '恒常☆５'], body: "長身男性", role: ["オンフィールドアタッカー"], energy: 40, talent_boss: "爆炎樹", local_specialty: "イグサ", ascension_stat: "会心率", distributed: false, talent_book: "抗争", talent_weekly: "東風の羽根", special_dish: "攻撃系", trace: true, costume: true, enemy_material: ["新兵の記章"], training_road: true, release_version: "1.0" },
-  { name: "レザー", country: "モンド", weapon: "両手剣", element: "雷", birth_month: "９月", birthday: "9月9日", rarity: ['☆４'], body: "中身男性", role: ["オンフィールドアタッカー"], energy: 80, talent_boss: "無相の雷", local_specialty: "ググプラム", ascension_stat: "物理ダメージ", distributed: false, talent_book: "抗争", talent_weekly: "東風の爪", special_dish: "回復系", trace: false, costume: false, enemy_material: ["破損した仮面"], training_road: false, release_version: "1.0" },
-  { name: "ウェンティ", country: "モンド", weapon: "弓", element: "風", birth_month: "６月", birthday: "6月16日", rarity: ['☆５'], body: "中身男性", role: ["オフフィールドアタッカー", "オフフィールドサポーター"], energy: 60, talent_boss: "無相の風", local_specialty: "セシリアの花", ascension_stat: "元素チャージ効率", distributed: false, talent_book: "詩文", talent_weekly: "北風のしっぽ", special_dish: "スタミナ軽減系", trace: true, costume: false, enemy_material: ["スライムの液体"], training_road: false, release_version: "1.0" },
-  { name: "クレー", country: "モンド", weapon: "法器", element: "炎", birth_month: "７月", birthday: "7月27日", rarity: ['☆５'], body: "ロリ", role: ["オンフィールドアタッカー"], energy: 60, talent_boss: "爆炎樹", local_specialty: "慕風のマッシュルーム", ascension_stat: "炎元素ダメージ", distributed: false, talent_book: "自由", talent_weekly: "北風のリング", special_dish: "防御系", trace: true, costume: true, enemy_material: ["占いの絵巻"], training_road: true, release_version: "1.0" },
-  { name: "ベネット", country: "モンド", weapon: "片手剣", element: "炎", birth_month: "２月", birthday: "2月29日", rarity: ['☆４'], body: "中身男性", role: ["オフフィールドサポーター", "オフフィールドライフキーパー"], energy: 60, talent_boss: "爆炎樹", local_specialty: "風車アスター", ascension_stat: "元素チャージ効率", distributed: true, talent_book: "抗争", talent_weekly: "東風の羽根", special_dish: "復活系", trace: false, costume: true, enemy_material: ["宝探しの鴉マーク"], training_road: false, release_version: "1.0" },
-  { name: "ノエル", country: "モンド", weapon: "両手剣", element: "岩", birth_month: "３月", birthday: "3月21日", rarity: ['☆４'], body: "中身女性", role: ["オンフィールドアタッカー", "オンフィールドライフキーパー"], energy: 60, talent_boss: "無相の岩", local_specialty: "ヴァルベリー", ascension_stat: "防御力", distributed: false, talent_book: "抗争", talent_weekly: "東風の爪", special_dish: "復活系", trace: false, costume: false, enemy_material: ["破損した仮面"], training_road: false, release_version: "1.0" },
-  { name: "フィッシュル", country: "モンド", weapon: "弓", element: "雷", birth_month: "５月", birthday: "5月27日", rarity: ['☆４'], body: "中身女性", role: ["オフフィールドアタッカー"], energy: 60, talent_boss: "無相の雷", local_specialty: "イグサ", ascension_stat: "攻撃力", distributed: true, talent_book: "詩文", talent_weekly: "北風の魂箱", special_dish: "攻撃系", trace: false, costume: true, enemy_material: ["牢固な矢先"], training_road: false, release_version: "1.0" },
-  { name: "スクロース", country: "モンド", weapon: "法器", element: "風", birth_month: "１１月", birthday: "11月26日", rarity: ['☆４'], body: "中身女性", role: ["オフフィールドサポーター"], energy: 80, talent_boss: "無相の風", local_specialty: "風車アスター", ascension_stat: "風元素ダメージ", distributed: false, talent_book: "自由", talent_weekly: "北風の魂箱", special_dish: "復活系", trace: false, costume: false, enemy_material: ["トリックフラワーの蜜"], training_road: false, release_version: "1.0" },
-  { name: "モナ", country: "モンド", weapon: "法器", element: "水", birth_month: "８月", birthday: "8月31日", rarity: ['☆５', '恒常☆５'], body: "中身女性", role: ["オフフィールドサポーター"], energy: 60, talent_boss: "純水精霊", local_specialty: "慕風のマッシュルーム", ascension_stat: "元素チャージ効率", distributed: false, talent_book: "抗争", talent_weekly: "北風のリング", special_dish: "攻撃系", trace: false, costume: true, enemy_material: ["トリックフラワーの蜜"], training_road: true, release_version: "1.0" },
-  { name: "ディオナ", country: "モンド", weapon: "弓", element: "氷", birth_month: "１月", birthday: "1月18日", rarity: ['☆４'], body: "ロリ", role: ["オフフィールドライフキーパー"], energy: 80, talent_boss: "急凍樹", local_specialty: "ドドリアン", ascension_stat: "氷元素ダメージ", distributed: true, talent_book: "自由", talent_weekly: "魔王の刃・残片", special_dish: "復活系", trace: false, costume: false, enemy_material: ["牢固な矢先"], training_road: false, release_version: "1.1" },
-  { name: "アルベド", country: "モンド", weapon: "片手剣", element: "岩", birth_month: "９月", birthday: "9月13日", rarity: ['☆５'], body: "中身男性", role: ["オフフィールドアタッカー"], energy: 40, talent_boss: "無相の岩", local_specialty: "セシリアの花", ascension_stat: "岩元素ダメージ", distributed: false, talent_book: "詩文", talent_weekly: "吞天の鯨・只角", special_dish: "シールド系", trace: true, costume: false, enemy_material: ["占いの絵巻"], training_road: true, release_version: "1.2" },
-  { name: "ロサリア", country: "モンド", weapon: "長柄武器", element: "氷", birth_month: "１月", birthday: "1月24日", rarity: ['☆４'], body: "長身女性", role: ["オフフィールドアタッカー"], energy: 60, talent_boss: "急凍樹", local_specialty: "ヴァルベリー", ascension_stat: "攻撃力", distributed: false, talent_book: "詩文", talent_weekly: "武煉の魂・孤影", special_dish: "回復系", trace: false, costume: true, enemy_material: ["新兵の記章"], training_road: false, release_version: "1.4" },
-  { name: "エウルア", country: "モンド", weapon: "両手剣", element: "氷", birth_month: "１０月", birthday: "10月25日", rarity: ['☆５'], body: "長身女性", role: ["オンフィールドアタッカー"], energy: 80, talent_boss: "無相の氷", local_specialty: "蒲公英の種", ascension_stat: "会心ダメージ", distributed: false, talent_book: "抗争", talent_weekly: "龍王の冠", special_dish: "シールド系", trace: false, costume: false, enemy_material: ["破損した仮面"], training_road: true, release_version: "1.5" },
-  { name: "ミカ", country: "モンド", weapon: "長柄武器", element: "氷", birth_month: "８月", birthday: "8月11日", rarity: ['☆４'], body: "中身男性", role: ["オフフィールドサポーター", "オフフィールドライフキーパー"], energy: 70, talent_boss: "風食ウェネト", local_specialty: "ググプラム", ascension_stat: "HP", distributed: false, talent_book: "詩文", talent_weekly: "無心の淵鏡", special_dish: "攻撃系", trace: false, costume: false, enemy_material: ["新兵の記章"], training_road: false, release_version: "3.5" },
-  { name: "ダリア", country: "モンド", weapon: "片手剣", element: "水", birth_month: "５月", birthday: "5月25日", rarity: ['☆４'], body: "中身男性", role: ["オフフィールドサポーター", "オフフィールドライフキーパー"], energy: 80, talent_boss: "秘源機兵・統御デバイス", local_specialty: "ドドリアン", ascension_stat: "HP", distributed: false, talent_book: "詩文", talent_weekly: "蝕滅の羽鱗", special_dish: "継続回復系", trace: false, costume: false, enemy_material: ["牢固な矢先"], training_road: false, release_version: "5.7" },
-  { name: "ドゥリン", country: "モンド", weapon: "片手剣", element: "炎", birth_month: "３月", birthday: "3月14日", rarity: ['☆５'], body: "中身男性", role: ["オフフィールドサポーター", "オフフィールドアタッカー"], energy: 70, talent_boss: "重量級陸巡艦「バトルシップ」", local_specialty: "フロストランプ", ascension_stat: "会心ダメージ", distributed: false, talent_book: "詩文", talent_weekly: "蝕滅の陽炎", special_dish: "回復系", trace: false, costume: true, enemy_material: ["破損した徽章"], training_road: false, release_version: "Luna III (6.2)" },
-  { name: "ファルカ", country: "モンド", weapon: "両手剣", element: "風", birth_month: "２月", birthday: "2月17日", rarity: ['☆５'], body: "長身男性", role: ["オンフィールドアタッカー"], energy: 60, talent_boss: "集光の月ヤモリ", local_specialty: "ググプラム", ascension_stat: "会心ダメージ", distributed: false, talent_book: "自由", talent_weekly: "昇揚のサンプル「ルーク」", special_dish: "スタミナ回復系", trace: false, costume: false, enemy_material: ["破損した駆動軸"], training_road: false, release_version: "Luna V (6.4)" },
-  { name: "ローエン", country: "モンド", weapon: "長柄武器", element: "氷", birth_month: "４月", birthday: "4月3日", rarity: ['☆５'], body: "中身男性", role: ["オンフィールドアタッカー"], energy: 60, talent_boss: "集光の月ヤモリ", local_specialty: "フェザーモス", ascension_stat: "会心ダメージ", distributed: false, talent_book: "抗争", talent_weekly: "昇揚のサンプル「ナイト」", special_dish: "復活系", trace: false, costume: false, enemy_material: ["牢固な矢先"], training_road: false, release_version: "Luna VII (6.6)" },
-  { name: "プルーネ", country: "モンド", weapon: "法器", element: "風", birth_month: "１１月", birthday: "11月20日", rarity: ['☆４'], body: "ロリ", role: ["オフフィールドサポーター"], energy: 70, talent_boss: "霜夜の空を巡る霊主", local_specialty: "ヴィンテル草", ascension_stat: "攻撃力", distributed: false, talent_book: "抗争", talent_weekly: "賢医の仮面", special_dish: "スタミナ軽減系", trace: false, costume: false, enemy_material: ["宝探しの鴉マーク"], training_road: false, release_version: "Luna VII (6.6)" },
-  { name: "魈", country: "璃月", weapon: "長柄武器", element: "風", birth_month: "４月", birthday: "4月17日", rarity: ['☆５'], body: "中身男性", role: ["オンフィールドアタッカー"], energy: 70, talent_boss: "エンシェントヴィシャップ・岩", local_specialty: "清心", ascension_stat: "会心率", distributed: false, talent_book: "繁栄", talent_weekly: "武煉の魂・孤影", special_dish: "攻撃系", trace: true, costume: false, enemy_material: ["スライムの液体"], training_road: true, release_version: "1.3" },
-  { name: "北斗", country: "璃月", weapon: "両手剣", element: "雷", birth_month: "２月", birthday: "2月14日", rarity: ['☆４'], body: "長身女性", role: ["オフフィールドアタッカー", "オフフィールドライフキーパー"], energy: 80, talent_boss: "無相の雷", local_specialty: "夜泊石", ascension_stat: "雷元素ダメージ", distributed: true, talent_book: "黄金", talent_weekly: "東風の吐息", special_dish: "復活系", trace: false, costume: false, enemy_material: ["宝探しの鴉マーク"], training_road: false, release_version: "1.0" },
-  { name: "凝光", country: "璃月", weapon: "法器", element: "岩", birth_month: "８月", birthday: "8月26日", rarity: ['☆４'], body: "長身女性", role: ["オンフィールドアタッカー"], energy: 40, talent_boss: "無相の岩", local_specialty: "瑠璃百合", ascension_stat: "岩元素ダメージ", distributed: false, talent_book: "繁栄", talent_weekly: "北風の魂箱", special_dish: "復活系", trace: true, costume: true, enemy_material: ["新兵の記章"], training_road: false, release_version: "1.0" },
-  { name: "香菱", country: "璃月", weapon: "長柄武器", element: "炎", birth_month: "１１月", birthday: "11月2日", rarity: ['☆４'], body: "中身女性", role: ["オフフィールドアタッカー"], energy: 80, talent_boss: "爆炎樹", local_specialty: "絶雲の唐辛子", ascension_stat: "元素熟知", distributed: true, talent_book: "勤労", talent_weekly: "東風の爪", special_dish: "継続回復系", trace: false, costume: true, enemy_material: ["スライムの液体"], training_road: false, release_version: "1.0" },
-  { name: "行秋", country: "璃月", weapon: "片手剣", element: "水", birth_month: "１０月", birthday: "10月9日", rarity: ['☆４'], body: "中身男性", role: ["オフフィールドアタッカー", "オフフィールドライフキーパー"], energy: 80, talent_boss: "純水精霊", local_specialty: "霓裳花", ascension_stat: "攻撃力", distributed: true, talent_book: "黄金", talent_weekly: "北風のしっぽ", special_dish: "継続回復系", trace: false, costume: true, enemy_material: ["破損した仮面"], training_road: false, release_version: "1.0" },
-  { name: "重雲", country: "璃月", weapon: "両手剣", element: "氷", birth_month: "９月", birthday: "9月7日", rarity: ['☆４'], body: "中身男性", role: ["オフフィールドアタッカー", "オフフィールドサポーター"], energy: 40, talent_boss: "急凍樹", local_specialty: "石珀", ascension_stat: "攻撃力", distributed: false, talent_book: "勤労", talent_weekly: "東風の吐息", special_dish: "スタミナ回復系", trace: false, costume: false, enemy_material: ["破損した仮面"], training_road: false, release_version: "1.0" },
-  { name: "七七", country: "璃月", weapon: "片手剣", element: "氷", birth_month: "３月", birthday: "3月3日", rarity: ['☆５', '恒常☆５'], body: "ロリ", role: ["オフフィールドライフキーパー"], energy: 80, talent_boss: "急凍樹", local_specialty: "瑠璃袋", ascension_stat: "与える治療効果", distributed: false, talent_book: "繁栄", talent_weekly: "北風のしっぽ", special_dish: "攻撃系", trace: true, costume: false, enemy_material: ["占いの絵巻"], training_road: true, release_version: "1.0" },
-  { name: "刻晴", country: "璃月", weapon: "片手剣", element: "雷", birth_month: "１１月", birthday: "11月20日", rarity: ['☆５', '恒常☆５'], body: "中身女性", role: ["オンフィールドアタッカー"], energy: 40, talent_boss: "無相の雷", local_specialty: "石珀", ascension_stat: "会心ダメージ", distributed: false, talent_book: "繁栄", talent_weekly: "北風のリング", special_dish: "回復系", trace: true, costume: true, enemy_material: ["トリックフラワーの蜜"], training_road: true, release_version: "1.0" },
-  { name: "鍾離", country: "璃月", weapon: "長柄武器", element: "岩", birth_month: "１２月", birthday: "12月31日", rarity: ['☆５'], body: "長身男性", role: ["オフフィールドサポーター", "オフフィールドライフキーパー"], energy: 40, talent_boss: "無相の岩", local_specialty: "石珀", ascension_stat: "岩元素ダメージ", distributed: false, talent_book: "黄金", talent_weekly: "吞天の鯨・只角", special_dish: "継続回復系", trace: true, costume: false, enemy_material: ["スライムの液体"], training_road: false, release_version: "1.1" },
-  { name: "辛炎", country: "璃月", weapon: "両手剣", element: "炎", birth_month: "１０月", birthday: "10月16日", rarity: ['☆４'], body: "中身女性", role: ["オフフィールドライフキーパー"], energy: 60, talent_boss: "爆炎樹", local_specialty: "瑠璃袋", ascension_stat: "攻撃力", distributed: true, talent_book: "黄金", talent_weekly: "吞天の鯨・只角", special_dish: "攻撃系", trace: false, costume: false, enemy_material: ["宝探しの鴉マーク"], training_road: false, release_version: "1.1" },
-  { name: "甘雨", country: "璃月", weapon: "弓", element: "氷", birth_month: "１２月", birthday: "12月2日", rarity: ['☆５'], body: "中身女性", role: ["オンフィールドアタッカー"], energy: 60, talent_boss: "急凍樹", local_specialty: "清心", ascension_stat: "会心ダメージ", distributed: false, talent_book: "勤労", talent_weekly: "武煉の魂・孤影", special_dish: "回復系", trace: true, costume: true, enemy_material: ["トリックフラワーの蜜"], training_road: true, release_version: "1.2" },
-  { name: "胡桃", country: "璃月", weapon: "長柄武器", element: "炎", birth_month: "７月", birthday: "7月15日", rarity: ['☆５'], body: "中身女性", role: ["オンフィールドアタッカー"], energy: 60, talent_boss: "エンシェントヴィシャップ・岩", local_specialty: "霓裳花", ascension_stat: "会心ダメージ", distributed: false, talent_book: "勤労", talent_weekly: "魔王の刃・残片", special_dish: "復活系", trace: false, costume: true, enemy_material: ["トリックフラワーの蜜"], training_road: true, release_version: "1.3" },
-  { name: "煙緋", country: "璃月", weapon: "法器", element: "炎", birth_month: "７月", birthday: "7月28日", rarity: ['☆４'], body: "中身女性", role: ["オンフィールドアタッカー"], energy: 80, talent_boss: "エンシェントヴィシャップ・岩", local_specialty: "夜泊石", ascension_stat: "炎元素ダメージ", distributed: false, talent_book: "黄金", talent_weekly: "血玉の枝", special_dish: "復活系", trace: false, costume: false, enemy_material: ["宝探しの鴉マーク"], training_road: false, release_version: "1.5" },
-  { name: "申鶴", country: "璃月", weapon: "長柄武器", element: "氷", birth_month: "３月", birthday: "3月10日", rarity: ['☆５'], body: "長身女性", role: ["オフフィールドサポーター"], energy: 80, talent_boss: "アビサルヴィシャップ", local_specialty: "清心", ascension_stat: "攻撃力", distributed: false, talent_book: "繁栄", talent_weekly: "獄炎の蝶", special_dish: "攻撃系", trace: true, costume: true, enemy_material: ["トリックフラワーの蜜"], training_road: true, release_version: "2.4" },
-  { name: "雲菫", country: "璃月", weapon: "長柄武器", element: "岩", birth_month: "５月", birthday: "5月21日", rarity: ['☆４'], body: "中身女性", role: ["オフフィールドサポーター"], energy: 60, talent_boss: "黄金王獣", local_specialty: "瑠璃百合", ascension_stat: "元素チャージ効率", distributed: false, talent_book: "勤労", talent_weekly: "灰燼の心", special_dish: "スタミナ軽減系", trace: false, costume: false, enemy_material: ["破損した仮面"], training_road: false, release_version: "2.4" },
-  { name: "夜蘭", country: "璃月", weapon: "弓", element: "水", birth_month: "４月", birthday: "4月20日", rarity: ['☆５'], body: "長身女性", role: ["オフフィールドアタッカー"], energy: 70, talent_boss: "遺跡サーペント", local_specialty: "星螺", ascension_stat: "会心率", distributed: false, talent_book: "繁栄", talent_weekly: "鍍金の鱗", special_dish: "シールド系", trace: true, costume: true, enemy_material: ["新兵の記章"], training_road: false, release_version: "2.7" },
-  { name: "ヨォーヨ", country: "璃月", weapon: "長柄武器", element: "草", birth_month: "３月", birthday: "3月6日", rarity: ['☆４'], body: "ロリ", role: ["オフフィールドライフキーパー"], energy: 80, talent_boss: "無相の草", local_specialty: "絶雲の唐辛子", ascension_stat: "HP", distributed: false, talent_book: "勤労", talent_weekly: "空行の虚鈴", special_dish: "攻撃系", trace: false, costume: true, enemy_material: ["スライムの液体"], training_road: false, release_version: "3.4" },
-  { name: "白朮", country: "璃月", weapon: "法器", element: "草", birth_month: "４月", birthday: "4月25日", rarity: ['☆５'], body: "長身男性", role: ["オフフィールドサポーター", "オフフィールドライフキーパー"], energy: 80, talent_boss: "深罪の浸礼者", local_specialty: "瑠璃袋", ascension_stat: "HP", distributed: false, talent_book: "黄金", talent_weekly: "天地に生える蕨", special_dish: "治療効果系", trace: false, costume: false, enemy_material: ["キノコンの胞子"], training_road: true, release_version: "3.6" },
-  { name: "閑雲", country: "璃月", weapon: "法器", element: "風", birth_month: "４月", birthday: "4月11日", rarity: ['☆５'], body: "長身女性", role: ["オフフィールドサポーター", "オフフィールドライフキーパー"], energy: 70, talent_boss: "山隠れの猊獣", local_specialty: "清水玉", ascension_stat: "攻撃力", distributed: false, talent_book: "黄金", talent_weekly: "光なき渦の眼", special_dish: "攻撃系", trace: false, costume: false, enemy_material: ["占いの絵巻"], training_road: true, release_version: "4.4" },
-  { name: "嘉明", country: "璃月", weapon: "両手剣", element: "炎", birth_month: "１２月", birthday: "12月22日", rarity: ['☆４'], body: "中身男性", role: ["オンフィールドアタッカー"], energy: 60, talent_boss: "鉄甲熔炎帝王", local_specialty: "星螺", ascension_stat: "攻撃力", distributed: false, talent_book: "繁栄", talent_weekly: "光なき一塊", special_dish: "継続回復系", trace: false, costume: false, enemy_material: ["スライムの液体"], training_road: false, release_version: "4.4" },
-  { name: "藍硯", country: "璃月", weapon: "法器", element: "風", birth_month: "１月", birthday: "1月6日", rarity: ['☆４'], body: "中身女性", role: ["オンフィールドアタッカー", "オンフィールドライフキーパー"], energy: 60, talent_boss: "秘源機兵・機構デバイス", local_specialty: "清水玉", ascension_stat: "攻撃力", distributed: false, talent_book: "勤労", talent_weekly: "蝕滅の陽炎", special_dish: "スタミナ回復系", trace: false, costume: false, enemy_material: ["トリックフラワーの蜜"], training_road: false, release_version: "5.3" },
-  { name: "兹白", country: "璃月", weapon: "片手剣", element: "岩", birth_month: "５月", birthday: "5月15日", rarity: ['☆５'], body: "長身女性", role: ["オンフィールドアタッカー"], energy: 60, talent_boss: "昏き魘夢の主", local_specialty: "瑠璃百合", ascension_stat: "会心ダメージ", distributed: false, talent_book: "黄金", talent_weekly: "昇揚のサンプル「王族」", special_dish: "防御系", trace: false, costume: false, enemy_material: ["破損した徽章"], training_road: false, release_version: "Luna IV (6.3)" },
-  { name: "神里綾華", country: "稲妻", weapon: "片手剣", element: "氷", birth_month: "９月", birthday: "9月28日", rarity: ['☆５'], body: "中身女性", role: ["オンフィールドアタッカー"], energy: 80, talent_boss: "恒常からくり陣形", local_specialty: "緋櫻毬", ascension_stat: "会心ダメージ", distributed: false, talent_book: "風雅", talent_weekly: "血玉の枝", special_dish: "復活系", trace: true, costume: true, enemy_material: ["古びた鍔"], training_road: true, release_version: "2.0" },
-  { name: "神里綾人", country: "稲妻", weapon: "片手剣", element: "水", birth_month: "３月", birthday: "3月26日", rarity: ['☆５'], body: "長身男性", role: ["オンフィールドアタッカー"], energy: 80, talent_boss: "無相の水", local_specialty: "緋櫻毬", ascension_stat: "会心ダメージ", distributed: false, talent_book: "風雅", talent_weekly: "凶将の手眼", special_dish: "シールド系", trace: true, costume: false, enemy_material: ["古びた鍔"], training_road: true, release_version: "2.6" },
-  { name: "楓原万葉", country: "稲妻", weapon: "片手剣", element: "風", birth_month: "１０月", birthday: "10月29日", rarity: ['☆５'], body: "中身男性", role: ["オフフィールドサポーター"], energy: 60, talent_boss: "魔偶剣鬼", local_specialty: "ウミレイシ", ascension_stat: "元素熟知", distributed: false, talent_book: "勤労", talent_weekly: "鍍金の鱗", special_dish: "回復系", trace: true, costume: false, enemy_material: ["宝探しの鴉マーク"], training_road: false, release_version: "1.6" },
-  { name: "宵宮", country: "稲妻", weapon: "弓", element: "炎", birth_month: "６月", birthday: "6月21日", rarity: ['☆５'], body: "中身女性", role: ["オンフィールドアタッカー"], energy: 60, talent_boss: "無相の炎", local_specialty: "鳴草", ascension_stat: "会心率", distributed: false, talent_book: "浮世", talent_weekly: "龍王の冠", special_dish: "回復系", trace: false, costume: false, enemy_material: ["占いの絵巻"], training_road: true, release_version: "2.0" },
-  { name: "早柚", country: "稲妻", weapon: "両手剣", element: "風", birth_month: "１０月", birthday: "10月19日", rarity: ['☆４'], body: "ロリ", role: ["オフフィールドライフキーパー"], energy: 80, talent_boss: "魔偶剣鬼", local_specialty: "晶化骨髄", ascension_stat: "元素熟知", distributed: false, talent_book: "天光", talent_weekly: "鍍金の鱗", special_dish: "継続回復系", trace: false, costume: false, enemy_material: ["トリックフラワーの蜜"], training_road: false, release_version: "2.0" },
-  { name: "雷電将軍", country: "稲妻", weapon: "長柄武器", element: "雷", birth_month: "６月", birthday: "6月26日", rarity: ['☆５'], body: "長身女性", role: ["オンフィールドアタッカー", "オンフィールドサポーター"], energy: 90, talent_boss: "雷音権現", local_specialty: "天雲草の実", ascension_stat: "元素チャージ効率", distributed: false, talent_book: "天光", talent_weekly: "溶滅の刻", special_dish: "", trace: true, costume: false, enemy_material: ["古びた鍔"], training_road: false, release_version: "2.1" },
-  { name: "九条裟羅", country: "稲妻", weapon: "弓", element: "雷", birth_month: "７月", birthday: "7月14日", rarity: ['☆４'], body: "長身女性", role: ["オフフィールドサポーター"], energy: 80, talent_boss: "雷音権現", local_specialty: "血石華", ascension_stat: "攻撃力", distributed: false, talent_book: "風雅", talent_weekly: "灰燼の心", special_dish: "復活系", trace: false, costume: false, enemy_material: ["破損した仮面"], training_road: false, release_version: "2.1" },
-  { name: "珊瑚宮心海", country: "稲妻", weapon: "法器", element: "水", birth_month: "２月", birthday: "2月22日", rarity: ['☆５'], body: "中身女性", role: ["オフフィールドサポーター", "オフフィールドライフキーパー"], energy: 70, talent_boss: "無相の水", local_specialty: "珊瑚真珠", ascension_stat: "水元素ダメージ", distributed: false, talent_book: "浮世", talent_weekly: "獄炎の蝶", special_dish: "回復系", trace: false, costume: false, enemy_material: ["フライムの乾核"], training_road: true, release_version: "2.1" },
-  { name: "トーマ", country: "稲妻", weapon: "長柄武器", element: "炎", birth_month: "１月", birthday: "1月9日", rarity: ['☆４'], body: "長身男性", role: ["オフフィールドライフキーパー"], energy: 80, talent_boss: "無相の炎", local_specialty: "ユウトウタケ", ascension_stat: "攻撃力", distributed: false, talent_book: "浮世", talent_weekly: "獄炎の蝶", special_dish: "継続回復系", trace: false, costume: false, enemy_material: ["宝探しの鴉マーク"], training_road: false, release_version: "2.2" },
-  { name: "荒瀧一斗", country: "稲妻", weapon: "両手剣", element: "岩", birth_month: "６月", birthday: "6月1日", rarity: ['☆５'], body: "長身男性", role: ["オンフィールドアタッカー"], energy: 70, talent_boss: "黄金王獣", local_specialty: "オニカブトムシ", ascension_stat: "会心率", distributed: false, talent_book: "風雅", talent_weekly: "灰燼の心", special_dish: "復活系", trace: false, costume: false, enemy_material: ["スライムの液体"], training_road: true, release_version: "2.3" },
-  { name: "ゴロー", country: "稲妻", weapon: "弓", element: "岩", birth_month: "５月", birthday: "5月18日", rarity: ['☆４'], body: "中身男性", role: ["オフフィールドサポーター"], energy: 80, talent_boss: "恒常からくり陣形", local_specialty: "珊瑚真珠", ascension_stat: "岩元素ダメージ", distributed: true, talent_book: "天光", talent_weekly: "溶滅の刻", special_dish: "回復系", trace: false, costume: false, enemy_material: ["フライムの乾核"], training_road: false, release_version: "2.3" },
-  { name: "八重神子", country: "稲妻", weapon: "法器", element: "雷", birth_month: "６月", birthday: "6月27日", rarity: ['☆５'], body: "長身女性", role: ["オフフィールドアタッカー"], energy: 90, talent_boss: "アビサルヴィシャップ", local_specialty: "ウミレイシ", ascension_stat: "会心率", distributed: false, talent_book: "天光", talent_weekly: "万劫の真意", special_dish: "復活系", trace: false, costume: false, enemy_material: ["古びた鍔"], training_road: true, release_version: "2.5" },
-  { name: "久岐忍", country: "稲妻", weapon: "片手剣", element: "雷", birth_month: "７月", birthday: "7月27日", rarity: ['☆４'], body: "中身女性", role: ["オフフィールドライフキーパー"], energy: 60, talent_boss: "遺跡サーペント", local_specialty: "鳴草", ascension_stat: "HP", distributed: false, talent_book: "風雅", talent_weekly: "禍神の禊涙", special_dish: "スタミナ軽減系", trace: false, costume: false, enemy_material: ["フライムの乾核"], training_road: false, release_version: "2.7" },
-  { name: "鹿野院平蔵", country: "稲妻", weapon: "法器", element: "風", birth_month: "７月", birthday: "7月24日", rarity: ['☆４'], body: "中身男性", role: ["オンフィールドアタッカー"], energy: 40, talent_boss: "遺跡サーペント", local_specialty: "オニカブトムシ", ascension_stat: "風元素ダメージ", distributed: false, talent_book: "浮世", talent_weekly: "万劫の真意", special_dish: "攻撃系", trace: false, costume: false, enemy_material: ["宝探しの鴉マーク"], training_road: false, release_version: "2.8" },
-  { name: "綺良々", country: "稲妻", weapon: "片手剣", element: "草", birth_month: "１月", birthday: "1月22日", rarity: ['☆４'], body: "中身女性", role: ["オフフィールドアタッカー", "オフフィールドライフキーパー"], energy: 60, talent_boss: "深罪の浸礼者", local_specialty: "天雲草の実", ascension_stat: "HP", distributed: true, talent_book: "浮世", talent_weekly: "太古の樹海の一瞬", special_dish: "継続回復系", trace: true, costume: true, enemy_material: ["フライムの乾核"], training_road: false, release_version: "3.7" },
-  { name: "千織", country: "稲妻", weapon: "片手剣", element: "岩", birth_month: "８月", birthday: "8月17日", rarity: ['☆５'], body: "中身女性", role: ["オフフィールドアタッカー"], energy: 50, talent_boss: "氷風組曲コッペリア", local_specialty: "血石華", ascension_stat: "会心率", distributed: false, talent_book: "天光", talent_weekly: "光なき糸", special_dish: "継続回復系", trace: false, costume: false, enemy_material: ["フライムの乾核"], training_road: true, release_version: "4.5" },
-  { name: "夢見月瑞希", country: "稲妻", weapon: "法器", element: "風", birth_month: "３月", birthday: "3月16日", rarity: ['☆５', '恒常☆５'], body: "中身女性", role: ["オンフィールドアタッカー", "オンフィールドライフキーパー"], energy: 60, talent_boss: "迷える霊覚の修権者", local_specialty: "ウミレイシ", ascension_stat: "元素熟知", distributed: false, talent_book: "浮世", talent_weekly: "残火の灯燭", special_dish: "スタミナ回復系", trace: false, costume: false, enemy_material: ["古びた鍔"], training_road: true, release_version: "5.4" },
-  { name: "ティナリ", country: "スメール", weapon: "弓", element: "草", birth_month: "１２月", birthday: "12月29日", rarity: ['☆５', '恒常☆５'], body: "中身男性", role: ["オンフィールドアタッカー"], energy: 40, talent_boss: "マッシュラプトル", local_specialty: "サウマラタ蓮", ascension_stat: "草元素ダメージ", distributed: false, talent_book: "忠言", talent_weekly: "万劫の真意", special_dish: "防御系", trace: false, costume: false, enemy_material: ["キノコンの胞子"], training_road: true, release_version: "3.0" },
-  { name: "コレイ", country: "スメール", weapon: "弓", element: "草", birth_month: "５月", birthday: "5月8日", rarity: ['☆４'], body: "中身女性", role: ["オフフィールドアタッカー"], energy: 60, talent_boss: "マッシュラプトル", local_specialty: "ルッカデヴァータダケ", ascension_stat: "攻撃力", distributed: true, talent_book: "篤行", talent_weekly: "禍神の禊涙", special_dish: "回復系", trace: false, costume: false, enemy_material: ["牢固な矢先"], training_road: false, release_version: "3.0" },
-  { name: "ドリー", country: "スメール", weapon: "両手剣", element: "雷", birth_month: "１２月", birthday: "12月21日", rarity: ['☆４'], body: "ロリ", role: ["オフフィールドライフキーパー"], energy: 80, talent_boss: "迅電樹", local_specialty: "カルパラタ蓮", ascension_stat: "HP", distributed: true, talent_book: "創意", talent_weekly: "血玉の枝", special_dish: "攻撃系", trace: false, costume: false, enemy_material: ["色褪せた赤い絹"], training_road: false, release_version: "3.0" },
-  { name: "セノ", country: "スメール", weapon: "長柄武器", element: "雷", birth_month: "６月", birthday: "6月23日", rarity: ['☆５'], body: "中身男性", role: ["オンフィールドアタッカー"], energy: 80, talent_boss: "迅電樹", local_specialty: "聖金虫", ascension_stat: "会心ダメージ", distributed: false, talent_book: "忠言", talent_weekly: "凶将の手眼", special_dish: "継続回復系", trace: false, costume: false, enemy_material: ["占いの絵巻"], training_road: true, release_version: "3.1" },
-  { name: "キャンディス", country: "スメール", weapon: "長柄武器", element: "水", birth_month: "５月", birthday: "5月3日", rarity: ['☆４'], body: "長身女性", role: ["オフフィールドサポーター"], energy: 60, talent_boss: "半永久統制マトリックス", local_specialty: "赤念の実", ascension_stat: "HP", distributed: true, talent_book: "忠言", talent_weekly: "禍神の禊涙", special_dish: "スタミナ回復系", trace: false, costume: false, enemy_material: ["色褪せた赤い絹"], training_road: false, release_version: "3.1" },
-  { name: "ニィロウ", country: "スメール", weapon: "片手剣", element: "水", birth_month: "１２月", birthday: "12月3日", rarity: ['☆５'], body: "中身女性", role: ["オフフィールドアタッカー", "オフフィールドサポーター"], energy: 70, talent_boss: "兆載永劫ドレイク", local_specialty: "パティサラ", ascension_stat: "HP", distributed: false, talent_book: "篤行", talent_weekly: "禍神の禊涙", special_dish: "スタミナ軽減系", trace: false, costume: true, enemy_material: ["キノコンの胞子"], training_road: true, release_version: "3.1" },
-  { name: "ナヒーダ", country: "スメール", weapon: "法器", element: "草", birth_month: "１０月", birthday: "10月27日", rarity: ['☆５'], body: "ロリ", role: ["オフフィールドアタッカー", "オフフィールドサポーター"], energy: 50, talent_boss: "無相の草", local_specialty: "カルパラタ蓮", ascension_stat: "元素熟知", distributed: false, talent_book: "創意", talent_weekly: "傀儡の糸", special_dish: "防御系", trace: true, costume: false, enemy_material: ["キノコンの胞子"], training_road: false, release_version: "3.2" },
-  { name: "レイラ", country: "スメール", weapon: "片手剣", element: "氷", birth_month: "１２月", birthday: "12月19日", rarity: ['☆４'], body: "中身女性", role: ["オフフィールドライフキーパー"], energy: 40, talent_boss: "兆載永劫ドレイク", local_specialty: "サウマラタ蓮", ascension_stat: "HP", distributed: true, talent_book: "創意", talent_weekly: "無心の淵鏡", special_dish: "継続回復系", trace: false, costume: false, enemy_material: ["占いの絵巻"], training_road: false, release_version: "3.2" },
-  { name: "放浪者", country: "スメール", weapon: "法器", element: "風", birth_month: "１月", birthday: "1月3日", rarity: ['☆５'], body: "中身男性", role: ["オンフィールドアタッカー"], energy: 60, talent_boss: "兆載永劫ドレイク", local_specialty: "ルッカデヴァータダケ", ascension_stat: "会心率", distributed: false, talent_book: "篤行", talent_weekly: "空行の虚鈴", special_dish: "治療効果系", trace: true, costume: false, enemy_material: ["古びた鍔"], training_road: true, release_version: "3.3" },
-  { name: "ファルザン", country: "スメール", weapon: "弓", element: "風", birth_month: "８月", birthday: "8月20日", rarity: ['☆４'], body: "中身女性", role: ["オフフィールドサポーター"], energy: 80, talent_boss: "半永久統制マトリックス", local_specialty: "赤念の実", ascension_stat: "攻撃力", distributed: true, talent_book: "忠言", talent_weekly: "傀儡の糸", special_dish: "復活系", trace: false, costume: false, enemy_material: ["色褪せた赤い絹"], training_road: false, release_version: "3.3" },
-  { name: "アルハイゼン", country: "スメール", weapon: "片手剣", element: "草", birth_month: "２月", birthday: "2月11日", rarity: ['☆５'], body: "長身男性", role: ["オンフィールドアタッカー"], energy: 70, talent_boss: "風食ウェネト", local_specialty: "砂脂蛹", ascension_stat: "草元素ダメージ", distributed: false, talent_book: "創意", talent_weekly: "無心の淵鏡", special_dish: "回復系", trace: false, costume: false, enemy_material: ["色褪せた赤い絹"], training_road: false, release_version: "3.4" },
-  { name: "ディシア", country: "スメール", weapon: "両手剣", element: "炎", birth_month: "４月", birthday: "4月7日", rarity: ['☆５', '恒常☆５'], body: "長身女性", role: ["オフフィールドアタッカー", "オフフィールドライフキーパー"], energy: 70, talent_boss: "半永久統制マトリックス", local_specialty: "砂脂蛹", ascension_stat: "HP", distributed: false, talent_book: "篤行", talent_weekly: "傀儡の糸", special_dish: "HP強化系", trace: true, costume: false, enemy_material: ["色褪せた赤い絹"], training_road: true, release_version: "3.5" },
-  { name: "カーヴェ", country: "スメール", weapon: "両手剣", element: "草", birth_month: "７月", birthday: "7月9日", rarity: ['☆４'], body: "長身男性", role: ["オンフィールドアタッカー"], energy: 80, talent_boss: "無相の草", local_specialty: "悼霊花", ascension_stat: "元素熟知", distributed: false, talent_book: "創意", talent_weekly: "原初のオアシスの初咲き", special_dish: "復活系", trace: false, costume: false, enemy_material: ["キノコンの胞子"], training_road: false, release_version: "3.6" },
-  { name: "セトス", country: "スメール", weapon: "弓", element: "雷", birth_month: "５月", birthday: "5月31日", rarity: ['☆４'], body: "中身男性", role: ["オンフィールドアタッカー"], energy: 60, talent_boss: "山隠れの猊獣", local_specialty: "サングイト", ascension_stat: "元素熟知", distributed: false, talent_book: "篤行", talent_weekly: "空行の虚鈴", special_dish: "攻撃系", trace: false, costume: false, enemy_material: ["色褪せた赤い絹"], training_road: false, release_version: "4.7" },
-  { name: "リネ", country: "フォンテーヌ", weapon: "弓", element: "炎", birth_month: "２月", birthday: "2月2日", rarity: ['☆５'], body: "中身男性", role: ["オンフィールドアタッカー"], energy: 60, talent_boss: "鉄甲熔炎帝王", local_specialty: "レインボーローズ", ascension_stat: "会心率", distributed: false, talent_book: "公平", talent_weekly: "原初のオアシスの初咲き", special_dish: "攻撃系", trace: false, costume: false, enemy_material: ["新兵の記章"], training_road: true, release_version: "4.0" },
-  { name: "リネット", country: "フォンテーヌ", weapon: "片手剣", element: "風", birth_month: "２月", birthday: "2月2日", rarity: ['☆４'], body: "中身女性", role: ["オフフィールドアタッカー"], energy: 70, talent_boss: "氷風組曲コッペリア", local_specialty: "ルミドゥースベル", ascension_stat: "風元素ダメージ", distributed: true, talent_book: "秩序", talent_weekly: "太古の樹海の一瞬", special_dish: "治療効果系", trace: false, costume: false, enemy_material: ["整合の歯車"], training_road: false, release_version: "4.0" },
-  { name: "フレミネ", country: "フォンテーヌ", weapon: "両手剣", element: "氷", birth_month: "９月", birthday: "9月24日", rarity: ['☆４'], body: "中身男性", role: ["オンフィールドアタッカー"], energy: 60, talent_boss: "氷風組曲コペリウス", local_specialty: "ロマリタイムフラワー", ascension_stat: "攻撃力", distributed: true, talent_book: "正義", talent_weekly: "天地に生える蕨", special_dish: "継続回復系", trace: false, costume: false, enemy_material: ["異海の露"], training_road: false, release_version: "4.0" },
-  { name: "ヌヴィレット", country: "フォンテーヌ", weapon: "法器", element: "水", birth_month: "１２月", birthday: "12月18日", rarity: ['☆５'], body: "長身男性", role: ["オンフィールドアタッカー"], energy: 70, talent_boss: "千年真珠の海駿", local_specialty: "ルエトワール", ascension_stat: "会心ダメージ", distributed: false, talent_book: "公平", talent_weekly: "太古の樹海の一瞬", special_dish: "攻撃系", trace: false, costume: true, enemy_material: ["異海の露"], training_road: false, release_version: "4.1" },
-  { name: "リオセスリ", country: "フォンテーヌ", weapon: "法器", element: "氷", birth_month: "１１月", birthday: "11月23日", rarity: ['☆５'], body: "長身男性", role: ["オンフィールドアタッカー"], energy: 60, talent_boss: "実験用フィールド生成装置", local_specialty: "探測ユニット・子機", ascension_stat: "会心ダメージ", distributed: false, talent_book: "秩序", talent_weekly: "原初のオアシスの初咲き", special_dish: "回復系", trace: false, costume: false, enemy_material: ["整合の歯車"], training_road: true, release_version: "4.1" },
-  { name: "シャルロット", country: "フォンテーヌ", weapon: "法器", element: "氷", birth_month: "４月", birthday: "4月10日", rarity: ['☆４'], body: "中身女性", role: ["オフフィールドライフキーパー"], energy: 80, talent_boss: "実験用フィールド生成装置", local_specialty: "蒼晶螺", ascension_stat: "攻撃力", distributed: true, talent_book: "正義", talent_weekly: "光なき糸", special_dish: "スタミナ回復系", trace: false, costume: true, enemy_material: ["整合の歯車"], training_road: false, release_version: "4.2" },
-  { name: "フリーナ", country: "フォンテーヌ", weapon: "片手剣", element: "水", birth_month: "１０月", birthday: "10月13日", rarity: ['☆５'], body: "中身女性", role: ["オフフィールドアタッカー", "オフフィールドサポーター", "オフフィールドライフキーパー"], energy: 60, talent_boss: "水形タルパ", local_specialty: "湖光の鈴蘭", ascension_stat: "会心率", distributed: false, talent_book: "正義", talent_weekly: "光なき一塊", special_dish: "HP強化系", trace: false, costume: false, enemy_material: ["トリックフラワーの蜜"], training_road: false, release_version: "4.2" },
-  { name: "ナヴィア", country: "フォンテーヌ", weapon: "両手剣", element: "岩", birth_month: "８月", birthday: "8月16日", rarity: ['☆５'], body: "長身女性", role: ["オンフィールドアタッカー"], energy: 60, talent_boss: "氷風組曲コペリウス", local_specialty: "初露の源", ascension_stat: "会心ダメージ", distributed: false, talent_book: "公平", talent_weekly: "光なき糸", special_dish: "スタミナ軽減系", trace: false, costume: false, enemy_material: ["異海の露"], training_road: true, release_version: "4.3" },
-  { name: "シュヴルーズ", country: "フォンテーヌ", weapon: "長柄武器", element: "炎", birth_month: "１月", birthday: "1月10日", rarity: ['☆４'], body: "中身女性", role: ["オフフィールドサポーター", "オフフィールドライフキーパー"], energy: 60, talent_boss: "千年真珠の海駿", local_specialty: "ルミドゥースベル", ascension_stat: "HP", distributed: false, talent_book: "秩序", talent_weekly: "光なき渦の眼", special_dish: "治療効果系", trace: false, costume: false, enemy_material: ["整合の歯車"], training_road: false, release_version: "4.3" },
-  { name: "クロリンデ", country: "フォンテーヌ", weapon: "片手剣", element: "雷", birth_month: "９月", birthday: "9月20日", rarity: ['☆５'], body: "長身女性", role: ["オンフィールドアタッカー"], energy: 60, talent_boss: "千年真珠の海駿", local_specialty: "ルエトワール", ascension_stat: "会心率", distributed: false, talent_book: "正義", talent_weekly: "太古の樹海の一瞬", special_dish: "スタミナ回復系", trace: false, costume: false, enemy_material: ["異海の露"], training_road: true, release_version: "4.7" },
-  { name: "シグウィン", country: "フォンテーヌ", weapon: "弓", element: "水", birth_month: "３月", birthday: "3月30日", rarity: ['☆５'], body: "ロリ", role: ["オフフィールドサポーター", "オフフィールドライフキーパー"], energy: 70, talent_boss: "水形タルパ", local_specialty: "ロマリタイムフラワー", ascension_stat: "HP", distributed: false, talent_book: "公平", talent_weekly: "光なき渦の眼", special_dish: "継続回復系", trace: false, costume: false, enemy_material: ["異海の露"], training_road: true, release_version: "4.7" },
-  { name: "エミリエ", country: "フォンテーヌ", weapon: "長柄武器", element: "草", birth_month: "９月", birthday: "9月22日", rarity: ['☆５'], body: "中身女性", role: ["オフフィールドアタッカー"], energy: 50, talent_boss: "魔像レガトゥス", local_specialty: "湖光の鈴蘭", ascension_stat: "会心ダメージ", distributed: false, talent_book: "秩序", talent_weekly: "絹織りの羽", special_dish: "攻撃系", trace: false, costume: false, enemy_material: ["整合の歯車"], training_road: true, release_version: "4.8" },
-  { name: "エスコフィエ", country: "フォンテーヌ", weapon: "長柄武器", element: "氷", birth_month: "６月", birthday: "6月8日", rarity: ['☆５'], body: "中身女性", role: ["オフフィールドアタッカー", "オフフィールドサポーター", "オフフィールドライフキーパー"], energy: 60, talent_boss: "秘源機兵・統御デバイス", local_specialty: "蒼晶螺", ascension_stat: "会心率", distributed: false, talent_book: "正義", talent_weekly: "蝕滅の焔角", special_dish: "攻撃系", trace: false, costume: false, enemy_material: ["整合の歯車"], training_road: false, release_version: "5.6" },
-  { name: "イアンサ", country: "ナタ", weapon: "長柄武器", element: "雷", birth_month: "８月", birthday: "8月8日", rarity: ['☆４'], body: "ロリ", role: ["オフフィールドサポーター", "オフフィールドライフキーパー"], energy: 70, talent_boss: "深淵なるミミック・パピラ", local_specialty: "琉鱗石", ascension_stat: "攻撃力", distributed: false, talent_book: "角逐", talent_weekly: "否定と裁決", special_dish: "復活系", trace: false, costume: false, enemy_material: ["従戦士の木笛"], training_road: false, release_version: "5.5" },
-  { name: "チャスカ", country: "ナタ", weapon: "弓", element: "風", birth_month: "１２月", birthday: "12月10日", rarity: ['☆５'], body: "長身女性", role: ["オンフィールドアタッカー"], energy: 60, talent_boss: "深淵なるミミック・パピラ", local_specialty: "枯れ紫菖", ascension_stat: "会心率", distributed: false, talent_book: "紛争", talent_weekly: "絹織りの羽", special_dish: "スタミナ軽減系", trace: false, costume: false, enemy_material: ["未熟な牙"], training_road: false, release_version: "5.2" },
-  { name: "ムアラニ", country: "ナタ", weapon: "法器", element: "水", birth_month: "８月", birthday: "8月3日", rarity: ['☆５'], body: "中身女性", role: ["オンフィールドアタッカー"], energy: 60, talent_boss: "暴君・金焔のクク竜", local_specialty: "波しぶきのエラ", ascension_stat: "会心率", distributed: false, talent_book: "角逐", talent_weekly: "光なき一塊", special_dish: "シールド系", trace: false, costume: false, enemy_material: ["従戦士の木笛"], training_road: false, release_version: "5.0" },
-  { name: "オロルン", country: "ナタ", weapon: "弓", element: "雷", birth_month: "１０月", birthday: "10月14日", rarity: ['☆４'], body: "長身男性", role: ["オフフィールドアタッカー"], energy: 60, talent_boss: "暴君・金焔のクク竜", local_specialty: "蛍光ツノキノコ", ascension_stat: "攻撃力", distributed: true, talent_book: "焚燼", talent_weekly: "光なき糸", special_dish: "攻撃系", trace: false, costume: false, enemy_material: ["未熟な牙"], training_road: false, release_version: "5.2" },
-  { name: "キィニチ", country: "ナタ", weapon: "両手剣", element: "草", birth_month: "１１月", birthday: "11月11日", rarity: ['☆５'], body: "中身男性", role: ["オンフィールドアタッカー"], energy: 70, talent_boss: "山の王・貪食のユムカ竜", local_specialty: "サウリアンサキュレント", ascension_stat: "会心ダメージ", distributed: false, talent_book: "焚燼", talent_weekly: "否定と裁決", special_dish: "攻撃系", trace: false, costume: false, enemy_material: ["未熟な牙"], training_road: false, release_version: "5.0" },
-  { name: "カチーナ", country: "ナタ", weapon: "長柄武器", element: "岩", birth_month: "４月", birthday: "4月22日", rarity: ['☆４'], body: "ロリ", role: ["オフフィールドアタッカー"], energy: 70, talent_boss: "山の王・貪食のユムカ竜", local_specialty: "ケネパベリー", ascension_stat: "岩元素ダメージ", distributed: true, talent_book: "紛争", talent_weekly: "残火の灯燭", special_dish: "継続回復系", trace: false, costume: false, enemy_material: ["従戦士の木笛"], training_road: false, release_version: "5.0" },
-  { name: "シトラリ", country: "ナタ", weapon: "法器", element: "氷", birth_month: "１月", birthday: "1月20日", rarity: ['☆５'], body: "中身女性", role: ["オフフィールドサポーター", "オフフィールドライフキーパー"], energy: 60, talent_boss: "迷える霊覚の修権者", local_specialty: "ケネパベリー", ascension_stat: "元素熟知", distributed: false, talent_book: "焚燼", talent_weekly: "否定と裁決", special_dish: "復活系", trace: false, costume: true, enemy_material: ["未熟な牙"], training_road: false, release_version: "5.3" },
-  { name: "マーヴィカ", country: "ナタ", weapon: "両手剣", element: "炎", birth_month: "８月", birthday: "8月28日", rarity: ['☆５'], body: "長身女性", role: ["オンフィールドアタッカー", "オフフィールドアタッカー", "オンフィールドサポーター"], energy: 0, talent_boss: "秘源機兵・機構デバイス", local_specialty: "枯れ紫菖", ascension_stat: "会心ダメージ", distributed: false, talent_book: "角逐", talent_weekly: "蝕滅の焔角", special_dish: "攻撃系", trace: false, costume: false, enemy_material: ["従戦士の木笛"], training_road: false, release_version: "5.3" },
-  { name: "ヴァレサ", country: "ナタ", weapon: "法器", element: "雷", birth_month: "１１月", birthday: "11月15日", rarity: ['☆５'], body: "中身女性", role: ["オンフィールドアタッカー"], energy: 70, talent_boss: "輝ける溶岩の龍像", local_specialty: "岩裂の花", ascension_stat: "会心率", distributed: false, talent_book: "紛争", talent_weekly: "蝕滅の羽鱗", special_dish: "攻撃系", trace: false, costume: false, enemy_material: ["未熟な牙"], training_road: false, release_version: "5.5" },
-  { name: "イファ", country: "ナタ", weapon: "法器", element: "風", birth_month: "３月", birthday: "3月23日", rarity: ['☆４'], body: "長身男性", role: ["オンフィールドライフキーパー"], energy: 60, talent_boss: "輝ける溶岩の龍像", local_specialty: "サウリアンサキュレント", ascension_stat: "元素熟知", distributed: false, talent_book: "紛争", talent_weekly: "昇揚のサンプル「ルーク」", special_dish: "防御系", trace: false, costume: false, enemy_material: ["未熟な牙"], training_road: false, release_version: "5.6" },
-  { name: "シロネン", country: "ナタ", weapon: "片手剣", element: "岩", birth_month: "３月", birthday: "3月13日", rarity: ['☆５'], body: "長身女性", role: ["オフフィールドサポーター", "オフフィールドライフキーパー"], energy: 60, talent_boss: "秘源機兵・機構デバイス", local_specialty: "シャクギク", ascension_stat: "防御力", distributed: false, talent_book: "焚燼", talent_weekly: "無心の淵鏡", special_dish: "スタミナ回復系", trace: false, costume: false, enemy_material: ["従戦士の木笛"], training_road: false, release_version: "5.1" },
-  { name: "タルタリヤ", country: "スネージナヤ", weapon: "弓", element: "水", birth_month: "７月", birthday: "7月20日", rarity: ['☆５'], body: "長身男性", role: ["オンフィールドアタッカー"], energy: 60, talent_boss: "純水精霊", local_specialty: "星螺", ascension_stat: "水元素ダメージ", distributed: false, talent_book: "自由", talent_weekly: "魔王の刃・残片", special_dish: "防御系", trace: true, costume: false, enemy_material: ["新兵の記章"], training_road: true, release_version: "1.1" },
-  { name: "アルレッキーノ", country: "スネージナヤ", weapon: "長柄武器", element: "炎", birth_month: "８月", birthday: "8月22日", rarity: ['☆５'], body: "長身女性", role: ["オンフィールドアタッカー"], energy: 60, talent_boss: "魔像レガトゥス", local_specialty: "レインボーローズ", ascension_stat: "会心ダメージ", distributed: false, talent_book: "秩序", talent_weekly: "残火の灯燭", special_dish: "回復系", trace: false, costume: false, enemy_material: ["新兵の記章"], training_road: false, release_version: "4.6" },
-  { name: "イネファ", country: "ナドクライ", weapon: "長柄武器", element: "雷", birth_month: "４月", birthday: "4月2日", rarity: ['☆５'], body: "中身女性", role: ["オフフィールドアタッカー", "オフフィールドライフキーパー"], energy: 60, talent_boss: "秘源機兵・統御デバイス", local_specialty: "蛍光ツノキノコ", ascension_stat: "会心率", distributed: false, talent_book: "紛争", talent_weekly: "蝕滅の陽炎", special_dish: "シールド系", trace: false, costume: false, enemy_material: ["従戦士の木笛"], training_road: false, release_version: "5.8" },
-  { name: "フリンズ", country: "ナドクライ", weapon: "長柄武器", element: "雷", birth_month: "１０月", birthday: "10月31日", rarity: ['☆５'], body: "長身男性", role: ["オンフィールドアタッカー"], energy: 80, talent_boss: "ボコボコダック", local_specialty: "フロストランプ", ascension_stat: "会心ダメージ", distributed: false, talent_book: "流浪", talent_weekly: "昇揚のサンプル「王族」", special_dish: "回復系", trace: false, costume: false, enemy_material: ["破損した駆動軸"], training_road: false, release_version: "Luna I (6.0)" },
-  { name: "アイノ", country: "ナドクライ", weapon: "両手剣", element: "水", birth_month: "９月", birthday: "9月21日", rarity: ['☆４'], body: "ロリ", role: ["オフフィールドサポーター"], energy: 50, talent_boss: "ボコボコダック", local_specialty: "携行型ベアリング", ascension_stat: "元素熟知", distributed: true, talent_book: "楽園", talent_weekly: "絹織りの羽", special_dish: "復活系", trace: false, costume: false, enemy_material: ["破損した駆動軸"], training_road: false, release_version: "Luna I (6.0)" },
-  { name: "ラウマ", country: "ナドクライ", weapon: "法器", element: "草", birth_month: "３月", birthday: "3月1日", rarity: ['☆５'], body: "長身女性", role: ["オフフィールドサポーター"], energy: 60, talent_boss: "集光の幻月蝶", local_specialty: "月落銀", ascension_stat: "元素熟知", distributed: false, talent_book: "月光", talent_weekly: "蝕滅の羽鱗", special_dish: "継続回復系", trace: false, costume: false, enemy_material: ["破損した徽章"], training_road: false, release_version: "Luna I (6.0)" },
-  { name: "ネフェル", country: "ナドクライ", weapon: "法器", element: "草", birth_month: "５月", birthday: "5月9日", rarity: ['☆５'], body: "長身女性", role: ["オンフィールドアタッカー"], energy: 60, talent_boss: "霜夜の空を巡る霊主", local_specialty: "月落銀", ascension_stat: "会心ダメージ", distributed: false, talent_book: "楽園", talent_weekly: "昇揚のサンプル「ルーク」", special_dish: "復活系", trace: false, costume: false, enemy_material: ["破損した徽章"], training_road: false, release_version: "Luna II (6.1)" },
-  { name: "ヤフォダ", country: "ナドクライ", weapon: "弓", element: "風", birth_month: "１月", birthday: "1月5日", rarity: ['☆４'], body: "中身女性", role: ["オフフィールドライフキーパー"], energy: 70, talent_boss: "集光の幻月蝶", local_specialty: "携行型ベアリング", ascension_stat: "与える治療効果", distributed: true, talent_book: "流浪", talent_weekly: "昇揚のサンプル「ナイト」", special_dish: "回復系", trace: false, costume: false, enemy_material: ["破損した駆動軸"], training_road: false, release_version: "Luna III (6.2)" },
-  { name: "コロンビーナ", country: "ナドクライ", weapon: "法器", element: "水", birth_month: "１月", birthday: "1月14日", rarity: ['☆５'], body: "中身女性", role: ["オフフィールドサポーター"], energy: 60, talent_boss: "霜夜の空を巡る霊主", local_specialty: "ヴィンテル草", ascension_stat: "会心率", distributed: false, talent_book: "月光", talent_weekly: "賢医の仮面", special_dish: "HP強化系", trace: false, costume: false, enemy_material: ["スライムの液体"], training_road: false, release_version: "Luna IV (6.3)" },
-  { name: "イルーガ", country: "ナドクライ", weapon: "長柄武器", element: "岩", birth_month: "１２月", birthday: "12月23日", rarity: ['☆４'], body: "中身男性", role: ["オフフィールドサポーター"], energy: 60, talent_boss: "重量級陸巡艦「バトルシップ」", local_specialty: "琥珀香", ascension_stat: "元素熟知", distributed: false, talent_book: "楽園", talent_weekly: "蝕滅の焔角", special_dish: "回復系", trace: false, costume: false, enemy_material: ["破損した駆動軸"], training_road: false, release_version: "Luna IV (6.3)" },
-  { name: "リンネア", country: "ナドクライ", weapon: "弓", element: "岩", birth_month: "５月", birthday: "5月23日", rarity: ['☆５'], body: "中身女性", role: ["オフフィールドアタッカー", "オフフィールドライフキーパー"], energy: 60, talent_boss: "守護者・堕天", local_specialty: "フェザーモス", ascension_stat: "会心率", distributed: false, talent_book: "流浪", talent_weekly: "異端の薬瓶", special_dish: "スタミナ回復系", trace: false, costume: false, enemy_material: ["破損した徽章"], training_road: false, release_version: "Luna VI (6.5)" },
-  { name: "ニコ", country: "例外", weapon: "法器", element: "炎", birth_month: "９月", birthday: "9月29日", rarity: ['☆５'], body: "中身女性", role: ["オフフィールドサポーター", "オフフィールドライフキーパー"], energy: 60, talent_boss: "昏き魘夢の主", local_specialty: "琥珀香", ascension_stat: "攻撃力", distributed: false, talent_book: "楽園", talent_weekly: "偽りの樹脂", special_dish: "スタミナ回復系", trace: false, costume: false, enemy_material: ["破損した徽章"], training_road: false, release_version: "Luna VII (6.6)" },
-  { name: "サンドローネ", country: "スネージナヤ", weapon: "両手剣", element: "氷", birth_month: "１月", birthday: "1月13日", rarity: ['☆５'], body: "中身女性", role: ["オンフィールドアタッカー"], energy: 60, talent_boss: "守護者・堕天", local_specialty: "探測ユニット・子機", ascension_stat: "会心率", distributed: false, talent_book: "流浪", talent_weekly: "狂人の誓約", special_dish: "スタミナ軽減系", trace: false, costume: false, enemy_material: ["破損した駆動軸"], training_road: false, release_version: "Luna VIII (6.7)" }, 
-  { name: "アリョーシャ", country: "スネージナヤ", weapon: "長柄武器", element: "雷", birth_month: "２月", birthday: "2月9日", version: "n.0", rarity: ['☆４'], body: "中身男性", role: ["オフフィールドサポーター","オフフィールドライフキーパー"], energy: 70, talent_boss: "合成獣・フリューゲルレーヴェ", local_specialty: "フロック草", ascension_stat: "元素チャージ効率", distributed: true, talent_book: "堅忍", talent_weekly: "異端の薬瓶", special_dish: "スタミナ軽減系", trace: false, costume: false, enemy_material: ["異種合成魔獣"], training_road: false, release_version: "7.0" },
-  { name: "オデット", country: "スネージナヤ", weapon: "片手剣", element: "氷", birth_month: "２月", birthday: "2月20日", version: "n.0", rarity: ['☆５'], body: "中身女性", role: ["オフフィールドアタッカー"], energy: 60, talent_boss: "不滅の副産物", local_specialty: "フロストフラワー", ascension_stat: "会心ダメージ", distributed: false, talent_book: "慈愛", talent_weekly: "歪曲した枯れ枝", special_dish: "攻撃系", trace: false, costume: false, enemy_material: ["幻造蛍屑"], training_road: false, release_version: "7.0" },
-  { name: "ヴェスナ", country: "スネージナヤ", weapon: "片手剣", element: "風", birth_month: "２月", birthday: "2月14日", version: "n.1", rarity: ['☆５'], body: "中身女性", role: ["オンフィールドアタッカー"], energy: 60, talent_boss: "游雪のブレードガーディアン", local_specialty: "ザラトイアリャーク", ascension_stat: "HP", distributed: false, talent_book: "栄光", talent_weekly: "冒涜の新芽", special_dish: "防御系", trace: false, costume: false, enemy_material: ["幻光の屑"], training_road: false, release_version: "7.1" },
-  { name: "ヴォジャニーツァ", country: "スネージナヤ", weapon: "法器", element: "水", birth_month: "３月", birthday: "3月29日", version: "n.1", rarity: ['☆５'], body: "中身女性", role: ["オフフィールドサポーター","オフフィールドライフキーパー"], energy: 60, talent_boss: "不滅の副産物", local_specialty: "フロストフラワー", ascension_stat: "HP", distributed: false, talent_book: "不屈", talent_weekly: "狂人の誓約", special_dish: "継続回復系", trace: false, costume: false, enemy_material: ["合成獣のコア"], training_road: false, release_version: "7.1" },
+  { name: "ジン", country: "モンド", weapon: "片手剣", element: "風", birth_month: "３月", birthday: "3月14日", rarity: ['☆５', '恒常☆５'], body: "長身女性", role: ["オフフィールドライフキーパー"], energy: 80, talent_boss: "無相の風", local_specialty: "蒲公英の種", ascension_stat: "与える治療効果", distributed: false, talent_book: "抗争", talent_weekly: "東風の羽根", special_dish: "継続回復系", trace: true, costume: true, enemy_material: ["破損した仮面"], training_road: true, release_version: "1.0", attack: 239, hp: "14.695", defense: 769 },
+  { name: "アンバー", country: "モンド", weapon: "弓", element: "炎", birth_month: "８月", birthday: "8月10日", rarity: ['☆４'], body: "中身女性", role: ["オフフィールドアタッカー"], energy: 40, talent_boss: "爆炎樹", local_specialty: "イグサ", ascension_stat: "攻撃力", distributed: true, talent_book: "自由", talent_weekly: "東風の吐息", special_dish: "復活系", trace: false, costume: true, enemy_material: ["牢固な矢先"], training_road: false, release_version: "1.0", attack: 223, hp: "9.461", defense: 601 },
+  { name: "リサ", country: "モンド", weapon: "法器", element: "雷", birth_month: "６月", birthday: "6月9日", rarity: ['☆４'], body: "長身女性", role: ["オフフィールドアタッカー"], energy: 80, talent_boss: "無相の雷", local_specialty: "ヴァルベリー", ascension_stat: "元素熟知", distributed: true, talent_book: "詩文", talent_weekly: "東風の爪", special_dish: "継続回復系", trace: false, costume: true, enemy_material: ["スライムの液体"], training_road: false, release_version: "1.0", attack: 231, hp: "9.570", defense: 573 },
+  { name: "ガイア", country: "モンド", weapon: "片手剣", element: "氷", birth_month: "１１月", birthday: "11月30日", rarity: ['☆４'], body: "長身男性", role: ["オンフィールドアタッカー"], energy: 60, talent_boss: "急凍樹", local_specialty: "ドドリアン", ascension_stat: "元素チャージ効率", distributed: true, talent_book: "詩文", talent_weekly: "北風の魂箱", special_dish: "回復系", trace: false, costume: true, enemy_material: ["宝探しの鴉マーク"], training_road: false, release_version: "1.0", attack: 223, hp: "11.636", defense: 792 },
+  { name: "バーバラ", country: "モンド", weapon: "法器", element: "水", birth_month: "７月", birthday: "7月5日", rarity: ['☆４'], body: "中身女性", role: ["オフフィールドライフキーパー"], energy: 80, talent_boss: "純水精霊", local_specialty: "慕風のマッシュルーム", ascension_stat: "HP", distributed: true, talent_book: "自由", talent_weekly: "北風のリング", special_dish: "スタミナ軽減系", trace: false, costume: true, enemy_material: ["占いの絵巻"], training_road: false, release_version: "1.0", attack: 159, hp: "9.787", defense: 669 },
+  { name: "ディルック", country: "モンド", weapon: "両手剣", element: "炎", birth_month: "４月", birthday: "4月30日", rarity: ['☆５', '恒常☆５'], body: "長身男性", role: ["オンフィールドアタッカー"], energy: 40, talent_boss: "爆炎樹", local_specialty: "イグサ", ascension_stat: "会心率", distributed: false, talent_book: "抗争", talent_weekly: "東風の羽根", special_dish: "攻撃系", trace: true, costume: true, enemy_material: ["新兵の記章"], training_road: true, release_version: "1.0", attack: 335, hp: "12.981", defense: 784 },
+  { name: "レザー", country: "モンド", weapon: "両手剣", element: "雷", birth_month: "９月", birthday: "9月9日", rarity: ['☆４'], body: "中身男性", role: ["オンフィールドアタッカー"], energy: 80, talent_boss: "無相の雷", local_specialty: "ググプラム", ascension_stat: "物理ダメージ", distributed: false, talent_book: "抗争", talent_weekly: "東風の爪", special_dish: "回復系", trace: false, costume: false, enemy_material: ["破損した仮面"], training_road: false, release_version: "1.0", attack: 234, hp: "11.962", defense: 751 },
+  { name: "ウェンティ", country: "モンド", weapon: "弓", element: "風", birth_month: "６月", birthday: "6月16日", rarity: ['☆５'], body: "中身男性", role: ["オフフィールドアタッカー", "オフフィールドサポーター"], energy: 60, talent_boss: "無相の風", local_specialty: "セシリアの花", ascension_stat: "元素チャージ効率", distributed: false, talent_book: "詩文", talent_weekly: "北風のしっぽ", special_dish: "スタミナ軽減系", trace: true, costume: false, enemy_material: ["スライムの液体"], training_road: false, release_version: "1.0", attack: 263, hp: "10.531", defense: 669 },
+  { name: "クレー", country: "モンド", weapon: "法器", element: "炎", birth_month: "７月", birthday: "7月27日", rarity: ['☆５'], body: "ロリ", role: ["オンフィールドアタッカー"], energy: 60, talent_boss: "爆炎樹", local_specialty: "慕風のマッシュルーム", ascension_stat: "炎元素ダメージ", distributed: false, talent_book: "自由", talent_weekly: "北風のリング", special_dish: "防御系", trace: true, costume: true, enemy_material: ["占いの絵巻"], training_road: true, release_version: "1.0", attack: 311, hp: "10.287", defense: 615 },
+  { name: "ベネット", country: "モンド", weapon: "片手剣", element: "炎", birth_month: "２月", birthday: "2月29日", rarity: ['☆４'], body: "中身男性", role: ["オフフィールドサポーター", "オフフィールドライフキーパー"], energy: 60, talent_boss: "爆炎樹", local_specialty: "風車アスター", ascension_stat: "元素チャージ効率", distributed: true, talent_book: "抗争", talent_weekly: "東風の羽根", special_dish: "復活系", trace: false, costume: true, enemy_material: ["宝探しの鴉マーク"], training_road: false, release_version: "1.0", attack: 191, hp: "12.397", defense: 771 },
+  { name: "ノエル", country: "モンド", weapon: "両手剣", element: "岩", birth_month: "３月", birthday: "3月21日", rarity: ['☆４'], body: "中身女性", role: ["オンフィールドアタッカー", "オンフィールドライフキーパー"], energy: 60, talent_boss: "無相の岩", local_specialty: "ヴァルベリー", ascension_stat: "防御力", distributed: false, talent_book: "抗争", talent_weekly: "東風の爪", special_dish: "復活系", trace: false, costume: false, enemy_material: ["破損した仮面"], training_road: false, release_version: "1.0", attack: 191, hp: "12.071", defense: 799 },
+  { name: "フィッシュル", country: "モンド", weapon: "弓", element: "雷", birth_month: "５月", birthday: "5月27日", rarity: ['☆４'], body: "中身女性", role: ["オフフィールドアタッカー"], energy: 60, talent_boss: "無相の雷", local_specialty: "イグサ", ascension_stat: "攻撃力", distributed: true, talent_book: "詩文", talent_weekly: "北風の魂箱", special_dish: "攻撃系", trace: false, costume: true, enemy_material: ["牢固な矢先"], training_road: false, release_version: "1.0", attack: 244, hp: "9.189", defense: 594 },
+  { name: "スクロース", country: "モンド", weapon: "法器", element: "風", birth_month: "１１月", birthday: "11月26日", rarity: ['☆４'], body: "中身女性", role: ["オフフィールドサポーター"], energy: 80, talent_boss: "無相の風", local_specialty: "風車アスター", ascension_stat: "風元素ダメージ", distributed: false, talent_book: "自由", talent_weekly: "北風の魂箱", special_dish: "復活系", trace: false, costume: false, enemy_material: ["トリックフラワーの蜜"], training_road: false, release_version: "1.0", attack: 170, hp: "9.244", defense: 703 },
+  { name: "モナ", country: "モンド", weapon: "法器", element: "水", birth_month: "８月", birthday: "8月31日", rarity: ['☆５', '恒常☆５'], body: "中身女性", role: ["オフフィールドサポーター"], energy: 60, talent_boss: "純水精霊", local_specialty: "慕風のマッシュルーム", ascension_stat: "元素チャージ効率", distributed: false, talent_book: "抗争", talent_weekly: "北風のリング", special_dish: "攻撃系", trace: false, costume: true, enemy_material: ["トリックフラワーの蜜"], training_road: true, release_version: "1.0", attack: 287, hp: "10.409", defense: 653 },
+  { name: "ディオナ", country: "モンド", weapon: "弓", element: "氷", birth_month: "１月", birthday: "1月18日", rarity: ['☆４'], body: "ロリ", role: ["オフフィールドライフキーパー"], energy: 80, talent_boss: "急凍樹", local_specialty: "ドドリアン", ascension_stat: "氷元素ダメージ", distributed: true, talent_book: "自由", talent_weekly: "魔王の刃・残片", special_dish: "復活系", trace: false, costume: false, enemy_material: ["牢固な矢先"], training_road: false, release_version: "1.1", attack: 212, hp: "9.570", defense: 601 },
+  { name: "アルベド", country: "モンド", weapon: "片手剣", element: "岩", birth_month: "９月", birthday: "9月13日", rarity: ['☆５'], body: "中身男性", role: ["オフフィールドアタッカー"], energy: 40, talent_boss: "無相の岩", local_specialty: "セシリアの花", ascension_stat: "岩元素ダメージ", distributed: false, talent_book: "詩文", talent_weekly: "吞天の鯨・只角", special_dish: "シールド系", trace: true, costume: false, enemy_material: ["占いの絵巻"], training_road: true, release_version: "1.2", attack: 251, hp: "13.226", defense: 876 },
+  { name: "ロサリア", country: "モンド", weapon: "長柄武器", element: "氷", birth_month: "１月", birthday: "1月24日", rarity: ['☆４'], body: "長身女性", role: ["オフフィールドアタッカー"], energy: 60, talent_boss: "急凍樹", local_specialty: "ヴァルベリー", ascension_stat: "攻撃力", distributed: false, talent_book: "詩文", talent_weekly: "武煉の魂・孤影", special_dish: "回復系", trace: false, costume: true, enemy_material: ["新兵の記章"], training_road: false, release_version: "1.4", attack: 240, hp: "12.289", defense: 710 },
+  { name: "エウルア", country: "モンド", weapon: "両手剣", element: "氷", birth_month: "１０月", birthday: "10月25日", rarity: ['☆５'], body: "長身女性", role: ["オンフィールドアタッカー"], energy: 80, talent_boss: "無相の氷", local_specialty: "蒲公英の種", ascension_stat: "会心ダメージ", distributed: false, talent_book: "抗争", talent_weekly: "龍王の冠", special_dish: "シールド系", trace: false, costume: false, enemy_material: ["破損した仮面"], training_road: true, release_version: "1.5", attack: 342, hp: "13.226", defense: 751 },
+  { name: "ミカ", country: "モンド", weapon: "長柄武器", element: "氷", birth_month: "８月", birthday: "8月11日", rarity: ['☆４'], body: "中身男性", role: ["オフフィールドサポーター", "オフフィールドライフキーパー"], energy: 70, talent_boss: "風食ウェネト", local_specialty: "ググプラム", ascension_stat: "HP", distributed: false, talent_book: "詩文", talent_weekly: "無心の淵鏡", special_dish: "攻撃系", trace: false, costume: false, enemy_material: ["新兵の記章"], training_road: false, release_version: "3.5", attack: 223, hp: "12.506", defense: 713 },
+  { name: "ダリア", country: "モンド", weapon: "片手剣", element: "水", birth_month: "５月", birthday: "5月25日", rarity: ['☆４'], body: "中身男性", role: ["オフフィールドサポーター", "オフフィールドライフキーパー"], energy: 80, talent_boss: "秘源機兵・統御デバイス", local_specialty: "ドドリアン", ascension_stat: "HP", distributed: false, talent_book: "詩文", talent_weekly: "蝕滅の羽鱗", special_dish: "継続回復系", trace: false, costume: false, enemy_material: ["牢固な矢先"], training_road: false, release_version: "5.7", attack: 189, hp: "12.506", defense: 560 },
+  { name: "ドゥリン", country: "モンド", weapon: "片手剣", element: "炎", birth_month: "３月", birthday: "3月14日", rarity: ['☆５'], body: "中身男性", role: ["オフフィールドサポーター", "オフフィールドアタッカー"], energy: 70, talent_boss: "重量級陸巡艦「バトルシップ」", local_specialty: "フロストランプ", ascension_stat: "会心ダメージ", distributed: false, talent_book: "詩文", talent_weekly: "蝕滅の陽炎", special_dish: "回復系", trace: false, costume: true, enemy_material: ["破損した徽章"], training_road: false, release_version: "Luna III (6.2)", attack: 347, hp: "12.430", defense: 822 },
+  { name: "ファルカ", country: "モンド", weapon: "両手剣", element: "風", birth_month: "２月", birthday: "2月17日", rarity: ['☆５'], body: "長身男性", role: ["オンフィールドアタッカー"], energy: 60, talent_boss: "集光の月ヤモリ", local_specialty: "ググプラム", ascension_stat: "会心ダメージ", distributed: false, talent_book: "自由", talent_weekly: "昇揚のサンプル「ルーク」", special_dish: "スタミナ回復系", trace: false, costume: false, enemy_material: ["破損した駆動軸"], training_road: false, release_version: "Luna V (6.4)", attack: 353, hp: "12.613", defense: 795 },
+  { name: "ローエン", country: "モンド", weapon: "長柄武器", element: "氷", birth_month: "４月", birthday: "4月3日", rarity: ['☆５'], body: "中身男性", role: ["オンフィールドアタッカー"], energy: 60, talent_boss: "集光の月ヤモリ", local_specialty: "フェザーモス", ascension_stat: "会心ダメージ", distributed: false, talent_book: "抗争", talent_weekly: "昇揚のサンプル「ナイト」", special_dish: "復活系", trace: false, costume: false, enemy_material: ["牢固な矢先"], training_road: false, release_version: "Luna VII (6.6)", attack: 344, hp: "12.858", defense: 784 },
+  { name: "プルーネ", country: "モンド", weapon: "法器", element: "風", birth_month: "１１月", birthday: "11月20日", rarity: ['☆４'], body: "ロリ", role: ["オフフィールドサポーター"], energy: 70, talent_boss: "霜夜の空を巡る霊主", local_specialty: "ヴィンテル草", ascension_stat: "攻撃力", distributed: false, talent_book: "抗争", talent_weekly: "賢医の仮面", special_dish: "スタミナ軽減系", trace: false, costume: false, enemy_material: ["宝探しの鴉マーク"], training_road: false, release_version: "Luna VII (6.6)", attack: 221, hp: "9.679", defense: 580 },
+  { name: "魈", country: "璃月", weapon: "長柄武器", element: "風", birth_month: "４月", birthday: "4月17日", rarity: ['☆５'], body: "中身男性", role: ["オンフィールドアタッカー"], energy: 70, talent_boss: "エンシェントヴィシャップ・岩", local_specialty: "清心", ascension_stat: "会心率", distributed: false, talent_book: "繁栄", talent_weekly: "武煉の魂・孤影", special_dish: "攻撃系", trace: true, costume: false, enemy_material: ["スライムの液体"], training_road: true, release_version: "1.3", attack: 349, hp: "12.736", defense: 799 },
+  { name: "北斗", country: "璃月", weapon: "両手剣", element: "雷", birth_month: "２月", birthday: "2月14日", rarity: ['☆４'], body: "長身女性", role: ["オフフィールドアタッカー", "オフフィールドライフキーパー"], energy: 80, talent_boss: "無相の雷", local_specialty: "夜泊石", ascension_stat: "雷元素ダメージ", distributed: true, talent_book: "黄金", talent_weekly: "東風の吐息", special_dish: "復活系", trace: false, costume: false, enemy_material: ["宝探しの鴉マーク"], training_road: false, release_version: "1.0", attack: 225, hp: "13.050", defense: 648 },
+  { name: "凝光", country: "璃月", weapon: "法器", element: "岩", birth_month: "８月", birthday: "8月26日", rarity: ['☆４'], body: "長身女性", role: ["オンフィールドアタッカー"], energy: 40, talent_boss: "無相の岩", local_specialty: "瑠璃百合", ascension_stat: "岩元素ダメージ", distributed: false, talent_book: "繁栄", talent_weekly: "北風の魂箱", special_dish: "復活系", trace: true, costume: true, enemy_material: ["新兵の記章"], training_road: false, release_version: "1.0", attack: 212, hp: "9.787", defense: 573 },
+  { name: "香菱", country: "璃月", weapon: "長柄武器", element: "炎", birth_month: "１１月", birthday: "11月2日", rarity: ['☆４'], body: "中身女性", role: ["オフフィールドアタッカー"], energy: 80, talent_boss: "爆炎樹", local_specialty: "絶雲の唐辛子", ascension_stat: "元素熟知", distributed: true, talent_book: "勤労", talent_weekly: "東風の爪", special_dish: "継続回復系", trace: false, costume: true, enemy_material: ["スライムの液体"], training_road: false, release_version: "1.0", attack: 225, hp: "10.875", defense: 669 },
+  { name: "行秋", country: "璃月", weapon: "片手剣", element: "水", birth_month: "１０月", birthday: "10月9日", rarity: ['☆４'], body: "中身男性", role: ["オフフィールドアタッカー", "オフフィールドライフキーパー"], energy: 80, talent_boss: "純水精霊", local_specialty: "霓裳花", ascension_stat: "攻撃力", distributed: true, talent_book: "黄金", talent_weekly: "北風のしっぽ", special_dish: "継続回復系", trace: false, costume: true, enemy_material: ["破損した仮面"], training_road: false, release_version: "1.0", attack: 201, hp: "10.222", defense: 758 },
+  { name: "重雲", country: "璃月", weapon: "両手剣", element: "氷", birth_month: "９月", birthday: "9月7日", rarity: ['☆４'], body: "中身男性", role: ["オフフィールドアタッカー", "オフフィールドサポーター"], energy: 40, talent_boss: "急凍樹", local_specialty: "石珀", ascension_stat: "攻撃力", distributed: false, talent_book: "勤労", talent_weekly: "東風の吐息", special_dish: "スタミナ回復系", trace: false, costume: false, enemy_material: ["破損した仮面"], training_road: false, release_version: "1.0", attack: 223, hp: "10.984", defense: 648 },
+  { name: "七七", country: "璃月", weapon: "片手剣", element: "氷", birth_month: "３月", birthday: "3月3日", rarity: ['☆５', '恒常☆５'], body: "ロリ", role: ["オフフィールドライフキーパー"], energy: 80, talent_boss: "急凍樹", local_specialty: "瑠璃袋", ascension_stat: "与える治療効果", distributed: false, talent_book: "繁栄", talent_weekly: "北風のしっぽ", special_dish: "攻撃系", trace: true, costume: false, enemy_material: ["占いの絵巻"], training_road: true, release_version: "1.0", attack: 287, hp: "12.368", defense: 922 },
+  { name: "刻晴", country: "璃月", weapon: "片手剣", element: "雷", birth_month: "１１月", birthday: "11月20日", rarity: ['☆５', '恒常☆５'], body: "中身女性", role: ["オンフィールドアタッカー"], energy: 40, talent_boss: "無相の雷", local_specialty: "石珀", ascension_stat: "会心ダメージ", distributed: false, talent_book: "繁栄", talent_weekly: "北風のリング", special_dish: "回復系", trace: true, costume: true, enemy_material: ["トリックフラワーの蜜"], training_road: true, release_version: "1.0", attack: 323, hp: "13.103", defense: 799 },
+  { name: "鍾離", country: "璃月", weapon: "長柄武器", element: "岩", birth_month: "１２月", birthday: "12月31日", rarity: ['☆５'], body: "長身男性", role: ["オフフィールドサポーター", "オフフィールドライフキーパー"], energy: 40, talent_boss: "無相の岩", local_specialty: "石珀", ascension_stat: "岩元素ダメージ", distributed: false, talent_book: "黄金", talent_weekly: "吞天の鯨・只角", special_dish: "継続回復系", trace: true, costume: false, enemy_material: ["スライムの液体"], training_road: false, release_version: "1.1", attack: 251, hp: "14.695", defense: 738 },
+  { name: "辛炎", country: "璃月", weapon: "両手剣", element: "炎", birth_month: "１０月", birthday: "10月16日", rarity: ['☆４'], body: "中身女性", role: ["オフフィールドライフキーパー"], energy: 60, talent_boss: "爆炎樹", local_specialty: "瑠璃袋", ascension_stat: "攻撃力", distributed: true, talent_book: "黄金", talent_weekly: "吞天の鯨・只角", special_dish: "攻撃系", trace: false, costume: false, enemy_material: ["宝探しの鴉マーク"], training_road: false, release_version: "1.1", attack: 248, hp: "11.201", defense: 799 },
+  { name: "甘雨", country: "璃月", weapon: "弓", element: "氷", birth_month: "１２月", birthday: "12月2日", rarity: ['☆５'], body: "中身女性", role: ["オンフィールドアタッカー"], energy: 60, talent_boss: "急凍樹", local_specialty: "清心", ascension_stat: "会心ダメージ", distributed: false, talent_book: "勤労", talent_weekly: "武煉の魂・孤影", special_dish: "回復系", trace: true, costume: true, enemy_material: ["トリックフラワーの蜜"], training_road: true, release_version: "1.2", attack: 335, hp: "9.797", defense: 630 },
+  { name: "胡桃", country: "璃月", weapon: "長柄武器", element: "炎", birth_month: "７月", birthday: "7月15日", rarity: ['☆５'], body: "中身女性", role: ["オンフィールドアタッカー"], energy: 60, talent_boss: "エンシェントヴィシャップ・岩", local_specialty: "霓裳花", ascension_stat: "会心ダメージ", distributed: false, talent_book: "勤労", talent_weekly: "魔王の刃・残片", special_dish: "復活系", trace: false, costume: true, enemy_material: ["トリックフラワーの蜜"], training_road: true, release_version: "1.3", attack: 106, hp: "15.552", defense: 876 },
+  { name: "煙緋", country: "璃月", weapon: "法器", element: "炎", birth_month: "７月", birthday: "7月28日", rarity: ['☆４'], body: "中身女性", role: ["オンフィールドアタッカー"], energy: 80, talent_boss: "エンシェントヴィシャップ・岩", local_specialty: "夜泊石", ascension_stat: "炎元素ダメージ", distributed: false, talent_book: "黄金", talent_weekly: "血玉の枝", special_dish: "復活系", trace: false, costume: false, enemy_material: ["宝探しの鴉マーク"], training_road: false, release_version: "1.5", attack: 240, hp: "9.352", defense: 587 },
+  { name: "申鶴", country: "璃月", weapon: "長柄武器", element: "氷", birth_month: "３月", birthday: "3月10日", rarity: ['☆５'], body: "長身女性", role: ["オフフィールドサポーター"], energy: 80, talent_boss: "アビサルヴィシャップ", local_specialty: "清心", ascension_stat: "攻撃力", distributed: false, talent_book: "繁栄", talent_weekly: "獄炎の蝶", special_dish: "攻撃系", trace: true, costume: true, enemy_material: ["トリックフラワーの蜜"], training_road: true, release_version: "2.4", attack: 304, hp: "12.993", defense: 830 },
+  { name: "雲菫", country: "璃月", weapon: "長柄武器", element: "岩", birth_month: "５月", birthday: "5月21日", rarity: ['☆４'], body: "中身女性", role: ["オフフィールドサポーター"], energy: 60, talent_boss: "黄金王獣", local_specialty: "瑠璃百合", ascension_stat: "元素チャージ効率", distributed: false, talent_book: "勤労", talent_weekly: "灰燼の心", special_dish: "スタミナ軽減系", trace: false, costume: false, enemy_material: ["破損した仮面"], training_road: false, release_version: "2.4", attack: 191, hp: "10.657", defense: 734 },
+  { name: "夜蘭", country: "璃月", weapon: "弓", element: "水", birth_month: "４月", birthday: "4月20日", rarity: ['☆５'], body: "長身女性", role: ["オフフィールドアタッカー"], energy: 70, talent_boss: "遺跡サーペント", local_specialty: "星螺", ascension_stat: "会心率", distributed: false, talent_book: "繁栄", talent_weekly: "鍍金の鱗", special_dish: "シールド系", trace: true, costume: true, enemy_material: ["新兵の記章"], training_road: false, release_version: "2.7", attack: 244, hp: "14.450", defense: 548 },
+  { name: "ヨォーヨ", country: "璃月", weapon: "長柄武器", element: "草", birth_month: "３月", birthday: "3月6日", rarity: ['☆４'], body: "ロリ", role: ["オフフィールドライフキーパー"], energy: 80, talent_boss: "無相の草", local_specialty: "絶雲の唐辛子", ascension_stat: "HP", distributed: false, talent_book: "勤労", talent_weekly: "空行の虚鈴", special_dish: "攻撃系", trace: false, costume: true, enemy_material: ["スライムの液体"], training_road: false, release_version: "3.4", attack: 213, hp: "12.289", defense: 751 },
+  { name: "白朮", country: "璃月", weapon: "法器", element: "草", birth_month: "４月", birthday: "4月25日", rarity: ['☆５'], body: "長身男性", role: ["オフフィールドサポーター", "オフフィールドライフキーパー"], energy: 80, talent_boss: "深罪の浸礼者", local_specialty: "瑠璃袋", ascension_stat: "HP", distributed: false, talent_book: "黄金", talent_weekly: "天地に生える蕨", special_dish: "治療効果系", trace: false, costume: false, enemy_material: ["キノコンの胞子"], training_road: true, release_version: "3.6", attack: 192, hp: "13.348", defense: 500 },
+  { name: "閑雲", country: "璃月", weapon: "法器", element: "風", birth_month: "４月", birthday: "4月11日", rarity: ['☆５'], body: "長身女性", role: ["オフフィールドサポーター", "オフフィールドライフキーパー"], energy: 70, talent_boss: "山隠れの猊獣", local_specialty: "清水玉", ascension_stat: "攻撃力", distributed: false, talent_book: "黄金", talent_weekly: "光なき渦の眼", special_dish: "攻撃系", trace: false, costume: false, enemy_material: ["占いの絵巻"], training_road: true, release_version: "4.4", attack: 334, hp: "10.409", defense: 573 },
+  { name: "嘉明", country: "璃月", weapon: "両手剣", element: "炎", birth_month: "１２月", birthday: "12月22日", rarity: ['☆４'], body: "中身男性", role: ["オンフィールドアタッカー"], energy: 60, talent_boss: "鉄甲熔炎帝王", local_specialty: "星螺", ascension_stat: "攻撃力", distributed: false, talent_book: "繁栄", talent_weekly: "光なき一塊", special_dish: "継続回復系", trace: false, costume: false, enemy_material: ["スライムの液体"], training_road: false, release_version: "4.4", attack: 302, hp: "11.419", defense: 703 },
+  { name: "藍硯", country: "璃月", weapon: "法器", element: "風", birth_month: "１月", birthday: "1月6日", rarity: ['☆４'], body: "中身女性", role: ["オンフィールドアタッカー", "オンフィールドライフキーパー"], energy: 60, talent_boss: "秘源機兵・機構デバイス", local_specialty: "清水玉", ascension_stat: "攻撃力", distributed: false, talent_book: "勤労", talent_weekly: "蝕滅の陽炎", special_dish: "スタミナ回復系", trace: false, costume: false, enemy_material: ["トリックフラワーの蜜"], training_road: false, release_version: "5.3", attack: 251, hp: "9.244", defense: 580 },
+  { name: "兹白", country: "璃月", weapon: "片手剣", element: "岩", birth_month: "５月", birthday: "5月15日", rarity: ['☆５'], body: "長身女性", role: ["オンフィールドアタッカー"], energy: 60, talent_boss: "昏き魘夢の主", local_specialty: "瑠璃百合", ascension_stat: "会心ダメージ", distributed: false, talent_book: "黄金", talent_weekly: "昇揚のサンプル「王族」", special_dish: "防御系", trace: false, costume: false, enemy_material: ["破損した徽章"], training_road: false, release_version: "Luna IV (6.3)", attack: 222, hp: "12.919", defense: 957 },
+  { name: "神里綾華", country: "稲妻", weapon: "片手剣", element: "氷", birth_month: "９月", birthday: "9月28日", rarity: ['☆５'], body: "中身女性", role: ["オンフィールドアタッカー"], energy: 80, talent_boss: "恒常からくり陣形", local_specialty: "緋櫻毬", ascension_stat: "会心ダメージ", distributed: false, talent_book: "風雅", talent_weekly: "血玉の枝", special_dish: "復活系", trace: true, costume: true, enemy_material: ["古びた鍔"], training_road: true, release_version: "2.0", attack: 342, hp: "12.858", defense: 784 },
+  { name: "神里綾人", country: "稲妻", weapon: "片手剣", element: "水", birth_month: "３月", birthday: "3月26日", rarity: ['☆５'], body: "長身男性", role: ["オンフィールドアタッカー"], energy: 80, talent_boss: "無相の水", local_specialty: "緋櫻毬", ascension_stat: "会心ダメージ", distributed: false, talent_book: "風雅", talent_weekly: "凶将の手眼", special_dish: "シールド系", trace: true, costume: false, enemy_material: ["古びた鍔"], training_road: true, release_version: "2.6", attack: 299, hp: "13.715", defense: 769 },
+  { name: "楓原万葉", country: "稲妻", weapon: "片手剣", element: "風", birth_month: "１０月", birthday: "10月29日", rarity: ['☆５'], body: "中身男性", role: ["オフフィールドサポーター"], energy: 60, talent_boss: "魔偶剣鬼", local_specialty: "ウミレイシ", ascension_stat: "元素熟知", distributed: false, talent_book: "勤労", talent_weekly: "鍍金の鱗", special_dish: "回復系", trace: true, costume: false, enemy_material: ["宝探しの鴉マーク"], training_road: false, release_version: "1.6", attack: 297, hp: "13.348", defense: 807 },
+  { name: "宵宮", country: "稲妻", weapon: "弓", element: "炎", birth_month: "６月", birthday: "6月21日", rarity: ['☆５'], body: "中身女性", role: ["オンフィールドアタッカー"], energy: 60, talent_boss: "無相の炎", local_specialty: "鳴草", ascension_stat: "会心率", distributed: false, talent_book: "浮世", talent_weekly: "龍王の冠", special_dish: "回復系", trace: false, costume: false, enemy_material: ["占いの絵巻"], training_road: true, release_version: "2.0", attack: 323, hp: "10.164", defense: 615 },
+  { name: "早柚", country: "稲妻", weapon: "両手剣", element: "風", birth_month: "１０月", birthday: "10月19日", rarity: ['☆４'], body: "ロリ", role: ["オフフィールドライフキーパー"], energy: 80, talent_boss: "魔偶剣鬼", local_specialty: "晶化骨髄", ascension_stat: "元素熟知", distributed: false, talent_book: "天光", talent_weekly: "鍍金の鱗", special_dish: "継続回復系", trace: false, costume: false, enemy_material: ["トリックフラワーの蜜"], training_road: false, release_version: "2.0", attack: 244, hp: "11.854", defense: 745 },
+  { name: "雷電将軍", country: "稲妻", weapon: "長柄武器", element: "雷", birth_month: "６月", birthday: "6月26日", rarity: ['☆５'], body: "長身女性", role: ["オンフィールドアタッカー", "オンフィールドサポーター"], energy: 90, talent_boss: "雷音権現", local_specialty: "天雲草の実", ascension_stat: "元素チャージ効率", distributed: false, talent_book: "天光", talent_weekly: "溶滅の刻", special_dish: "", trace: true, costume: false, enemy_material: ["古びた鍔"], training_road: false, release_version: "2.1", attack: 337, hp: "12.907", defense: 789 },
+  { name: "九条裟羅", country: "稲妻", weapon: "弓", element: "雷", birth_month: "７月", birthday: "7月14日", rarity: ['☆４'], body: "長身女性", role: ["オフフィールドサポーター"], energy: 80, talent_boss: "雷音権現", local_specialty: "血石華", ascension_stat: "攻撃力", distributed: false, talent_book: "風雅", talent_weekly: "灰燼の心", special_dish: "復活系", trace: false, costume: false, enemy_material: ["破損した仮面"], training_road: false, release_version: "2.1", attack: 195, hp: "9.570", defense: 628 },
+  { name: "珊瑚宮心海", country: "稲妻", weapon: "法器", element: "水", birth_month: "２月", birthday: "2月22日", rarity: ['☆５'], body: "中身女性", role: ["オフフィールドサポーター", "オフフィールドライフキーパー"], energy: 70, talent_boss: "無相の水", local_specialty: "珊瑚真珠", ascension_stat: "水元素ダメージ", distributed: false, talent_book: "浮世", talent_weekly: "獄炎の蝶", special_dish: "回復系", trace: false, costume: false, enemy_material: ["フライムの乾核"], training_road: true, release_version: "2.1", attack: 234, hp: "13.471", defense: 657 },
+  { name: "トーマ", country: "稲妻", weapon: "長柄武器", element: "炎", birth_month: "１月", birthday: "1月9日", rarity: ['☆４'], body: "長身男性", role: ["オフフィールドライフキーパー"], energy: 80, talent_boss: "無相の炎", local_specialty: "ユウトウタケ", ascension_stat: "攻撃力", distributed: false, talent_book: "浮世", talent_weekly: "獄炎の蝶", special_dish: "継続回復系", trace: false, costume: false, enemy_material: ["宝探しの鴉マーク"], training_road: false, release_version: "2.2", attack: 202, hp: "10.331", defense: 751 },
+  { name: "荒瀧一斗", country: "稲妻", weapon: "両手剣", element: "岩", birth_month: "６月", birthday: "6月1日", rarity: ['☆５'], body: "長身男性", role: ["オンフィールドアタッカー"], energy: 70, talent_boss: "黄金王獣", local_specialty: "オニカブトムシ", ascension_stat: "会心率", distributed: false, talent_book: "風雅", talent_weekly: "灰燼の心", special_dish: "復活系", trace: false, costume: false, enemy_material: ["スライムの液体"], training_road: true, release_version: "2.3", attack: 227, hp: "12.858", defense: 959 },
+  { name: "ゴロー", country: "稲妻", weapon: "弓", element: "岩", birth_month: "５月", birthday: "5月18日", rarity: ['☆４'], body: "中身男性", role: ["オフフィールドサポーター"], energy: 80, talent_boss: "恒常からくり陣形", local_specialty: "珊瑚真珠", ascension_stat: "岩元素ダメージ", distributed: true, talent_book: "天光", talent_weekly: "溶滅の刻", special_dish: "回復系", trace: false, costume: false, enemy_material: ["フライムの乾核"], training_road: false, release_version: "2.3", attack: 183, hp: "9.570", defense: 648 },
+  { name: "八重神子", country: "稲妻", weapon: "法器", element: "雷", birth_month: "６月", birthday: "6月27日", rarity: ['☆５'], body: "長身女性", role: ["オフフィールドアタッカー"], energy: 90, talent_boss: "アビサルヴィシャップ", local_specialty: "ウミレイシ", ascension_stat: "会心率", distributed: false, talent_book: "天光", talent_weekly: "万劫の真意", special_dish: "復活系", trace: false, costume: false, enemy_material: ["古びた鍔"], training_road: true, release_version: "2.5", attack: 340, hp: "10.372", defense: 569 },
+  { name: "久岐忍", country: "稲妻", weapon: "片手剣", element: "雷", birth_month: "７月", birthday: "7月27日", rarity: ['☆４'], body: "中身女性", role: ["オフフィールドライフキーパー"], energy: 60, talent_boss: "遺跡サーペント", local_specialty: "鳴草", ascension_stat: "HP", distributed: false, talent_book: "風雅", talent_weekly: "禍神の禊涙", special_dish: "スタミナ軽減系", trace: false, costume: false, enemy_material: ["フライムの乾核"], training_road: false, release_version: "2.7", attack: 212, hp: "12.289", defense: 751 },
+  { name: "鹿野院平蔵", country: "稲妻", weapon: "法器", element: "風", birth_month: "７月", birthday: "7月24日", rarity: ['☆４'], body: "中身男性", role: ["オンフィールドアタッカー"], energy: 40, talent_boss: "遺跡サーペント", local_specialty: "オニカブトムシ", ascension_stat: "風元素ダメージ", distributed: false, talent_book: "浮世", talent_weekly: "万劫の真意", special_dish: "攻撃系", trace: false, costume: false, enemy_material: ["宝探しの鴉マーク"], training_road: false, release_version: "2.8", attack: 225, hp: "10.657", defense: 684 },
+  { name: "綺良々", country: "稲妻", weapon: "片手剣", element: "草", birth_month: "１月", birthday: "1月22日", rarity: ['☆４'], body: "中身女性", role: ["オフフィールドアタッカー", "オフフィールドライフキーパー"], energy: 60, talent_boss: "深罪の浸礼者", local_specialty: "天雲草の実", ascension_stat: "HP", distributed: true, talent_book: "浮世", talent_weekly: "太古の樹海の一瞬", special_dish: "継続回復系", trace: true, costume: true, enemy_material: ["フライムの乾核"], training_road: false, release_version: "3.7", attack: 223, hp: "12.180", defense: 546 },
+  { name: "千織", country: "稲妻", weapon: "片手剣", element: "岩", birth_month: "８月", birthday: "8月17日", rarity: ['☆５'], body: "中身女性", role: ["オフフィールドアタッカー"], energy: 50, talent_boss: "氷風組曲コッペリア", local_specialty: "血石華", ascension_stat: "会心率", distributed: false, talent_book: "天光", talent_weekly: "光なき糸", special_dish: "継続回復系", trace: false, costume: false, enemy_material: ["フライムの乾核"], training_road: true, release_version: "4.5", attack: 323, hp: "11.438", defense: 953 },
+  { name: "夢見月瑞希", country: "稲妻", weapon: "法器", element: "風", birth_month: "３月", birthday: "3月16日", rarity: ['☆５', '恒常☆５'], body: "中身女性", role: ["オンフィールドアタッカー", "オンフィールドライフキーパー"], energy: 60, talent_boss: "迷える霊覚の修権者", local_specialty: "ウミレイシ", ascension_stat: "元素熟知", distributed: false, talent_book: "浮世", talent_weekly: "残火の灯燭", special_dish: "スタミナ回復系", trace: false, costume: false, enemy_material: ["古びた鍔"], training_road: true, release_version: "5.4", attack: 215, hp: "12.736", defense: 757 },
+  { name: "ティナリ", country: "スメール", weapon: "弓", element: "草", birth_month: "１２月", birthday: "12月29日", rarity: ['☆５', '恒常☆５'], body: "中身男性", role: ["オンフィールドアタッカー"], energy: 40, talent_boss: "マッシュラプトル", local_specialty: "サウマラタ蓮", ascension_stat: "草元素ダメージ", distributed: false, talent_book: "忠言", talent_weekly: "万劫の真意", special_dish: "防御系", trace: false, costume: false, enemy_material: ["キノコンの胞子"], training_road: true, release_version: "3.0", attack: 268, hp: "10.850", defense: 630 },
+  { name: "コレイ", country: "スメール", weapon: "弓", element: "草", birth_month: "５月", birthday: "5月8日", rarity: ['☆４'], body: "中身女性", role: ["オフフィールドアタッカー"], energy: 60, talent_boss: "マッシュラプトル", local_specialty: "ルッカデヴァータダケ", ascension_stat: "攻撃力", distributed: true, talent_book: "篤行", talent_weekly: "禍神の禊涙", special_dish: "回復系", trace: false, costume: false, enemy_material: ["牢固な矢先"], training_road: false, release_version: "3.0", attack: 200, hp: "9.787", defense: 601 },
+  { name: "ドリー", country: "スメール", weapon: "両手剣", element: "雷", birth_month: "１２月", birthday: "12月21日", rarity: ['☆４'], body: "ロリ", role: ["オフフィールドライフキーパー"], energy: 80, talent_boss: "迅電樹", local_specialty: "カルパラタ蓮", ascension_stat: "HP", distributed: true, talent_book: "創意", talent_weekly: "血玉の枝", special_dish: "攻撃系", trace: false, costume: false, enemy_material: ["色褪せた赤い絹"], training_road: false, release_version: "3.0", attack: 223, hp: "12.397", defense: 723 },
+  { name: "セノ", country: "スメール", weapon: "長柄武器", element: "雷", birth_month: "６月", birthday: "6月23日", rarity: ['☆５'], body: "中身男性", role: ["オンフィールドアタッカー"], energy: 80, talent_boss: "迅電樹", local_specialty: "聖金虫", ascension_stat: "会心ダメージ", distributed: false, talent_book: "忠言", talent_weekly: "凶将の手眼", special_dish: "継続回復系", trace: false, costume: false, enemy_material: ["占いの絵巻"], training_road: true, release_version: "3.1", attack: 318, hp: "12.491", defense: 859 },
+  { name: "キャンディス", country: "スメール", weapon: "長柄武器", element: "水", birth_month: "５月", birthday: "5月3日", rarity: ['☆４'], body: "長身女性", role: ["オフフィールドサポーター"], energy: 60, talent_boss: "半永久統制マトリックス", local_specialty: "赤念の実", ascension_stat: "HP", distributed: true, talent_book: "忠言", talent_weekly: "禍神の禊涙", special_dish: "スタミナ回復系", trace: false, costume: false, enemy_material: ["色褪せた赤い絹"], training_road: false, release_version: "3.1", attack: 213, hp: "10.875", defense: 683 },
+  { name: "ニィロウ", country: "スメール", weapon: "片手剣", element: "水", birth_month: "１２月", birthday: "12月3日", rarity: ['☆５'], body: "中身女性", role: ["オフフィールドアタッカー", "オフフィールドサポーター"], energy: 70, talent_boss: "兆載永劫ドレイク", local_specialty: "パティサラ", ascension_stat: "HP", distributed: false, talent_book: "篤行", talent_weekly: "禍神の禊涙", special_dish: "スタミナ軽減系", trace: false, costume: true, enemy_material: ["キノコンの胞子"], training_road: true, release_version: "3.1", attack: 229, hp: "15.185", defense: 729 },
+  { name: "ナヒーダ", country: "スメール", weapon: "法器", element: "草", birth_month: "１０月", birthday: "10月27日", rarity: ['☆５'], body: "ロリ", role: ["オフフィールドアタッカー", "オフフィールドサポーター"], energy: 50, talent_boss: "無相の草", local_specialty: "カルパラタ蓮", ascension_stat: "元素熟知", distributed: false, talent_book: "創意", talent_weekly: "傀儡の糸", special_dish: "防御系", trace: true, costume: false, enemy_material: ["キノコンの胞子"], training_road: false, release_version: "3.2", attack: 299, hp: "10.360", defense: 630 },
+  { name: "レイラ", country: "スメール", weapon: "片手剣", element: "氷", birth_month: "１２月", birthday: "12月19日", rarity: ['☆４'], body: "中身女性", role: ["オフフィールドライフキーパー"], energy: 40, talent_boss: "兆載永劫ドレイク", local_specialty: "サウマラタ蓮", ascension_stat: "HP", distributed: true, talent_book: "創意", talent_weekly: "無心の淵鏡", special_dish: "継続回復系", trace: false, costume: false, enemy_material: ["占いの絵巻"], training_road: false, release_version: "3.2", attack: 216, hp: "11.092", defense: 655 },
+  { name: "放浪者", country: "スメール", weapon: "法器", element: "風", birth_month: "１月", birthday: "1月3日", rarity: ['☆５'], body: "中身男性", role: ["オンフィールドアタッカー"], energy: 60, talent_boss: "兆載永劫ドレイク", local_specialty: "ルッカデヴァータダケ", ascension_stat: "会心率", distributed: false, talent_book: "篤行", talent_weekly: "空行の虚鈴", special_dish: "治療効果系", trace: true, costume: false, enemy_material: ["古びた鍔"], training_road: true, release_version: "3.3", attack: 328, hp: "10.164", defense: 607 },
+  { name: "ファルザン", country: "スメール", weapon: "弓", element: "風", birth_month: "８月", birthday: "8月20日", rarity: ['☆４'], body: "中身女性", role: ["オフフィールドサポーター"], energy: 80, talent_boss: "半永久統制マトリックス", local_specialty: "赤念の実", ascension_stat: "攻撃力", distributed: true, talent_book: "忠言", talent_weekly: "傀儡の糸", special_dish: "復活系", trace: false, costume: false, enemy_material: ["色褪せた赤い絹"], training_road: false, release_version: "3.3", attack: 197, hp: "9.570", defense: 628 },
+  { name: "アルハイゼン", country: "スメール", weapon: "片手剣", element: "草", birth_month: "２月", birthday: "2月11日", rarity: ['☆５'], body: "長身男性", role: ["オンフィールドアタッカー"], energy: 70, talent_boss: "風食ウェネト", local_specialty: "砂脂蛹", ascension_stat: "草元素ダメージ", distributed: false, talent_book: "創意", talent_weekly: "無心の淵鏡", special_dish: "回復系", trace: false, costume: false, enemy_material: ["色褪せた赤い絹"], training_road: false, release_version: "3.4", attack: 313, hp: "13.348", defense: 782 },
+  { name: "ディシア", country: "スメール", weapon: "両手剣", element: "炎", birth_month: "４月", birthday: "4月7日", rarity: ['☆５', '恒常☆５'], body: "長身女性", role: ["オフフィールドアタッカー", "オフフィールドライフキーパー"], energy: 70, talent_boss: "半永久統制マトリックス", local_specialty: "砂脂蛹", ascension_stat: "HP", distributed: false, talent_book: "篤行", talent_weekly: "傀儡の糸", special_dish: "HP強化系", trace: true, costume: false, enemy_material: ["色褪せた赤い絹"], training_road: true, release_version: "3.5", attack: 266, hp: "15.675", defense: 628 },
+  { name: "カーヴェ", country: "スメール", weapon: "両手剣", element: "草", birth_month: "７月", birthday: "7月9日", rarity: ['☆４'], body: "長身男性", role: ["オンフィールドアタッカー"], energy: 80, talent_boss: "無相の草", local_specialty: "悼霊花", ascension_stat: "元素熟知", distributed: false, talent_book: "創意", talent_weekly: "原初のオアシスの初咲き", special_dish: "復活系", trace: false, costume: false, enemy_material: ["キノコンの胞子"], training_road: false, release_version: "3.6", attack: 234, hp: "11.962", defense: 751 },
+  { name: "セトス", country: "スメール", weapon: "弓", element: "雷", birth_month: "５月", birthday: "5月31日", rarity: ['☆４'], body: "中身男性", role: ["オンフィールドアタッカー"], energy: 60, talent_boss: "山隠れの猊獣", local_specialty: "サングイト", ascension_stat: "元素熟知", distributed: false, talent_book: "篤行", talent_weekly: "空行の虚鈴", special_dish: "攻撃系", trace: false, costume: false, enemy_material: ["色褪せた赤い絹"], training_road: false, release_version: "4.7", attack: 227, hp: "9.787", defense: 560 },
+  { name: "リネ", country: "フォンテーヌ", weapon: "弓", element: "炎", birth_month: "２月", birthday: "2月2日", rarity: ['☆５'], body: "中身男性", role: ["オンフィールドアタッカー"], energy: 60, talent_boss: "鉄甲熔炎帝王", local_specialty: "レインボーローズ", ascension_stat: "会心率", distributed: false, talent_book: "公平", talent_weekly: "原初のオアシスの初咲き", special_dish: "攻撃系", trace: false, costume: false, enemy_material: ["新兵の記章"], training_road: true, release_version: "4.0", attack: 318, hp: "11.021", defense: 538 },
+  { name: "リネット", country: "フォンテーヌ", weapon: "片手剣", element: "風", birth_month: "２月", birthday: "2月2日", rarity: ['☆４'], body: "中身女性", role: ["オフフィールドアタッカー"], energy: 70, talent_boss: "氷風組曲コッペリア", local_specialty: "ルミドゥースベル", ascension_stat: "風元素ダメージ", distributed: true, talent_book: "秩序", talent_weekly: "太古の樹海の一瞬", special_dish: "治療効果系", trace: false, costume: false, enemy_material: ["整合の歯車"], training_road: false, release_version: "4.0", attack: 232, hp: "12.397", defense: 712 },
+  { name: "フレミネ", country: "フォンテーヌ", weapon: "両手剣", element: "氷", birth_month: "９月", birthday: "9月24日", rarity: ['☆４'], body: "中身男性", role: ["オンフィールドアタッカー"], energy: 60, talent_boss: "氷風組曲コペリウス", local_specialty: "ロマリタイムフラワー", ascension_stat: "攻撃力", distributed: true, talent_book: "正義", talent_weekly: "天地に生える蕨", special_dish: "継続回復系", trace: false, costume: false, enemy_material: ["異海の露"], training_road: false, release_version: "4.0", attack: 255, hp: "12.071", defense: 708 },
+  { name: "ヌヴィレット", country: "フォンテーヌ", weapon: "法器", element: "水", birth_month: "１２月", birthday: "12月18日", rarity: ['☆５'], body: "長身男性", role: ["オンフィールドアタッカー"], energy: 70, talent_boss: "千年真珠の海駿", local_specialty: "ルエトワール", ascension_stat: "会心ダメージ", distributed: false, talent_book: "公平", talent_weekly: "太古の樹海の一瞬", special_dish: "攻撃系", trace: false, costume: true, enemy_material: ["異海の露"], training_road: false, release_version: "4.1", attack: 208, hp: "14.695", defense: 576 },
+  { name: "リオセスリ", country: "フォンテーヌ", weapon: "法器", element: "氷", birth_month: "１１月", birthday: "11月23日", rarity: ['☆５'], body: "長身男性", role: ["オンフィールドアタッカー"], energy: 60, talent_boss: "実験用フィールド生成装置", local_specialty: "探測ユニット・子機", ascension_stat: "会心ダメージ", distributed: false, talent_book: "秩序", talent_weekly: "原初のオアシスの初咲き", special_dish: "回復系", trace: false, costume: false, enemy_material: ["整合の歯車"], training_road: true, release_version: "4.1", attack: 311, hp: "13.593", defense: 763 },
+  { name: "シャルロット", country: "フォンテーヌ", weapon: "法器", element: "氷", birth_month: "４月", birthday: "4月10日", rarity: ['☆４'], body: "中身女性", role: ["オフフィールドライフキーパー"], energy: 80, talent_boss: "実験用フィールド生成装置", local_specialty: "蒼晶螺", ascension_stat: "攻撃力", distributed: true, talent_book: "正義", talent_weekly: "光なき糸", special_dish: "スタミナ回復系", trace: false, costume: true, enemy_material: ["整合の歯車"], training_road: false, release_version: "4.2", attack: 173, hp: "10.766", defense: 546 },
+  { name: "フリーナ", country: "フォンテーヌ", weapon: "片手剣", element: "水", birth_month: "１０月", birthday: "10月13日", rarity: ['☆５'], body: "中身女性", role: ["オフフィールドアタッカー", "オフフィールドサポーター", "オフフィールドライフキーパー"], energy: 60, talent_boss: "水形タルパ", local_specialty: "湖光の鈴蘭", ascension_stat: "会心率", distributed: false, talent_book: "正義", talent_weekly: "光なき一塊", special_dish: "HP強化系", trace: false, costume: false, enemy_material: ["トリックフラワーの蜜"], training_road: false, release_version: "4.2", attack: 244, hp: "15.307", defense: 696 },
+  { name: "ナヴィア", country: "フォンテーヌ", weapon: "両手剣", element: "岩", birth_month: "８月", birthday: "8月16日", rarity: ['☆５'], body: "長身女性", role: ["オンフィールドアタッカー"], energy: 60, talent_boss: "氷風組曲コペリウス", local_specialty: "初露の源", ascension_stat: "会心ダメージ", distributed: false, talent_book: "公平", talent_weekly: "光なき糸", special_dish: "スタミナ軽減系", trace: false, costume: false, enemy_material: ["異海の露"], training_road: true, release_version: "4.3", attack: 352, hp: "12.650", defense: 793 },
+  { name: "シュヴルーズ", country: "フォンテーヌ", weapon: "長柄武器", element: "炎", birth_month: "１月", birthday: "1月10日", rarity: ['☆４'], body: "中身女性", role: ["オフフィールドサポーター", "オフフィールドライフキーパー"], energy: 60, talent_boss: "千年真珠の海駿", local_specialty: "ルミドゥースベル", ascension_stat: "HP", distributed: false, talent_book: "秩序", talent_weekly: "光なき渦の眼", special_dish: "治療効果系", trace: false, costume: false, enemy_material: ["整合の歯車"], training_road: false, release_version: "4.3", attack: 194, hp: "11.962", defense: 605 },
+  { name: "クロリンデ", country: "フォンテーヌ", weapon: "片手剣", element: "雷", birth_month: "９月", birthday: "9月20日", rarity: ['☆５'], body: "長身女性", role: ["オンフィールドアタッカー"], energy: 60, talent_boss: "千年真珠の海駿", local_specialty: "ルエトワール", ascension_stat: "会心率", distributed: false, talent_book: "正義", talent_weekly: "太古の樹海の一瞬", special_dish: "スタミナ回復系", trace: false, costume: false, enemy_material: ["異海の露"], training_road: true, release_version: "4.7", attack: 338, hp: "12.956", defense: 784 },
+  { name: "シグウィン", country: "フォンテーヌ", weapon: "弓", element: "水", birth_month: "３月", birthday: "3月30日", rarity: ['☆５'], body: "ロリ", role: ["オフフィールドサポーター", "オフフィールドライフキーパー"], energy: 70, talent_boss: "水形タルパ", local_specialty: "ロマリタイムフラワー", ascension_stat: "HP", distributed: false, talent_book: "公平", talent_weekly: "光なき渦の眼", special_dish: "継続回復系", trace: false, costume: false, enemy_material: ["異海の露"], training_road: true, release_version: "4.7", attack: 192, hp: "13.348", defense: 500 },
+  { name: "エミリエ", country: "フォンテーヌ", weapon: "長柄武器", element: "草", birth_month: "９月", birthday: "9月22日", rarity: ['☆５'], body: "中身女性", role: ["オフフィールドアタッカー"], energy: 50, talent_boss: "魔像レガトゥス", local_specialty: "湖光の鈴蘭", ascension_stat: "会心ダメージ", distributed: false, talent_book: "秩序", talent_weekly: "絹織りの羽", special_dish: "攻撃系", trace: false, costume: false, enemy_material: ["整合の歯車"], training_road: true, release_version: "4.8", attack: 335, hp: "13.568", defense: 730 },
+  { name: "エスコフィエ", country: "フォンテーヌ", weapon: "長柄武器", element: "氷", birth_month: "６月", birthday: "6月8日", rarity: ['☆５'], body: "中身女性", role: ["オフフィールドアタッカー", "オフフィールドサポーター", "オフフィールドライフキーパー"], energy: 60, talent_boss: "秘源機兵・統御デバイス", local_specialty: "蒼晶螺", ascension_stat: "会心率", distributed: false, talent_book: "正義", talent_weekly: "蝕滅の焔角", special_dish: "攻撃系", trace: false, costume: false, enemy_material: ["整合の歯車"], training_road: false, release_version: "5.6", attack: 347, hp: "13.348", defense: 732 },
+  { name: "イアンサ", country: "ナタ", weapon: "長柄武器", element: "雷", birth_month: "８月", birthday: "8月8日", rarity: ['☆４'], body: "ロリ", role: ["オフフィールドサポーター", "オフフィールドライフキーパー"], energy: 70, talent_boss: "深淵なるミミック・パピラ", local_specialty: "琉鱗石", ascension_stat: "攻撃力", distributed: false, talent_book: "角逐", talent_weekly: "否定と裁決", special_dish: "復活系", trace: false, costume: false, enemy_material: ["従戦士の木笛"], training_road: false, release_version: "5.5", attack: 257, hp: "10.657", defense: 638 },
+  { name: "チャスカ", country: "ナタ", weapon: "弓", element: "風", birth_month: "１２月", birthday: "12月10日", rarity: ['☆５'], body: "長身女性", role: ["オンフィールドアタッカー"], energy: 60, talent_boss: "深淵なるミミック・パピラ", local_specialty: "枯れ紫菖", ascension_stat: "会心率", distributed: false, talent_book: "紛争", talent_weekly: "絹織りの羽", special_dish: "スタミナ軽減系", trace: false, costume: false, enemy_material: ["未熟な牙"], training_road: false, release_version: "5.2", attack: 347, hp: "9.797", defense: 615 },
+  { name: "ムアラニ", country: "ナタ", weapon: "法器", element: "水", birth_month: "８月", birthday: "8月3日", rarity: ['☆５'], body: "中身女性", role: ["オンフィールドアタッカー"], energy: 60, talent_boss: "暴君・金焔のクク竜", local_specialty: "波しぶきのエラ", ascension_stat: "会心率", distributed: false, talent_book: "角逐", talent_weekly: "光なき一塊", special_dish: "シールド系", trace: false, costume: false, enemy_material: ["従戦士の木笛"], training_road: false, release_version: "5.0", attack: 182, hp: "15.185", defense: 570 },
+  { name: "オロルン", country: "ナタ", weapon: "弓", element: "雷", birth_month: "１０月", birthday: "10月14日", rarity: ['☆４'], body: "長身男性", role: ["オフフィールドアタッカー"], energy: 60, talent_boss: "暴君・金焔のクク竜", local_specialty: "蛍光ツノキノコ", ascension_stat: "攻撃力", distributed: true, talent_book: "焚燼", talent_weekly: "光なき糸", special_dish: "攻撃系", trace: false, costume: false, enemy_material: ["未熟な牙"], training_road: false, release_version: "5.2", attack: 244, hp: "9.244", defense: 587 },
+  { name: "キィニチ", country: "ナタ", weapon: "両手剣", element: "草", birth_month: "１１月", birthday: "11月11日", rarity: ['☆５'], body: "中身男性", role: ["オンフィールドアタッカー"], energy: 70, talent_boss: "山の王・貪食のユムカ竜", local_specialty: "サウリアンサキュレント", ascension_stat: "会心ダメージ", distributed: false, talent_book: "焚燼", talent_weekly: "否定と裁決", special_dish: "攻撃系", trace: false, costume: false, enemy_material: ["未熟な牙"], training_road: false, release_version: "5.0", attack: 332, hp: "12.858", defense: 802 },
+  { name: "カチーナ", country: "ナタ", weapon: "長柄武器", element: "岩", birth_month: "４月", birthday: "4月22日", rarity: ['☆４'], body: "ロリ", role: ["オフフィールドアタッカー"], energy: 70, talent_boss: "山の王・貪食のユムカ竜", local_specialty: "ケネパベリー", ascension_stat: "岩元素ダメージ", distributed: true, talent_book: "紛争", talent_weekly: "残火の灯燭", special_dish: "継続回復系", trace: false, costume: false, enemy_material: ["従戦士の木笛"], training_road: false, release_version: "5.0", attack: 216, hp: "11.799", defense: 792 },
+  { name: "シトラリ", country: "ナタ", weapon: "法器", element: "氷", birth_month: "１月", birthday: "1月20日", rarity: ['☆５'], body: "中身女性", role: ["オフフィールドサポーター", "オフフィールドライフキーパー"], energy: 60, talent_boss: "迷える霊覚の修権者", local_specialty: "ケネパベリー", ascension_stat: "元素熟知", distributed: false, talent_book: "焚燼", talent_weekly: "否定と裁決", special_dish: "復活系", trace: false, costume: true, enemy_material: ["未熟な牙"], training_road: false, release_version: "5.3", attack: 127, hp: "11.634", defense: 763 },
+  { name: "マーヴィカ", country: "ナタ", weapon: "両手剣", element: "炎", birth_month: "８月", birthday: "8月28日", rarity: ['☆５'], body: "長身女性", role: ["オンフィールドアタッカー", "オフフィールドアタッカー", "オンフィールドサポーター"], energy: 0, talent_boss: "秘源機兵・機構デバイス", local_specialty: "枯れ紫菖", ascension_stat: "会心ダメージ", distributed: false, talent_book: "角逐", talent_weekly: "蝕滅の焔角", special_dish: "攻撃系", trace: false, costume: false, enemy_material: ["従戦士の木笛"], training_road: false, release_version: "5.3", attack: 359, hp: "12.552", defense: 792 },
+  { name: "ヴァレサ", country: "ナタ", weapon: "法器", element: "雷", birth_month: "１１月", birthday: "11月15日", rarity: ['☆５'], body: "中身女性", role: ["オンフィールドアタッカー"], energy: 70, talent_boss: "輝ける溶岩の龍像", local_specialty: "岩裂の花", ascension_stat: "会心率", distributed: false, talent_book: "紛争", talent_weekly: "蝕滅の羽鱗", special_dish: "攻撃系", trace: false, costume: false, enemy_material: ["未熟な牙"], training_road: false, release_version: "5.5", attack: 356, hp: "12.699", defense: 782 },
+  { name: "イファ", country: "ナタ", weapon: "法器", element: "風", birth_month: "３月", birthday: "3月23日", rarity: ['☆４'], body: "長身男性", role: ["オンフィールドライフキーパー"], energy: 60, talent_boss: "輝ける溶岩の龍像", local_specialty: "サウリアンサキュレント", ascension_stat: "元素熟知", distributed: false, talent_book: "紛争", talent_weekly: "昇揚のサンプル「ルーク」", special_dish: "防御系", trace: false, costume: false, enemy_material: ["未熟な牙"], training_road: false, release_version: "5.6", attack: 178, hp: "10.081", defense: 605 },
+  { name: "シロネン", country: "ナタ", weapon: "片手剣", element: "岩", birth_month: "３月", birthday: "3月13日", rarity: ['☆５'], body: "長身女性", role: ["オフフィールドサポーター", "オフフィールドライフキーパー"], energy: 60, talent_boss: "秘源機兵・機構デバイス", local_specialty: "シャクギク", ascension_stat: "防御力", distributed: false, talent_book: "焚燼", talent_weekly: "無心の淵鏡", special_dish: "スタミナ回復系", trace: false, costume: false, enemy_material: ["従戦士の木笛"], training_road: false, release_version: "5.1", attack: 275, hp: "12.405", defense: 930 },
+  { name: "タルタリヤ", country: "スネージナヤ", weapon: "弓", element: "水", birth_month: "７月", birthday: "7月20日", rarity: ['☆５'], body: "長身男性", role: ["オンフィールドアタッカー"], energy: 60, talent_boss: "純水精霊", local_specialty: "星螺", ascension_stat: "水元素ダメージ", distributed: false, talent_book: "自由", talent_weekly: "魔王の刃・残片", special_dish: "防御系", trace: true, costume: false, enemy_material: ["新兵の記章"], training_road: true, release_version: "1.1", attack: 301, hp: "13.103", defense: 815 },
+  { name: "アルレッキーノ", country: "スネージナヤ", weapon: "長柄武器", element: "炎", birth_month: "８月", birthday: "8月22日", rarity: ['☆５'], body: "長身女性", role: ["オンフィールドアタッカー"], energy: 60, talent_boss: "魔像レガトゥス", local_specialty: "レインボーローズ", ascension_stat: "会心ダメージ", distributed: false, talent_book: "秩序", talent_weekly: "残火の灯燭", special_dish: "回復系", trace: false, costume: false, enemy_material: ["新兵の記章"], training_road: false, release_version: "4.6", attack: 342, hp: "13.103", defense: 765 },
+  { name: "イネファ", country: "ナドクライ", weapon: "長柄武器", element: "雷", birth_month: "４月", birthday: "4月2日", rarity: ['☆５'], body: "中身女性", role: ["オフフィールドアタッカー", "オフフィールドライフキーパー"], energy: 60, talent_boss: "秘源機兵・統御デバイス", local_specialty: "蛍光ツノキノコ", ascension_stat: "会心率", distributed: false, talent_book: "紛争", talent_weekly: "蝕滅の陽炎", special_dish: "シールド系", trace: false, costume: false, enemy_material: ["従戦士の木笛"], training_road: false, release_version: "5.8", attack: 330, hp: "12.613", defense: 828 },
+  { name: "フリンズ", country: "ナドクライ", weapon: "長柄武器", element: "雷", birth_month: "１０月", birthday: "10月31日", rarity: ['☆５'], body: "長身男性", role: ["オンフィールドアタッカー"], energy: 80, talent_boss: "ボコボコダック", local_specialty: "フロストランプ", ascension_stat: "会心ダメージ", distributed: false, talent_book: "流浪", talent_weekly: "昇揚のサンプル「王族」", special_dish: "回復系", trace: false, costume: false, enemy_material: ["破損した駆動軸"], training_road: false, release_version: "Luna I (6.0)", attack: 352, hp: "12.491", defense: 809 },
+  { name: "アイノ", country: "ナドクライ", weapon: "両手剣", element: "水", birth_month: "９月", birthday: "9月21日", rarity: ['☆４'], body: "ロリ", role: ["オフフィールドサポーター"], energy: 50, talent_boss: "ボコボコダック", local_specialty: "携行型ベアリング", ascension_stat: "元素熟知", distributed: true, talent_book: "楽園", talent_weekly: "絹織りの羽", special_dish: "復活系", trace: false, costume: false, enemy_material: ["破損した駆動軸"], training_road: false, release_version: "Luna I (6.0)", attack: 242, hp: "11.201", defense: 607 },
+  { name: "ラウマ", country: "ナドクライ", weapon: "法器", element: "草", birth_month: "３月", birthday: "3月1日", rarity: ['☆５'], body: "長身女性", role: ["オフフィールドサポーター"], energy: 60, talent_boss: "集光の幻月蝶", local_specialty: "月落銀", ascension_stat: "元素熟知", distributed: false, talent_book: "月光", talent_weekly: "蝕滅の羽鱗", special_dish: "継続回復系", trace: false, costume: false, enemy_material: ["破損した徽章"], training_road: false, release_version: "Luna I (6.0)", attack: 255, hp: "10.654", defense: 669 },
+  { name: "ネフェル", country: "ナドクライ", weapon: "法器", element: "草", birth_month: "５月", birthday: "5月9日", rarity: ['☆５'], body: "長身女性", role: ["オンフィールドアタッカー"], energy: 60, talent_boss: "霜夜の空を巡る霊主", local_specialty: "月落銀", ascension_stat: "会心ダメージ", distributed: false, talent_book: "楽園", talent_weekly: "昇揚のサンプル「ルーク」", special_dish: "復活系", trace: false, costume: false, enemy_material: ["破損した徽章"], training_road: false, release_version: "Luna II (6.1)", attack: 344, hp: "12.704", defense: 799 },
+  { name: "ヤフォダ", country: "ナドクライ", weapon: "弓", element: "風", birth_month: "１月", birthday: "1月5日", rarity: ['☆４'], body: "中身女性", role: ["オフフィールドライフキーパー"], energy: 70, talent_boss: "集光の幻月蝶", local_specialty: "携行型ベアリング", ascension_stat: "与える治療効果", distributed: true, talent_book: "流浪", talent_weekly: "昇揚のサンプル「ナイト」", special_dish: "回復系", trace: false, costume: false, enemy_material: ["破損した駆動軸"], training_road: false, release_version: "Luna III (6.2)", attack: 223, hp: "9.646", defense: 580 },
+  { name: "コロンビーナ", country: "ナドクライ", weapon: "法器", element: "水", birth_month: "１月", birthday: "1月14日", rarity: ['☆５'], body: "中身女性", role: ["オフフィールドサポーター"], energy: 60, talent_boss: "霜夜の空を巡る霊主", local_specialty: "ヴィンテル草", ascension_stat: "会心率", distributed: false, talent_book: "月光", talent_weekly: "賢医の仮面", special_dish: "HP強化系", trace: false, costume: false, enemy_material: ["スライムの液体"], training_road: false, release_version: "Luna IV (6.3)", attack: 96, hp: "14.695", defense: 515 },
+  { name: "イルーガ", country: "ナドクライ", weapon: "長柄武器", element: "岩", birth_month: "１２月", birthday: "12月23日", rarity: ['☆４'], body: "中身男性", role: ["オフフィールドサポーター"], energy: 60, talent_boss: "重量級陸巡艦「バトルシップ」", local_specialty: "琥珀香", ascension_stat: "元素熟知", distributed: false, talent_book: "楽園", talent_weekly: "蝕滅の焔角", special_dish: "回復系", trace: false, costume: false, enemy_material: ["破損した駆動軸"], training_road: false, release_version: "Luna IV (6.3)", attack: 191, hp: "11.962", defense: 814 },
+  { name: "リンネア", country: "ナドクライ", weapon: "弓", element: "岩", birth_month: "５月", birthday: "5月23日", rarity: ['☆５'], body: "中身女性", role: ["オフフィールドアタッカー", "オフフィールドライフキーパー"], energy: 60, talent_boss: "守護者・堕天", local_specialty: "フェザーモス", ascension_stat: "会心率", distributed: false, talent_book: "流浪", talent_weekly: "異端の薬瓶", special_dish: "スタミナ回復系", trace: false, costume: false, enemy_material: ["破損した徽章"], training_road: false, release_version: "Luna VI (6.5)", attack: 144, hp: "9.895", defense: 907 },
+  { name: "ニコ", country: "例外", weapon: "法器", element: "炎", birth_month: "９月", birthday: "9月29日", rarity: ['☆５'], body: "中身女性", role: ["オフフィールドサポーター", "オフフィールドライフキーパー"], energy: 60, talent_boss: "昏き魘夢の主", local_specialty: "琥珀香", ascension_stat: "攻撃力", distributed: false, talent_book: "楽園", talent_weekly: "偽りの樹脂", special_dish: "スタミナ回復系", trace: false, costume: false, enemy_material: ["破損した徽章"], training_road: false, release_version: "Luna VII (6.6)", attack: 342, hp: "10.409", defense: 563 },
+  { name: "サンドローネ", country: "スネージナヤ", weapon: "両手剣", element: "氷", birth_month: "１月", birthday: "1月13日", rarity: ['☆５'], body: "中身女性", role: ["オンフィールドアタッカー"], energy: 60, talent_boss: "守護者・堕天", local_specialty: "探測ユニット・子機", ascension_stat: "会心率", distributed: false, talent_book: "流浪", talent_weekly: "狂人の誓約", special_dish: "スタミナ軽減系", trace: false, costume: false, enemy_material: ["破損した駆動軸"], training_road: false, release_version: "Luna VIII (6.7)", attack: 342, hp: "13.226", defense: 752 }, 
+  { name: "アリョーシャ", country: "スネージナヤ", weapon: "長柄武器", element: "雷", birth_month: "２月", birthday: "2月9日", version: "n.0", rarity: ['☆４'], body: "中身男性", role: ["オフフィールドサポーター","オフフィールドライフキーパー"], energy: 70, talent_boss: "合成獣・フリューゲルレーヴェ", local_specialty: "フロック草", ascension_stat: "元素チャージ効率", distributed: true, talent_book: "堅忍", talent_weekly: "異端の薬瓶", special_dish: "スタミナ軽減系", trace: false, costume: false, enemy_material: ["異種合成魔獣"], training_road: false, release_version: "7.0", attack: 265, hp: "11.962", defense: 703 },
+  { name: "オデット", country: "スネージナヤ", weapon: "片手剣", element: "氷", birth_month: "２月", birthday: "2月20日", version: "n.0", rarity: ['☆５'], body: "中身女性", role: ["オフフィールドアタッカー"], energy: 60, talent_boss: "不滅の副産物", local_specialty: "フロストフラワー", ascension_stat: "会心ダメージ", distributed: false, talent_book: "慈愛", talent_weekly: "歪曲した枯れ枝", special_dish: "攻撃系", trace: false, costume: false, enemy_material: ["幻造蛍屑"], training_road: false, release_version: "7.0", attack: 335, hp: "12.981", defense: 787 },
+  { name: "ヴェスナ", country: "スネージナヤ", weapon: "片手剣", element: "風", birth_month: "２月", birthday: "2月14日", version: "n.1", rarity: ['☆５'], body: "中身女性", role: ["オンフィールドアタッカー"], energy: 60, talent_boss: "游雪のブレードガーディアン", local_specialty: "ザラトイアリャーク", ascension_stat: "HP", distributed: false, talent_book: "栄光", talent_weekly: "冒涜の新芽", special_dish: "防御系", trace: false, costume: false, enemy_material: ["幻光の屑"], training_road: false, release_version: "7.1", attack: 354, hp: "13.262", defense: 730 },
+  { name: "ヴォジャニーツァ", country: "スネージナヤ", weapon: "法器", element: "水", birth_month: "３月", birthday: "3月29日", version: "n.1", rarity: ['☆５'], body: "中身女性", role: ["オフフィールドサポーター","オフフィールドライフキーパー"], energy: 60, talent_boss: "不滅の副産物", local_specialty: "フロストフラワー", ascension_stat: "HP", distributed: false, talent_book: "不屈", talent_weekly: "狂人の誓約", special_dish: "継続回復系", trace: false, costume: false, enemy_material: ["合成獣のコア"], training_road: false, release_version: "7.1", attack: 108, hp: "14.818", defense: 484 },
   { name: "ミティヤ", country: "スネージナヤ", weapon: "法器", element: "雷", birth_month: "", birthday: "", version: "n.2", rarity: ['☆５'], body: "中身男性", role: [], energy:0 , talent_boss: "", local_specialty: "", ascension_stat: "", distributed: false, talent_book: "", talent_weekly: "", special_dish: "", trace: false, costume: false, enemy_material: [""], training_road: false, release_version: "7.2" },
-   { name: "バレリー", country: "スネージナヤ", weapon: "片手剣", element: "雷", birth_month: "", birthday: "", version: "n.2", rarity: ['☆４'], body: "長身男性", role: [], energy:0 , talent_boss: "", local_specialty: "", ascension_stat: "", distributed: false, talent_book: "", talent_weekly: "", special_dish: "", trace: false, costume: false, enemy_material: [""], training_road: false, release_version: "7.2" },
-
-  // 旅人（特殊：出題対象外）
-  { name: "旅人", country: "例外", weapon: "片手剣", element: "その他", birth_month: "その他", birthday: "なし", rarity: ['☆５'], body: "中身男性/中身女性", role: ["オンフィールドアタッカー"], energy: 60, talent_boss: "", local_specialty: "風車アスター", ascension_stat: "攻撃力", distributed: true, talent_book: "自由", talent_weekly: "", special_dish: "", trace: false, costume: true, enemy_material: [], training_road: false, release_version: "1.0", displayNames: ["空", "蛍"], enabled: true },
-  { name: "スカーク", country: "例外", weapon: "片手剣", element: "氷", birth_month: "１１月", birthday: "11月5日", rarity: ['☆５'], body: "中身女性", role: ["オンフィールドアタッカー"], energy: 0, talent_boss: "深淵なるミミック・パピラ", local_specialty: "岩裂の花", ascension_stat: "会心ダメージ", distributed: false, talent_book: "角逐", talent_weekly: "昇揚のサンプル「ナイト」", special_dish: "回復系", trace: false, costume: false, enemy_material: ["整合の歯車"], training_road: false, release_version: "5.7" },
-  { name: "アーロイ", country: "例外", weapon: "弓", element: "氷", birth_month: "４月", birthday: "4月4日", rarity: ['☆５'], body: "中身女性", role: ["オンフィールドアタッカー"], energy: 40, talent_boss: "無相の氷", local_specialty: "晶化骨髄", ascension_stat: "氷元素ダメージ", distributed: true, talent_book: "自由", talent_weekly: "溶滅の刻", special_dish: "回復系", trace: false, costume: false, enemy_material: ["フライムの乾核"], training_road: false, release_version: "2.1", enabled: true },
+  { name: "バレリー", country: "スネージナヤ", weapon: "片手剣", element: "雷", birth_month: "", birthday: "", version: "n.2", rarity: ['☆４'], body: "長身男性", role: [], energy:0 , talent_boss: "", local_specialty: "", ascension_stat: "", distributed: false, talent_book: "", talent_weekly: "", special_dish: "", trace: false, costume: false, enemy_material: [""], training_road: false, release_version: "7.2" },
+  { name: "旅人", country: "例外", weapon: "片手剣", element: "その他", birth_month: "その他", birthday: "なし", rarity: ['☆５'], body: "中身男性/中身女性", role: ["オンフィールドアタッカー"], energy: 60, talent_boss: "", local_specialty: "風車アスター", ascension_stat: "攻撃力", distributed: true, talent_book: "自由", talent_weekly: "", special_dish: "", trace: false, costume: true, enemy_material: [], training_road: false, release_version: "1.0", displayNames: ["空", "蛍"], enabled: true, attack: 212, hp: "10.875", defense: 683 },
+  { name: "スカーク", country: "例外", weapon: "片手剣", element: "氷", birth_month: "１１月", birthday: "11月5日", rarity: ['☆５'], body: "中身女性", role: ["オンフィールドアタッカー"], energy: 0, talent_boss: "深淵なるミミック・パピラ", local_specialty: "岩裂の花", ascension_stat: "会心ダメージ", distributed: false, talent_book: "角逐", talent_weekly: "昇揚のサンプル「ナイト」", special_dish: "回復系", trace: false, costume: false, enemy_material: ["整合の歯車"], training_road: false, release_version: "5.7", attack: 359, hp: "12.417", defense: 806 },
+  { name: "アーロイ", country: "例外", weapon: "弓", element: "氷", birth_month: "４月", birthday: "4月4日", rarity: ['☆５'], body: "中身女性", role: ["オンフィールドアタッカー"], energy: 40, talent_boss: "無相の氷", local_specialty: "晶化骨髄", ascension_stat: "氷元素ダメージ", distributed: true, talent_book: "自由", talent_weekly: "溶滅の刻", special_dish: "回復系", trace: false, costume: false, enemy_material: ["フライムの乾核"], training_road: false, release_version: "2.1", enabled: true, attack: 234, hp: "10.899", defense: 676 },
 ];
 
-// ---------------------------------------------------------------------------
-// キャラクター基礎ステータス（ヒント用）
-// 表記は入力データソースを維持
-// ---------------------------------------------------------------------------
-const CHARACTER_BASE_STATS_TEXT = `
-// 攻撃、HP、防御
-アイノ：242、11.201、607
-アリョーシャ：265、11.962、703
-オデット：335、12.981、787
-アルハイゼン：313、13.348、782
-アルベド：251、13.226、876
-アルレッキーノ：342、13.103、765
-アンバー：223、9.461、601
-アーロイ：234、10.899、676
-イアンサ：257、10.657、638
-イネファ：330、12.613、828
-イファ：178、10.081、605
-イルーガ：191、11.962、814
-ウェンティ：263、10.531、669
-エウルア：342、13.226、751
-エスコフィエ：347、13.348、732
-エミリエ：335、13.568、730
-オロルン：244、9.244、587
-カチーナ：216、11.799、792
-カーヴェ：234、11.962、751
-ガイア：223、11.636、792
-キィニチ：332、12.858、802
-キャンディス：213、10.875、683
-クレー：311、10.287、615
-クロリンデ：338、12.956、784
-コレイ：200、9.787、601
-コロンビーナ：96、14.695、515
-ゴロー：183、9.570、648
-サンドローネ：342、13.226、752
-シグウィン：192、13.348、500
-シトラリ：127、11.634、763
-シャルロット：173、10.766、546
-シュヴルーズ：194、11.962、605
-シロネン：275、12.405、930
-ジン：239、14.695、769
-スカーク：359、12.417、806
-スクロース：170、9.244、703
-セトス：227、9.787、560
-セノ：318、12.491、859
-タルタリヤ：301、13.103、815
-ダリア：189、12.506、560
-チャスカ：347、9.797、615
-ティナリ：268、10.850、630
-ディオナ：212、9.570、601
-ディシア：266、15.675、628
-ディルック：335、12.981、784
-トーマ：202、10.331、751
-ドゥリン：347、12.430、822
-ドリー：223、12.397、723
-ドール：212、10.875、683
-ナヒーダ：299、10.360、630
-ナヴィア：352、12.650、793
-ニィロウ：229、15.185、729
-ニコ：342、10.409、563
-ヌヴィレット：208、14.695、576
-ネフェル：344、12.704、799
-ノエル：191、12.071、799
-バーバラ：159、9.787、669
-ファルカ：353、12.613、795
-ファルザン：197、9.570、628
-フィッシュル：244、9.189、594
-フリンズ：352、12.491、809
-フリーナ：244、15.307、696
-フレミネ：255、12.071、708
-プルーネ：221、9.679、580
-ベネット：191、12.397、771
-マーヴィカ：359、12.552、792
-ミカ：223、12.506、713
-ムアラニ：182、15.185、570
-モナ：287、10.409、653
-ヤフォダ：223、9.646、580
-ヨォーヨ：213、12.289、751
-ラウマ：255、10.654、669
-リオセスリ：311、13.593、763
-リサ：231、9.570、573
-リネ：318、11.021、538
-リネット：232、12.397、712
-リンネア：144、9.895、907
-レイラ：216、11.092、655
-レザー：234、11.962、751
-ロサリア：240、12.289、710
-ローエン：344、12.858、784
-ヴァレサ：356、12.699、782
-七七：287、12.368、922
-旅人：212、10.875、683
-久岐忍：212、12.289、751
-九条裟羅：195、9.570、628
-八重神子：340、10.372、569
-兹白：222、12.919、957
-凝光：212、9.787、573
-刻晴：323、13.103、799
-北斗：225、13.050、648
-千織：323、11.438、953
-嘉明：302、11.419、703
-夜蘭：244、14.450、548
-夢見月瑞希：215、12.736、757
-宵宮：323、10.164、615
-放浪者：328、10.164、607
-早柚：244、11.854、745
-楓原万葉：297、13.348、807
-煙緋：240、9.352、587
-珊瑚宮心海：234、13.471、657
-甘雨：335、9.797、630
-申鶴：304、12.993、830
-白朮：192、13.348、500
-神里綾人：299、13.715、769
-神里綾華：342、12.858、784
-綺良々：223、12.180、546
-胡桃：106、15.552、876
-荒瀧一斗：227、12.858、959
-藍硯：251、9.244、580
-行秋：201、10.222、758
-辛炎：248、11.201、799
-重雲：223、10.984、648
-鍾離：251、14.695、738
-閑雲：334、10.409、573
-雲菫：191、10.657、734
-雷電将軍：337、12.907、789
-香菱：225、10.875、669
-魈：349、12.736、799
-ヴォジャニーツァ：108、14.818、484
-ヴェスナ：354、13.262、730
-鹿野院平蔵：225、10.657、684
-`;
 
 const CHARACTER_BASE_STATS = CHARACTER_BASE_STATS_TEXT
   .trim()
@@ -696,1430 +565,358 @@ function getDisplayValue(key, value, char) {
   }
 }
 
+
 // ===========================================================================
-// 武器モード データ（ここからファイル最下部まで丸ごと上書きしてください）
+// 武器モード データ（ユーザー整理版 WEAPONS_DATA）
 // ===========================================================================
 
-// ---------------------------------------------------------------------------
-// 武器突破素材グループ（🟨判定）
-// ---------------------------------------------------------------------------
+const WEAPONS_DATA = [
+  { name: "アモスの弓", rarity: 5, weapon_type: "弓", base_atk: 608, ascension_stat: "攻撃力", enemy_material: "混沌の装置", break_material: "獅牙戦士の理想", distributed: false, release_version: "1.0" },
+  { name: "シャープシューターの誓い", rarity: 3, weapon_type: "弓", base_atk: 448, ascension_stat: "会心ダメージ", enemy_material: "地脈の旧枝", break_material: "凛風奔狼の郷愁", distributed: false, release_version: "1.0" },
+  { name: "チ虎魚の刀", rarity: 3, weapon_type: "片手剣", base_atk: 401, ascension_stat: "攻撃力", enemy_material: "霧虚ろの花粉", break_material: "霧海雲間の転還", distributed: false, release_version: "1.0" },
+  { name: "ポケット魔導書", rarity: 2, weapon_type: "法器", base_atk: 243, ascension_stat: null, enemy_material: "重い角笛", break_material: "高塔の王の砕けた夢", distributed: false, release_version: "1.0" },
+  { name: "リカーブボウ", rarity: 3, weapon_type: "弓", base_atk: 354, ascension_stat: "HP", enemy_material: "混沌の装置", break_material: "獅牙戦士の理想", distributed: false, release_version: "1.0" },
+  { name: "リングボウ", rarity: 4, weapon_type: "弓", base_atk: 454, ascension_stat: "物理ダメージ", enemy_material: "脆い骨片", break_material: "漆黒の隕鉄の塊", distributed: false, release_version: "1.0" },
+  { name: "傭兵の重剣", rarity: 2, weapon_type: "両手剣", base_atk: 243, ascension_stat: null, enemy_material: "地脈の旧枝", break_material: "凛風奔狼の郷愁", distributed: false, release_version: "1.0" },
+  { name: "冷刃", rarity: 3, weapon_type: "片手剣", base_atk: 401, ascension_stat: "攻撃力", enemy_material: "重い角笛", break_material: null, distributed: false, release_version: "1.0" },
+  { name: "匣中日月", rarity: 4, weapon_type: "法器", base_atk: 510, ascension_stat: "会心率", enemy_material: "猟兵の刀", break_material: "孤雲寒林の神体", distributed: false, release_version: "1.0" },
+  { name: "匣中滅龍", rarity: 4, weapon_type: "長柄武器", base_atk: 454, ascension_stat: "元素熟知", enemy_material: "霧虚ろの花粉", break_material: "霧海雲間の転還", distributed: false, release_version: "1.0" },
+  { name: "匣中龍吟", rarity: 4, weapon_type: "片手剣", base_atk: 510, ascension_stat: "攻撃力", enemy_material: "猟兵の刀", break_material: "孤雲寒林の神体", distributed: false, release_version: "1.0" },
+  { name: "古華・試作", rarity: 4, weapon_type: "両手剣", base_atk: 565, ascension_stat: "攻撃力", enemy_material: "脆い骨片", break_material: "漆黒の隕鉄の塊", distributed: false, release_version: "1.0" },
+  { name: "和璞鳶", rarity: 5, weapon_type: "長柄武器", base_atk: 674, ascension_stat: "会心率", enemy_material: "猟兵の刀", break_material: "孤雲寒林の神体", distributed: false, release_version: "1.0" },
+  { name: "四風原典", rarity: 5, weapon_type: "法器", base_atk: 608, ascension_stat: "会心率", enemy_material: "混沌の装置", break_material: "獅牙戦士の理想", distributed: false, release_version: "1.0" },
+  { name: "天目影打", rarity: 4, weapon_type: "片手剣", base_atk: 454, ascension_stat: "攻撃力", enemy_material: "混沌の機関", break_material: "遠海夷地の金枝", distributed: false, release_version: "2.0" },
+  { name: "天空の傲", rarity: 5, weapon_type: "両手剣", base_atk: 674, ascension_stat: "元素チャージ効率", enemy_material: "地脈の旧枝", break_material: "凛風奔狼の郷愁", distributed: false, release_version: "1.0" },
+  { name: "天空の刃", rarity: 5, weapon_type: "片手剣", base_atk: 608, ascension_stat: "元素チャージ効率", enemy_material: "地脈の旧枝", break_material: "凛風奔狼の郷愁", distributed: false, release_version: "1.0" },
+  { name: "天空の巻", rarity: 5, weapon_type: "法器", base_atk: 674, ascension_stat: "攻撃力", enemy_material: "地脈の旧枝", break_material: "凛風奔狼の郷愁", distributed: false, release_version: "1.0" },
+  { name: "天空の翼", rarity: 5, weapon_type: "弓", base_atk: 674, ascension_stat: "会心率", enemy_material: "地脈の旧枝", break_material: "凛風奔狼の郷愁", distributed: false, release_version: "1.0" },
+  { name: "天空の脊", rarity: 5, weapon_type: "長柄武器", base_atk: 674, ascension_stat: "元素チャージ効率", enemy_material: "混沌の装置", break_material: "獅牙戦士の理想", distributed: false, release_version: "1.0" },
+  { name: "弓蔵", rarity: 4, weapon_type: "弓", base_atk: 510, ascension_stat: "攻撃力", enemy_material: "猟兵の刀", break_material: "孤雲寒林の神体", distributed: false, release_version: "1.0" },
+  { name: "弾弓", rarity: 3, weapon_type: "弓", base_atk: 354, ascension_stat: "会心率", enemy_material: "猟兵の刀", break_material: "孤雲寒林の神体", distributed: false, release_version: "1.0" },
+  { name: "文使い", rarity: 3, weapon_type: "弓", base_atk: 448, ascension_stat: "会心ダメージ", enemy_material: "霧虚ろの花粉", break_material: "霧海雲間の転還", distributed: false, release_version: "1.0" },
+  { name: "斬岩・試作", rarity: 4, weapon_type: "片手剣", base_atk: 565, ascension_stat: "物理ダメージ", enemy_material: "霧虚ろの花粉", break_material: "霧海雲間の転還", distributed: false, release_version: "1.0" },
+  { name: "新米の長槍", rarity: 1, weapon_type: "長柄武器", base_atk: 185, ascension_stat: null, enemy_material: "混沌の装置", break_material: "獅牙戦士の理想", distributed: false, release_version: "1.0" },
+  { name: "旅道の剣", rarity: 3, weapon_type: "片手剣", base_atk: 448, ascension_stat: "防御力", enemy_material: "混沌の装置", break_material: "獅牙戦士の理想", distributed: false, release_version: "1.0" },
+  { name: "旧貴族大剣", rarity: 4, weapon_type: "両手剣", base_atk: 565, ascension_stat: "攻撃力", enemy_material: "混沌の装置", break_material: "獅牙戦士の理想", distributed: false, release_version: "1.0" },
+  { name: "旧貴族秘法録", rarity: 4, weapon_type: "法器", base_atk: 565, ascension_stat: "攻撃力", enemy_material: "重い角笛", break_material: "高塔の王の砕けた夢", distributed: false, release_version: "1.0" },
+  { name: "旧貴族長剣", rarity: 4, weapon_type: "片手剣", base_atk: 510, ascension_stat: "攻撃力", enemy_material: "重い角笛", break_material: "高塔の王の砕けた夢", distributed: false, release_version: "1.0" },
+  { name: "旧貴族長弓", rarity: 4, weapon_type: "弓", base_atk: 510, ascension_stat: "攻撃力", enemy_material: "混沌の装置", break_material: null, distributed: false, release_version: "1.0" },
+  { name: "星鎌・試作", rarity: 4, weapon_type: "長柄武器", base_atk: 510, ascension_stat: "元素チャージ効率", enemy_material: "脆い骨片", break_material: "漆黒の隕鉄の塊", distributed: false, release_version: "1.0" },
+  { name: "昭心", rarity: 4, weapon_type: "法器", base_atk: 454, ascension_stat: "攻撃力", enemy_material: "霧虚ろの花粉", break_material: "霧海雲間の転還", distributed: false, release_version: "1.0" },
+  { name: "暗鉄剣", rarity: 3, weapon_type: "片手剣", base_atk: 401, ascension_stat: "元素熟知", enemy_material: "猟兵の刀", break_material: "孤雲寒林の神体", distributed: false, release_version: "1.0" },
+  { name: "歴戦の狩猟弓", rarity: 2, weapon_type: "弓", base_atk: 243, ascension_stat: null, enemy_material: "地脈の旧枝", break_material: "凛風奔狼の郷愁", distributed: false, release_version: "1.0" },
+  { name: "死闘の槍", rarity: 4, weapon_type: "長柄武器", base_atk: 454, ascension_stat: "会心率", enemy_material: "地脈の旧枝", break_material: "凛風奔狼の郷愁", distributed: false, release_version: "1.0" },
+  { name: "流月の針", rarity: 4, weapon_type: "長柄武器", base_atk: 565, ascension_stat: "物理ダメージ", enemy_material: "猟兵の刀", break_material: "孤雲寒林の神体", distributed: false, release_version: "1.0" },
+  { name: "流浪楽章", rarity: 4, weapon_type: "法器", base_atk: 510, ascension_stat: "会心ダメージ", enemy_material: "地脈の旧枝", break_material: "凛風奔狼の郷愁", distributed: false, release_version: "1.0" },
+  { name: "澹月・試作", rarity: 4, weapon_type: "弓", base_atk: 510, ascension_stat: "攻撃力", enemy_material: "霧虚ろの花粉", break_material: "霧海雲間の転還", distributed: false, release_version: "1.0" },
+  { name: "無鋒の剣", rarity: 1, weapon_type: "片手剣", base_atk: 185, ascension_stat: null, enemy_material: "重い角笛", break_material: "高塔の王の砕けた夢", distributed: false, release_version: "1.0" },
+  { name: "特級の宝玉", rarity: 3, weapon_type: "法器", base_atk: 448, ascension_stat: "会心率", enemy_material: "霧虚ろの花粉", break_material: "霧海雲間の転還", distributed: false, release_version: "1.0" },
+  { name: "狩猟弓", rarity: 1, weapon_type: "弓", base_atk: 185, ascension_stat: null, enemy_material: "地脈の旧枝", break_material: "凛風奔狼の郷愁", distributed: false, release_version: "1.0" },
+  { name: "狼の末路", rarity: 5, weapon_type: "両手剣", base_atk: 608, ascension_stat: "攻撃力", enemy_material: "混沌の装置", break_material: "獅牙戦士の理想", distributed: false, release_version: "1.0" },
+  { name: "理屈責め", rarity: 3, weapon_type: "両手剣", base_atk: 401, ascension_stat: "攻撃力", enemy_material: "霧虚ろの花粉", break_material: "霧海雲間の転還", distributed: false, release_version: "1.0" },
+  { name: "生徒ノート", rarity: 1, weapon_type: "法器", base_atk: 185, ascension_stat: null, enemy_material: "重い角笛", break_material: "高塔の王の砕けた夢", distributed: false, release_version: "1.0" },
+  { name: "異世界旅行記", rarity: 3, weapon_type: "法器", base_atk: 401, ascension_stat: "元素チャージ効率", enemy_material: "混沌の装置", break_material: "獅牙戦士の理想", distributed: false, release_version: "1.0" },
+  { name: "白影の剣", rarity: 4, weapon_type: "両手剣", base_atk: 510, ascension_stat: "防御力", enemy_material: "猟兵の刀", break_material: "孤雲寒林の神体", distributed: false, release_version: "1.0" },
+  { name: "白纓槍", rarity: 3, weapon_type: "長柄武器", base_atk: 401, ascension_stat: "会心率", enemy_material: "猟兵の刀", break_material: "孤雲寒林の神体", distributed: false, release_version: "1.0" },
+  { name: "白鉄の大剣", rarity: 3, weapon_type: "両手剣", base_atk: 401, ascension_stat: "防御力", enemy_material: "混沌の装置", break_material: "獅牙戦士の理想", distributed: false, release_version: "1.0" },
+  { name: "祭礼の剣", rarity: 4, weapon_type: "片手剣", base_atk: 454, ascension_stat: "元素チャージ効率", enemy_material: "混沌の装置", break_material: "獅牙戦士の理想", distributed: false, release_version: "1.0" },
+  { name: "祭礼の大剣", rarity: 4, weapon_type: "両手剣", base_atk: 454, ascension_stat: "元素チャージ効率", enemy_material: "混沌の装置", break_material: "獅牙戦士の理想", distributed: false, release_version: "1.0" },
+  { name: "祭礼の弓", rarity: 4, weapon_type: "弓", base_atk: 454, ascension_stat: "元素チャージ効率", enemy_material: "混沌の装置", break_material: "獅牙戦士の理想", distributed: false, release_version: "1.0" },
+  { name: "祭礼の断片", rarity: 4, weapon_type: "法器", base_atk: 454, ascension_stat: "元素熟知", enemy_material: "混沌の装置", break_material: "獅牙戦士の理想", distributed: false, release_version: "1.0" },
+  { name: "笛の剣", rarity: 4, weapon_type: "片手剣", base_atk: 510, ascension_stat: "攻撃力", enemy_material: "地脈の旧枝", break_material: "凛風奔狼の郷愁", distributed: false, release_version: "1.0" },
+  { name: "絶弦", rarity: 4, weapon_type: "弓", base_atk: 510, ascension_stat: "元素熟知", enemy_material: "重い角笛", break_material: "高塔の王の砕けた夢", distributed: false, release_version: "1.0" },
+  { name: "翡玉法珠", rarity: 3, weapon_type: "法器", base_atk: 448, ascension_stat: "元素熟知", enemy_material: "猟兵の刀", break_material: "孤雲寒林の神体", distributed: false, release_version: "1.0" },
+  { name: "蒼翠の狩猟弓", rarity: 4, weapon_type: "弓", base_atk: 510, ascension_stat: "会心率", enemy_material: "重い角笛", break_material: "高塔の王の砕けた夢", distributed: false, release_version: "1.0" },
+  { name: "螭龍の剣", rarity: 4, weapon_type: "両手剣", base_atk: 510, ascension_stat: "会心率", enemy_material: "脆い骨片", break_material: "漆黒の隕鉄の塊", distributed: false, release_version: "1.0" },
+  { name: "西風剣", rarity: 4, weapon_type: "片手剣", base_atk: 454, ascension_stat: "元素チャージ効率", enemy_material: "重い角笛", break_material: "高塔の王の砕けた夢", distributed: false, release_version: "1.0" },
+  { name: "西風大剣", rarity: 4, weapon_type: "両手剣", base_atk: 454, ascension_stat: "元素チャージ効率", enemy_material: "混沌の装置", break_material: "獅牙戦士の理想", distributed: false, release_version: "1.0" },
+  { name: "西風猟弓", rarity: 4, weapon_type: "弓", base_atk: 454, ascension_stat: "元素チャージ効率", enemy_material: "混沌の装置", break_material: "獅牙戦士の理想", distributed: false, release_version: "1.0" },
+  { name: "西風秘典", rarity: 4, weapon_type: "法器", base_atk: 510, ascension_stat: "元素チャージ効率", enemy_material: "重い角笛", break_material: "高塔の王の砕けた夢", distributed: false, release_version: "1.0" },
+  { name: "西風長槍", rarity: 4, weapon_type: "長柄武器", base_atk: 565, ascension_stat: "元素チャージ効率", enemy_material: "混沌の装置", break_material: "獅牙戦士の理想", distributed: false, release_version: "1.0" },
+  { name: "訓練用大剣", rarity: 1, weapon_type: "両手剣", base_atk: 185, ascension_stat: null, enemy_material: "地脈の旧枝", break_material: "凛風奔狼の郷愁", distributed: false, release_version: "1.0" },
+  { name: "鉄尖槍", rarity: 2, weapon_type: "長柄武器", base_atk: 243, ascension_stat: null, enemy_material: "混沌の装置", break_material: "獅牙戦士の理想", distributed: false, release_version: "1.0" },
+  { name: "鉄影段平", rarity: 3, weapon_type: "両手剣", base_atk: 401, ascension_stat: "HP", enemy_material: "重い角笛", break_material: "高塔の王の砕けた夢", distributed: false, release_version: "1.0" },
+  { name: "鉄蜂の刺し", rarity: 4, weapon_type: "片手剣", base_atk: 510, ascension_stat: "元素熟知", enemy_material: "脆い骨片", break_material: "漆黒の隕鉄の塊", distributed: false, release_version: "1.0" },
+  { name: "鉾槍", rarity: 3, weapon_type: "長柄武器", base_atk: 448, ascension_stat: "攻撃力", enemy_material: "霧虚ろの花粉", break_material: "霧海雲間の転還", distributed: false, release_version: "1.0" },
+  { name: "銀の剣", rarity: 2, weapon_type: "片手剣", base_atk: 243, ascension_stat: null, enemy_material: "重い角笛", break_material: "高塔の王の砕けた夢", distributed: false, release_version: "1.0" },
+  { name: "金珀・試作", rarity: 4, weapon_type: "法器", base_atk: 510, ascension_stat: "HP", enemy_material: "霧虚ろの花粉", break_material: "霧海雲間の転還", distributed: false, release_version: "1.0" },
+  { name: "鍾の剣", rarity: 4, weapon_type: "両手剣", base_atk: 510, ascension_stat: "HP", enemy_material: "重い角笛", break_material: "高塔の王の砕けた夢", distributed: false, release_version: "1.0" },
+  { name: "降臨の剣", rarity: 4, weapon_type: "片手剣", base_atk: 440, ascension_stat: "攻撃力", enemy_material: "地脈の旧枝", break_material: "凛風奔狼の郷愁", distributed: false, release_version: "1.0" },
+  { name: "雨裁", rarity: 4, weapon_type: "両手剣", base_atk: 510, ascension_stat: "元素熟知", enemy_material: "霧虚ろの花粉", break_material: "霧海雲間の転還", distributed: false, release_version: "1.0" },
+  { name: "風鷹剣", rarity: 5, weapon_type: "片手剣", base_atk: 674, ascension_stat: "物理ダメージ", enemy_material: "重い角笛", break_material: "高塔の王の砕けた夢", distributed: false, release_version: "1.0" },
+  { name: "飛天大御剣", rarity: 3, weapon_type: "両手剣", base_atk: 401, ascension_stat: "物理ダメージ", enemy_material: "脆い骨片", break_material: "漆黒の隕鉄の塊", distributed: false, release_version: "1.0" },
+  { name: "飛天御剣", rarity: 3, weapon_type: "片手剣", base_atk: 354, ascension_stat: "元素チャージ効率", enemy_material: "脆い骨片", break_material: "漆黒の隕鉄の塊", distributed: false, release_version: "1.0" },
+  { name: "魔導緒論", rarity: 3, weapon_type: "法器", base_atk: 354, ascension_stat: "元素熟知", enemy_material: "重い角笛", break_material: "高塔の王の砕けた夢", distributed: false, release_version: "1.0" },
+  { name: "鴉羽の弓", rarity: 3, weapon_type: "弓", base_atk: 401, ascension_stat: "元素熟知", enemy_material: "重い角笛", break_material: "高塔の王の砕けた夢", distributed: false, release_version: "1.0" },
+  { name: "黎明の神剣", rarity: 3, weapon_type: "片手剣", base_atk: 401, ascension_stat: "会心ダメージ", enemy_material: "地脈の旧枝", break_material: "凛風奔狼の郷愁", distributed: false, release_version: "1.0" },
+  { name: "黒剣", rarity: 4, weapon_type: "片手剣", base_atk: 510, ascension_stat: "会心率", enemy_material: "地脈の旧枝", break_material: "凛風奔狼の郷愁", distributed: false, release_version: "1.0" },
+  { name: "黒岩の戦弓", rarity: 4, weapon_type: "弓", base_atk: 565, ascension_stat: "会心ダメージ", enemy_material: "猟兵の刀", break_material: "孤雲寒林の神体", distributed: false, release_version: "1.0" },
+  { name: "黒岩の斬刀", rarity: 4, weapon_type: "両手剣", base_atk: 510, ascension_stat: "会心ダメージ", enemy_material: "霧虚ろの花粉", break_material: "孤雲寒林の神体", distributed: false, release_version: "1.0" },
+  { name: "黒岩の突槍", rarity: 4, weapon_type: "長柄武器", base_atk: 510, ascension_stat: "会心ダメージ", enemy_material: "霧虚ろの花粉", break_material: "霧海雲間の転還", distributed: false, release_version: "1.0" },
+  { name: "黒岩の緋玉", rarity: 4, weapon_type: "法器", base_atk: 510, ascension_stat: "会心ダメージ", enemy_material: "猟兵の刀", break_material: "孤雲寒林の神体", distributed: false, release_version: "1.0" },
+  { name: "黒岩の長剣", rarity: 4, weapon_type: "片手剣", base_atk: 565, ascension_stat: "会心ダメージ", enemy_material: "猟兵の刀", break_material: null, distributed: false, release_version: "1.0" },
+  { name: "黒纓槍", rarity: 3, weapon_type: "長柄武器", base_atk: 354, ascension_stat: "HP", enemy_material: "脆い骨片", break_material: "漆黒の隕鉄の塊", distributed: false, release_version: "1.0" },
+  { name: "龍殺しの英傑譚", rarity: 3, weapon_type: "法器", base_atk: null, ascension_stat: "HP", enemy_material: "地脈の旧枝", break_material: null, distributed: false, release_version: "1.0" },
+  { name: "龍殺しの英雄譚", rarity: null, weapon_type: null, base_atk: 401, ascension_stat: null, enemy_material: null, break_material: "凛風奔狼の郷愁", distributed: false, release_version: "1.0" },
+  { name: "龍血を浴びた剣", rarity: 3, weapon_type: "両手剣", base_atk: 354, ascension_stat: "元素熟知", enemy_material: "地脈の旧枝", break_material: "凛風奔狼の郷愁", distributed: false, release_version: "1.0" },
+  { name: "旧貴族猟槍", rarity: 4, weapon_type: "長柄武器", base_atk: null, ascension_stat: "攻撃力", enemy_material: "新兵の記章", break_material: "霧海雲間の転還", distributed: false, release_version: "1.1" },
+  { name: "浮世の錠", rarity: 5, weapon_type: "法器", base_atk: 608, ascension_stat: "攻撃力", enemy_material: "脆い骨片", break_material: "漆黒の隕鉄の塊", distributed: false, release_version: "1.1" },
+  { name: "無工の剣", rarity: 5, weapon_type: "両手剣", base_atk: 608, ascension_stat: "攻撃力", enemy_material: "霧虚ろの花粉", break_material: "霧海雲間の転還", distributed: false, release_version: "1.1" },
+  { name: "破天の槍", rarity: 5, weapon_type: "長柄武器", base_atk: 608, ascension_stat: "攻撃力", enemy_material: "脆い骨片", break_material: "漆黒の隕鉄の塊", distributed: false, release_version: "1.1" },
+  { name: "ドラゴンスピア", rarity: 4, weapon_type: "長柄武器", base_atk: 454, ascension_stat: "物理ダメージ", enemy_material: "霧虚ろの花粉", break_material: "凛風奔狼の郷愁", distributed: false, release_version: "1.2" },
+  { name: "冬忍びの実", rarity: 4, weapon_type: "法器", base_atk: 510, ascension_stat: "攻撃力", enemy_material: "混沌の装置", break_material: "獅牙戦士の理想", distributed: false, release_version: "1.2" },
+  { name: "腐食の剣", rarity: 4, weapon_type: "片手剣", base_atk: 510, ascension_stat: "元素チャージ効率", enemy_material: "重い角笛", break_material: "獅牙戦士の理想", distributed: true, release_version: "1.2" },
+  { name: "斬山の刃", rarity: 5, weapon_type: "片手剣", base_atk: 608, ascension_stat: "攻撃力", enemy_material: "猟兵の刀", break_material: "孤雲寒林の神体", distributed: false, release_version: "1.2" },
+  { name: "雪葬の星銀", rarity: 4, weapon_type: "両手剣", base_atk: 565, ascension_stat: "物理ダメージ", enemy_material: "重い角笛", break_material: "高塔の王の砕けた夢", distributed: false, release_version: "1.2" },
+  { name: "千岩古剣", rarity: 4, weapon_type: "両手剣", base_atk: 510, ascension_stat: "攻撃力", enemy_material: "猟兵の刀", break_material: "孤雲寒林の神体", distributed: false, release_version: "1.3" },
+  { name: "千岩長槍", rarity: 4, weapon_type: "長柄武器", base_atk: 565, ascension_stat: "攻撃力", enemy_material: "脆い骨片", break_material: "漆黒の隕鉄の塊", distributed: false, release_version: "1.3" },
+  { name: "盤岩結緑", rarity: 5, weapon_type: "片手剣", base_atk: 542, ascension_stat: "会心率", enemy_material: "霧虚ろの花粉", break_material: "霧海雲間の転還", distributed: false, release_version: "1.3" },
+  { name: "護摩の杖", rarity: 5, weapon_type: "長柄武器", base_atk: 608, ascension_stat: "会心ダメージ", enemy_material: "地脈の旧枝", break_material: "漆黒の隕鉄の塊", distributed: false, release_version: "1.3" },
+  { name: "ダークアレイの狩人", rarity: 4, weapon_type: "弓", base_atk: 565, ascension_stat: "攻撃力", enemy_material: "混沌の装置", break_material: "獅牙戦士の理想", distributed: false, release_version: "1.4" },
+  { name: "ダークアレイの酒と詩", rarity: 4, weapon_type: "法器", base_atk: 565, ascension_stat: "元素チャージ効率", enemy_material: "地脈の旧枝", break_material: "凛風奔狼の郷愁", distributed: false, release_version: "1.4" },
+  { name: "ダークアレイの閃光", rarity: 4, weapon_type: "片手剣", base_atk: 620, ascension_stat: "元素熟知", enemy_material: "重い角笛", break_material: "高塔の王の砕けた夢", distributed: false, release_version: "1.4" },
+  { name: "終焉を嘆く詩", rarity: 5, weapon_type: "弓", base_atk: 608, ascension_stat: "元素チャージ効率", enemy_material: "重い角笛", break_material: "凛風奔狼の郷愁", distributed: false, release_version: "1.4" },
+  { name: "風花の頌歌", rarity: 4, weapon_type: "弓", base_atk: 510, ascension_stat: "元素熟知", enemy_material: "地脈の旧枝", break_material: "獅牙戦士の理想", distributed: true, release_version: "1.4" },
+  { name: "松韻の響く頃", rarity: 5, weapon_type: "両手剣", base_atk: 741, ascension_stat: "物理ダメージ", enemy_material: "重い角笛", break_material: "高塔の王の砕けた夢", distributed: false, release_version: "1.5" },
+  { name: "ドドコの物語", rarity: 4, weapon_type: "法器", base_atk: 454, ascension_stat: "攻撃力", enemy_material: "地脈の旧枝", break_material: "凛風奔狼の郷愁", distributed: true, release_version: "1.6" },
+  { name: "幽夜のワルツ", rarity: 4, weapon_type: "弓", base_atk: 510, ascension_stat: "物理ダメージ", enemy_material: "重い角笛", break_material: "高塔の王の砕けた夢", distributed: false, release_version: "1.6" },
+  { name: "蒼古なる自由への誓い", rarity: 5, weapon_type: "片手剣", base_atk: 608, ascension_stat: "元素熟知", enemy_material: "混沌の装置", break_material: "獅牙戦士の理想", distributed: false, release_version: "1.6" },
+  { name: "喜多院十文字槍", rarity: 4, weapon_type: "長柄武器", base_atk: 565, ascension_stat: "元素熟知", enemy_material: "混沌の機関", break_material: "今昔劇画の鬼人", distributed: false, release_version: "2.0" },
+  { name: "桂木斬長正", rarity: 4, weapon_type: "両手剣", base_atk: 510, ascension_stat: "元素チャージ効率", enemy_material: "混沌の機関", break_material: "鳴神御霊の勇武", distributed: false, release_version: "2.0" },
+  { name: "白辰の輪", rarity: 4, weapon_type: "法器", base_atk: 565, ascension_stat: "元素チャージ効率", enemy_material: "暗色のプリズム", break_material: "遠海夷地の金枝", distributed: false, release_version: "2.0" },
+  { name: "破魔の弓", rarity: 4, weapon_type: "弓", base_atk: 454, ascension_stat: "攻撃力", enemy_material: "暗色のプリズム", break_material: "鳴神御霊の勇武", distributed: false, release_version: "2.0" },
+  { name: "霧切の廻光", rarity: 5, weapon_type: "片手剣", base_atk: 674, ascension_stat: "会心ダメージ", enemy_material: "混沌の機関", break_material: "遠海夷地の金枝", distributed: false, release_version: "2.0" },
+  { name: "飛来の鳴弦", rarity: 5, weapon_type: "弓", base_atk: 608, ascension_stat: "会心ダメージ", enemy_material: "暗色のプリズム", break_material: "鳴神御霊の勇武", distributed: false, release_version: "2.0" },
+  { name: "「漁獲」", rarity: 4, weapon_type: "長柄武器", base_atk: 510, ascension_stat: "元素チャージ効率", enemy_material: "混沌の機関", break_material: "今昔劇画の鬼人", distributed: false, release_version: "2.1" },
+  { name: "プレデター", rarity: 4, weapon_type: "弓", base_atk: 510, ascension_stat: "攻撃力", enemy_material: "暗色のプリズム", break_material: "鳴神御霊の勇武", distributed: false, release_version: "2.1" },
+  { name: "不滅の月華", rarity: 5, weapon_type: "法器", base_atk: 608, ascension_stat: "HP", enemy_material: "暗色のプリズム", break_material: "遠海夷地の金枝", distributed: false, release_version: "2.1" },
+  { name: "草薙の稲光", rarity: 5, weapon_type: "長柄武器", base_atk: 608, ascension_stat: "元素チャージ効率", enemy_material: "混沌の機関", break_material: "今昔劇画の鬼人", distributed: false, release_version: "2.1" },
+  { name: "銜玉の海皇", rarity: 4, weapon_type: "両手剣", base_atk: 454, ascension_stat: "攻撃力", enemy_material: "脆い骨片", break_material: "漆黒の隕鉄の塊", distributed: true, release_version: "2.1" },
+  { name: "冬極の白星", rarity: 5, weapon_type: "弓", base_atk: 608, ascension_stat: "会心率", enemy_material: "隠獣の指爪", break_material: "今昔劇画の鬼人", distributed: false, release_version: "2.2" },
+  { name: "惡王丸", rarity: 4, weapon_type: "両手剣", base_atk: 510, ascension_stat: "攻撃力", enemy_material: "隠獣の指爪", break_material: "遠海夷地の金枝", distributed: false, release_version: "2.2" },
+  { name: "斬波のひれ長", rarity: 4, weapon_type: "長柄武器", base_atk: 620, ascension_stat: "攻撃力", enemy_material: "隠獣の指爪", break_material: "今昔劇画の鬼人", distributed: false, release_version: "2.2" },
+  { name: "曚雲の月", rarity: 4, weapon_type: "弓", base_atk: 565, ascension_stat: "攻撃力", enemy_material: "暗色のプリズム", break_material: "鳴神御霊の勇武", distributed: false, release_version: "2.2" },
+  { name: "シナバースピンドル", rarity: 4, weapon_type: "片手剣", base_atk: 454, ascension_stat: "防御力", enemy_material: "混沌の装置", break_material: "高塔の王の砕けた夢", distributed: true, release_version: "2.3" },
+  { name: "赤角石塵滅砕", rarity: 5, weapon_type: "両手剣", base_atk: 542, ascension_stat: "会心ダメージ", enemy_material: "隠獣の指爪", break_material: "鳴神御霊の勇武", distributed: false, release_version: "2.3" },
+  { name: "息災", rarity: 5, weapon_type: "長柄武器", base_atk: 741, ascension_stat: "攻撃力", enemy_material: "霧虚ろの花粉", break_material: "霧海雲間の転還", distributed: false, release_version: "2.4" },
+  { name: "神楽の真意", rarity: 5, weapon_type: "法器", base_atk: 608, ascension_stat: "会心ダメージ", enemy_material: "隠獣の指爪", break_material: "今昔劇画の鬼人", distributed: false, release_version: "2.5" },
+  { name: "誓いの明瞳", rarity: 4, weapon_type: "法器", base_atk: null, ascension_stat: "攻撃力", enemy_material: "隠獣の指爪", break_material: null, distributed: true, release_version: "2.5" },
+  { name: "波乱月白経津", rarity: 5, weapon_type: "片手剣", base_atk: 608, ascension_stat: "会心率", enemy_material: "暗晦の彫刻", break_material: "鳴神御霊の勇武", distributed: false, release_version: "2.6" },
+  { name: "若水", rarity: 5, weapon_type: "弓", base_atk: 542, ascension_stat: "会心ダメージ", enemy_material: "暗晦の彫刻", break_material: "孤雲寒林の神体", distributed: false, release_version: "2.7" },
+  { name: "落霞", rarity: 4, weapon_type: "弓", base_atk: 565, ascension_stat: "元素チャージ効率", enemy_material: "猟兵の刀", break_material: "漆黒の隕鉄の塊", distributed: true, release_version: "2.7" },
+  { name: "籠釣瓶一心", rarity: 4, weapon_type: "片手剣", base_atk: 510, ascension_stat: "攻撃力", enemy_material: "暗晦の彫刻", break_material: "今昔劇画の鬼人", distributed: false, release_version: "2.8" },
+  { name: "ムーンピアサー", rarity: 4, weapon_type: "長柄武器", base_atk: 565, ascension_stat: "元素熟知", enemy_material: "混沌ストレージ", break_material: "オアシスガーデンの真諦", distributed: false, release_version: "3.0" },
+  { name: "原木刀", rarity: 4, weapon_type: "片手剣", base_atk: null, ascension_stat: "元素チャージ効率", enemy_material: "混沌ストレージ", break_material: "静謐な森のしずくの金符", distributed: false, release_version: "3.0" },
+  { name: "森林のレガリア", rarity: 4, weapon_type: "両手剣", base_atk: 565, ascension_stat: "元素チャージ効率", enemy_material: "混沌ストレージ", break_material: "静謐な森のしずくの金符", distributed: false, release_version: "3.0" },
+  { name: "満悦の実", rarity: 4, weapon_type: "法器", base_atk: 510, ascension_stat: "元素チャージ効率", enemy_material: "暗晦の彫刻", break_material: "オアシスガーデンの真諦", distributed: false, release_version: "3.0" },
+  { name: "王の近侍", rarity: 4, weapon_type: "弓", base_atk: 565, ascension_stat: "攻撃力", enemy_material: "キノコンの衰菌核", break_material: "烈日権威の往日", distributed: false, release_version: "3.0" },
+  { name: "竭沢", rarity: 4, weapon_type: "弓", base_atk: 510, ascension_stat: "元素チャージ効率", enemy_material: "キノコンの衰菌核", break_material: null, distributed: false, release_version: "3.0" },
+  { name: "狩人の道", rarity: 5, weapon_type: "弓", base_atk: 542, ascension_stat: "会心率", enemy_material: "キノコンの衰菌核", break_material: "烈日権威の往日", distributed: false, release_version: "3.0" },
+  { name: "サイフォスの月明かり", rarity: 4, weapon_type: "片手剣", base_atk: 510, ascension_stat: "元素熟知", enemy_material: "壊れたプリズム", break_material: "静謐な森のしずくの金符", distributed: false, release_version: "3.1" },
+  { name: "マカイラの水色", rarity: 4, weapon_type: "両手剣", base_atk: 510, ascension_stat: "元素熟知", enemy_material: "混沌ストレージ", break_material: "烈日権威の往日", distributed: false, release_version: "3.1" },
+  { name: "彷徨える星", rarity: 4, weapon_type: "法器", base_atk: 510, ascension_stat: "元素熟知", enemy_material: "キノコンの衰菌核", break_material: "オアシスガーデンの真諦", distributed: false, release_version: "3.1" },
+  { name: "聖顕の鍵", rarity: 5, weapon_type: "片手剣", base_atk: 542, ascension_stat: "HP", enemy_material: "壊れたプリズム", break_material: "静謐な森のしずくの金符", distributed: false, release_version: "3.1" },
+  { name: "赤砂の杖", rarity: 5, weapon_type: "長柄武器", base_atk: 542, ascension_stat: "会心率", enemy_material: "混沌ストレージ", break_material: "オアシスガーデンの真諦", distributed: false, release_version: "3.1" },
+  { name: "風信の矛", rarity: 4, weapon_type: "長柄武器", base_atk: 510, ascension_stat: "攻撃力", enemy_material: "暗晦の彫刻", break_material: "凛風奔狼の郷愁", distributed: true, release_version: "3.1" },
+  { name: "千夜に浮かぶ夢", rarity: 5, weapon_type: "法器", base_atk: 542, ascension_stat: "元素熟知", enemy_material: "壊れたプリズム", break_material: "オアシスガーデンの真諦", distributed: false, release_version: "3.2" },
+  { name: "トゥライトゥーラの記憶", rarity: 5, weapon_type: "法器", base_atk: 674, ascension_stat: "会心ダメージ", enemy_material: "キノコンの衰菌核", break_material: "烈日権威の往日", distributed: false, release_version: "3.3" },
+  { name: "東花坊時雨", rarity: 4, weapon_type: "片手剣", base_atk: 510, ascension_stat: "元素熟知", enemy_material: "壊れたプリズム", break_material: "鳴神御霊の勇武", distributed: true, release_version: "3.3" },
+  { name: "翠光の裁葉", rarity: 5, weapon_type: "片手剣", base_atk: 542, ascension_stat: "会心ダメージ", enemy_material: "毀れた背骨", break_material: "静謐な森のしずくの金符", distributed: false, release_version: "3.4" },
+  { name: "鉄彩の花", rarity: 4, weapon_type: "両手剣", base_atk: 565, ascension_stat: "元素熟知", enemy_material: "毀れた背骨", break_material: "獅牙戦士の理想", distributed: true, release_version: "3.5" },
+  { name: "葦海の標", rarity: 5, weapon_type: "両手剣", base_atk: 608, ascension_stat: "会心率", enemy_material: "毀れた背骨", break_material: "烈日権威の往日", distributed: false, release_version: "3.5" },
+  { name: "碧落の瓏", rarity: 5, weapon_type: "法器", base_atk: 608, ascension_stat: "HP", enemy_material: "何処かで摘まれた咲きかけの花", break_material: "孤雲寒林の神体", distributed: false, release_version: "3.6" },
+  { name: "トキの嘴", rarity: 4, weapon_type: "弓", base_atk: 565, ascension_stat: "攻撃力", enemy_material: "何処かで摘まれた咲きかけの花", break_material: "静謐な森のしずくの金符", distributed: true, release_version: "3.7" },
+  { name: "サーンドルの渡し守", rarity: 4, weapon_type: "片手剣", base_atk: 510, ascension_stat: "元素チャージ効率", enemy_material: "濁水のひとしずく", break_material: "悠久の弦の響き", distributed: false, release_version: "4.0" },
+  { name: "タイダル・シャドー", rarity: 4, weapon_type: "両手剣", base_atk: 510, ascension_stat: "攻撃力", enemy_material: "隙間のコア", break_material: "無垢な海の金盃", distributed: false, release_version: "4.0" },
+  { name: "フィヨルドの歌", rarity: 4, weapon_type: "長柄武器", base_atk: 510, ascension_stat: "会心率", enemy_material: "何処かで摘まれた咲きかけの花", break_material: "無垢な海の金盃", distributed: false, release_version: "4.0" },
+  { name: "古祠の瓏", rarity: 4, weapon_type: "法器", base_atk: 454, ascension_stat: "会心率", enemy_material: "霧虚ろの花粉", break_material: "孤雲寒林の神体", distributed: false, release_version: "4.0" },
+  { name: "始まりの大魔術", rarity: 5, weapon_type: "弓", base_atk: 608, ascension_stat: "会心ダメージ", enemy_material: "濁水のひとしずく", break_material: "悠久の弦の響き", distributed: false, release_version: "4.0" },
+  { name: "正義の報酬", rarity: 4, weapon_type: "長柄武器", base_atk: 565, ascension_stat: "HP", enemy_material: "隙間のコア", break_material: "無垢な海の金盃", distributed: false, release_version: "4.0" },
+  { name: "海淵のフィナーレ", rarity: 4, weapon_type: "片手剣", base_atk: 565, ascension_stat: "攻撃力", enemy_material: "濁水のひとしずく", break_material: "純聖な雫の精髄", distributed: false, release_version: "4.0" },
+  { name: "烈日の後嗣", rarity: 4, weapon_type: "弓", base_atk: 565, ascension_stat: "会心率", enemy_material: "何処かで摘まれた咲きかけの花", break_material: "烈日権威の往日", distributed: false, release_version: "4.0" },
+  { name: "純水流華", rarity: 4, weapon_type: "法器", base_atk: 565, ascension_stat: "攻撃力", enemy_material: "隙間のコア", break_material: "純聖な雫の精髄", distributed: false, release_version: "4.0" },
+  { name: "話死合い棒", rarity: 4, weapon_type: "長柄武器", base_atk: 565, ascension_stat: "会心率", enemy_material: "毀れた背骨", break_material: "オアシスガーデンの真諦", distributed: false, release_version: "4.0" },
+  { name: "狼牙", rarity: 4, weapon_type: "片手剣", base_atk: 510, ascension_stat: "会心率", enemy_material: "混沌の装置", break_material: "高塔の王の砕けた夢", distributed: false, release_version: "4.0" },
+  { name: "静寂の唄", rarity: 4, weapon_type: "弓", base_atk: 510, ascension_stat: "攻撃力", enemy_material: "濁水のひとしずく", break_material: "悠久の弦の響き", distributed: false, release_version: "4.0" },
+  { name: "プロスペクタードリル", rarity: 4, weapon_type: "長柄武器", base_atk: 565, ascension_stat: "攻撃力", enemy_material: "古びた従者の懐中時計", break_material: "悠久の弦の響き", distributed: false, release_version: "4.1" },
+  { name: "レンジゲージ", rarity: 4, weapon_type: "弓", base_atk: 565, ascension_stat: "攻撃力", enemy_material: "濁水のひとしずく", break_material: "悠久の弦の響き", distributed: false, release_version: "4.1" },
+  { name: "久遠流転の大典", rarity: 5, weapon_type: "法器", base_atk: 542, ascension_stat: "会心ダメージ", enemy_material: "隙間のコア", break_material: "純聖な雫の精髄", distributed: false, release_version: "4.1" },
+  { name: "果てなき紺碧の唄", rarity: 4, weapon_type: "法器", base_atk: 565, ascension_stat: "元素チャージ効率", enemy_material: "脆い骨片", break_material: "凛風奔狼の郷愁", distributed: true, release_version: "4.1" },
+  { name: "携帯型チェンソー", rarity: 4, weapon_type: "両手剣", base_atk: 454, ascension_stat: "HP", enemy_material: "隙間のコア", break_material: "無垢な海の金盃", distributed: false, release_version: "4.1" },
+  { name: "凛流の監視者", rarity: 5, weapon_type: "法器", base_atk: 674, ascension_stat: "会心率", enemy_material: "古びた従者の懐中時計", break_material: "無垢な海の金盃", distributed: false, release_version: "4.1" },
+  { name: "船渠剣", rarity: 4, weapon_type: "片手剣", base_atk: 510, ascension_stat: "HP", enemy_material: "古びた従者の懐中時計", break_material: "純聖な雫の精髄", distributed: false, release_version: "4.1" },
+  { name: "水仙十字の剣", rarity: 4, weapon_type: "片手剣", base_atk: 510, ascension_stat: "攻撃力", enemy_material: "古びた従者の懐中時計", break_material: "悠久の弦の響き", distributed: false, release_version: "4.2" },
+  { name: "静水流転の輝き", rarity: 5, weapon_type: "片手剣", base_atk: 542, ascension_stat: "会心ダメージ", enemy_material: "濁水のひとしずく", break_material: "純聖な雫の精髄", distributed: false, release_version: "4.2" },
+  { name: "「スーパーアルティメット覇王魔剣」", rarity: 4, weapon_type: "両手剣", base_atk: 565, ascension_stat: "元素チャージ効率", enemy_material: "古びた従者の懐中時計", break_material: "無垢な海の金盃", distributed: true, release_version: "4.3" },
+  { name: "裁断", rarity: 5, weapon_type: "両手剣", base_atk: 674, ascension_stat: "会心率", enemy_material: "隙間のコア", break_material: "悠久の弦の響き", distributed: false, release_version: "4.3" },
+  { name: "鶴鳴の余韻", rarity: 5, weapon_type: "法器", base_atk: 741, ascension_stat: "攻撃力", enemy_material: "翼状の羽鰭", break_material: "霧海雲間の転還", distributed: false, release_version: "4.4" },
+  { name: "有楽御簾切", rarity: 5, weapon_type: "片手剣", base_atk: 542, ascension_stat: "会心ダメージ", enemy_material: "混沌の機関", break_material: "遠海夷地の金枝", distributed: false, release_version: "4.5" },
+  { name: "砂中の賢者達の問答", rarity: 4, weapon_type: "長柄武器", base_atk: 510, ascension_stat: "HP", enemy_material: "翼状の羽鰭", break_material: "静謐な森のしずくの金符", distributed: true, release_version: "4.5" },
+  { name: "赤月のシルエット", rarity: 5, weapon_type: "長柄武器", base_atk: 674, ascension_stat: "会心率", enemy_material: "砕けた剣の柄", break_material: "無垢な海の金盃", distributed: false, release_version: "4.6" },
+  { name: "白雨心弦", rarity: 5, weapon_type: "弓", base_atk: 542, ascension_stat: "HP", enemy_material: "翼状の羽鰭", break_material: "純聖な雫の精髄", distributed: false, release_version: "4.7" },
+  { name: "築雲", rarity: 4, weapon_type: "弓", base_atk: 510, ascension_stat: "元素熟知", enemy_material: "砕けた剣の柄", break_material: "漆黒の隕鉄の塊", distributed: true, release_version: "4.7" },
+  { name: "赦罪", rarity: 5, weapon_type: "片手剣", base_atk: 674, ascension_stat: "会心ダメージ", enemy_material: "古びた従者の懐中時計", break_material: "悠久の弦の響き", distributed: false, release_version: "4.7" },
+  { name: "ルミドゥースの挽歌", rarity: 5, weapon_type: "長柄武器", base_atk: 608, ascension_stat: "会心率", enemy_material: "砕けた剣の柄", break_material: "無垢な海の金盃", distributed: false, release_version: "4.8" },
+  { name: "アースシェイカー", rarity: 4, weapon_type: "両手剣", base_atk: 565, ascension_stat: "攻撃力", enemy_material: "燃え盛る石", break_material: "灼心を捧げる栄光", distributed: false, release_version: "5.0" },
+  { name: "エズピツァルの笛", rarity: 4, weapon_type: "片手剣", base_atk: 454, ascension_stat: "防御力", enemy_material: "砕けた剣の柄", break_material: "灼心を捧げる栄光", distributed: false, release_version: "5.0" },
+  { name: "サーフィンタイム", rarity: 5, weapon_type: "法器", base_atk: 542, ascension_stat: "会心ダメージ", enemy_material: "砕けた意志の欠片", break_material: "灼心を捧げる栄光", distributed: false, release_version: "5.0" },
+  { name: "チェーンブレイカー", rarity: 4, weapon_type: "弓", base_atk: 565, ascension_stat: null, enemy_material: "翼状の羽鰭", break_material: "神秘なる煙の啓示", distributed: false, release_version: "5.0" },
+  { name: "ヤシュチェの環", rarity: 4, weapon_type: "法器", base_atk: 510, ascension_stat: "HP", enemy_material: "砕けた意志の欠片", break_material: "狂乱の聖主の神面", distributed: false, release_version: "5.0" },
+  { name: "山の王の長牙", rarity: 5, weapon_type: "両手剣", base_atk: 741, ascension_stat: "会心率", enemy_material: "燃え盛る石", break_material: "狂乱の聖主の神面", distributed: false, release_version: "5.0" },
+  { name: "蒼紋の角杯", rarity: 4, weapon_type: "法器", base_atk: 510, ascension_stat: "HP", enemy_material: "秘源のベアリング", break_material: "神秘なる煙の啓示", distributed: true, release_version: "5.0" },
+  { name: "虹の行方", rarity: 4, weapon_type: "長柄武器", base_atk: 510, ascension_stat: "防御力", enemy_material: "秘源のベアリング", break_material: "狂乱の聖主の神面", distributed: false, release_version: "5.0" },
+  { name: "ストロングボーン", rarity: 4, weapon_type: "片手剣", base_atk: 565, ascension_stat: "攻撃力", enemy_material: "砕けた意志の欠片", break_material: "灼心を捧げる栄光", distributed: false, release_version: "5.1" },
+  { name: "実りの鉤鉈", rarity: 4, weapon_type: "両手剣", base_atk: 565, ascension_stat: "攻撃力", enemy_material: "秘源のベアリング", break_material: null, distributed: false, release_version: "5.1" },
+  { name: "岩峰を巡る歌", rarity: 5, weapon_type: "片手剣", base_atk: 542, ascension_stat: "防御力", enemy_material: "秘源のベアリング", break_material: "神秘なる煙の啓示", distributed: false, release_version: "5.1" },
+  { name: "鎮山の釘", rarity: 4, weapon_type: "長柄武器", base_atk: 565, ascension_stat: "元素チャージ効率", enemy_material: "燃え盛る石", break_material: "狂乱の聖主の神面", distributed: false, release_version: "5.1" },
+  { name: "厄水の災い", rarity: 4, weapon_type: "片手剣", base_atk: 565, ascension_stat: "攻撃力", enemy_material: "折光の胚芽", break_material: "狂乱の聖主の神面", distributed: true, release_version: "5.2" },
+  { name: "星鷲の紅き羽", rarity: 5, weapon_type: "弓", base_atk: 608, ascension_stat: "会心ダメージ", enemy_material: "折光の胚芽", break_material: "神秘なる煙の啓示", distributed: false, release_version: "5.2" },
+  { name: "波乗りの旋回", rarity: 4, weapon_type: "法器", base_atk: 454, ascension_stat: "元素チャージ効率", enemy_material: "砕けた意志の欠片", break_material: "灼心を捧げる栄光", distributed: false, release_version: "5.2" },
+  { name: "花飾りの羽", rarity: 4, weapon_type: "弓", base_atk: 510, ascension_stat: "攻撃力", enemy_material: "燃え盛る石", break_material: "神秘なる煙の啓示", distributed: false, release_version: "5.2" },
+  { name: "千烈の日輪", rarity: 5, weapon_type: "両手剣", base_atk: 741, ascension_stat: "会心率", enemy_material: "秘源のベアリング", break_material: "灼心を捧げる栄光", distributed: false, release_version: "5.3" },
+  { name: "祭星者の眺め", rarity: 5, weapon_type: "法器", base_atk: 542, ascension_stat: "元素熟知", enemy_material: "砕けた意志の欠片", break_material: "狂乱の聖主の神面", distributed: false, release_version: "5.3" },
+  { name: "寝正月の初晴", rarity: 5, weapon_type: "法器", base_atk: 542, ascension_stat: "元素熟知", enemy_material: "燃え盛る石", break_material: "鳴神御霊の勇武", distributed: false, release_version: "5.4" },
+  { name: "玉響停の御噺", rarity: 4, weapon_type: "長柄武器", base_atk: 565, ascension_stat: "元素チャージ効率", enemy_material: "折光の胚芽", break_material: "今昔劇画の鬼人", distributed: true, release_version: "5.4" },
+  { name: "ヴィヴィッド・ハート", rarity: 5, weapon_type: "法器", base_atk: 674, ascension_stat: "会心ダメージ", enemy_material: "冷えた鱗甲の欠片", break_material: "狂乱の聖主の神面", distributed: false, release_version: "5.5" },
+  { name: "冷寂の音", rarity: 4, weapon_type: "弓", base_atk: 510, ascension_stat: "HP", enemy_material: "冷えた鱗甲の欠片", break_material: "悠久の弦の響き", distributed: true, release_version: "5.6" },
+  { name: "香りのシンフォニスト", rarity: 5, weapon_type: "長柄武器", base_atk: 608, ascension_stat: "会心ダメージ", enemy_material: "濁水のひとしずく", break_material: "純聖な雫の精髄", distributed: false, release_version: "5.6" },
+  { name: "蒼耀", rarity: 5, weapon_type: "片手剣", base_atk: 674, ascension_stat: "会心率", enemy_material: "折光の胚芽", break_material: "神秘なる煙の啓示", distributed: false, release_version: "5.7" },
+  { name: "知恵の溶炎", rarity: 4, weapon_type: "両手剣", base_atk: 510, ascension_stat: "元素熟知", enemy_material: "冷えた鱗甲の欠片", break_material: "狂乱の聖主の神面", distributed: true, release_version: "5.8" },
+  { name: "砕け散る光輪", rarity: 5, weapon_type: "長柄武器", base_atk: 608, ascension_stat: "会心ダメージ", enemy_material: "冷えた鱗甲の欠片", break_material: "灼心を捧げる栄光", distributed: false, release_version: "5.8" },
+  { name: "万能の鍵", rarity: 4, weapon_type: "両手剣", base_atk: 674, ascension_stat: "元素チャージ効率", enemy_material: "失光の骨片", break_material: "極北の末裔の煌光", distributed: false, release_version: "Luna I (6.0)" },
+  { name: "夜を紡ぐ天鏡", rarity: 5, weapon_type: "法器", base_atk: 542, ascension_stat: "元素熟知", enemy_material: "霜夜の残光", break_material: "奇妙な装置の宿願", distributed: false, release_version: "Luna I (6.0)" },
+  { name: "天光のリュート", rarity: 4, weapon_type: "法器", base_atk: 510, ascension_stat: "元素チャージ効率", enemy_material: "失光の骨片", break_material: "極北の末裔の煌光", distributed: true, release_version: "Luna I (6.0)" },
+  { name: "月紡ぎの曙光", rarity: 4, weapon_type: "片手剣", base_atk: 565, ascension_stat: "攻撃力", enemy_material: "失光の骨片", break_material: "極北の末裔の煌光", distributed: false, release_version: "Luna I (6.0)" },
+  { name: "羅網の針", rarity: 4, weapon_type: "弓", base_atk: 454, ascension_stat: "元素チャージ効率", enemy_material: "暗き霧の欠片", break_material: "長夜の灯火の輝光", distributed: false, release_version: "Luna I (6.0)" },
+  { name: "烏髄の孤灯", rarity: 4, weapon_type: "法器", base_atk: 454, ascension_stat: "元素熟知", enemy_material: "霜夜の残光", break_material: "奇妙な装置の宿願", distributed: false, release_version: "Luna I (6.0)" },
+  { name: "金堀りのシャベル", rarity: 4, weapon_type: "長柄武器", base_atk: null, ascension_stat: "攻撃力", enemy_material: "破損した駆動軸", break_material: null, distributed: false, release_version: "Luna I (6.0)" },
+  { name: "血染めの荒れ地", rarity: 5, weapon_type: "長柄武器", base_atk: 674, ascension_stat: "会心率", enemy_material: "暗き霧の欠片", break_material: "長夜の灯火の輝光", distributed: false, release_version: "Luna I (6.0)" },
+  { name: "静謐の笛", rarity: 4, weapon_type: "片手剣", base_atk: 454, ascension_stat: "元素チャージ効率", enemy_material: "霜夜の残光", break_material: "奇妙な装置の宿願", distributed: false, release_version: "Luna I (6.0)" },
+  { name: "真言の匣", rarity: 5, weapon_type: "法器", base_atk: 542, ascension_stat: "会心ダメージ", enemy_material: "失光の骨片", break_material: "オアシスガーデンの真諦", distributed: false, release_version: "Luna II (6.1)" },
+  { name: "聖祭者の輝杖", rarity: 4, weapon_type: "長柄武器", base_atk: 620, ascension_stat: "会心率", enemy_material: "暗き霧の欠片", break_material: "長夜の灯火の輝光", distributed: false, release_version: "Luna II (6.1)" },
+  { name: "霜辰", rarity: 4, weapon_type: "法器", base_atk: 510, ascension_stat: "会心ダメージ", enemy_material: "霜夜の残光", break_material: "奇妙な装置の宿願", distributed: false, release_version: "Luna II (6.1)" },
+  { name: "暁を告げる歴史", rarity: 5, weapon_type: "弓", base_atk: 674, ascension_stat: "会心ダメージ", enemy_material: "重い角笛", break_material: "獅牙戦士の理想", distributed: false, release_version: "Luna III (6.2)" },
+  { name: "黒蝕", rarity: 5, weapon_type: "片手剣", base_atk: 608, ascension_stat: "会心率", enemy_material: "霜夜の残光", break_material: "高塔の王の砕けた夢", distributed: false, release_version: "Luna III (6.2)" },
+  { name: "虹蛇の雨弦", rarity: 4, weapon_type: "弓", base_atk: 510, ascension_stat: "元素チャージ効率", enemy_material: "折光の胚芽", break_material: "神秘なる煙の啓示", distributed: true, release_version: "Luna III (6.2)" },
+  { name: "三日月の含光", rarity: 5, weapon_type: "片手剣", base_atk: 542, ascension_stat: "会心ダメージ", enemy_material: "暗き霧の欠片", break_material: "漆黒の隕鉄の塊", distributed: false, release_version: "Luna IV (6.3)" },
+  { name: "帳の夜曲", rarity: 5, weapon_type: "法器", base_atk: 542, ascension_stat: "会心ダメージ", enemy_material: "暗黒の裂眼", break_material: "極北の末裔の煌光", distributed: false, release_version: "Luna IV (6.3)" },
+  { name: "狼の武勲詩", rarity: 5, weapon_type: "両手剣", base_atk: 608, ascension_stat: "会心率", enemy_material: "暗黒の裂眼", break_material: "凛風奔狼の郷愁", distributed: false, release_version: "Luna V (6.4)" },
+  { name: "霜契の金枝", rarity: 5, weapon_type: "弓", base_atk: 542, ascension_stat: "会心ダメージ", enemy_material: "光を失った焔剣の柄", break_material: "長夜の灯火の輝光", distributed: false, release_version: "Luna VI (6.5)" },
+  { name: "災憾", rarity: 5, weapon_type: "長柄武器", base_atk: 674, ascension_stat: "会心率", enemy_material: "失光の骨片", break_material: "高塔の王の砕けた夢", distributed: false, release_version: "Luna VII (6.6)" },
+  { name: "塵と光の七つの誓約", rarity: 5, weapon_type: "法器", base_atk: null, ascension_stat: "攻撃力", enemy_material: "光を失った焔剣の柄", break_material: null, distributed: false, release_version: "Luna VII (6.6)" },
+  { name: "超越の鍵", rarity: 5, weapon_type: "両手剣", base_atk: null, ascension_stat: "会心ダメージ", enemy_material: "欠損した月の鉄", break_material: "極北の末裔の煌光", distributed: false, release_version: "Luna VIII (6.7)" },
+  { name: "シンフォニーの鋳影", rarity: 4, weapon_type: "両手剣", base_atk: 510, ascension_stat: "会心率", enemy_material: "砕けた剣の柄", break_material: "純聖な雫の精髄", distributed: false, release_version: "7.0" },
+  { name: "千鈞懸黎", rarity: 4, weapon_type: "弓", base_atk: 510, ascension_stat: "会心率", enemy_material: "脆い骨片", break_material: "漆黒の隕鉄の塊", distributed: false, release_version: "7.0" },
+  { name: "導炎の源", rarity: 4, weapon_type: "片手剣", base_atk: 510, ascension_stat: "元素熟知", enemy_material: "沈積増生物", break_material: "蒼星軍勢の征服", distributed: false, release_version: "7.0" },
+  { name: "救済の剣", rarity: 4, weapon_type: "両手剣", base_atk: 565, ascension_stat: "攻撃力", enemy_material: "生命の虚ろな根", break_material: "蒼星軍勢の征服", distributed: false, release_version: "7.0" },
+  { name: "星鋒の剣", rarity: 5, weapon_type: "片手剣", base_atk: 608, ascension_stat: "会心ダメージ", enemy_material: null, break_material: null, distributed: false, release_version: "7.0" },
+  { name: "氷の吐息", rarity: 4, weapon_type: "長柄武器", base_atk: 510, ascension_stat: "元素チャージ効率", enemy_material: "沈積増生物", break_material: "蔵に眠る霊薬の狂宴", distributed: false, release_version: "7.0" },
+  { name: "白銀の湖を舞う翼", rarity: 5, weapon_type: "片手剣", base_atk: 674, ascension_stat: "会心ダメージ", enemy_material: "生命の虚ろな根", break_material: "蔵に眠る霊薬の狂宴", distributed: false, release_version: "7.0" },
+  { name: "胸中の谺", rarity: 4, weapon_type: "法器", base_atk: 565, ascension_stat: "攻撃力", enemy_material: "沈積増生物", break_material: "蒼星軍勢の征服", distributed: false, release_version: "7.0" },
+  { name: "遠望の歌", rarity: 4, weapon_type: "長柄武器", base_atk: 565, ascension_stat: "元素熟知", enemy_material: "生命の虚ろな根", break_material: "氷の皇帝の訣別", distributed: false, release_version: "7.0" },
+  { name: "諸王の対局", rarity: 4, weapon_type: "法器", base_atk: 510, ascension_stat: "会心率", enemy_material: "壊れたプリズム", break_material: "静謐な森のしずくの金符", distributed: false, release_version: "7.0" },
+  { name: "異端を狩る熔刀", rarity: 4, weapon_type: "片手剣", base_atk: null, ascension_stat: null, enemy_material: null, break_material: "灼心を捧げる栄光", distributed: false, release_version: "7.0" },
+  { name: "新たなる枝", rarity: 4, weapon_type: "片手剣", base_atk: 510, ascension_stat: "会心ダメージ", enemy_material: "生命の虚ろな根", break_material: "蔵に眠る霊薬の狂宴", distributed: false, release_version: "7.1" },
+  { name: "旋流の讃美歌", rarity: 5, weapon_type: "法器", base_atk: 542, ascension_stat: "HP", enemy_material: "沈積増生物", break_material: "蔵に眠る霊薬の狂宴", distributed: false, release_version: "7.1" },
+  { name: "銀灯", rarity: 4, weapon_type: "片手剣", base_atk: 510, ascension_stat: "会心ダメージ", enemy_material: "脆い骨片", break_material: "漆黒の隕鉄の塊", distributed: true, release_version: "7.1" },
+  { name: "雪に沈む心", rarity: 4, weapon_type: "法器", base_atk: 510, ascension_stat: "会心ダメージ", enemy_material: "生命の虚ろな根", break_material: "氷の皇帝の訣別", distributed: false, release_version: "7.1" },
+  { name: "霜雪の契", rarity: 4, weapon_type: "弓", base_atk: 510, ascension_stat: "防御力", enemy_material: "生命の虚ろな根", break_material: "蒼星軍勢の征服", distributed: false, release_version: "7.1" },
+  { name: "風に遊ぶ弦", rarity: 4, weapon_type: "弓", base_atk: 510, ascension_stat: "会心率", enemy_material: "沈積増生物", break_material: "氷の皇帝の訣別", distributed: false, release_version: "7.1" },
+  { name: "蝶の羽化", rarity: 5, weapon_type: "片手剣", base_atk: 674, ascension_stat: "会心ダメージ", enemy_material: "生命の虚ろな根", break_material: "蒼星軍勢の征服", distributed: false, release_version: "7.1" },
+  { name: "秘星の聖典", rarity: 5, weapon_type: "法器", base_atk: null, ascension_stat: null, enemy_material: null, break_material: null, distributed: false, release_version: "7.2" },
+  { name: "旧貴族の長弓", rarity: null, weapon_type: null, base_atk: null, ascension_stat: null, enemy_material: null, break_material: "獅牙戦士の理想", distributed: false, release_version: null },
+  { name: "旧貴族長槍", rarity: null, weapon_type: null, base_atk: 565, ascension_stat: null, enemy_material: "霧虚ろの花粉", break_material: null, distributed: false, release_version: null },
+  { name: "暗黒の裂眼", rarity: null, weapon_type: null, base_atk: null, ascension_stat: null, enemy_material: "重い角笛", break_material: null, distributed: false, release_version: null },
+  { name: "異端を狩る熔刀", rarity: null, weapon_type: null, base_atk: null, ascension_stat: null, enemy_material: "冷えた鱗甲の欠片", break_material: null, distributed: false, release_version: null },
+  { name: "異端を狩る熔刃", rarity: 4, weapon_type: "片手剣", base_atk: null, ascension_stat: "会心率", enemy_material: "従戦士の木笛", break_material: null, distributed: false, release_version: null },
+  { name: "異端を狩る熔刃", rarity: null, weapon_type: null, base_atk: 510, ascension_stat: null, enemy_material: null, break_material: null, distributed: false, release_version: null },
+  { name: "黒岩の大剣", rarity: null, weapon_type: null, base_atk: null, ascension_stat: null, enemy_material: null, break_material: "霧海雲間の転還", distributed: false, release_version: null },
+  { name: "誓いの明導", rarity: null, weapon_type: null, base_atk: 565, ascension_stat: null, enemy_material: null, break_material: "遠海夷地の金枝", distributed: false, release_version: null },
+  { name: "金堀りのシャベル", rarity: null, weapon_type: null, base_atk: 510, ascension_stat: null, enemy_material: "暗き霧の欠片", break_material: "長夜の灯火の輝光", distributed: false, release_version: null },
+  { name: "塵と光の七つの誓約", rarity: null, weapon_type: null, base_atk: 741, ascension_stat: null, enemy_material: "光を失った焔剣の柄", break_material: "奇妙な装置の宿願", distributed: false, release_version: null }
+];
+
 const WEAPON_BREAK_GROUPS = {
-  '今昔劇画の鬼人': '稲妻',
-  '凛風奔狼の郷愁': 'モンド',
-  '孤雲寒林の神体': '璃月',
-  '漆黒の隕鉄の塊': '璃月',
-  '獅牙戦士の理想': 'モンド',
-  '遠海夷地の金枝': '稲妻',
-  '霧海雲間の転還': '璃月',
-  '高塔の王の砕けた夢': 'モンド',
-  '鳴神御霊の勇武': '稲妻',
-  '烈日権威の往日': 'スメール',
-  '静謐な森のしずくの金符': 'スメール',
-  'オアシスガーデンの真諦': 'スメール',
-  '無垢な海の金盃': 'フォンテーヌ',
-  '悠久の弦の響き': 'フォンテーヌ',
-  '純聖な雫の精髄': 'フォンテーヌ',
-  '灼心を捧げる栄光': 'ナタ',
-  '狂乱の聖主の神面': 'ナタ',
-  '神秘なる煙の啓示': 'ナタ',
-  '奇妙な装置の宿願': 'ナドクライ',
-  '長夜の灯火の輝光': 'ナドクライ',
-  '極北の末裔の煌光': 'ナドクライ',
-  '蔵に眠る霊薬の狂宴': 'スネージナヤ',
-  '蒼星軍勢の征服': 'スネージナヤ',
-  '氷の皇帝のの訣別': 'スネージナヤ',
+  "今昔劇画の鬼人": "稲妻", "凛風奔狼の郷愁": "モンド", "孤雲寒林の神体": "璃月",
+  "漆黒の隕鉄の塊": "璃月", "獅牙戦士の理想": "モンド", "遠海夷地の金枝": "稲妻",
+  "霧海雲間の転還": "璃月", "高塔の王の砕けた夢": "モンド", "鳴神御霊の勇武": "稲妻",
+  "烈日権威の往日": "スメール", "静謐な森のしずくの金符": "スメール", "オアシスガーデンの真諦": "スメール",
+  "無垢な海の金盃": "フォンテーヌ", "悠久の弦の響き": "フォンテーヌ", "純聖な雫の精髄": "フォンテーヌ",
+  "灼心を捧げる栄光": "ナタ", "狂乱の聖主の神面": "ナタ", "神秘なる煙の啓示": "ナタ",
+  "奇妙な装置の宿願": "ナドクライ", "長夜の灯火の輝光": "ナドクライ", "極北の末裔の煌光": "ナドクライ",
+  "蔵に眠る霊薬の狂宴": "スネージナヤ", "蒼星軍勢の征服": "スネージナヤ", "氷の皇帝の訣別": "スネージナヤ",
 };
 
 const WEAPON_NAME_ALIASES = {
-  '龍殺しの英雄譚': '龍殺しの英傑譚',
-  '旧貴族の長弓': '旧貴族長弓',
-  '誓いの明導': '誓いの明瞳',
-  '黒岩の大剣': '黒岩の斬刀',
-  '塵と光と七つの誓約': '塵と光の七つの誓約',
-  '旧貴族長槍': '旧貴族猟槍',
-  '金掘りのシャベル': '金堀りのシャベル',
-  '異端を狩る溶刀': '異端を狩る溶刃',
+  "龍殺しの英雄譚": "龍殺しの英傑譚", "旧貴族の長弓": "旧貴族長弓", "誓いの明導": "誓いの明瞳",
+  "黒岩の大剣": "黒岩の斬刀", "塵と光と七つの誓約": "塵と光の七つの誓約", "旧貴族長槍": "旧貴族猟槍",
+  "金掘りのシャベル": "金堀りのシャベル", "異端を狩る溶刀": "異端を狩る溶刃",
 };
 
-const WEAPON_READINGS = {
-  "「漁獲」": ["ぎょかく"],
-  "アモスの弓": ["あもすのゆみ", "かんうもち"],
-  "暗鉄剣": ["あんてつけん", "おーばーろーど"],
-  "異世界旅行記": ["いせかいりょこうき"],
-  "果てなき紺碧の唄": ["はてなきこんぺきのうた"],
-  "喜多院十文字槍": ["きたいんじゅうもんじやり"],
-  "久遠流転の大典": ["くおんるてんのたいてん", "ぬヴぃれっともち"],
-  "弓蔵": ["きゅうぞう","ゆみくら"],
-  "旧貴族大剣": ["きゅうきぞくたいけん"],
-  "旧貴族長剣": ["きゅうきぞくちょうけん"],
-  "旧貴族秘法録": ["きゅうきぞくひほうろく"],
-  "暁を告げる歴史": ["あかつきをつげるれきし", "うぇんてぃもち", "えねにき"],
-  "桂木斬長正": ["かつらぎざんながまさ"],
-  "護摩の杖": ["ごまのつえ", "ふーたおもち"],
-  "降臨の剣": ["こうりんのけん"],
-  "黒岩の戦弓": ["こくがんのせんきゅう", "こくがんのいくさゆみ"],
-  "黒岩の突槍": ["こくがんのとっそう"],
-  "黒岩の緋玉": ["こくがんのひぎょく"],
-  "黒剣": ["こっけん", "くろさわり"],
-  "黒蝕": ["こくしょく", "どぅりんもち"],
-  "黒纓槍": ["こくえいそう", "すらいむやり"],
-  "サイフォスの月明かり": ["さいふぉすのつきあかり"],
-  "シナバースピンドル": ["しなすぴ","しなばーすぴんどる"],
-  "祭礼の弓": ["さいれいのゆみ"],
-  "祭礼の剣": ["さいれいのけん"],
-  "祭礼の大剣": ["さいれいのたいけん"],
-  "祭礼の断片": ["さいれいのだんぺん"],
-  "山の王の長牙": ["やまのおうのちょうが", "のおうの", "きぃにちもち"],
-  "四風原典": ["しふうげんてん"],
-  "赦罪": ["しゃざい", "くろりんでもち"],
-  "終焉を嘆く詩": ["しゅうえんをなげくうた", "しゅうえんゆみ", "うぇんてぃもち"],
-  "昭心": ["しょうしん"],
-  "松韻の響く頃": ["しょういんのひびくころ", "えうるあもち", "まつたけ"],
-  "真言の匣": ["しんごんのはこ", "ねふぇるもち", "せんねんぱずる"],
-  "神楽の真意": ["かぐらのしんい", "やえみこもち"],
-  "星鷲の紅き羽": ["せいしゅうのあかきはね", "ちゃすかもち"],
-  "静水流転の輝き": ["せいすいるてんのかがやき", "ふりーなもち", "おもちゃ"],
-  "千岩長槍": ["せんがんながやり"],
-  "千烈の日輪": ["せんれつのにちりん", "まーヴぃかもち", "にんじん", "にちりん"],
-  "船渠剣": ["せんきょけん", "りったいきどう", "かったー", "まんじゅうはっさい"],
-  "蒼紋の角杯": ["そうもんのかくはい"],
-  "息災": ["そくさい", "しんかくもち"],
-  "ダークアレイの狩人": ["だーくあれいのかりうど", "だーくあれいのかりゅうど"],
-  "弾弓": ["だんきゅう"],
-  "知恵の溶炎": ["ちえのようえん"],
-  "鎮山の釘": ["ちんざんのくぎ"],
-  "笛の剣": ["ふえのけん"],
-  "鉄彩の花": ["てっさいのはな"],
-  "天空の巻": ["てんくうのまき"],
-  "天空の刃": ["てんくうのやいば"],
-  "天空の脊": ["てんくうのせき", "ものほしざお", "みんとやり"],
-  "天空の翼": ["てんくうのつばさ", "てんくうゆみ"],
-  "天空の傲": ["てんくうのおごり", "てんくうのごう"],
-  "天目影打": ["あめのまかげうち"],
-  "東花坊時雨": ["とうかぼうしぐれ", "からかさおばけ"],
-  "虹蛇の雨弦": ["にじへびのうげん"],
-  "プロスペクタードリル": ["ぷろすぺくたーどりる", "どりる"],
-  "波乱月白経津": ["はらんげっぱくふつ", "かみさとあやともち", "あやともち"],
-  "破魔の弓": ["はまのゆみ"],
-  "白雨心弦": ["はくうしんげん", "しぐうぃんもち"],
-  "白鉄の大剣": ["はくてつのたいけん"],
-  "白纓槍": ["はくえいそう"],
-  "飛天御剣": ["ひてんみつるぎ"],
-  "飛天大御剣": ["ひてんおおみつるぎ"],
-  "飛来の鳴弦": ["ひらいのめいげん", "よいみやもち"],
-  "浮世の錠": ["うきよのじょう"],
-  "風鷹剣": ["ふうようけん"],
-  "碧落の瓏": ["へきらくのろう", "まっちゃどーなつ", "びゃくじゅつもち", "しろぽもち"],
-  "ムーンピアサー": ["むーんぴあさー"],
-  "魔導緒論": ["まどうしょろん"],
-  "霧切の廻光": ["きりぎりのかいこう", "かみさとあやかもち", "あやかもち"],
-  "ヤシュチェの環": ["やしゅちぇのわ"],
-  "夜を紡ぐ天鏡": ["よるをつむぐてんきょう", "らうまもち"],
-  "リカーブボウ": ["りかーぶぼう"],
-  "レンジゲージ": ["れんじげーじ"],
-  "超越の鍵": ["ちょうえつのかぎ", "かいらいもち", "さんどろーねもち"],
-  "「スーパーアルティメット覇王魔剣」": ["すーぱーあるてぃめっとはおうまけん"],
-  "螭龍の剣": ["ちりゅうのけん"],
-  "アースシェイカー": ["あーすしぇいかー"],
-  "ヴィヴィッド・ハート": ["ヴぃヴぃっどはーと", "ヴぁれさもち"],
-  "エズピツァルの笛": ["えずぴつぁるのふえ"],
-  "サーフィンタイム": ["さーふぃんたいむ", "むあらにもち"],
-  "サーンドルの渡し守": ["さーんどるのわたしもり", "てつぱいぷ"],
-  "シャープシューターの誓い": ["しゃーぷしゅーたーのちかい"],
-  "ストロングボーン": ["すとろんぐぼーん"],
-  "ダークアレイの酒と詩": ["だーくあれいのさけとうた", "だーくあれいのさけとし"],
-  "ダークアレイの閃光": ["だーくあれいのせんこう"],
-  "タイダル・シャドー": ["たいだるしゃどー"],
-  "チェーンブレイカー": ["ちぇーんぶれいかー"],
-  "チ虎魚の刀": ["ちこざかなのかたな"],
-  "トゥライトゥーラの記憶": ["とぅらいとぅーらのきおく", "ほうろうしゃもち", "すからましゅもち"],
-  "トキの嘴": ["ときのくちばし"],
-  "ドドコの物語": ["どどこのものがたり", "くれーもち"],
-  "ドラゴンスピア": ["どらごんすぴあ"],
-  "フィヨルドの歌": ["ふぃよるどのうた"],
-  "プレデター": ["ぷれでたー", "あーろいもち"],
-  "ポケット魔導書": ["ぽけっとまどうしょ"],
-  "マカイラの水色": ["まかいらのみずいろ"],
-  "リングボウ": ["りんぐぼう"],
-  "ルミドゥースの挽歌": ["るみどぅーすのばんか", "えみりえもち"],
-  "葦海の標": ["いかいのしるべ", "でぃしあもち"],
-  "烏髄の孤灯": ["うずいのことう", "ちょうずいのことう"],
-  "雨裁": ["うさい", "あめさい"],
-  "王の近侍": ["おうのきんじ"],
-  "花飾りの羽": ["はなかざりのはね"],
-  "海淵のフィナーレ": ["かいぶちのふぃなーれ", "かいえんのふぃなーれ", "うみぶちのふぃなーれ"],
-  "岩峰を巡る歌": ["がんほうをめぐるうた", "しろねんもち"],
-  "旧貴族長弓": ["きゅきぞくながゆみ", "きゅうきぞくちょうきゅう", "きゅうきぞくゆみ"],
-  "旧貴族猟槍": ["きゅうきぞくりょうそう", "きゅうきぞくやり"],
-  "玉響停の御噺": ["たまゆらていのおはなし"],
-  "金堀りのシャベル": ["きんほりのしゃべる", "かなほりのしゃべる"],
-  "金珀・試作": ["きんぱくしさく", "きんはくしさく"],
-  "銀の剣": ["ぎんのけん"],
-  "訓練用大剣": ["くんれんようたいけん"],
-  "携帯型チェンソー": ["けいたいがたちぇんそー"],
-  "血染めの荒れ地": ["ちぞめのあれち", "ふりんずもち"],
-  "月紡ぎの曙光": ["つきつむぎのしょこう"],
-  "原木刀": ["げんぼくとう"],
-  "古華・試作": ["こかしさく"],
-  "古祠の瓏": ["こしのろう"],
-  "香りのシンフォニスト": ["かおりのしんふぉにすと", "えすこふぃえもち", "えすこもち", "ふぉーく"],
-  "黒岩の斬刀": ["こくがんのざんとう"],
-  "黒岩の長剣": ["こくがんのちょうけん"],
-  "砂中の賢者達の問答": ["さちゅうのけんじゃたちのもんどう", "まほうしょうじょ", "すてっき"],
-  "災憾": ["さいかん", "ろーえんもち"],
-  "砕け散る光輪": ["くだけちるこうりん", "いねふぁもち"],
-  "祭星者の眺め": ["さいせいしゃのながめ", "しとらりもち", "ばぁちゃんもち"],
-  "裁断": ["さいだん", "なヴぃあもち"],
-  "三日月の含光": ["みかづきのがんこう", "みかずきのかんこう", "しはくもち"],
-  "斬岩・試作": ["ざんがんしさく"],
-  "斬山の刃": ["ざんざんのやいば", "ざんさんのやいば"],
-  "斬波のひれ長": ["ざんばのひれなが", "ざんぱのひれなが"],
-  "始まりの大魔術": ["はじまりのだいまじゅつ", "りねもち"],
-  "死闘の槍": ["しとうのやり"],
-  "実りの鉤鉈": ["みのりのかぎなた"],
-  "若水": ["じゃくすい", "わかみず", "いえらんもち", "いぇらんもち"],
-  "狩人の道": ["かりうどのみち", "かりゅうどのみち", "てぃなりもち"],
-  "狩猟弓": ["しゅりょうゆみ"],
-  "純水流華": ["じゅんすいるか", "じゅんすいりゅうか"],
-  "鐘の剣": ["かねのけん"],
-  "寝正月の初晴": ["ねしょうがつのはつはれ", "ゆめみづきみずきもち", "みずきもち"],
-  "新米の長槍": ["しんまいのながやり"],
-  "森林のレガリア": ["しんりんのれがりあ"],
-  "塵と光の七つの誓約": ["ちりとひかりとななつのせいやく", "にこもち"],
-  "水仙十字の剣": ["すいせんじゅうじのけん"],
-  "翠光の裁葉": ["すいこうのさいよう", "すいこうのさいは", "あるはいぜんもち"],
-  "星鎌・試作": ["ほしがましさく"],
-  "正義の報酬": ["せいぎのほうしゅう"],
-  "生徒ノート": ["せいとのーと"],
-  "聖顕の鍵": ["せいけんのかぎ", "にぃろうもち"],
-  "聖祭者の輝杖": ["せいさいしゃのきじょう"],
-  "誓いの明瞳": ["ちかいのめいどう"],
-  "静寂の唄": ["せいじゃくのうた"],
-  "静謐の笛": ["せいひつのふえ"],
-  "赤角石塵滅砕": ["せきかくせきじんめっさい", "あらたきいっともち"],
-  "赤月のシルエット": ["しゃくげつのしるえっと", "あるれっきーのもち", "めしつかいもち", "おとうさまもち"],
-  "赤砂の杖": ["せきさのつえ", "あかさのつえ", "せのもち"],
-  "雪葬の星銀": ["せっそうのせいぎん"],
-  "絶弦": ["ぜつげん"],
-  "千岩古剣": ["せんがんこけん"],
-  "千夜に浮かぶ夢": ["せんやにうかぶゆめ", "なひーだもち"],
-  "草薙の稲光": ["くさなぎのいなびかり", "らいでんしょうぐんもち", "らいでんもち"],
-  "蒼古なる自由への誓い": ["そうこなるじゆうへのちかい", "かずはもち", "かえではらかずはもち"],
-  "蒼翠の狩猟弓": ["そうりょくのしゅりょうゆみ", "あおみどりのしゅりょうゆみ"],
-  "蒼耀": ["そうよう", "すかーくもち"],
-  "霜契の金枝": ["そうけつのきんし", "しもけつのきんし", "りんねあもち"],
-  "霜辰": ["しもふり", "そうしん"],
-  "築雲": ["ちくうん"],
-  "帳の夜曲": ["とばりのよきょく", "とばりのやきょく", "ころんびーなもち", "しょうじょもち"],
-  "鶴鳴の余韻": ["かくめいのよいん", "つるもち", "かんうんもち"],
-  "鉄影段平": ["てつえいだんぺい", "てつえいだんへい"],
-  "鉄尖槍": ["てっとっそう", "てつとつそう", "てつとつやり"],
-  "鉄蜂の刺し": ["てつほうのさし"],
-  "天光のリュート": ["てんこうのりゅーと"],
-  "冬極の白星": ["とうきょくのはくせい", "たるたりやもち", "こうしもち"],
-  "冬忍びの実": ["ふゆしのびのみ"],
-  "特級の宝玉": ["とっきゅうのほうぎょく"],
-  "虹の行方": ["にじのゆくえ"],
-  "波乗りの旋回": ["なみのりのせんかい"],
-  "破天の槍": ["はてんのやり", "しょうりもち"],
-  "白影の剣": ["はくえいのけん"],
-  "白辰の輪": ["はくしんのわ", "はくそうのわ"],
-  "盤岩結緑": ["ばんがんけつろく", "けつみどり", "ばんけつ"],
-  "不滅の月華": ["ふめつのげっか", "どーなつ", "ここみもち", "さんごのみやここみもち"],
-  "腐食の剣": ["ふしょくのけん"],
-  "風花の頌歌": ["ふうかのしょうか", "かざはなのしょうか", "うぃんどぶるーむのしょうか"],
-  "風信の矛": ["ふうしんのほこ"],
-  "文使い": ["ふみつかい", "ぶんつかい"],
-  "鉾槍": ["ほこやり"],
-  "万国諸海の図譜": ["ばんこくしょかいのずふ"],
-  "万能の鍵": ["ばんのうのかぎ"],
-  "満悦の実": ["まんえつのみ"],
-  "無工の剣": ["むこうのけん"],
-  "無鋒の剣": ["むほうのけん"],
-  "厄水の災い": ["やくすいのわざわい", "やくみずのわざわい"],
-  "幽夜のワルツ": ["ゆうよのわるつ", "ゆうやのわるつ", "ふぃっしゅるもち"],
-  "有楽御簾切": ["うらくみすぎり", "ちおりもち"],
-  "傭兵の重剣": ["ようへいのじゅうけん"],
-  "羅網の針": ["らもうのはり"],
-  "落霞": ["らっか"],
-  "理屈責め": ["りくつぜめ"],
-  "流月の針": ["りゅうげつのはり", "るげつのはり"],
-  "流浪楽章": ["るろうがくしょう"],
-  "龍血を浴びた剣": ["りゅうけつをあびたけん"],
-  "龍殺しの英傑譚": ["りゅうごろしのえいけつたん"],
-  "旅道の剣": ["たびみちのけん"],
-  "冷寂の音": ["れいじゃくのおと"],
-  "冷刃": ["れいじん"],
-  "歴戦の狩猟弓": ["れきせんのしゅりょうゆみ"],
-  "烈日の後嗣": ["れつじつのこうし"],
-  "狼の武勲詩": ["おおかみのぶくんし", "ふぁるかもち"],
-  "狼の末路": ["おおかみのまつろ", "でぃるっくもち"],
-  "狼牙": ["ろうが"],
-  "和璞鳶": ["わはくえん", "しょうもち"],
-  "話死合い棒": ["はなしあいぼう"],
-  "凛流の監視者": ["りんりゅうのかんししゃ", "りおせすりもち"],
-  "匣中日月": ["こうちゅうにちげつ", "たなかほうき"],
-  "匣中滅龍": ["こうちゅうめつりゅう", "たなかやり"],
-  "匣中龍吟": ["こうちゅうりゅうぎん", "たなかかたてけん", "たなかけん"],
-  "彷徨える星": ["さまよえるほし"],
-  "惡王丸": ["あくおうまる"],
-  "曚雲の月": ["もううんのつき"],
-  "澹月・試作": ["たんげつしさく"],
-  "竭沢": ["けったく"],
-  "籠釣瓶一心": ["かごつるべいっしん", "ようとう"],
-  "翡玉法珠": ["ひぎょくほうじゅ"],
-  "銜玉の海皇": ["まぐろたいけん", "かんぎょくのかいおう"],
-  "鴉羽の弓": ["からすばのゆみ", "からすばねのゆみ"],
-  "黎明の神剣": ["れいめいのしんけん", "やみをきりさくしょうりへのふつぎょうしんけん"],
-  "星鋒の剣": ["せいほうのけん", "たびびともち"],
-  "白銀の湖を舞う翼": ["はくぎんのみずうみをまうつばさ", "おでっともち"],
-  "霜雪の契": ["そうせつのちぎり"],
-  "千鈞懸黎": ["せんきんけんれい"],
-  "胸中の谺": ["きょうちゅうのこだま"],
-  "諸王の対局": ["しょおうのたいきょく"],
-  "遠望の歌": ["えんぼうのうた"],
-  "氷の吐息": ["こおりのといき"],
-  "救済の剣": ["きゅうさいのけん"],
-  "シンフォニーの鋳影": ["しんふぉにーのいえい"],
-  "導炎の源": ["どうえんのみなもと"],
-  "異端を狩る熔刃": ["いたんをかるようじん"],
-  "西風剣": ["せいふうけん", "せぴゅろすそーど"],
-  "西風大剣": ["せいふうたいけん", "せぴゅろすろんぐそーど"],
-  "西風長槍": ["せいふうやり", "せぴゅろすすぴあー"],
-  "西風秘典": ["せいふうひてん", "せぴゅろすひてん"],
-  "西風猟弓": ["せぴゅろすあろー", "せいふうゆみ"],
-  "銀灯": ["ぎんとう"],
-  "蝶の羽化": ["ちょうのうか", "ヴぇすなもち"],
-  "旋流の讃美歌": ["せんりゅうのさんびか", "ヴぉじゃにーつぁもち"],
-  "風に遊ぶ弦": ["かぜにあそぶげん"],
-  "雪に沈む心": ["ゆきにしずむこころ"],
-  "新たなる枝": ["あらたなるえだ"],
-  "秘星の聖典": ["ひせいのせいてん", "みてぃやもち"],
-};
-
-const WEAPON_SOURCE_OVERRIDES = {
-  "「スーパーアルティメット覇王魔剣」": { rarity: 4, weaponType: "両手剣" },
-  "アースシェイカー": { rarity: 4, weaponType: "両手剣" },
-  "ヴィヴィッド・ハート": { rarity: 5, weaponType: "法器" },
-  "エズピツァルの笛": { rarity: 4, weaponType: "片手剣" },
-  "サーフィンタイム": { rarity: 5, weaponType: "法器" },
-  "サーンドルの渡し守": { rarity: 4, weaponType: "片手剣" },
-  "シャープシューターの誓い": { rarity: 3, weaponType: "弓" },
-  "ストロングボーン": { rarity: 4, weaponType: "片手剣" },
-  "ダークアレイの酒と詩": { rarity: 4, weaponType: "法器" },
-  "ダークアレイの閃光": { rarity: 4, weaponType: "片手剣" },
-  "タイダル・シャドー": { rarity: 4, weaponType: "両手剣" },
-  "チェーンブレイカー": { rarity: 4, weaponType: "弓" },
-  "チ虎魚の刀": { rarity: 3, weaponType: "片手剣" },
-  "トゥライトゥーラの記憶": { rarity: 5, weaponType: "法器" },
-  "トキの嘴": { rarity: 4, weaponType: "弓" },
-  "ドドコの物語": { rarity: 4, weaponType: "法器" },
-  "ドラゴンスピア": { rarity: 4, weaponType: "長柄武器" },
-  "フィヨルドの歌": { rarity: 4, weaponType: "長柄武器" },
-  "プレデター": { rarity: 4, weaponType: "弓" },
-  "ポケット魔導書": { rarity: 2, weaponType: "法器" },
-  "マカイラの水色": { rarity: 4, weaponType: "両手剣" },
-  "リングボウ": { rarity: 4, weaponType: "弓" },
-  "ルミドゥースの挽歌": { rarity: 5, weaponType: "長柄武器" },
-  "葦海の標": { rarity: 5, weaponType: "両手剣" },
-  "烏髄の孤灯": { rarity: 4, weaponType: "法器" },
-  "雨裁": { rarity: 4, weaponType: "両手剣" },
-  "王の近侍": { rarity: 4, weaponType: "弓" },
-  "花飾りの羽": { rarity: 4, weaponType: "弓" },
-  "海淵のフィナーレ": { rarity: 4, weaponType: "片手剣" },
-  "岩峰を巡る歌": { rarity: 5, weaponType: "片手剣" },
-  "旧貴族長弓": { rarity: 4, weaponType: "弓" },
-  "旧貴族猟槍": { rarity: 4, weaponType: "長柄武器" },
-  "玉響停の御噺": { rarity: 4, weaponType: "長柄武器" },
-  "金堀りのシャベル": { rarity: 4, weaponType: "長柄武器" },
-  "金珀・試作": { rarity: 4, weaponType: "法器" },
-  "銀の剣": { rarity: 2, weaponType: "片手剣" },
-  "訓練用大剣": { rarity: 1, weaponType: "両手剣" },
-  "携帯型チェンソー": { rarity: 4, weaponType: "両手剣" },
-  "血染めの荒れ地": { rarity: 5, weaponType: "長柄武器" },
-  "月紡ぎの曙光": { rarity: 4, weaponType: "片手剣" },
-  "原木刀": { rarity: 4, weaponType: "片手剣" },
-  "古華・試作": { rarity: 4, weaponType: "両手剣" },
-  "古祠の瓏": { rarity: 4, weaponType: "法器" },
-  "香りのシンフォニスト": { rarity: 5, weaponType: "長柄武器" },
-  "黒岩の斬刀": { rarity: 4, weaponType: "両手剣" },
-  "黒岩の長剣": { rarity: 4, weaponType: "片手剣" },
-  "砂中の賢者達の問答": { rarity: 4, weaponType: "長柄武器" },
-  "災憾": { rarity: 5, weaponType: "長柄武器" },
-  "砕け散る光輪": { rarity: 5, weaponType: "長柄武器" },
-  "祭星者の眺め": { rarity: 5, weaponType: "法器" },
-  "裁断": { rarity: 5, weaponType: "両手剣" },
-  "三日月の含光": { rarity: 5, weaponType: "片手剣" },
-  "斬岩・試作": { rarity: 4, weaponType: "片手剣" },
-  "斬山の刃": { rarity: 5, weaponType: "片手剣" },
-  "斬波のひれ長": { rarity: 4, weaponType: "長柄武器" },
-  "始まりの大魔術": { rarity: 5, weaponType: "弓" },
-  "死闘の槍": { rarity: 4, weaponType: "長柄武器" },
-  "実りの鉤鉈": { rarity: 4, weaponType: "両手剣" },
-  "若水": { rarity: 5, weaponType: "弓" },
-  "狩人の道": { rarity: 5, weaponType: "弓" },
-  "狩猟弓": { rarity: 1, weaponType: "弓" },
-  "純水流華": { rarity: 4, weaponType: "法器" },
-  "鐘の剣": { rarity: 4, weaponType: "両手剣" },
-  "寝正月の初晴": { rarity: 5, weaponType: "法器" },
-  "新米の長槍": { rarity: 1, weaponType: "長柄武器" },
-  "森林のレガリア": { rarity: 4, weaponType: "両手剣" },
-  "塵と光の七つの誓約": { rarity: 5, weaponType: "法器" },
-  "水仙十字の剣": { rarity: 4, weaponType: "片手剣" },
-  "翠光の裁葉": { rarity: 5, weaponType: "片手剣" },
-  "星鎌・試作": { rarity: 4, weaponType: "長柄武器" },
-  "正義の報酬": { rarity: 4, weaponType: "長柄武器" },
-  "生徒ノート": { rarity: 1, weaponType: "法器" },
-  "聖顕の鍵": { rarity: 5, weaponType: "片手剣" },
-  "聖祭者の輝杖": { rarity: 4, weaponType: "長柄武器" },
-  "誓いの明瞳": { rarity: 4, weaponType: "法器" },
-  "静寂の唄": { rarity: 4, weaponType: "弓" },
-  "静謐の笛": { rarity: 4, weaponType: "片手剣" },
-  "赤角石塵滅砕": { rarity: 5, weaponType: "両手剣" },
-  "赤月のシルエット": { rarity: 5, weaponType: "長柄武器" },
-  "赤砂の杖": { rarity: 5, weaponType: "長柄武器" },
-  "雪葬の星銀": { rarity: 4, weaponType: "両手剣" },
-  "絶弦": { rarity: 4, weaponType: "弓" },
-  "千岩古剣": { rarity: 4, weaponType: "両手剣" },
-  "千夜に浮かぶ夢": { rarity: 5, weaponType: "法器" },
-  "草薙の稲光": { rarity: 5, weaponType: "長柄武器" },
-  "蒼古なる自由への誓い": { rarity: 5, weaponType: "片手剣" },
-  "蒼翠の狩猟弓": { rarity: 4, weaponType: "弓" },
-  "蒼耀": { rarity: 5, weaponType: "片手剣" },
-  "霜契の金枝": { rarity: 5, weaponType: "弓" },
-  "霜辰": { rarity: 4, weaponType: "法器" },
-  "築雲": { rarity: 4, weaponType: "弓" },
-  "帳の夜曲": { rarity: 5, weaponType: "法器" },
-  "鶴鳴の余韻": { rarity: 5, weaponType: "法器" },
-  "鉄影段平": { rarity: 3, weaponType: "両手剣" },
-  "鉄尖槍": { rarity: 2, weaponType: "長柄武器" },
-  "鉄蜂の刺し": { rarity: 4, weaponType: "片手剣" },
-  "天光のリュート": { rarity: 4, weaponType: "法器" },
-  "冬極の白星": { rarity: 5, weaponType: "弓" },
-  "冬忍びの実": { rarity: 4, weaponType: "法器" },
-  "特級の宝玉": { rarity: 3, weaponType: "法器" },
-  "虹の行方": { rarity: 4, weaponType: "長柄武器" },
-  "波乗りの旋回": { rarity: 4, weaponType: "法器" },
-  "破天の槍": { rarity: 5, weaponType: "長柄武器" },
-  "白影の剣": { rarity: 4, weaponType: "両手剣" },
-  "白辰の輪": { rarity: 4, weaponType: "法器" },
-  "盤岩結緑": { rarity: 5, weaponType: "片手剣" },
-  "不滅の月華": { rarity: 5, weaponType: "法器" },
-  "腐食の剣": { rarity: 4, weaponType: "片手剣" },
-  "風花の頌歌": { rarity: 4, weaponType: "弓" },
-  "風信の矛": { rarity: 4, weaponType: "長柄武器" },
-  "文使い": { rarity: 3, weaponType: "弓" },
-  "鉾槍": { rarity: 3, weaponType: "長柄武器" },
-  "万国諸海の図譜": { rarity: 4, weaponType: "法器" },
-  "万能の鍵": { rarity: 4, weaponType: "両手剣" },
-  "満悦の実": { rarity: 4, weaponType: "法器" },
-  "無工の剣": { rarity: 5, weaponType: "両手剣" },
-  "無鋒の剣": { rarity: 1, weaponType: "片手剣" },
-  "厄水の災い": { rarity: 4, weaponType: "片手剣" },
-  "幽夜のワルツ": { rarity: 4, weaponType: "弓" },
-  "有楽御簾切": { rarity: 5, weaponType: "片手剣" },
-  "傭兵の重剣": { rarity: 2, weaponType: "両手剣" },
-  "羅網の針": { rarity: 4, weaponType: "弓" },
-  "落霞": { rarity: 4, weaponType: "弓" },
-  "理屈責め": { rarity: 3, weaponType: "両手剣" },
-  "流月の針": { rarity: 4, weaponType: "長柄武器" },
-  "流浪楽章": { rarity: 4, weaponType: "法器" },
-  "龍血を浴びた剣": { rarity: 3, weaponType: "両手剣" },
-  "龍殺しの英傑譚": { rarity: 3, weaponType: "法器" },
-  "旅道の剣": { rarity: 3, weaponType: "片手剣" },
-  "冷寂の音": { rarity: 4, weaponType: "弓" },
-  "冷刃": { rarity: 3, weaponType: "片手剣" },
-  "歴戦の狩猟弓": { rarity: 2, weaponType: "弓" },
-  "烈日の後嗣": { rarity: 4, weaponType: "弓" },
-  "狼の武勲詩": { rarity: 5, weaponType: "両手剣" },
-  "狼の末路": { rarity: 5, weaponType: "両手剣" },
-  "狼牙": { rarity: 4, weaponType: "片手剣" },
-  "和璞鳶": { rarity: 5, weaponType: "長柄武器" },
-  "話死合い棒": { rarity: 4, weaponType: "両手剣" },
-  "凛流の監視者": { rarity: 5, weaponType: "法器" },
-  "匣中日月": { rarity: 4, weaponType: "法器" },
-  "匣中滅龍": { rarity: 4, weaponType: "長柄武器" },
-  "匣中龍吟": { rarity: 4, weaponType: "片手剣" },
-  "彷徨える星": { rarity: 4, weaponType: "法器" },
-  "惡王丸": { rarity: 4, weaponType: "両手剣" },
-  "曚雲の月": { rarity: 4, weaponType: "弓" },
-  "澹月・試作": { rarity: 4, weaponType: "弓" },
-  "竭沢": { rarity: 4, weaponType: "弓" },
-  "籠釣瓶一心": { rarity: 4, weaponType: "片手剣" },
-  "翡玉法珠": { rarity: 3, weaponType: "法器" },
-  "銜玉の海皇": { rarity: 4, weaponType: "両手剣" },
-  "鴉羽の弓": { rarity: 3, weaponType: "弓" },
-  "黎明の神剣": { rarity: 3, weaponType: "片手剣" },
-  "螭龍の剣": { rarity: 4, weaponType: "両手剣" },
-  "星鋒の剣": { rarity: 5, weaponType: "片手剣" },
- "白銀の湖を舞う翼": { rarity: 5, weaponType: "片手剣" },
- "霜雪の契": { rarity: 4, weaponType: "弓" },
- "千鈞懸黎": { rarity: 4, weaponType: "弓" },
- "胸中の谺": { rarity: 4, weaponType: "法器" },
-"諸王の対局": { rarity: 4, weaponType: "法器" },
- "遠望の歌": { rarity: 4, weaponType: "長柄武器" },
- "氷の吐息": { rarity: 4, weaponType: "長柄武器" },
-"救済の剣": { rarity: 4, weaponType: "両手剣" },
-"シンフォニーの鋳影": { rarity: 4, weaponType: "両手剣" },
- "導炎の源": { rarity: 4, weaponType: "片手剣" },
- "異端を狩る熔刀": { rarity: 4, weaponType: "片手剣" },
-  "螭龍の剣": { rarity: 4, weaponType: "両手剣" },
-  "蝶の羽化": { rarity: 5, weaponType: "片手剣" },
-  "旋流の讃美歌": { rarity: 5, weaponType: "法器" },
-  "銀灯": { rarity: 4, weaponType: "片手剣" },
-  "新たなる枝": { rarity: 4, weaponType: "片手剣" },
-  "雪に沈む心": { rarity: 4, weaponType: "法器" },
-  "風に遊ぶ弦": { rarity: 4, weaponType: "弓" },
-  "秘星の聖典": { rarity: 5, weaponType: "法器" },
-  };
-
-// 武器の実装バージョンデータの定義
-const weaponReleaseVersionMap = {
-  "「スーパーアルティメット覇王魔剣」": "4.3",
-  "「漁獲」": "2.1",
-  "アースシェイカー": "5.0",
-  "アモスの弓": "1.0",
-  "ヴィヴィッド・ハート": "5.5",
-  "エズピツァルの笛": "5.0",
-  "サーフィンタイム": "5.0",
-  "サーンドルの渡し守": "4.0",
-  "サイフォスの月明かり": "3.1",
-  "シナバースピンドル": "2.3",
-  "シャープシューターの誓い": "1.0",
-  "ストロングボーン": "5.1",
-  "ダークアレイの狩人": "1.4",
-  "ダークアレイの酒と詩": "1.4",
-  "ダークアレイの閃光": "1.4",
-  "タイダル・シャドー": "4.0",
-  "チェーンブレイカー": "5.0",
-  "チ虎魚の刀": "1.0",
-  "トゥライトゥーラの記憶": "3.3",
-  "トキの嘴": "3.7",
-  "ドドコの物語": "1.6",
-  "ドラゴンスピア": "1.2",
-  "フィヨルドの歌": "4.0",
-  "プレデター": "2.1",
-  "プロスペクタードリル": "4.1",
-  "ポケット魔導書": "1.0",
-  "マカイラの水色": "3.1",
-  "ムーンピアサー": "3.0",
-  "ヤシュチェの環": "5.0",
-  "リカーブボウ": "1.0",
-  "リングボウ": "1.0",
-  "ルミドゥースの挽歌": "4.8",
-  "レンジゲージ": "4.1",
-  "葦海の標": "3.5",
-  "暗鉄剣": "1.0",
-  "異世界旅行記": "1.0",
-  "烏髄の孤灯": "Luna I (6.0)",
-  "雨裁": "1.0",
-  "王の近侍": "3.0",
-  "果てなき紺碧の唄": "4.1",
-  "花飾りの羽": "5.2",
-  "海淵のフィナーレ": "4.0",
-  "岩峰を巡る歌": "5.1",
-  "喜多院十文字槍": "2.0",
-  "久遠流転の大典": "4.1",
-  "弓蔵": "1.0",
-  "旧貴族大剣": "1.0",
-  "旧貴族長弓": "1.0",
-  "旧貴族長剣": "1.0",
-  "旧貴族秘法録": "1.0",
-  "旧貴族猟槍": "1.1",
-  "暁を告げる歴史": "Luna III (6.2)",
-  "玉響停の御噺": "5.4",
-  "金堀りのシャベル": "Luna I (6.0)",
-  "金珀・試作": "1.0",
-  "銀の剣": "1.0",
-  "訓練用大剣": "1.0",
-  "携帯型チェンソー": "4.1",
-  "桂木斬長正": "2.0",
-  "血染めの荒れ地": "Luna I (6.0)",
-  "月紡ぎの曙光": "Luna I (6.0)",
-  "原木刀": "3.0",
-  "古華・試作": "1.0",
-  "古祠の瓏": "4.0",
-  "護摩の杖": "1.3",
-  "降臨の剣": "1.0",
-  "香りのシンフォニスト": "5.6",
-  "黒岩の斬刀": "1.0",
-  "黒岩の戦弓": "1.0",
-  "黒岩の長剣": "1.0",
-  "黒岩の突槍": "1.0",
-  "黒岩の緋玉": "1.0",
-  "黒剣": "1.0",
-  "黒蝕": "Luna III (6.2)",
-  "黒纓槍": "1.0",
-  "砂中の賢者達の問答": "4.5",
-  "災憾": "Luna VII (6.6)",
-  "砕け散る光輪": "5.8",
-  "祭星者の眺め": "5.3",
-  "祭礼の弓": "1.0",
-  "祭礼の剣": "1.0",
-  "祭礼の大剣": "1.0",
-  "祭礼の断片": "1.0",
-  "裁断": "4.3",
-  "三日月の含光": "Luna IV (6.3)",
-  "山の王の長牙": "5.0",
-  "斬岩・試作": "1.0",
-  "斬山の刃": "1.2",
-  "斬波のひれ長": "2.2",
-  "四風原典": "1.0",
-  "始まりの大魔術": "4.0",
-  "死闘の槍": "1.0",
-  "実りの鉤鉈": "5.1",
-  "赦罪": "4.7",
-  "若水": "2.7",
-  "狩人の道": "3.0",
-  "狩猟弓": "1.0",
-  "終焉を嘆く詩": "1.4",
-  "純水流華": "4.0",
-  "昭心": "1.0",
-  "松韻の響く頃": "1.5",
-  "鐘の剣": "1.0",
-  "寝正月の初晴": "5.4",
-  "新米の長槍": "1.0",
-  "森林のレガリア": "3.0",
-  "真言の匣": "Luna II (6.1)",
-  "神楽の真意": "2.5",
-  "塵と光の七つの誓約": "Luna VII (6.6)",
-  "水仙十字の剣": "4.2",
-  "翠光の裁葉": "3.4",
-  "星鎌・試作": "1.0",
-  "星鷲の紅き羽": "5.2",
-  "正義の報酬": "4.0",
-  "生徒ノート": "1.0",
-  "聖顕の鍵": "3.1",
-  "聖祭者の輝杖": "Luna II (6.1)",
-  "西風剣": "1.0",
-  "西風大剣": "1.0",
-  "西風長槍": "1.0",
-  "西風秘典": "1.0",
-  "西風猟弓": "1.0",
-  "誓いの明瞳": "2.5",
-  "静寂の唄": "4.0",
-  "静水流転の輝き": "4.2",
-  "静謐の笛": "Luna I (6.0)",
-  "赤角石塵滅砕": "2.3",
-  "赤月のシルエット": "4.6",
-  "赤砂の杖": "3.1",
-  "雪葬の星銀": "1.2",
-  "絶弦": "1.0",
-  "千岩古剣": "1.3",
-  "千岩長槍": "1.3",
-  "千夜に浮かぶ夢": "3.2",
-  "千烈の日輪": "5.3",
-  "船渠剣": "4.1",
-  "草薙の稲光": "2.1",
-  "蒼古なる自由への誓い": "1.6",
-  "蒼翠の狩猟弓": "1.0",
-  "蒼紋の角杯": "5.0",
-  "蒼耀": "5.7",
-  "霜契の金枝": "Luna VI (6.5)",
-  "霜辰": "Luna II (6.1)",
-  "息災": "2.4",
-  "弾弓": "1.0",
-  "知恵の溶炎": "5.8",
-  "築雲": "4.7",
-  "帳の夜曲": "Luna IV (6.3)",
-  "鎮山の釘": "5.1",
-  "鶴鳴の余韻": "4.4",
-  "笛の剣": "1.0",
-  "鉄影段平": "1.0",
-  "鉄彩の花": "3.5",
-  "鉄尖槍": "1.0",
-  "鉄蜂の刺し": "1.0",
-  "天空の巻": "1.0",
-  "天空の刃": "1.0",
-  "天空の脊": "1.0",
-  "天空の翼": "1.0",
-  "天空の傲": "1.0",
-  "天光のリュート": "Luna I (6.0)",
-  "天目影打": "2.0",
-  "冬極の白星": "2.2",
-  "冬忍びの実": "1.2",
-  "東花坊時雨": "3.3",
-  "特級の宝玉": "1.0",
-  "虹の行方": "5.0",
-  "虹蛇の雨弦": "Luna III (6.2)",
-  "波乗りの旋回": "5.2",
-  "波乱月白経津": "2.6",
-  "破天の槍": "1.1",
-  "破魔の弓": "2.0",
-  "白雨心弦": "4.7",
-  "白影の剣": "1.0",
-  "白辰の輪": "2.0",
-  "白鉄の大剣": "1.0",
-  "白纓槍": "1.0",
-  "盤岩結緑": "1.3",
-  "飛天御剣": "1.0",
-  "飛天大御剣": "1.0",
-  "飛来の鳴弦": "2.0",
-  "不滅の月華": "2.1",
-  "浮世の錠": "1.1",
-  "腐食の剣": "1.2",
-  "風花の頌歌": "1.4",
-  "風信の矛": "3.1",
-  "風鷹剣": "1.0",
-  "文使い": "1.0",
-  "碧落の瓏": "3.6",
-  "鉾槍": "1.0",
-  "魔導緒論": "1.0",
-  "万国諸海の図譜": "1.0",
-  "万能の鍵": "Luna I (6.0)",
-  "満悦の実": "3.0",
-  "無工の剣": "1.1",
-  "無鋒の剣": "1.0",
-  "霧切の廻光": "2.0",
-  "夜を紡ぐ天鏡": "Luna I (6.0)",
-  "厄水の災い": "5.2",
-  "幽夜のワルツ": "1.6",
-  "有楽御簾切": "4.5",
-  "傭兵の重剣": "1.0",
-  "羅網の針": "Luna I (6.0)",
-  "落霞": "2.7",
-  "理屈責め": "1.0",
-  "流月の針": "1.0",
-  "流浪楽章": "1.0",
-  "龍血を浴びた剣": "1.0",
-  "龍殺しの英傑譚": "1.0",
-  "旅道の剣": "1.0",
-  "冷寂の音": "5.6",
-  "冷刃": "1.0",
-  "歴戦の狩猟弓": "1.0",
-  "烈日の後嗣": "4.0",
-  "狼の武勲詩": "Luna V (6.4)",
-  "狼の末路": "1.0",
-  "狼牙": "4.0",
-  "和璞鳶": "1.0",
-  "話死合い棒": "4.0",
-  "凛流の監視者": "4.1",
-  "匣中日月": "1.0",
-  "匣中滅龍": "1.0",
-  "匣中龍吟": "1.0",
-  "彷徨える星": "3.1",
-  "惡王丸": "2.2",
-  "曚雲の月": "2.2",
-  "澹月・試作": "1.0",
-  "竭沢": "3.0",
-  "籠釣瓶一心": "2.8",
-  "翡玉法珠": "1.0",
-  "銜玉の海皇": "2.1",
-  "鴉羽の弓": "1.0",
-  "黎明の神剣": "1.0",
-  "螭龍の剣": "1.0",
-  "星鋒の剣": "7.0",
-  "白銀の湖を舞う翼":"7.0",
-  "霜雪の契": "7.0",
-  "千鈞懸黎": "7.0",
-  "胸中の谺": "7.0",
-  "諸王の対局": "7.0",
-  "遠望の歌": "7.0",
-  "氷の吐息":"7.0",
-  "救済の剣": "7.0",
-  "シンフォニーの鋳影": "7.0",
-  "導炎の源": "7.0",
-  "異端を狩る熔刀": "7.0",
-  "螭龍の剣": "1.0",
-  "超越の鍵": "Luna VIII (6.7)",
-  "蝶の羽化": "7.1",
-  "旋流の讃美歌": "7.1",
-  "銀灯": "7.1",
-  "風に遊ぶ弦": "7.1",
-  "雪に沈む心": "7.1",
-  "新たなる枝": "7.1",
-  "秘星の聖典": "7.2",
-};
-
-
-// 武器→突破素材マッピング
-const WEAPON_TO_BREAK_MAT = {
-  // 今昔劇画の鬼人
-  '籠釣瓶一心': '今昔劇画の鬼人', '草薙の稲光': '今昔劇画の鬼人', '斬波のひれ長': '今昔劇画の鬼人',
-  '「漁獲」': '今昔劇画の鬼人', '喜多院十文字槍': '今昔劇画の鬼人', '玉響停の御噺': '今昔劇画の鬼人',
-  '神楽の真意': '今昔劇画の鬼人', '冬極の白星': '今昔劇画の鬼人',
-  // 凛風奔狼の郷愁
-  '降臨の剣': '凛風奔狼の郷愁', '笛の剣': '凛風奔狼の郷愁', '黒剣': '凛風奔狼の郷愁',
-  '天空の刃': '凛風奔狼の郷愁', '黎明の神剣': '凛風奔狼の郷愁', '龍血を浴びた剣': '凛風奔狼の郷愁',
-  '訓練用大剣': '凛風奔狼の郷愁', '傭兵の重剣': '凛風奔狼の郷愁', '天空の傲': '凛風奔狼の郷愁',
-  '祭礼の大剣': '凛風奔狼の郷愁', '狼の武勲詩': '凛風奔狼の郷愁', '風信の矛': '凛風奔狼の郷愁',
-  'ドラゴンスピア': '凛風奔狼の郷愁', '死闘の槍': '凛風奔狼の郷愁', 'ドドコの物語': '凛風奔狼の郷愁',
-  'ダークアレイの酒と詩': '凛風奔狼の郷愁', '龍殺しの英雄譚': '凛風奔狼の郷愁', '流浪楽章': '凛風奔狼の郷愁',
-  '天空の巻': '凛風奔狼の郷愁', '果てなき紺碧の唄': '凛風奔狼の郷愁', '終焉を嘆く詩': '凛風奔狼の郷愁',
-  '狩猟弓': '凛風奔狼の郷愁', 'シャープシューターの誓い': '凛風奔狼の郷愁', '天空の翼': '凛風奔狼の郷愁',
-  '祭礼の弓': '凛風奔狼の郷愁', '歴戦の狩猟弓': '凛風奔狼の郷愁',
-  // 孤雲寒林の神体
-  '匣中龍吟': '孤雲寒林の神体', '暗鉄剣': '孤雲寒林の神体', '黒岩の斬刀': '孤雲寒林の神体',
-  '白影の剣': '孤雲寒林の神体', '斬山の刃': '孤雲寒林の神体', '千岩古剣': '孤雲寒林の神体',
-  '流月の針': '孤雲寒林の神体', '和璞鳶': '孤雲寒林の神体', '碧落の瓏': '孤雲寒林の神体',
-  '翡玉法珠': '孤雲寒林の神体', '黒岩の緋玉': '孤雲寒林の神体', '匣中日月': '孤雲寒林の神体',
-  '古祠の瓏': '孤雲寒林の神体', '弾弓': '孤雲寒林の神体', '弓蔵': '孤雲寒林の神体',
-  '黒岩の戦弓': '孤雲寒林の神体', '若水': '孤雲寒林の神体', '白纓槍': '孤雲寒林の神体',
-  // 漆黒の隕鉄の塊
-  '千鈞懸黎': '漆黒の隕鉄の塊','飛天御剣': '漆黒の隕鉄の塊', '鉄蜂の刺し': '漆黒の隕鉄の塊', '三日月の含光': '漆黒の隕鉄の塊',
-  '古華・試作': '漆黒の隕鉄の塊', '螭龍の剣': '漆黒の隕鉄の塊', '飛天大御剣': '漆黒の隕鉄の塊',
-  '銜玉の海皇': '漆黒の隕鉄の塊', '黒纓槍': '漆黒の隕鉄の塊', '破天の槍': '漆黒の隕鉄の塊',
-  '護摩の杖': '漆黒の隕鉄の塊', '星鎌・試作': '漆黒の隕鉄の塊', '千岩長槍': '漆黒の隕鉄の塊',
-  '万国諸海の図譜': '漆黒の隕鉄の塊', '浮世の錠': '漆黒の隕鉄の塊', 'リングボウ': '漆黒の隕鉄の塊',
-  '落霞': '漆黒の隕鉄の塊', '築雲': '漆黒の隕鉄の塊','銀灯': '漆黒の隕鉄の塊',
-  // 獅牙戦士の理想
-  '蒼古なる自由への誓い': '獅牙戦士の理想', '腐食の剣': '獅牙戦士の理想', '旅道の剣': '獅牙戦士の理想',
-  '祭礼の剣': '獅牙戦士の理想', '西風大剣': '獅牙戦士の理想', '旧貴族大剣': '獅牙戦士の理想',
-  '狼の末路': '獅牙戦士の理想', '鉄彩の花': '獅牙戦士の理想', '白鉄の大剣': '獅牙戦士の理想',
-  '西風長槍': '獅牙戦士の理想', '鉄尖槍': '獅牙戦士の理想', '天空の脊': '獅牙戦士の理想',
-  '新米の長槍': '獅牙戦士の理想', '冬忍びの実': '獅牙戦士の理想', '四風原典': '獅牙戦士の理想',
-  '祭礼の断片': '獅牙戦士の理想', '異世界旅行記': '獅牙戦士の理想', '風花の頌歌': '獅牙戦士の理想',
-  'ダークアレイの狩人': '獅牙戦士の理想', 'アモスの弓': '獅牙戦士の理想', '旧貴族の長弓': '獅牙戦士の理想',
-  '西風猟弓': '獅牙戦士の理想', 'リカーブボウ': '獅牙戦士の理想', '暁を告げる歴史': '獅牙戦士の理想',
-  // 遠海夷地の金枝
-  '霧切の廻光': '遠海夷地の金枝', '天目影打': '遠海夷地の金枝', '有楽御簾切': '遠海夷地の金枝',
-  '惡王丸': '遠海夷地の金枝', '不滅の月華': '遠海夷地の金枝', '白辰の輪': '遠海夷地の金枝',
-  '誓いの明導': '遠海夷地の金枝',
-  // 霧海雲間の転還
-  '盤岩結緑': '霧海雲間の転還', '斬岩・試作': '霧海雲間の転還', 'チ虎魚の刀': '霧海雲間の転還',
-  '無工の剣': '霧海雲間の転還', '雨裁': '霧海雲間の転還', '理屈責め': '霧海雲間の転還',
-  '黒岩の大剣': '霧海雲間の転還', '鉾槍': '霧海雲間の転還', '旧貴族猟槍': '霧海雲間の転還',
-  '黒岩の突槍': '霧海雲間の転還', '匣中滅龍': '霧海雲間の転還', '息災': '霧海雲間の転還',
-  '昭心': '霧海雲間の転還', '特級の宝玉': '霧海雲間の転還', '金珀・試作': '霧海雲間の転還',
-  '鶴鳴の余韻': '霧海雲間の転還', '文使い': '霧海雲間の転還', '澹月・試作': '霧海雲間の転還',
-  // 高塔の王の砕けた夢
-  '西風剣': '高塔の王の砕けた夢', '旧貴族長剣': '高塔の王の砕けた夢', '鉄影段平': '高塔の王の砕けた夢',
-  '銀の剣': '高塔の王の砕けた夢', '無鋒の剣': '高塔の王の砕けた夢', 'ダークアレイの閃光': '高塔の王の砕けた夢',
-  'シナバースピンドル': '高塔の王の砕けた夢', '風鷹剣': '高塔の王の砕けた夢', '狼牙': '高塔の王の砕けた夢',
-  '黒蝕': '高塔の王の砕けた夢', '鐘の剣': '高塔の王の砕けた夢', '松韻の響く頃': '高塔の王の砕けた夢',
-  '雪葬の星銀': '高塔の王の砕けた夢', '災憾': '高塔の王の砕けた夢', '魔導緒論': '高塔の王の砕けた夢',
-  '西風秘典': '高塔の王の砕けた夢', '旧貴族秘法録': '高塔の王の砕けた夢', 'ポケット魔導書': '高塔の王の砕けた夢',
-  '生徒ノート': '高塔の王の砕けた夢', '絶弦': '高塔の王の砕けた夢', '蒼翠の狩猟弓': '高塔の王の砕けた夢',
-  '幽夜のワルツ': '高塔の王の砕けた夢', '鴉羽の弓': '高塔の王の砕けた夢',
-  // 鳴神御霊の勇武
-  '波乱月白経津': '鳴神御霊の勇武', '東花坊時雨': '鳴神御霊の勇武', '桂木斬長正': '鳴神御霊の勇武',
-  '赤角石塵滅砕': '鳴神御霊の勇武', '寝正月の初晴': '鳴神御霊の勇武', '飛来の鳴弦': '鳴神御霊の勇武',
-  '破魔の弓': '鳴神御霊の勇武', 'プレデター': '鳴神御霊の勇武', '曚雲の月': '鳴神御霊の勇武',
-  // 烈日権威の往日
-  'マカイラの水色': '烈日権威の往日', '葦海の標': '烈日権威の往日', 'トゥライトゥーラの記憶': '烈日権威の往日',
-  '王の近侍': '烈日権威の往日', '狩人の道': '烈日権威の往日', '烈日の後嗣': '烈日権威の往日',
-  // 静謐な森のしずくの金符
-  '諸王の対局': '静謐な森のしずくの金符','原木刀': '静謐な森のしずくの金符', 'サイフォスの月明かり': '静謐な森のしずくの金符',
-  '聖顕の鍵': '静謐な森のしずくの金符', '翠光の裁葉': '静謐な森のしずくの金符',
-  '森林のレガリア': '静謐な森のしずくの金符', '砂中の賢者達の問答': '静謐な森のしずくの金符',
-  'トキの嘴': '静謐な森のしずくの金符',
-  // オアシスガーデンの真諦
-  '話死合い棒': 'オアシスガーデンの真諦', 'ムーンピアサー': 'オアシスガーデンの真諦',
-  '赤砂の杖': 'オアシスガーデンの真諦', '満悦の実': 'オアシスガーデンの真諦',
-  '彷徨える星': 'オアシスガーデンの真諦', '千夜に浮かぶ夢': 'オアシスガーデンの真諦',
-  '真言の匣': 'オアシスガーデンの真諦',
-  // 無垢な海の金盃
-  'タイダル・シャドー': '無垢な海の金盃', '携帯型チェンソー': '無垢な海の金盃',
-  '「スーパーアルティメット覇王魔剣」': '無垢な海の金盃', '正義の報酬': '無垢な海の金盃',
-  'フィヨルドの歌': '無垢な海の金盃', '赤月のシルエット': '無垢な海の金盃',
-  'ルミドゥースの挽歌': '無垢な海の金盃', '凛流の監視者': '無垢な海の金盃',
-  // 悠久の弦の響き
-  'サーンドルの渡し守': '悠久の弦の響き', '水仙十字の剣': '悠久の弦の響き',
-  '赦罪': '悠久の弦の響き', '裁断': '悠久の弦の響き', 'プロスペクタードリル': '悠久の弦の響き',
-  '始まりの大魔術': '悠久の弦の響き', '静寂の唄': '悠久の弦の響き',
-  'レンジゲージ': '悠久の弦の響き', '冷寂の音': '悠久の弦の響き',
-  // 純聖な雫の精髄
-  'シンフォニーの鋳影': '純聖な雫の精髄','海淵のフィナーレ': '純聖な雫の精髄', '船渠剣': '純聖な雫の精髄',
-  '静水流転の輝き': '純聖な雫の精髄', '香りのシンフォニスト': '純聖な雫の精髄',
-  '純水流華': '純聖な雫の精髄', '久遠流転の大典': '純聖な雫の精髄',
-  '白雨心弦': '純聖な雫の精髄',
-  // 灼心を捧げる栄光
-  '異端を狩る熔刀': '灼心を捧げる栄光','エズピツァルの笛': '灼心を捧げる栄光', 'ストロングボーン': '灼心を捧げる栄光',
-  'アースシェイカー': '灼心を捧げる栄光', '千烈の日輪': '灼心を捧げる栄光',
-  '砕け散る光輪': '灼心を捧げる栄光', 'サーフィンタイム': '灼心を捧げる栄光',
-  '波乗りの旋回': '灼心を捧げる栄光',
-  // 狂乱の聖主の神面
-  '山の王の長牙': '狂乱の聖主の神面', '知恵の溶炎': '狂乱の聖主の神面',
-  '虹の行方': '狂乱の聖主の神面', '鎮山の釘': '狂乱の聖主の神面',
-  'ヤシュチェの環': '狂乱の聖主の神面', '祭星者の眺め': '狂乱の聖主の神面',
-  'ヴィヴィッド・ハート': '狂乱の聖主の神面', '厄水の災い': '狂乱の聖主の神面',
-  // 神秘なる煙の啓示
-  '岩峰を巡る歌': '神秘なる煙の啓示', '蒼耀': '神秘なる煙の啓示',
-  '蒼紋の角杯': '神秘なる煙の啓示', 'チェーンブレイカー': '神秘なる煙の啓示',
-  '星鷲の紅き羽': '神秘なる煙の啓示', '花飾りの羽': '神秘なる煙の啓示',
-  '虹蛇の雨弦': '神秘なる煙の啓示',
-  // 奇妙な装置の宿願
-  '静謐の笛': '奇妙な装置の宿願', '夜を紡ぐ天鏡': '奇妙な装置の宿願',
-  '烏髄の孤灯': '奇妙な装置の宿願', '霜辰': '奇妙な装置の宿願',
-  '塵と光と七つの誓約': '奇妙な装置の宿願',
-  // 長夜の灯火の輝光
-  '金掘りのシャベル': '長夜の灯火の輝光', '血染めの荒れ地': '長夜の灯火の輝光',
-  '聖祭者の輝杖': '長夜の灯火の輝光', '羅網の針': '長夜の灯火の輝光',
-  '霜契の金枝': '長夜の灯火の輝光',
-  // 極北の末裔の煌光
-  '万能の鍵': '極北の末裔の煌光', '超越の鍵': '極北の末裔の煌光',
-  '天光のリュート': '極北の末裔の煌光', '帳の夜曲': '極北の末裔の煌光',
-  '月紡ぎの曙光': '極北の末裔の煌光',
- 　// 蔵に眠る霊薬の狂宴
-   '氷の吐息': '蔵に眠る霊薬の狂宴','白銀の湖を舞う翼': '蔵に眠る霊薬の狂宴','旋流の讃美歌': '蔵に眠る霊薬の狂宴','新たなる枝': '蔵に眠る霊薬の狂宴',
-  // 蒼星軍勢の征服
-   '胸中の谺': '蒼星軍勢の征服','霜雪の契': '蒼星軍勢の征服','導炎の源': '蒼星軍勢の征服','救済の剣': '蒼星軍勢の征服','蝶の羽化': '蒼星軍勢の征服',
-  // 氷の皇帝の訣別
-  '遠望の歌': '氷の皇帝の訣別','風に遊ぶ弦': '氷の皇帝の訣別','雪に沈む心': '氷の皇帝の訣別',
-};
-
-
-// 武器突破ステータスおよび突破素材グループを考慮して、RAW_WEAPONS配列に
-// 正しく情報をマッピングするための自動抽出レイヤー。
-// `WEAPON_ATTRS` を優先的にマッピングし、実装バージョンを weaponReleaseVersionMap から参照。
-
-// ---------------------------------------------------------------------------
-// 武器突破素材グループ（🟨判定）
-// ---------------------------------------------------------------------------
-// 基礎攻撃力（MAX）マッピング
-const WEAPON_BASE_ATK = {
- 741: ['千烈の日輪','山の王の長牙','松韻の響く頃','息災','鶴鳴の余韻','塵と光と七つの誓約'],
-  674: ['蝶の羽化','白銀の湖を舞う翼','赦罪','風鷹剣','蒼耀','霧切の廻光','天空の傲','裁断','血染めの荒れ地','赤月のシルエット','和璞鳶','天空の脊','天空の翼','暁を告げる歴史','凛流の監視者','天空の巻','トゥライトゥーラの記憶','ヴィヴィッド・ハート','災憾','万能の鍵'],
-  620: ['ダークアレイの閃光','聖祭者の輝杖','斬波のひれ長'],
-  608: ['星鋒の剣','黒蝕','蒼古なる自由への誓い','波乱月白経津','天空の刃','斬山の刃','葦海の標','狼の武勲詩','無工の剣','狼の末路','草薙の稲光','砕け散る光輪','ルミドゥースの挽歌','護摩の杖','香りのシンフォニスト','破天の槍','アモスの弓','星鷲の紅き羽','終焉を嘆く詩','冬極の白星','始まりの大魔術','飛来の鳴弦','不滅の月華','碧落の瓏','神楽の真意','四風原典','浮世の錠'],
-  565: ['胸中の谺','救済の剣','遠望の歌','黒岩の長剣','厄水の災い','海淵のフィナーレ','月紡ぎの曙光','斬岩・試作','王の近侍','ストロングボーン','「スーパーアルティメット覇王魔剣」','アースシェイカー','森林のレガリア','実りの鉤鉈','鉄彩の花','古華・試作','祭礼の大剣','雪葬の星銀','話死合い棒','旧貴族大剣','流月の針','西風長槍','喜多院十文字槍','千岩長槍','ムーンピアサー','鎮山の釘','プロスペクタードリル','正義の報酬','旧貴族長槍','玉響停の御噺','ダークアレイの狩人','黒岩の戦弓','落霞','トキの嘴','曚雲の月','チェーンブレイカー','レンジゲージ','祭礼の弓','烈日の後嗣','果てなき紺碧の唄','純水流華','白辰の輪','万国諸海の図譜','誓いの明導','旧貴族秘法録','ダークアレイの酒と詩'],
-  542: ['旋流の讃美歌','聖顕の鍵','翠光の裁葉','三日月の含光','岩峰を巡る歌','盤岩結緑','静水流転の輝き','有楽御簾切','赤角石塵滅砕','赤砂の杖','若水','霜契の金枝','狩人の道','白雨心弦','千夜に浮かぶ夢','帳の夜曲','真言の匣','祭星者の眺め','寝正月の初晴','サーフィンタイム','久遠流転の大典','夜を紡ぐ天鏡'],
-  510: ['銀灯','風に遊ぶ弦','新たなる枝','雪に沈む心','導炎の源','異端を狩る熔刃','シンフォニーの鋳影','氷の吐息','諸王の対局','千鈞懸黎','霜雪の契','腐食の剣','サーンドルの渡し守','鉄蜂の刺し','籠釣瓶一心','匣中龍吟','旧貴族長剣','水仙十字の剣','黒剣','船渠剣','笛の剣','東花坊時雨','サイフォスの月明かり','惡王丸','黒岩の斬刀','知恵の溶炎','桂木斬長正','千岩古剣','マカイラの水色','雨裁','螭龍の剣','鐘の剣','タイダル・シャドー','白影の剣','狼牙','「漁獲」','黒岩の突槍','フィヨルドの歌','砂中の賢者達の問答','虹の行方','風信の矛','金掘りのシャベル','星鎌・試作','築雲','竭沢','花飾りの羽','幽夜のワルツ','プレデター','澹月・試作','虹蛇の雨弦','旧貴族長弓','弓蔵','冷寂の音','絶弦','蒼翠の狩猟弓','風花の頌歌','静寂の唄','蒼紋の角杯','黒岩の緋玉','霜辰','天光のリュート','西風秘典','冬忍びの実','金珀・試作','ヤシュチェの環','匣中日月','流浪楽章','彷徨える星','満悦の実'],
-  454: ['天目影打','シナバースピンドル','西風剣','エズピツァルの笛','祭礼の剣','静謐の笛','西風大剣','銜玉の海皇','携帯型チェンソー','死闘の槍','匣中滅龍','ドラゴンスピア','リングボウ','西風猟弓','破魔の弓','羅網の針','烏髄の孤灯','ドドコの物語','昭心','祭礼の断片','古祠の瓏','波乗りの旋回'],
-  448: ['旅道の剣','鉾槍','文使い','シャープシューターの誓い','翡玉法珠','特級の宝玉'],
-  440: ['降臨の剣'],
-  401: ['冷刃','暗鉄剣','チ虎魚の刀','黎明の神剣','理屈責め','鉄影段平','飛天大御剣','白鉄の大剣','白纓槍','鴉羽の弓','異世界旅行記','龍殺しの英雄譚'],
-  354: ['飛天御剣','龍血を浴びた剣','黒纓槍','リカーブボウ','弾弓','魔導緒論'],
-  243: ['銀の剣','鉄尖槍','ポケット魔導書','歴戦の狩猟弓','傭兵の重剣'],
-  185: ['訓練用大剣','狩猟弓','無鋒の剣','新米の長槍','生徒ノート'],
-};
-
-
-const WEAPON_ATTRS = {
-  // ★5 片手剣
-  '星鋒の剣':      { rarity: 5, weaponType: '片手剣', enemyMaterial: '', ascension_stat: '会心ダメージ', is_distributed: false },
-  '蝶の羽化':      { rarity: 5, weaponType: '片手剣', enemyMaterial: '合成獣のコア', ascension_stat: '会心ダメージ', is_distributed: false },
-  '白銀の湖を舞う翼':      { rarity: 5, weaponType: '片手剣', enemyMaterial: '合成獣のコア', ascension_stat: '会心ダメージ', is_distributed: false },
-  '三日月の含光':      { rarity: 5, weaponType: '片手剣', enemyMaterial: '破損した駆動軸', ascension_stat: '会心ダメージ', is_distributed: false },
-  '黒蝕':              { rarity: 5, weaponType: '片手剣', enemyMaterial: '破損した駆動軸', ascension_stat: '会心率', is_distributed: false },
-  '岩峰を巡る歌':      { rarity: 5, weaponType: '片手剣', enemyMaterial: '未熟な牙',       ascension_stat: '防御力', is_distributed: false },
-  '赦罪':              { rarity: 5, weaponType: '片手剣', enemyMaterial: '整合の歯車',       ascension_stat: '会心ダメージ', is_distributed: false },
-  '有楽御簾切':        { rarity: 5, weaponType: '片手剣', enemyMaterial: '古びた鍔',       ascension_stat: '会心ダメージ', is_distributed: false },
-  '静水流転の輝き':    { rarity: 5, weaponType: '片手剣', enemyMaterial: '異海の露',       ascension_stat: '会心ダメージ', is_distributed: false },
-  '翠光の裁葉':        { rarity: 5, weaponType: '片手剣', enemyMaterial: '色褪せた赤い絹',   ascension_stat: '会心ダメージ', is_distributed: false },
-  '聖顕の鍵':          { rarity: 5, weaponType: '片手剣', enemyMaterial: '色褪せた赤い絹',   ascension_stat: 'HP', is_distributed: false },
-  '風鷹剣':            { rarity: 5, weaponType: '片手剣', enemyMaterial: '牢固な矢先',     ascension_stat: '物理ダメージ', is_distributed: false },
-  '霧切の廻光':        { rarity: 5, weaponType: '片手剣', enemyMaterial: '古びた鍔',       ascension_stat: '会心ダメージ', is_distributed: false },
-  '蒼古なる自由への誓い':{ rarity: 5, weaponType: '片手剣', enemyMaterial: '占いの絵巻',     ascension_stat: '元素熟知', is_distributed: false },
-  '盤岩結緑':          { rarity: 5, weaponType: '片手剣', enemyMaterial: '宝探しの鴉マーク', ascension_stat: '会心率', is_distributed: false },
-  '波乱月白経津':      { rarity: 5, weaponType: '片手剣', enemyMaterial: '古びた鍔',       ascension_stat: '会心率', is_distributed: false },
-  '斬山の刃':          { rarity: 5, weaponType: '片手剣', enemyMaterial: '破損した仮面',     ascension_stat: '攻撃力', is_distributed: false },
-  '天空の刃':          { rarity: 5, weaponType: '片手剣', enemyMaterial: 'スライムの液体',   ascension_stat: '元素チャージ効率', is_distributed: false },
-  '蒼耀':              { rarity: 5, weaponType: '片手剣', enemyMaterial: '従戦士の木笛',     ascension_stat: '会心率', is_distributed: false },
-
-  // ★5 両手剣
-  '狼の武勲詩':        { rarity: 5, weaponType: '両手剣', enemyMaterial: '新兵の記章',     ascension_stat: '会心率', is_distributed: false },
-  '超越の鍵':          { rarity: 5, weaponType: '両手剣', enemyMaterial: '破損した徽章',     ascension_stat: '会心ダメージ', is_distributed: false },
-  '千烈の日輪':        { rarity: 5, weaponType: '両手剣', enemyMaterial: '未熟な牙',       ascension_stat: '会心率', is_distributed: false },
-  '山の王の長牙':      { rarity: 5, weaponType: '両手剣', enemyMaterial: '従戦士の木笛',     ascension_stat: '会心率', is_distributed: false },
-  '裁断':              { rarity: 5, weaponType: '両手剣', enemyMaterial: '整合の歯車',       ascension_stat: '会心率', is_distributed: false },
-  '葦海の標':          { rarity: 5, weaponType: '両手剣', enemyMaterial: '色褪せた赤い絹',   ascension_stat: '会心率', is_distributed: false },
-  '赤角石塵滅砕':      { rarity: 5, weaponType: '両手剣', enemyMaterial: '古びた鍔',       ascension_stat: '会心ダメージ', is_distributed: false },
-  '狼の末路':          { rarity: 5, weaponType: '両手剣', enemyMaterial: '占いの絵巻',     ascension_stat: '攻撃力', is_distributed: false },
-  '松韻の響く頃':      { rarity: 5, weaponType: '両手剣', enemyMaterial: '破損した仮面',     ascension_stat: '物理ダメージ', is_distributed: false },
-  '無工の剣':          { rarity: 5, weaponType: '両手剣', enemyMaterial: '宝探しの鴉マーク', ascension_stat: '攻撃力', is_distributed: false },
-  '天空の傲':          { rarity: 5, weaponType: '両手剣', enemyMaterial: 'スライムの液体',   ascension_stat: '元素チャージ効率', is_distributed: false },
-
-  // ★5 長柄武器
-  '和璞鳶':            { rarity: 5, weaponType: '長柄武器', enemyMaterial: '新兵の記章',     ascension_stat: '会心率', is_distributed: false },
-  '天空の脊':          { rarity: 5, weaponType: '長柄武器', enemyMaterial: '占いの絵巻',     ascension_stat: '元素チャージ効率', is_distributed: false },
-  '護摩の杖':          { rarity: 5, weaponType: '長柄武器', enemyMaterial: 'スライムの液体',   ascension_stat: '会心ダメージ', is_distributed: false },
-  '息災':              { rarity: 5, weaponType: '長柄武器', enemyMaterial: 'トリックフラワーの蜜', ascension_stat: '攻撃力', is_distributed: false },
-  '草薙の稲光':        { rarity: 5, weaponType: '長柄武器', enemyMaterial: '古びた鍔',       ascension_stat: '元素チャージ効率', is_distributed: false },
-  '破天の槍':          { rarity: 5, weaponType: '長柄武器', enemyMaterial: '宝探しの鴉マーク', ascension_stat: '攻撃力', is_distributed: false },
-  '血染めの荒れ地':    { rarity: 5, weaponType: '長柄武器', enemyMaterial: '破損した徽章',   ascension_stat: '会心率', is_distributed: false },
-  '香りのシンフォニスト':{ rarity: 5, weaponType: '長柄武器', enemyMaterial: '異海の露',       ascension_stat: '会心ダメージ', is_distributed: false },
-  '砕け散る光輪':      { rarity: 5, weaponType: '長柄武器', enemyMaterial: '未熟な牙',       ascension_stat: '会心ダメージ', is_distributed: false },
-  'ルミドゥースの挽歌':{ rarity: 5, weaponType: '長柄武器', enemyMaterial: 'トリックフラワーの蜜', ascension_stat: '会心率', is_distributed: false },
-  '赤月のシルエット':  { rarity: 5, weaponType: '長柄武器', enemyMaterial: '整合の歯車',       ascension_stat: '会心率', is_distributed: false },
-  '赤砂の杖':          { rarity: 5, weaponType: '長柄武器', enemyMaterial: 'キノコンの胞子',   ascension_stat: '会心率', is_distributed: false },
-  '災憾':              { rarity: 5, weaponType: '長柄武器', enemyMaterial: 'トリックフラワーの蜜', ascension_stat: '会心率', is_distributed: false },
-
-  // ★5 弓
-  '霜契の金枝':        { rarity: 5, weaponType: '弓', enemyMaterial: '破損した徽章',     ascension_stat: '会心ダメージ', is_distributed: false },
-  '暁を告げる歴史':    { rarity: 5, weaponType: '弓', enemyMaterial: '宝探しの鴉マーク', ascension_stat: '会心ダメージ', is_distributed: false },
-  '星鷲の紅き羽':      { rarity: 5, weaponType: '弓', enemyMaterial: '従戦士の木笛',     ascension_stat: '会心ダメージ', is_distributed: false },
-  '白雨心弦':          { rarity: 5, weaponType: '弓', enemyMaterial: '異海の露',         ascension_stat: 'HP', is_distributed: false },
-  '始まりの大魔術':    { rarity: 5, weaponType: '弓', enemyMaterial: '異海の露',         ascension_stat: '会心ダメージ', is_distributed: false },
-  '狩人の道':          { rarity: 5, weaponType: '弓', enemyMaterial: '色褪せた赤い絹',   ascension_stat: '会心率', is_distributed: false },
-  '若水':              { rarity: 5, weaponType: '弓', enemyMaterial: 'フライムの乾核',     ascension_stat: '会心ダメージ', is_distributed: false },
-  '飛来の鳴弦':        { rarity: 5, weaponType: '弓', enemyMaterial: '牢固な矢先',       ascension_stat: '会心ダメージ', is_distributed: false },
-  'アモスの弓':        { rarity: 5, weaponType: '弓', enemyMaterial: '牢固な矢先',       ascension_stat: '攻撃力', is_distributed: false },
-  '終焉を嘆く詩':      { rarity: 5, weaponType: '弓', enemyMaterial: '新兵の記章',       ascension_stat: '元素チャージ効率', is_distributed: false },
-  '天空の翼':          { rarity: 5, weaponType: '弓', enemyMaterial: '牢固な矢先',       ascension_stat: '会心率', is_distributed: false },
-  '冬極の白星':        { rarity: 5, weaponType: '弓', enemyMaterial: 'フライムの乾核',     ascension_stat: '会心率', is_distributed: false },
-
-  // ★5 法器
-  '秘星の聖典':  { rarity: 5, weaponType: '法器', enemyMaterial: '',   ascension_stat: '', is_distributed: false },
-  '旋流の讃美歌':  { rarity: 5, weaponType: '法器', enemyMaterial: '沈積片',   ascension_stat: 'HP', is_distributed: false },
-  '帳の夜曲':          { rarity: 5, weaponType: '法器', enemyMaterial: '破損した徽章',     ascension_stat: '会心ダメージ', is_distributed: false },
-  '真言の匣':          { rarity: 5, weaponType: '法器', enemyMaterial: 'キノコンの胞子',   ascension_stat: '会心ダメージ', is_distributed: false },
-  '夜を紡ぐ天鏡':      { rarity: 5, weaponType: '法器', enemyMaterial: '破損した駆動軸',   ascension_stat: '元素熟知',     is_distributed: false },
-  'ヴィヴィッド・ハート':{ rarity: 5, weaponType: '法器', enemyMaterial: '未熟な牙',       ascension_stat: '会心ダメージ', is_distributed: false },
-  '寝正月の初晴':      { rarity: 5, weaponType: '法器', enemyMaterial: 'フライムの乾核',   ascension_stat: '元素熟知',     is_distributed: false },
-  '祭星者の眺め':      { rarity: 5, weaponType: '法器', enemyMaterial: '従戦士の木笛',     ascension_stat: '元素熟知',     is_distributed: false },
-  'サーフィンタイム':  { rarity: 5, weaponType: '法器', enemyMaterial: '未熟な牙',       ascension_stat: '会心ダメージ', is_distributed: false },
-  '鶴鳴の余韻':        { rarity: 5, weaponType: '法器', enemyMaterial: '占いの絵巻',       ascension_stat: '攻撃力',       is_distributed: false },
-  '凛流の監視者':      { rarity: 5, weaponType: '法器', enemyMaterial: '異海の露',         ascension_stat: '会心率',       is_distributed: false },
-  '久遠流転の大典':    { rarity: 5, weaponType: '法器', enemyMaterial: '異海の露',         ascension_stat: '会心ダメージ', is_distributed: false },
-  '碧落の瓏':          { rarity: 5, weaponType: '法器', enemyMaterial: '色褪せた赤い絹',   ascension_stat: 'HP',           is_distributed: false },
-  'トゥライトゥーラの記憶':{ rarity: 5, weaponType: '法器', enemyMaterial: 'キノコンの胞子', ascension_stat: '会心ダメージ', is_distributed: false },
-  '千夜に浮かぶ夢':    { rarity: 5, weaponType: '法器', enemyMaterial: 'キノコンの胞子',   ascension_stat: '元素熟知',     is_distributed: false },
-  '神楽の真意':        { rarity: 5, weaponType: '法器', enemyMaterial: 'フライムの乾核', ascension_stat: '会心ダメージ', is_distributed: false },
-  '浮世の錠':          { rarity: 5, weaponType: '法器', enemyMaterial: '破損した仮面',     ascension_stat: '攻撃力',       is_distributed: false },
-  '天空の巻':          { rarity: 5, weaponType: '法器', enemyMaterial: '牢固な矢先',       ascension_stat: '攻撃力',       is_distributed: false },
-  '四風原典':          { rarity: 5, weaponType: '法器', enemyMaterial: 'スライムの液体',   ascension_stat: '会心率',       is_distributed: false },
-  '不滅の月華':        { rarity: 5, weaponType: '法器', enemyMaterial: 'フライムの乾核',   ascension_stat: 'HP',           is_distributed: false },
-  '塵と光の七つの誓約':{ rarity: 5, weaponType: '法器', enemyMaterial: '破損した駆動軸',   ascension_stat: '攻撃力',       is_distributed: false },
-
-  // ★4 片手剣
-  '新たなる枝':  { rarity: 4, weaponType: '片手剣', enemyMaterial: '合成獣のコア',   ascension_stat: '会心ダメージ', is_distributed: false },
-  '銀灯':  { rarity: 4, weaponType: '片手剣', enemyMaterial: '新兵の記章',   ascension_stat: '会心ダメージ', is_distributed: true },
-  '異端を狩る溶刃':      { rarity: 4, weaponType: '片手剣', enemyMaterial: '従戦士の木笛', ascension_stat: '会心率', is_distributed: false },
-  '導炎の源':      { rarity: 4, weaponType: '片手剣', enemyMaterial: '幻光の屑', ascension_stat: '元素熟知', is_distributed: false },
-  '月紡ぎの曙光':      { rarity: 4, weaponType: '片手剣', enemyMaterial: '破損した駆動軸',   ascension_stat: '攻撃力', is_distributed: false },
-  '静謐の笛':          { rarity: 4, weaponType: '片手剣', enemyMaterial: '破損した徽章',     ascension_stat: '元素チャージ効率', is_distributed: false },
-  '厄水の災い':        { rarity: 4, weaponType: '片手剣', enemyMaterial: '従戦士の木笛',     ascension_stat: '攻撃力', is_distributed: true },
-  'ストロングボーン':  { rarity: 4, weaponType: '片手剣', enemyMaterial: '従戦士の木笛',     ascension_stat: '攻撃力', is_distributed: false },
-  'エズピツァルの笛':  { rarity: 4, weaponType: '片手剣', enemyMaterial: '未熟な牙',       ascension_stat: '防御力', is_distributed: false },
-  '水仙十字の剣':      { rarity: 4, weaponType: '片手剣', enemyMaterial: '異海の露',       ascension_stat: '攻撃力', is_distributed: false },
-  '船渠剣':            { rarity: 4, weaponType: '片手剣', enemyMaterial: '異海の露',       ascension_stat: 'HP', is_distributed: false },
-  '狼牙':              { rarity: 4, weaponType: '片手剣', enemyMaterial: '破損した仮面',     ascension_stat: '会心率', is_distributed: false },
-  'サーンドルの渡し守':{ rarity: 4, weaponType: '片手剣', enemyMaterial: '異海の露',         ascension_stat: '元素チャージ効率', is_distributed: false },
-  '海淵のフィナーレ':  { rarity: 4, weaponType: '片手剣', enemyMaterial: '古びた鍔',       ascension_stat: '攻撃力', is_distributed: false },
-  '東花坊時雨':        { rarity: 4, weaponType: '片手剣', enemyMaterial: '古びた鍔',       ascension_stat: '元素熟知', is_distributed: true },
-  'サイフォスの月明かり':{ rarity: 4, weaponType: '片手剣', enemyMaterial: '色褪せた赤い絹', ascension_stat: '元素熟知', is_distributed: false },
-  '原木刀':            { rarity: 4, weaponType: '片手剣', enemyMaterial: '色褪せた赤い絹', ascension_stat: '元素チャージ効率', is_distributed: false },
-  '籠釣瓶一心':        { rarity: 4, weaponType: '片手剣', enemyMaterial: 'フライムの乾核',   ascension_stat: '攻撃力', is_distributed: false },
-  '黒岩の長剣':        { rarity: 4, weaponType: '片手剣', enemyMaterial: '牢固な矢先',     ascension_stat: '会心ダメージ', is_distributed: false },
-  '黒剣':              { rarity: 4, weaponType: '片手剣', enemyMaterial: 'スライムの液体',   ascension_stat: '会心率', is_distributed: false },
-  '降臨の剣':          { rarity: 4, weaponType: '片手剣', enemyMaterial: '宝探しの鴉マーク', ascension_stat: '攻撃力', is_distributed: false },
-  '鉄蜂の刺し':        { rarity: 4, weaponType: '片手剣', enemyMaterial: 'トリックフラワーの蜜', ascension_stat: '元素熟知', is_distributed: false },
-  'シナバースピンドル':{ rarity: 4, weaponType: '片手剣', enemyMaterial: '破損した仮面',     ascension_stat: '防御力', is_distributed: true },
-  '斬岩・試作':        { rarity: 4, weaponType: '片手剣', enemyMaterial: '新兵の記章',     ascension_stat: '物理ダメージ', is_distributed: false },
-  '西風剣':            { rarity: 4, weaponType: '片手剣', enemyMaterial: '牢固な矢先',     ascension_stat: '元素チャージ効率', is_distributed: false },
-  '腐食の剣':          { rarity: 4, weaponType: '片手剣', enemyMaterial: '新兵の記章',     ascension_stat: '元素チャージ効率', is_distributed: true },
-  '笛の剣':            { rarity: 4, weaponType: '片手剣', enemyMaterial: 'スライムの液体',   ascension_stat: '攻撃力', is_distributed: false },
-  '祭礼の剣':          { rarity: 4, weaponType: '片手剣', enemyMaterial: '占いの絵巻',     ascension_stat: '元素チャージ効率', is_distributed: false },
-  'ダークアレイの閃光':{ rarity: 4, weaponType: '片手剣', enemyMaterial: '占いの絵巻',     ascension_stat: '元素熟知', is_distributed: false },
-  '旧貴族長剣':        { rarity: 4, weaponType: '片手剣', enemyMaterial: '破損した仮面',     ascension_stat: '攻撃力', is_distributed: false },
-  '天目影打':          { rarity: 4, weaponType: '片手剣', enemyMaterial: '古びた鍔',       ascension_stat: '攻撃力', is_distributed: false },
-  '匣中龍吟':          { rarity: 4, weaponType: '片手剣', enemyMaterial: '宝探しの鴉マーク', ascension_stat: '攻撃力', is_distributed: false },
-
-  // ★4 両手剣
-   '救済の剣':      { rarity: 4, weaponType: '両手剣', enemyMaterial: '合成獣のコア', ascension_stat: '攻撃力', is_distributed: false },
-   'シンフォニーの鋳影':      { rarity: 4, weaponType: '両手剣', enemyMaterial: '異海の露', ascension_stat: '会心率', is_distributed: false },
-  '万能の鍵':          { rarity: 4, weaponType: '両手剣', enemyMaterial: '破損した駆動軸',   ascension_stat: '元素チャージ効率', is_distributed: false },
-  '実りの鉤鉈':        { rarity: 4, weaponType: '両手剣', enemyMaterial: '未熟な牙',       ascension_stat: '攻撃力', is_distributed: false },
-  'アースシェイカー':  { rarity: 4, weaponType: '両手剣', enemyMaterial: '従戦士の木笛',     ascension_stat: '攻撃力', is_distributed: false },
-  '「スーパーアルティメット覇王魔剣」':{ rarity: 4, weaponType: '両手剣', enemyMaterial: '整合の歯車', ascension_stat: '元素チャージ効率', is_distributed: true },
-  '携帯型チェンソー':  { rarity: 4, weaponType: '両手剣', enemyMaterial: '整合の歯車',       ascension_stat: 'HP', is_distributed: false },
-  '話死合い棒':        { rarity: 4, weaponType: '両手剣', enemyMaterial: 'スライムの液体',   ascension_stat: '会心率', is_distributed: false },
-  'タイダル・シャドー':{ rarity: 4, weaponType: '両手剣', enemyMaterial: '整合の歯車',     ascension_stat: '攻撃力', is_distributed: false },
-  '鉄彩の花':          { rarity: 4, weaponType: '両手剣', enemyMaterial: 'フライムの乾核',   ascension_stat: '元素熟知', is_distributed: true },
-  'マカイラの水色':    { rarity: 4, weaponType: '両手剣', enemyMaterial: '宝探しの鴉マーク', ascension_stat: '元素熟知', is_distributed: false },
-  '森林のレガリア':    { rarity: 4, weaponType: '両手剣', enemyMaterial: '色褪せた赤い絹',   ascension_stat: '元素チャージ効率', is_distributed: false },
-  '黒岩の斬刀':        { rarity: 4, weaponType: '両手剣', enemyMaterial: '新兵の記章',     ascension_stat: '会心ダメージ', is_distributed: false },
-  '雪葬の星銀':        { rarity: 4, weaponType: '両手剣', enemyMaterial: 'スライムの液体',   ascension_stat: '物理ダメージ', is_distributed: false },
-  '雨裁':              { rarity: 4, weaponType: '両手剣', enemyMaterial: '占いの絵巻',     ascension_stat: '元素熟知', is_distributed: false },
-  '鐘の剣':            { rarity: 4, weaponType: '両手剣', enemyMaterial: 'トリックフラワーの蜜', ascension_stat: 'HP', is_distributed: false },
-  '古華・試作':        { rarity: 4, weaponType: '両手剣', enemyMaterial: '破損した仮面',     ascension_stat: '攻撃力', is_distributed: false },
-  '西風大剣':          { rarity: 4, weaponType: '両手剣', enemyMaterial: '新兵の記章',     ascension_stat: '元素チャージ効率', is_distributed: false },
-  '銜玉の海皇':        { rarity: 4, weaponType: '両手剣', enemyMaterial: 'スライムの液体',   ascension_stat: '攻撃力', is_distributed: true },
-  '螭龍の剣':          { rarity: 4, weaponType: '両手剣', enemyMaterial: 'トリックフラワーの蜜', ascension_stat: '会心率', is_distributed: false },
-  '祭礼の大剣':        { rarity: 4, weaponType: '両手剣', enemyMaterial: '牢固な矢先',     ascension_stat: '元素チャージ効率', is_distributed: false },
-  '白影の剣':          { rarity: 4, weaponType: '両手剣', enemyMaterial: '宝探しの鴉マーク', ascension_stat: '防御力', is_distributed: false },
-  '桂木斬長正':        { rarity: 4, weaponType: '両手剣', enemyMaterial: '古びた鍔',       ascension_stat: '元素チャージ効率', is_distributed: false },
-  '惡王丸':            { rarity: 4, weaponType: '両手剣', enemyMaterial: '古びた鍔',       ascension_stat: '攻撃力', is_distributed: false },
-  '旧貴族大剣':        { rarity: 4, weaponType: '両手剣', enemyMaterial: 'スライムの液体',   ascension_stat: '攻撃力', is_distributed: false },
-  '千岩古剣':          { rarity: 4, weaponType: '両手剣', enemyMaterial: '牢固な矢先',     ascension_stat: '攻撃力', is_distributed: false },
-  '知恵の溶炎':        { rarity: 4, weaponType: '両手剣', enemyMaterial: '異海の露',       ascension_stat: '元素熟知', is_distributed: true },
-
-  // ★4 長柄武器
-   '遠望の歌':      { rarity: 4, weaponType: '長柄武器', enemyMaterial: '幻光の屑', ascension_stat: '元素熟知', is_distributed: false },
-   '氷の吐息':      { rarity: 4, weaponType: '長柄武器', enemyMaterial: '合成獣のコア', ascension_stat: '元素チャージ効率', is_distributed: false },
-  '喜多院十文字槍':    { rarity: 4, weaponType: '長柄武器', enemyMaterial: '宝探しの鴉マーク', ascension_stat: '元素熟知', is_distributed: false },
-  '千岩長槍':          { rarity: 4, weaponType: '長柄武器', enemyMaterial: '牢固な矢先',     ascension_stat: '攻撃力', is_distributed: false },
-  '聖祭者の輝杖':      { rarity: 4, weaponType: '長柄武器', enemyMaterial: '破損した駆動軸',   ascension_stat: '会心率', is_distributed: false },
-  '金堀りのシャベル':  { rarity: 4, weaponType: '長柄武器', enemyMaterial: '破損した駆動軸',   ascension_stat: '攻撃力', is_distributed: false },
-  '玉響停の御噺':      { rarity: 4, weaponType: '長柄武器', enemyMaterial: '古びた鍔',       ascension_stat: '元素チャージ効率', is_distributed: true },
-  '鎮山の釘':          { rarity: 4, weaponType: '長柄武器', enemyMaterial: 'トリックフラワーの蜜', ascension_stat: '元素チャージ効率', is_distributed: false },
-  '虹の行方':          { rarity: 4, weaponType: '長柄武器', enemyMaterial: '従戦士の木笛',   ascension_stat: '防御力', is_distributed: false },
-  '砂中の賢者達の問答':{ rarity: 4, weaponType: '長柄武器', enemyMaterial: 'フライムの乾核',   ascension_stat: 'HP', is_distributed: true },
-  'プロスペクタードリル':{ rarity: 4, weaponType: '長柄武器', enemyMaterial: '整合の歯車',     ascension_stat: '攻撃力', is_distributed: false },
-  'フィヨルドの歌':    { rarity: 4, weaponType: '長柄武器', enemyMaterial: 'トリックフラワーの蜜', ascension_stat: '会心率', is_distributed: false },
-  '正義の報酬':        { rarity: 4, weaponType: '長柄武器', enemyMaterial: '整合の歯車',     ascension_stat: 'HP', is_distributed: false },
-  '風信の矛':          { rarity: 4, weaponType: '長柄武器', enemyMaterial: 'スライムの液体',   ascension_stat: '攻撃力', is_distributed: true },
-  'ムーンピアサー':    { rarity: 4, weaponType: '長柄武器', enemyMaterial: '新兵の記章',     ascension_stat: '元素熟知', is_distributed: false },
-  'ドラゴンスピア':    { rarity: 4, weaponType: '長柄武器', enemyMaterial: '新兵の記章',     ascension_stat: '物理ダメージ', is_distributed: false },
-  '西風長槍':          { rarity: 4, weaponType: '長柄武器', enemyMaterial: 'スライムの液体',   ascension_stat: '元素チャージ効率', is_distributed: false },
-  '旧貴族猟槍':        { rarity: 4, weaponType: '長柄武器', enemyMaterial: '新兵の記章',     ascension_stat: '攻撃力', is_distributed: false },
-  '流月の針':          { rarity: 4, weaponType: '長柄武器', enemyMaterial: '宝探しの鴉マーク', ascension_stat: '物理ダメージ', is_distributed: false },
-  '「漁獲」':          { rarity: 4, weaponType: '長柄武器', enemyMaterial: 'フライムの乾核',   ascension_stat: '元素チャージ効率', is_distributed: false },
-  '黒岩の突槍':        { rarity: 4, weaponType: '長柄武器', enemyMaterial: '新兵の記章',     ascension_stat: '会心ダメージ', is_distributed: false },
-  '話死合い棒':        { rarity: 4, weaponType: '長柄武器', enemyMaterial: 'キノコンの胞子',   ascension_stat: '会心率', is_distributed: false },
-  '星鎌・試作':        { rarity: 4, weaponType: '長柄武器', enemyMaterial: '破損した仮面',     ascension_stat: '元素チャージ効率', is_distributed: false },
-  '斬波のひれ長':      { rarity: 4, weaponType: '長柄武器', enemyMaterial: '古びた鍔',       ascension_stat: '攻撃力', is_distributed: false },
-  '匣中滅龍':          { rarity: 4, weaponType: '長柄武器', enemyMaterial: '占いの絵巻',     ascension_stat: '元素熟知', is_distributed: false },
-  '死闘の槍':          { rarity: 4, weaponType: '長柄武器', enemyMaterial: 'トリックフラワーの蜜', ascension_stat: '会心率', is_distributed: false },
-
-  // ★4 弓
-  '風に遊ぶ弦':  { rarity: 4, weaponType: '弓', enemyMaterial: '合成獣のコア',   ascension_stat: '会心率', is_distributed: false },
-   '霜雪の契':      { rarity: 4, weaponType: '弓', enemyMaterial: '合成獣のコア', ascension_stat: '防御力', is_distributed: false },
-   '千鈞懸黎':      { rarity: 4, weaponType: '弓', enemyMaterial: '新兵の記章', ascension_stat: '会心率', is_distributed: false },
-  '虹蛇の雨弦':        { rarity: 4, weaponType: '弓', enemyMaterial: '破損した徽章',     ascension_stat: '元素チャージ効率', is_distributed: true },
-  '羅網の針':          { rarity: 4, weaponType: '弓', enemyMaterial: '牢固な矢先',       ascension_stat: '元素チャージ効率', is_distributed: false },
-  '冷寂の音':          { rarity: 4, weaponType: '弓', enemyMaterial: '整合の歯車',       ascension_stat: 'HP', is_distributed: true },
-  '花飾りの羽':        { rarity: 4, weaponType: '弓', enemyMaterial: '従戦士の木笛',     ascension_stat: '攻撃力', is_distributed: false },
-  'チェーンブレイカー':{ rarity: 4, weaponType: '弓', enemyMaterial: '未熟な牙',         ascension_stat: '', is_distributed: false },
-  '築雲':              { rarity: 4, weaponType: '弓', enemyMaterial: '新兵の記章',       ascension_stat: '元素熟知', is_distributed: true },
-  'レンジゲージ':      { rarity: 4, weaponType: '弓', enemyMaterial: '異海の露',         ascension_stat: '攻撃力', is_distributed: false },
-  '烈日の後嗣':        { rarity: 4, weaponType: '弓', enemyMaterial: 'キノコンの胞子',   ascension_stat: '会心率', is_distributed: false },
-  '静寂の唄':          { rarity: 4, weaponType: '弓', enemyMaterial: '牢固な矢先',       ascension_stat: '攻撃力', is_distributed: false },
-  'トキの嘴':          { rarity: 4, weaponType: '弓', enemyMaterial: '色褪せた赤い絹',   ascension_stat: '攻撃力', is_distributed: true },
-  '王の近侍':          { rarity: 4, weaponType: '弓', enemyMaterial: '牢固な矢先',       ascension_stat: '攻撃力', is_distributed: false },
-  '竭沢':              { rarity: 4, weaponType: '弓', enemyMaterial: 'キノコンの胞子',     ascension_stat: '元素チャージ効率', is_distributed: false },
-  '落霞':              { rarity: 4, weaponType: '弓', enemyMaterial: '占いの絵巻',       ascension_stat: '元素チャージ効率', is_distributed: true },
-  '黒岩の戦弓':        { rarity: 4, weaponType: '弓', enemyMaterial: 'トリックフラワーの蜜', ascension_stat: '会心ダメージ', is_distributed: false },
-  '風花の頌歌':        { rarity: 4, weaponType: '弓', enemyMaterial: 'トリックフラワーの蜜', ascension_stat: '元素熟知', is_distributed: true },
-  'リングボウ':        { rarity: 4, weaponType: '弓', enemyMaterial: '新兵の記章',       ascension_stat: '物理ダメージ', is_distributed: false },
-  '澹月・試作':        { rarity: 4, weaponType: '弓', enemyMaterial: '宝探しの鴉マーク',   ascension_stat: '攻撃力', is_distributed: false },
-  '西風猟弓':          { rarity: 4, weaponType: '弓', enemyMaterial: 'トリックフラワーの蜜', ascension_stat: '元素チャージ効率', is_distributed: false },
-  '蒼翠の狩猟弓':      { rarity: 4, weaponType: '弓', enemyMaterial: '牢固な矢先',       ascension_stat: '会心率', is_distributed: false },
-  '絶弦':              { rarity: 4, weaponType: '弓', enemyMaterial: '牢固な矢先',       ascension_stat: '元素熟知', is_distributed: false },
-  '祭礼の弓':          { rarity: 4, weaponType: '弓', enemyMaterial: 'スライムの液体',     ascension_stat: '元素チャージ効率', is_distributed: false },
-  '破魔の弓':          { rarity: 4, weaponType: '弓', enemyMaterial: '牢固な矢先',       ascension_stat: '攻撃力', is_distributed: false },
-  '曚雲の月':          { rarity: 4, weaponType: '弓', enemyMaterial: 'フライムの乾核',     ascension_stat: '攻撃力', is_distributed: false },
-  'ダークアレイの狩人':{ rarity: 4, weaponType: '弓', enemyMaterial: '牢固な矢先',       ascension_stat: '攻撃力', is_distributed: false },
-  'プレデター':        { rarity: 4, weaponType: '弓', enemyMaterial: '牢固な矢先',       ascension_stat: '攻撃力', is_distributed: false },
-  '弓蔵':              { rarity: 4, weaponType: '弓', enemyMaterial: '破損した仮面',     ascension_stat: '攻撃力', is_distributed: false },
-  '幽夜のワルツ':      { rarity: 4, weaponType: '弓', enemyMaterial: '宝探しの鴉マーク',   ascension_stat: '物理ダメージ', is_distributed: false },
-  '旧貴族長弓':        { rarity: 4, weaponType: '弓', enemyMaterial: '占いの絵巻',       ascension_stat: '攻撃力', is_distributed: false },
-
-  // ★4 法器
-  '雪に沈む心':  { rarity: 4, weaponType: '法器', enemyMaterial: '幻光の屑',   ascension_stat: '会心ダメージ', is_distributed: false },
-   '胸中の谺':      { rarity: 4, weaponType: '法器', enemyMaterial: '幻光の屑', ascension_stat: '攻撃力', is_distributed: false },
-   '諸王の対局':      { rarity: 4, weaponType: '法器', enemyMaterial: '色褪せた赤い絹', ascension_stat: '会心率', is_distributed: false },
-  '霜辰':              { rarity: 4, weaponType: '法器', enemyMaterial: '破損した徽章',     ascension_stat: '会心ダメージ', is_distributed: false },
-  '天光のリュート':    { rarity: 4, weaponType: '法器', enemyMaterial: '破損した徽章',     ascension_stat: '元素チャージ効率', is_distributed: true },
-  '烏髄の孤灯':        { rarity: 4, weaponType: '法器', enemyMaterial: '破損した徽章',     ascension_stat: '元素熟知',     is_distributed: false },
-  '波乗りの旋回':      { rarity: 4, weaponType: '法器', enemyMaterial: '未熟な牙',         ascension_stat: '元素チャージ効率', is_distributed: false },
-  'ヤシュチェの環':    { rarity: 4, weaponType: '法器', enemyMaterial: '破損した仮面',     ascension_stat: 'HP',           is_distributed: false },
-  '蒼紋の角杯':        { rarity: 4, weaponType: '法器', enemyMaterial: '未熟な牙',         ascension_stat: 'HP',           is_distributed: true },
-  '果てなき紺碧の唄':  { rarity: 4, weaponType: '法器', enemyMaterial: '宝探しの鴉マーク', ascension_stat: '元素チャージ効率', is_distributed: true },
-  '古祠の瓏':          { rarity: 4, weaponType: '法器', enemyMaterial: '占いの絵巻',       ascension_stat: '会心率',       is_distributed: false },
-  '純水流華':          { rarity: 4, weaponType: '法器', enemyMaterial: '異海の露',         ascension_stat: '攻撃力',       is_distributed: false },
-  '彷徨える星':        { rarity: 4, weaponType: '法器', enemyMaterial: 'キノコンの胞子',   ascension_stat: '元素熟知',     is_distributed: false },
-  '満悦の実':          { rarity: 4, weaponType: '法器', enemyMaterial: 'キノコンの胞子',   ascension_stat: '元素チャージ効率', is_distributed: false },
-  '黒岩の緋玉':        { rarity: 4, weaponType: '法器', enemyMaterial: '占いの絵巻',       ascension_stat: '会心ダメージ', is_distributed: false },
-  '金珀・試作':        { rarity: 4, weaponType: '法器', enemyMaterial: '牢固な矢先',       ascension_stat: 'HP',           is_distributed: false },
-  '誓いの明瞳':        { rarity: 4, weaponType: '法器', enemyMaterial: 'フライムの乾核',   ascension_stat: '攻撃力',       is_distributed: true },
-  '西風秘典':          { rarity: 4, weaponType: '法器', enemyMaterial: '占いの絵巻',       ascension_stat: '元素チャージ効率', is_distributed: false },
-  '祭礼の断片':        { rarity: 4, weaponType: '法器', enemyMaterial: '宝探しの鴉マーク', ascension_stat: '元素熟知',     is_distributed: false },
-  '白辰の輪':          { rarity: 4, weaponType: '法器', enemyMaterial: '占いの絵巻',       ascension_stat: '元素チャージ効率', is_distributed: false },
-  '流浪楽章':          { rarity: 4, weaponType: '法器', enemyMaterial: '破損した仮面',     ascension_stat: '会心ダメージ', is_distributed: false },
-  'ダークアレイの酒と詩':{ rarity: 4, weaponType: '法器', enemyMaterial: '宝探しの鴉マーク', ascension_stat: '元素チャージ効率', is_distributed: false },
-  '昭心':              { rarity: 4, weaponType: '法器', enemyMaterial: '破損した仮面',     ascension_stat: '攻撃力',       is_distributed: false },
-  '冬忍びの実':        { rarity: 4, weaponType: '法器', enemyMaterial: 'トリックフラワーの蜜', ascension_stat: '攻撃力',     is_distributed: false },
-  '旧貴族秘法録':      { rarity: 4, weaponType: '法器', enemyMaterial: '新兵の記章',       ascension_stat: '攻撃力',       is_distributed: false },
-  'ドドコの物語':      { rarity: 4, weaponType: '法器', enemyMaterial: '破損した仮面',     ascension_stat: '攻撃力',       is_distributed: true },
-  '匣中日月':          { rarity: 4, weaponType: '法器', enemyMaterial: 'トリックフラワーの蜜', ascension_stat: '会心率',     is_distributed: false },
-  '万国諸海の図譜':    { rarity: 4, weaponType: '法器', enemyMaterial: 'スライムの液体',   ascension_stat: '元素熟知',     is_distributed: false },
-
-  // ★3 片手剣
-  '黎明の神剣':        { rarity: 3, weaponType: '片手剣', enemyMaterial: 'スライムの液体',   ascension_stat: '会心ダメージ', is_distributed: false },
-  '飛天御剣':          { rarity: 3, weaponType: '片手剣', enemyMaterial: '新兵の記章',     ascension_stat: '元素チャージ効率', is_distributed: false },
-  '暗鉄剣':            { rarity: 3, weaponType: '片手剣', enemyMaterial: '破損した仮面',   ascension_stat: '元素熟知',     is_distributed: false },
-  '旅道の剣':          { rarity: 3, weaponType: '片手剣', enemyMaterial: '占いの絵巻',     ascension_stat: '防御力',       is_distributed: false },
-  'チ虎魚の刀':        { rarity: 3, weaponType: '片手剣', enemyMaterial: '宝探しの鴉マーク', ascension_stat: '攻撃力',       is_distributed: false },
-  '冷刃':              { rarity: 3, weaponType: '片手剣', enemyMaterial: '牢固な矢先',     ascension_stat: '攻撃力',       is_distributed: false },
-
-  // ★3 両手剣
-  '飛天大御剣':        { rarity: 3, weaponType: '両手剣', enemyMaterial: '宝探しの鴉マーク', ascension_stat: '物理ダメージ', is_distributed: false },
-  '鉄影段平':          { rarity: 3, weaponType: '両手剣', enemyMaterial: 'トリックフラワーの蜜', ascension_stat: 'HP',       is_distributed: false },
-  '白鉄の大剣':        { rarity: 3, weaponType: '両手剣', enemyMaterial: 'スライムの液体',   ascension_stat: '防御力',       is_distributed: false },
-  '龍血を浴びた剣':    { rarity: 3, weaponType: '両手剣', enemyMaterial: '牢固な矢先',     ascension_stat: '元素熟知',     is_distributed: false },
-  '理屈責め':          { rarity: 3, weaponType: '両手剣', enemyMaterial: '破損した仮面',   ascension_stat: '攻撃力',       is_distributed: false },
-
-  // ★3 長柄武器
-  '鉾槍':              { rarity: 3, weaponType: '長柄武器', enemyMaterial: 'トリックフラワーの蜜', ascension_stat: '攻撃力', is_distributed: false },
-  '白纓槍':            { rarity: 3, weaponType: '長柄武器', enemyMaterial: '新兵の記章',     ascension_stat: '会心率', is_distributed: false },
-  '黒纓槍':            { rarity: 3, weaponType: '長柄武器', enemyMaterial: '牢固な矢先',       ascension_stat: 'HP', is_distributed: false },
-
-  // ★3 弓
-  '鴉羽の弓':          { rarity: 3, weaponType: '弓', enemyMaterial: '牢固な矢先',       ascension_stat: '元素熟知', is_distributed: false },
-  'シャープシューターの誓い':{ rarity: 3, weaponType: '弓', enemyMaterial: 'スライムの液体', ascension_stat: '会心ダメージ', is_distributed: false },
-  '弾弓':              { rarity: 3, weaponType: '弓', enemyMaterial: '破損した仮面',     ascension_stat: '会心率', is_distributed: false },
-  'リカーブボウ':      { rarity: 3, weaponType: '弓', enemyMaterial: '占いの絵巻',       ascension_stat: 'HP', is_distributed: false },
-  '文使い':            { rarity: 3, weaponType: '弓', enemyMaterial: '宝探しの鴉マーク',   ascension_stat: '会心ダメージ', is_distributed: false },
-
-  // ★3 法器
-  '魔導緒論':          { rarity: 3, weaponType: '法器', enemyMaterial: 'スライムの液体',   ascension_stat: '元素熟知',     is_distributed: false },
-  '龍殺しの英傑譚':    { rarity: 3, weaponType: '法器', enemyMaterial: '占いの絵巻',       ascension_stat: 'HP',           is_distributed: false },
-  '翡玉法珠':          { rarity: 3, weaponType: '法器', enemyMaterial: '宝探しの鴉マーク', ascension_stat: '元素熟知',     is_distributed: false },
-  '特級の宝玉':        { rarity: 3, weaponType: '法器', enemyMaterial: '新兵の記章',       ascension_stat: '会心率',       is_distributed: false },
-  '異世界旅行記':      { rarity: 3, weaponType: '法器', enemyMaterial: '破損した仮面',     ascension_stat: '元素チャージ効率', is_distributed: false },
-
-  // ★2 片手剣
-  '銀の剣':            { rarity: 2, weaponType: '片手剣', enemyMaterial: '牢固な矢先',   ascension_stat: '', is_distributed: false },
-
-  // ★2 両手剣
-  '傭兵の重剣':        { rarity: 2, weaponType: '両手剣', enemyMaterial: 'スライムの液体',   ascension_stat: '', is_distributed: false },
-
-  // ★2 長柄武器
-  '鉄尖槍':            { rarity: 2, weaponType: '長柄武器', enemyMaterial: '占いの絵巻',     ascension_stat: '', is_distributed: false },
-
-  // ★2 弓
-  '歴戦の狩猟弓':      { rarity: 2, weaponType: '弓', enemyMaterial: '宝探しの鴉マーク',   ascension_stat: '', is_distributed: false },
-
-  // ★2 法器
-  'ポケット魔導書':    { rarity: 2, weaponType: '法器', enemyMaterial: '破損した仮面',   ascension_stat: '',             is_distributed: false },
-
-  // ★1 片手剣
-  '無鋒の剣':          { rarity: 1, weaponType: '片手剣', enemyMaterial: '牢固な矢先',   ascension_stat: '', is_distributed: false },
-
-  // ★1 両手剣
-  '訓練用大剣':        { rarity: 1, weaponType: '両手剣', enemyMaterial: 'スライムの液体',   ascension_stat: '', is_distributed: false },
-
-  // ★1 長柄武器
-  '新米の長槍':        { rarity: 1, weaponType: '長柄武器', enemyMaterial: '占いの絵巻',     ascension_stat: '', is_distributed: false },
-
-  // ★1 弓
-  '狩猟弓':            { rarity: 1, weaponType: '弓', enemyMaterial: '宝探しの鴉マーク',   ascension_stat: '', is_distributed: false },
-
-  // ★1 法器  
-  '生徒ノート':        { rarity: 1, weaponType: '法器', enemyMaterial: '破損した仮面',     ascension_stat: '',  is_distributed: false },
-};
-// 1. 武器生データを自動生成する関数
-function buildWeaponBase() {
-  const canonical = name => WEAPON_NAME_ALIASES[name] || name;
-  const canonicalEntries = Object.entries(WEAPON_NAME_ALIASES).map(([legacy, current]) => [current, legacy]);
-  const canonicalToLegacy = Object.fromEntries(canonicalEntries);
-  const allNames = new Set([
-    ...Object.keys(weaponReleaseVersionMap).map(canonical),
-    ...Object.keys(WEAPON_TO_BREAK_MAT).map(canonical),
-    ...Object.keys(WEAPON_BASE_ATK).flatMap(k => WEAPON_BASE_ATK[k]).map(canonical),
-    ...Object.keys(WEAPON_ATTRS).map(canonical),
-    ...Object.keys(WEAPON_SOURCE_OVERRIDES).map(canonical),
-  ]);
-
-  const nameToAtk = {};
-  for (const [atk, names] of Object.entries(WEAPON_BASE_ATK)) {
-    for (const n of names) nameToAtk[canonical(n)] = parseInt(atk, 10);
-  }
-
-  const weapons = [];
-  for (const name of allNames) {
-    const legacyName = canonicalToLegacy[name] || name;
-    const sourceOverride = WEAPON_SOURCE_OVERRIDES[name] || WEAPON_SOURCE_OVERRIDES[legacyName] || {};
-    
-    // weaponReleaseVersionMap になくても "1.0" として読み込む
-    const releaseVersion = weaponReleaseVersionMap[name] || weaponReleaseVersionMap[legacyName] || '1.0';
-
-    const attrs = {
-      ...(WEAPON_ATTRS[name] || WEAPON_ATTRS[legacyName] || {}),
-      ...sourceOverride,
-    };
-    const breakMat = WEAPON_TO_BREAK_MAT[name] || WEAPON_TO_BREAK_MAT[legacyName] || '';
-    const baseAtk = nameToAtk[name] || 0;
-    if (!attrs.rarity || !attrs.weaponType) continue;
-
-    weapons.push({
-      name,
-      rarity: attrs.rarity,
-      weaponType: attrs.weaponType,
-      baseAtk,
-      releaseVersion,
-      weaponBreakMaterial: breakMat,
-      weaponBreakMaterialGroup: WEAPON_BREAK_GROUPS[breakMat] || breakMat,
-      enemyMaterial: attrs.enemyMaterial || '',
-      ascensionStat: attrs.ascension_stat || '',  // 🟢 すべて小文字の ascension_stat に修正
-      isDistributed: !!attrs.is_distributed,      // 🟢 すべて小文字の is_distributed に修正
-    });
-  }
-  return weapons;
-}
-
-// 2. 武器生データをロードする
-const RAW_WEAPONS = buildWeaponBase();
-
-// 3. グループ分け用の箱「weaponGroups」を作成
-const weaponGroups = RAW_WEAPONS.reduce((acc, weapon) => {
-  const type = weapon.weaponType;
-  if (!acc[type]) acc[type] = [];
-  acc[type].push(weapon);
-  return acc;
-}, {});
-
-// ---------------------------------------------------------------------------
-// 武器専用エリート敵素材マッピング表
-// ---------------------------------------------------------------------------
-const WEAPON_ENEMY_MATERIALS_MAP = {
-  // 重い角笛
-  "風鷹剣": "重い角笛", "ダークアレイの閃光": "重い角笛", "腐食の剣": "重い角笛", "旧貴族長剣": "重い角笛", "西風剣": "重い角笛", "冷刃": "重い角笛", "銀の剣": "重い角笛", "無鋒の剣": "重い角笛", "松韻の響く頃": "重い角笛", "雪葬の星銀": "重い角笛", "鐘の剣": "重い角笛", "鉄影段平": "重い角笛", "旧貴族秘法録": "重い角笛", "西風秘典": "重い角笛", "魔導緒論": "重い角笛", "ポケット魔導書": "重い角笛", "生徒ノート": "重い角笛", "終焉を嘆く詩": "重い角笛", "幽夜のワルツ": "重い角笛", "蒼翠の狩猟弓": "重い角笛", "暗黒の裂眼": "重い角笛", "絶弦": "重い角笛", "鴉羽の弓": "重い角笛", "暁を告げる歴史": "重い角笛",
-　//　濁水のひとしずく
-   "海淵のフィナーレ": "濁水のひとしずく", "サーンドルの渡し守": "濁水のひとしずく", "静水流転の輝き": "濁水のひとしずく", "香りのシンフォニスト": "濁水のひとしずく", "始まりの大魔術": "濁水のひとしずく", "静寂の唄": "濁水のひとしずく", "レンジゲージ": "濁水のひとしずく",
-  // 霧虚ろの花粉
-  "盤岩結緑": "霧虚ろの花粉", "斬岩・試作": "霧虚ろの花粉", "チ虎魚の刀": "霧虚ろの花粉", "無工の剣": "霧虚ろの花粉", "黒岩の斬刀": "霧虚ろの花粉", "雨裁": "霧虚ろの花粉", "理屈責め": "霧虚ろの花粉", "息災": "霧虚ろの花粉", "ドラゴンスピア": "霧虚ろの花粉", "旧貴族長槍": "霧虚ろの花粉", "黒岩の突槍": "霧虚ろの花粉", "匣中滅龍": "霧虚ろの花粉", "鉾槍": "霧虚ろの花粉", "昭心": "霧虚ろの花粉", "金珀・試作": "霧虚ろの花粉", "特級の宝玉": "霧虚ろの花粉", "古祠の瓏": "霧虚ろの花粉", "澹月・試作": "霧虚ろの花粉", "文使い": "霧虚ろの花粉",
-
-  // 隠獣の指爪
-  "赤角石塵滅砕": "隠獣の指爪", "惡王丸": "隠獣の指爪", "斬波のひれ長": "隠獣の指爪", "神楽の真意": "隠獣の指爪", "誓いの明瞳": "隠獣の指爪", "冬極の白星": "隠獣の指爪",
-
-  // 脆い骨片
-  "銀灯": "脆い骨片","千鈞懸黎": "脆い骨片","鉄蜂の刺し": "脆い骨片", "飛天御剣": "脆い骨片", "銜玉の海皇": "脆い骨片", "飛天大御剣": "脆い骨片", "螭龍の剣": "脆い骨片", "古華・試作": "脆い骨片", "破天の槍": "脆い骨片", "千岩長槍": "脆い骨片", "星鎌・試作": "脆い骨片", "黒纓槍": "脆い骨片", "浮世の錠": "脆い骨片", "万国諸海の図譜": "脆い骨片", "果てなき紺碧の唄": "脆い骨片", "リングボウ": "脆い骨片",
-
-  // 猟兵の刀
-  "斬山の刃": "猟兵の刀", "黒岩の長剣": "猟兵の刀", "匣中龍吟": "猟兵の刀", "暗鉄剣": "猟兵の刀", "千岩古剣": "猟兵の刀", "白影の剣": "猟兵の刀", "和璞鳶": "猟兵の刀", "流月の針": "猟兵の刀", "白纓槍": "猟兵の刀", "黒岩の緋玉": "猟兵の刀", "匣中日月": "猟兵の刀", "翡玉法珠": "猟兵の刀", "落霞": "猟兵の刀", "黒岩の戦弓": "猟兵の刀", "弓蔵": "猟兵の刀", "弾弓": "猟兵の刀",
-
-  // 混沌の装置
-  "蒼古なる自由への誓い": "混沌の装置", "シナバースピンドル": "混沌の装置", "祭礼の剣": "混沌の装置", "旅道の剣": "混沌の装置", "狼牙": "混沌の装置", "狼の末路": "混沌の装置", "旧貴族大剣": "混沌の装置", "西風大剣": "混沌の装置", "白鉄の大剣": "混沌の装置", "天空の脊": "混沌の装置", "西風長槍": "混沌の装置", "鉄尖槍": "混沌の装置", "新米の長槍": "混沌の装置", "四風原典": "混沌の装置", "冬忍びの実": "混沌の装置", "祭礼の断片": "混沌の装置", "異世界旅行記": "混沌の装置", "アモスの弓": "混沌の装置", "ダークアレイの狩人": "混沌の装置", "旧貴族長弓": "混沌の装置", "西風猟弓": "混沌の装置", "リカーブボウ": "混沌の装置",
-
-  // 混沌の機関
-  "霧切の廻光": "混沌の機関", "天目影打": "混沌の機関", "有楽御簾切": "混沌の機関", "桂木斬長正": "混沌の機関", "草薙の稲光": "混沌の機関", "喜多院十文字槍": "混沌の機関", "「漁獲」": "混沌の機関",
-
-  // 暗色のプリズム
-  "不滅の月華": "暗色のプリズム", "白辰の輪": "暗色のプリズム", "飛来の鳴弦": "暗色のプリズム", "破魔の弓": "暗色のプリズム", "曚雲の月": "暗色のプリズム", "プレデター": "暗色のプリズム",
-
-  // 暗晦の彫刻
-  "波乱月白経津": "暗晦の彫刻", "籠釣瓶一心": "暗晦の彫刻", "風信の矛": "暗晦の彫刻", "満悦の実": "暗晦の彫刻", "若水": "暗晦の彫刻",
-
-  // 地脈の旧枝
-  "天空の刃": "地脈の旧枝", "降臨の剣": "地脈の旧枝", "黒剣": "地脈の旧枝", "笛の剣": "地脈の旧枝", "黎明の神剣": "地脈の旧枝", "天空の傲": "地脈の旧枝", "祭礼の大剣": "地脈の旧枝", "龍血を浴びた剣": "地脈の旧枝", "傭兵の重剣": "地脈の旧枝", "訓練用大剣": "地脈の旧枝", "護摩の杖": "地脈の旧枝", "死闘の槍": "地脈の旧枝", "天空の巻": "地脈の旧枝", "ドドコの物語": "地脈の旧枝", "ダークアレイの酒と詩": "地脈の旧枝", "流浪楽章": "地脈の旧枝", "龍殺しの英傑譚": "地脈の旧枝", "天空の翼": "地脈の旧枝", "風花の頌歌": "地脈の旧枝", "祭礼の弓": "地脈の旧枝", "シャープシューターの誓い": "地脈の旧枝", "歴戦の狩猟弓": "地脈の旧枝", "狩猟弓": "地脈の旧枝",
-
-  // 混沌ストレージ
-  "赤砂の杖": "混沌ストレージ","原木刀": "混沌ストレージ", "マカイラの水色": "混沌ストレージ", "森林のレガリア": "混沌ストレージ", "ムーンピアサー": "混沌ストレージ",
-
-  // キノコンの衰菌核
-  "トゥライトゥーラの記憶": "キノコンの衰菌核", "彷徨える星": "キノコンの衰菌核", "狩人の道": "キノコンの衰菌核", "竭沢": "キノコンの衰菌核", "王の近侍": "キノコンの衰菌核",
-
-  // 欠損した月の鉄
-  "超越の鍵": "欠損した月の鉄",
-
-  // 光を失った焔剣の柄
-  "塵と光の七つの誓約": "光を失った焔剣の柄", "塵と光と七つの誓約": "光を失った焔剣の柄", "霜契の金枝": "光を失った焔剣の柄",
-
-  // 暗黒の裂眼
-  "狼の武勲詩": "暗黒の裂眼", "帳の夜曲": "暗黒の裂眼",
-
-  // 暗き霧の欠片
-  "三日月の含光": "暗き霧の欠片", "血染めの荒れ地": "暗き霧の欠片", "金掘りのシャベル": "暗き霧の欠片", "聖祭者の輝杖": "暗き霧の欠片", "羅網の針": "暗き霧の欠片",
-
-  // 失光の骨片
-  "月紡ぎの曙光": "失光の骨片", "万能の鍵": "失光の骨片", "災憾": "失光の骨片", "天光のリュート": "失光の骨片", "真言の匣": "失光の骨片",
-
-  // 霜夜の残光
-  "静謐の笛": "霜夜の残光", "黒蝕": "霜夜の残光", "夜を紡ぐ天鏡": "霜夜の残光", "烏髄の孤灯": "霜夜の残光", "霜辰": "霜夜の残光",
-
-  // 冷えた鱗甲の欠片
-  "異端を狩る溶刀": "冷えた鱗甲の欠片", "知恵の溶炎": "冷えた鱗甲の欠片", "砕け散る光輪": "冷えた鱗甲の欠片", "ヴィヴィッド・ハート": "冷えた鱗甲の欠片",  "冷寂の音": "冷えた鱗甲の欠片",
-
-  // 折光の胚芽
-  "厄水の災い": "折光の胚芽", "蒼耀": "折光の胚芽", "玉響停の御噺": "折光の胚芽", "星鷲の紅き羽": "折光の胚芽", "虹蛇の雨弦": "折光の胚芽",
-
-  // 秘源のベアリング
-  "岩峰を巡る歌": "秘源のベアリング", "実りの鉤鉈": "秘源のベアリング", "千烈の日輪": "秘源のベアリング", "虹の行方": "秘源のベアリング", "蒼紋の角杯": "秘源のベアリング",
-
-  // 燃え盛る石
-  "アースシェイカー": "燃え盛る石", "山の王の長牙": "燃え盛る石", "鎮山の釘": "燃え盛る石", "寝正月の初晴": "燃え盛る石", "花飾りの羽": "燃え盛る石",
-
-  // 砕けた意志の欠片
-  "ストロングボーン": "砕けた意志の欠片", "サーフィンタイム": "砕けた意志の欠片", "ヤシュチェの環": "砕けた意志の欠片", "波乗りの旋回": "砕けた意志の欠片", "祭星者の眺め": "砕けた意志の欠片",
-
-  // 砕けた剣の柄
-  "シンフォニーの鋳影": "砕けた剣の柄","エズピツァルの笛": "砕けた剣の柄", "赤月のシルエット": "砕けた剣の柄", "ルミドゥースの挽歌": "砕けた剣の柄", "築雲": "砕けた剣の柄",
-
-  // 翼状の羽鰭
-  "砂中の賢者達の問答": "翼状の羽鰭", "鶴鳴の余韻": "翼状の羽鰭", "白雨心弦": "翼状の羽鰭", "チェーンブレイカー": "翼状の羽鰭",
-
-  // 古びた従者の懐中時計
-  "船渠剣": "古びた従者の懐中時計", "水仙十字の剣": "古びた従者の懐中時計", "赦罪": "古びた従者の懐中時計", "「スーパーアルティメット覇王魔剣」": "古びた従者の懐中時計", "プロスペクタードリル": "古びた従者の懐中時計", "凛流の監視者": "古びた従者の懐中時計",
-
-  // 隙間のコア
-  "タイダル・シャドー": "隙間のコア", "携帯型チェンソー": "隙間のコア", "裁断": "隙間のコア", "正義の報酬": "隙間のコア", "純水流華": "隙間のコア", "久遠流転の大典": "隙間のコア",
-
-  // 何処かで摘まれた咲きかけの花
-  "フィヨルドの歌": "何処かで摘まれた咲きかけの花","碧落の瓏": "何処かで摘まれた咲きかけの花", "トキの嘴": "何処かで摘まれた咲きかけの花", "烈日の後嗣": "何処かで摘まれた咲きかけの花",
-
-  // 毀れた背骨
-  "翠光の裁葉": "毀れた背骨", "葦海の標": "毀れた背骨", "鉄彩の花": "毀れた背骨", "話死合い棒": "毀れた背骨",
-
-  // 壊れたプリズム
-  "諸王の対局": "壊れたプリズム","聖顕の鍵": "壊れたプリズム", "東花坊時雨": "壊れたプリズム", "サイフォスの月明かり": "壊れたプリズム", "千夜に浮かぶ夢": "壊れたプリズム",
-    
-  // 生命の虚ろな根
- "白銀の湖を舞う翼": "生命の虚ろな根","霜雪の契": "生命の虚ろな根","遠望の歌": "生命の虚ろな根","救済の剣": "生命の虚ろな根","蝶の羽化": "生命の虚ろな根","雪に沈む心": "生命の虚ろな根","新たなる枝": "生命の虚ろな根",
-
-  //沈積増生物
-　"胸中の谺": "沈積増生物","氷の吐息": "沈積増生物","導炎の源": "沈積増生物","風に遊ぶ弦": "沈積増生物","旋流の讃美歌": "沈積増生物",
-};
-
-// 2. 武器データを1つずつ成形（正規化）する関数
 function normalizeWeapon(raw) {
   const aliases = Object.keys(WEAPON_NAME_ALIASES).filter(legacy => WEAPON_NAME_ALIASES[legacy] === raw.name);
-  const readings = WEAPON_READINGS[raw.name] || [];
-  const weaponEnemyMaterial = WEAPON_ENEMY_MATERIALS_MAP[raw.name] || ''; 
-
-  const ascensionStatGroup = ASCENSION_STAT_GROUPS[raw.ascensionStat] || raw.ascensionStat || '';
+  const breakGroup = WEAPON_BREAK_GROUPS[raw.break_material] || "モンド";
+  const statGroup = ASCENSION_STAT_GROUPS[raw.ascension_stat] || "";
 
   return {
     id: raw.name,
     name: raw.name,
-    displayNames: [raw.name, ...aliases, ...readings],
-    rarity: raw.rarity,
-    weaponType: raw.weaponType,
-    baseAtk: raw.baseAtk,
-    releaseVersionNum: parseReleaseVersion(raw.releaseVersion),
-    releaseVersionLabel: raw.releaseVersion || '',
-    weaponBreakMaterial: raw.weaponBreakMaterial,
-    weaponBreakMaterialGroup: raw.weaponBreakMaterialGroup,
-    enemyMaterial: raw.enemyMaterial,
-    weaponEnemyMaterial, 
-    ascensionStat: raw.ascensionStat || '',
-    ascensionStatGroup, 
-    isDistributed: !!raw.isDistributed,
+    displayNames: [raw.name, ...aliases],
+    rarity: raw.rarity || 4,
+    weaponType: raw.weapon_type || "片手剣",
+    baseAtk: raw.base_atk || 510,
+    releaseVersionNum: parseReleaseVersion(raw.release_version || "1.0"),
+    releaseVersionLabel: raw.release_version || "",
+    weaponBreakMaterial: raw.break_material || "",
+    weaponBreakMaterialGroup: breakGroup,
+    enemyMaterial: raw.enemy_material || "",
+    weaponEnemyMaterial: raw.enemy_material || "",
+    ascensionStat: raw.ascension_stat || "",
+    ascensionStatGroup: statGroup,
+    isDistributed: !!raw.distributed,
     iconUrl: `${IMAGE_BASE}/weapons/${encodeURIComponent(raw.name)}.png`,
   };
 }
 
-// 3. 成形済みの武器リストを最終生成
-const WEAPONS = Object.values(weaponGroups).flat().map(normalizeWeapon);
+const WEAPONS = WEAPONS_DATA.filter(w => w.name && w.rarity).map(normalizeWeapon);
 
-// ---------------------------------------------------------------------------
-// 武器ヒント項目定義
-// ---------------------------------------------------------------------------
 const WEAPON_HINT_FIELDS = [
-  { key: 'rarity',                 label: 'レア度',       type: 'numeric', defaultOn: true },
-  { key: 'weaponType',             label: '武器種',       type: 'exact',   defaultOn: true },
-  { key: 'baseAtk',                label: '基礎攻撃力',   type: 'numeric', defaultOn: true },
-  { key: 'weaponBreakMaterial',    label: '武器突破素材', type: 'group', group: 'weaponBreakMaterialGroup', defaultOn: true },
-  { key: 'enemyMaterial',          label: '敵素材',       type: 'exact',   defaultOn: true },
-  { key: 'ascensionStat',          label: '突破ステータス', type: 'group', group: 'ascensionStatGroup', defaultOn: false },
-  { key: 'isDistributed',          label: '配布武器',     type: 'exact',   defaultOn: false },
-  { key: 'weaponEnemyMaterial',    label: '精鋭素材',     type: 'exact',   defaultOn: true }, 
-　{ key: 'releaseVersionNum',      label: '実装Ver',      type: 'numeric', defaultOn: true }, 
+  { key: "rarity", label: "レア度", type: "numeric", defaultOn: true },
+  { key: "weaponType", label: "武器種", type: "exact", defaultOn: true },
+  { key: "baseAtk", label: "基礎攻撃力", type: "numeric", defaultOn: true },
+  { key: "weaponBreakMaterial", label: "武器突破素材", type: "group", group: "weaponBreakMaterialGroup", defaultOn: true },
+  { key: "enemyMaterial", label: "精鋭敵素材", type: "exact", defaultOn: true },
+  { key: "ascensionStat", label: "突破ステータス", type: "group", group: "ascensionStatGroup", defaultOn: true },
+  { key: "isDistributed", label: "配布武器", type: "exact", defaultOn: false },
+  { key: "releaseVersionNum", label: "実装Ver", type: "numeric", defaultOn: true },
 ];
 
-/**
- * 武器フィールドの表示用ラベル変換
- * @param {string} key - フィールドキー
- * @param {*} value - 値
- * @param {object} [weapon] - 武器オブジェクト
- * @returns {string}
- */
 function getWeaponDisplayValue(key, value, weapon) {
-  if (value === null || value === undefined || value === '') return '—';
+  if (value === null || value === undefined || value === "") return "—";
   switch (key) {
-    case 'rarity': return `★${value}`;
-    case 'isDistributed': return value ? 'あり' : 'なし';
-    case 'releaseVersionNum': return weapon ? (weapon.releaseVersionLabel || String(value)) : String(value); // 🟢 追加しました
+    case "rarity": return `★${value}`;
+    case "isDistributed": return value ? "あり" : "なし";
+    case "releaseVersionNum": return weapon ? (weapon.releaseVersionLabel || String(value)) : String(value);
     default: return String(value);
   }
 }
 
-if (typeof module !== 'undefined' && module.exports) {
+
+if (typeof globalThis !== "undefined") {
+  globalThis.CHARACTERS = CHARACTERS;
+  globalThis.WEAPONS = WEAPONS;
+  globalThis.WEAPONS_DATA = WEAPONS_DATA;
+  globalThis.HINT_FIELDS = HINT_FIELDS;
+  globalThis.WEAPON_HINT_FIELDS = WEAPON_HINT_FIELDS;
+  globalThis.parseReleaseVersion = parseReleaseVersion;
+  globalThis.getWeaponDisplayValue = getWeaponDisplayValue;
+}
+
+if (typeof module !== "undefined" && module.exports) {
   module.exports = {
     CHARACTERS,
     WEAPONS,
+    WEAPONS_DATA,
     HINT_FIELDS,
     WEAPON_HINT_FIELDS,
     parseReleaseVersion,
