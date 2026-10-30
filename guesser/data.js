@@ -355,19 +355,17 @@ const RAW_CHARACTERS = [
 ];
 
 
-const CHARACTER_BASE_STATS = CHARACTER_BASE_STATS_TEXT
-  .trim()
-  .split('\n')
-  .reduce((acc, line) => {
-    const trimmed = line.trim();
-    if (!trimmed) return acc;
-    const [name, values] = trimmed.split('：');
-    if (!name || !values) return acc;
-    const [baseAtkRaw, baseHpRaw, baseDefRaw] = values.split('、').map(v => v.trim());
-    if (!baseAtkRaw || !baseHpRaw || !baseDefRaw) return acc;
-    acc[name.trim()] = { baseAtkRaw, baseHpRaw, baseDefRaw };
-    return acc;
-  }, {});
+// RAW_CHARACTERS のデータから CHARACTER_BASE_STATS を自動生成する
+const CHARACTER_BASE_STATS = RAW_CHARACTERS.reduce((acc, char) => {
+  if (char.name) {
+    acc[char.name] = {
+      baseAtkRaw: char.attack !== undefined && char.attack !== null ? String(char.attack) : '',
+      baseHpRaw: char.hp !== undefined && char.hp !== null ? String(char.hp) : '',
+      baseDefRaw: char.defense !== undefined && char.defense !== null ? String(char.defense) : ''
+    };
+  }
+  return acc;
+}, {});
 
 function parseBaseStatValue(raw) {
   if (raw === null || raw === undefined || raw === '') return null;
