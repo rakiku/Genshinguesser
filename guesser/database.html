@@ -3,80 +3,52 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Genshin Guesser — データベース</title>
-  <meta name="description" content="原神キャラクター・武器データベース。詳細な項目で絞り込み可能。">
+  <title>原神 Guesser — データベース</title>
   <link rel="icon" href="data:,">
   <link rel="stylesheet" href="style.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap">
   <style>
-    /* ---- Database extra styles ---- */
-    .db-header { display:flex; align-items:center; gap:.6rem; margin-bottom:1rem; flex-wrap:wrap; }
-    .db-tab { padding:.35rem .9rem; border:2px solid var(--border); border-radius:6px; background:transparent; color:#fff; font-family:inherit; font-size:.85rem; cursor:pointer; }
-    .db-tab.active { background:var(--accent); border-color:var(--accent); color:#fff; }
+    /* データベース画面専用スタイル */
+    .db-header { display: flex; align-items: center; justify-content: flex-start; gap: 0.75rem; margin-bottom: 1.25rem; flex-wrap: wrap; }
+    .db-tab { padding: 0.5rem 1.2rem; border-radius: 8px; border: 1px solid var(--border); background: var(--surface); color: var(--text-muted); cursor: pointer; font-size: 0.95rem; font-weight: bold; transition: all 0.2s; }
+    .db-tab:hover { border-color: var(--accent); color: var(--text); }
+    .db-tab.active { background: var(--accent); color: #111; border-color: var(--accent); }
     
-    /* ---- 高機能マルチフィルター用のグリッドレイアウト ---- */
-    .filter-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-      gap: 0.6rem;
-      margin-bottom: 1.2rem;
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 1rem;
-    }
+    .filter-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 0.5rem; margin-bottom: 1.5rem; background: var(--surface); padding: 1rem; border-radius: 8px; border: 1px solid var(--border); }
     .filter-item { display: flex; flex-direction: column; gap: 0.25rem; }
-    .filter-item label { font-size: 0.72rem; color: var(--text-muted, #95a5a6); font-weight: 700; }
-    .filter-select, .filter-input {
-      padding: 0.35rem 0.5rem;
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      background: #ffffff;
-      color: #000000;
-      font-size: 0.8rem;
-    }
-    .filter-select option { background: #ffffff; color: #000000; }
-    .filter-input:focus { border-color: var(--accent); outline: none; }
-    .filter-btn-row { grid-column: 1 / -1; display: flex; justify-content: flex-end; margin-top: 0.4rem; }
-    .reset-btn { padding: .45rem 1rem; background: #7f8c8d; border: none; border-radius: 8px; color: #fff; font-family: inherit; font-size: .8rem; cursor: pointer; font-weight: bold; transition: background 0.15s; }
-    .reset-btn:hover { background: #95a5a6; }
+    .filter-item label { font-size: 0.75rem; color: var(--text-muted); }
+    .filter-input, .filter-select { background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; color: #fff; padding: 0.35rem 0.5rem; font-size: 0.8rem; width: 100%; box-sizing: border-box; }
+    .filter-btn-row { grid-column: 1 / -1; display: flex; justify-content: flex-end; margin-top: 0.5rem; }
+    .reset-btn { background: var(--surface2); border: 1px solid var(--border); color: var(--text-muted); border-radius: 6px; padding: 0.4rem 0.8rem; font-size: 0.8rem; cursor: pointer; }
+    .reset-btn:hover { border-color: var(--accent); color: var(--text); }
 
-    /* ---- カード・グリッド表示 ---- */
-    .db-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(170px,1fr)); gap:.75rem; }
-    .db-card { background:var(--bg-card); border:1.5px solid var(--border); border-radius:10px; padding:.7rem; text-align:left; cursor:pointer; transition:border-color .15s; font-size:.88rem; color:#fff; display:flex; flex-direction:column; gap:.55rem; }
-    .db-card:hover, .db-card.active { border-color:var(--accent); }
-    .db-card .card-thumb-wrap { aspect-ratio:1/1; border-radius:8px; background:rgba(255,255,255,.05); display:flex; align-items:center; justify-content:center; overflow:hidden; }
-    .db-card .card-thumb { width:100%; height:100%; object-fit:cover; }
-    .db-card .card-thumb-fallback { color:#fff; font-size:2rem; }
-    .db-card .card-name { color:#fff; font-weight:700; line-height:1.4; }
-    .rarity-5 { border-color:#e8a030; }
-    .rarity-4 { border-color:#9966cc; }
-    .rarity-3 { border-color:#4da3ff; }
-    .rarity-2 { border-color:#3aaa5a; }
-    .rarity-1 { border-color:#f5f7fb; }
-    .empty-msg { text-align:center; color:#fff; padding:2rem; }
+    .db-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(105px, 1fr)); gap: 0.75rem; }
+    .db-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 0.5rem; text-align: center; cursor: pointer; transition: transform 0.15s, border-color 0.15s; display: flex; flex-direction: column; align-items: center; }
+    .db-card:hover { transform: translateY(-3px); border-color: var(--accent); }
+    .db-card-img { width: 70px; height: 70px; object-fit: contain; border-radius: 6px; background: rgba(0,0,0,0.2); margin-bottom: 0.4rem; }
+    .db-card-name { font-size: 0.8rem; font-weight: bold; color: var(--text); line-height: 1.2; word-break: break-all; }
+    .db-card-sub { font-size: 0.7rem; color: var(--text-muted); margin-top: 0.2rem; }
+
+    /* モーダル詳細・編集 */
+    .db-modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 1000; }
+    .db-modal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: var(--surface); border: 1px solid var(--border); border-radius: 12px; width: 90%; max-width: 600px; max-height: 85vh; overflow-y: auto; z-index: 1001; padding: 1.25rem; box-sizing: border-box; }
+    .db-modal-head { display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); padding-bottom: 0.75rem; margin-bottom: 1rem; }
+    .db-modal-title { font-size: 1.2rem; font-weight: bold; margin: 0; display: flex; align-items: center; gap: 0.5rem; }
+    .db-modal-close { background: none; border: none; color: var(--text-muted); font-size: 1.5rem; cursor: pointer; }
+    .db-modal-hero { display: flex; gap: 1rem; align-items: center; margin-bottom: 1.25rem; background: var(--surface2); padding: 0.75rem; border-radius: 8px; }
+    .db-modal-hero img { width: 80px; height: 80px; object-fit: contain; border-radius: 8px; background: rgba(0,0,0,0.3); }
+    .db-modal-summary { font-size: 0.85rem; line-height: 1.5; color: var(--text); }
     
-    /* ---- 詳細モーダル ---- */
-    .db-modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,.72); z-index:300; }
-    .db-modal { position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); width:min(94vw,760px); max-height:88vh; overflow-y:auto; background:var(--surface); border:1px solid var(--border); border-radius:14px; box-shadow:var(--shadow); z-index:301; padding:1.2rem; color:#fff; }
-    .db-modal-head { display:flex; align-items:center; gap:.8rem; margin-bottom:1rem; }
-    .db-modal-title { font-size:1.1rem; color:#fff; font-weight:700; }
-    .db-modal-close { margin-left:auto; background:transparent; border:1px solid var(--border); border-radius:8px; color:#fff; cursor:pointer; font-family:inherit; padding:.35rem .8rem; }
-    .db-modal-body { display:grid; gap:1rem; }
-    .db-modal-hero { display:flex; gap:1rem; align-items:center; flex-wrap:wrap; }
-    .db-modal-image-wrap { width:min(140px,100%); aspect-ratio:1/1; border-radius:12px; overflow:hidden; background:rgba(255,255,255,.05); display:flex; align-items:center; justify-content:center; }
-    .db-modal-image { width:100%; height:100%; object-fit:cover; }
-    .db-modal-fallback { font-size:3rem; color:#fff; }
-    .db-modal-summary { display:grid; gap:.35rem; flex:1; }
-    .db-detail-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); gap:.6rem 1rem; }
-    .db-detail-item { font-size:.82rem; display:flex; flex-direction:column; gap:.2rem; }
-    .db-detail-item b { color:var(--text-muted, #95a5a6); font-weight:700; font-size:.75rem; }
-    .db-edit-input, .db-edit-select { padding:0.4rem 0.6rem; background:var(--surface2); border:1px solid var(--border); border-radius:6px; color:#fff; font-family:inherit; font-size:0.85rem; width:100%; }
-    .db-edit-input:focus, .db-edit-select:focus { border-color:var(--accent); outline:none; }
-    .db-save-row { display:flex; justify-content:flex-end; margin-top:1rem; gap:.5rem; }
-    .db-save-btn { padding:.5rem 1.2rem; background:var(--accent); border:none; border-radius:8px; color:#111; font-weight:bold; cursor:pointer; font-size:.9rem; }
-    .db-save-btn:hover { opacity:.85; }
+    .db-detail-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 0.6rem; }
+    .db-field-group { display: flex; flex-direction: column; gap: 0.2rem; }
+    .db-field-label { font-size: 0.75rem; color: var(--text-muted); font-weight: bold; }
+    .db-field-val { background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; padding: 0.4rem 0.6rem; font-size: 0.85rem; color: #fff; width: 100%; box-sizing: border-box; }
+    .db-field-val:disabled { opacity: 0.75; cursor: default; }
+
+    .db-save-row { margin-top: 1.25rem; display: flex; justify-content: flex-end; gap: 0.75rem; border-top: 1px solid var(--border); padding-top: 1rem; }
+    .db-save-btn { background: var(--accent); color: #111; font-weight: bold; border: none; border-radius: 6px; padding: 0.5rem 1.2rem; cursor: pointer; }
+    .db-save-btn:hover { opacity: 0.9; }
 
     /* 管理者認証モーダル */
     .admin-input { width: 100%; padding: 0.5rem; background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; color: #fff; margin-top: 0.3rem; margin-bottom: 0.8rem; font-family: inherit; font-size: 0.9rem; }
@@ -90,7 +62,7 @@
   <header class="app-header">
     <h1 class="app-title">📚 データベース</h1>
     <nav class="header-actions">
-      <a href="index.html" class="back-link icon-btn">← ゲームに戻る</a>
+      <a href="../index.html" class="back-link icon-btn">← メニュー</a>
     </nav>
   </header>
 
@@ -152,10 +124,17 @@
     <!-- グリッド表示 -->
     <div class="db-grid" id="dbGrid"></div>
 
+    <!-- TOPに戻るボタン -->
+    <div style="text-align: center; margin: 2.5rem 0 1rem 0;">
+      <button type="button" id="backToTopBtn" class="reset-btn" style="padding: 0.6rem 1.6rem; font-size: 0.95rem; background: var(--surface2); border: 1px solid var(--border); color: #fff; cursor: pointer; border-radius: 6px;">
+        ▲ TOPに戻る
+      </button>
+    </div>
+
   </main>
 
   <footer class="app-footer">
-    <p><a href="index.html">← ゲームに戻る</a></p>
+    <p><a href="../index.html">← メニューへ戻る</a></p>
   </footer>
 
   <!-- 詳細・編集モーダル -->
@@ -179,14 +158,14 @@
     </div>
   </section>
 
-  <!-- 🔐 管理者認証モーダル -->
+  <!-- 管理者パスワード入力モーダル -->
   <div class="db-modal-overlay hidden" id="adminAuthOverlay" aria-hidden="true"></div>
-  <div class="db-modal hidden" id="adminAuthModal" role="dialog" aria-modal="true" aria-labelledby="adminAuthTitle">
+  <div class="db-modal hidden" id="adminAuthModal" style="max-width: 360px;" role="dialog" aria-modal="true" aria-labelledby="adminAuthTitle">
     <div class="db-modal-head">
-      <h2 class="db-modal-title" id="adminAuthTitle">🔐 管理者認証</h2>
+      <h3 class="db-modal-title" id="adminAuthTitle">⚙️ 管理者認証</h3>
       <button class="db-modal-close" id="adminAuthClose" type="button" aria-label="閉じる">✕</button>
     </div>
-    <div class="db-modal-body">
+    <div>
       <label class="admin-label" for="adminPasswordInput">管理者パスワード</label>
       <input type="password" id="adminPasswordInput" placeholder="パスワードを入力" class="admin-input">
       
@@ -232,6 +211,9 @@
       bindDetailModal();
       renderGrid();
       bindAdminAuthTrigger();
+      document.getElementById('backToTopBtn')?.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
     });
 
     function bindTabs() {
@@ -248,697 +230,561 @@
 
     function initAdvancedFilters() {
       function parseReleaseVersionNum(str) {
-        if (typeof parseReleaseVersion === 'function') return parseReleaseVersion(str);
-        return parseFloat(str) || 0;
+        if (!str) return 0;
+        const m = String(str).match(/(\d+)(?:\.(\d+))?/);
+        if (!m) return 0;
+        const major = parseInt(m[1], 10) || 0;
+        const minor = parseInt(m[2] || '0', 10) || 0;
+        return major * 100 + minor;
       }
-      populateSelect('char-country', jpSort([...new Set(CHARACTERS.map(c => c.country))].filter(Boolean)));
-      populateSelect('char-weapon', jpSort([...new Set(CHARACTERS.map(c => c.weapon))].filter(Boolean)));
-      populateSelect('char-element', jpSort([...new Set(CHARACTERS.map(c => c.element))].filter(Boolean)));
-      
-      const months = [...new Set(CHARACTERS.map(c => c.birthMonth))].filter(Boolean).sort((a, b) => {
-        const aNum = parseInt(a.replace(/[０-９]/g, s => String.fromCharCode(s.charCodeAt(0) - 0xfee0))) || 99;
-        const bNum = parseInt(b.replace(/[０-９]/g, s => String.fromCharCode(s.charCodeAt(0) - 0xfee0))) || 99;
-        return aNum - bNum;
-      });
-      populateSelect('char-birthMonth', months);
-      
-      const versions = [...new Set(CHARACTERS.map(c => c.releaseVersionLabel))].filter(Boolean).sort((a, b) => parseReleaseVersionNum(a) - parseReleaseVersionNum(b));
-      populateSelect('char-releaseVersion', versions);
-      
-      populateSelect('char-rarity', [...new Set(CHARACTERS.map(c => c.rarity))].filter(v => v !== undefined).sort((a, b) => b - a).map(String));
-      populateSelect('char-body', jpSort([...new Set(CHARACTERS.map(c => c.bodyLabel))].filter(Boolean)));
-      populateSelect('char-role', jpSort([...new Set(CHARACTERS.flatMap(c => c.role))].filter(Boolean)));
-      populateSelect('char-energy', [...new Set(CHARACTERS.map(c => c.energy))].filter(v => v !== undefined).sort((a, b) => a - b).map(String));
-      populateSelect('char-talentBoss', jpSort([...new Set(CHARACTERS.map(c => c.talentBoss))].filter(Boolean)));
-      populateSelect('char-localSpecialty', jpSort([...new Set(CHARACTERS.map(c => c.localSpecialty))].filter(Boolean)));
-      populateSelect('char-enemyMaterial', jpSort([...new Set(CHARACTERS.map(c => c.enemyMaterial))].filter(Boolean)));
-      populateSelect('char-ascensionStat', jpSort([...new Set(CHARACTERS.map(c => c.ascensionStat))].filter(Boolean)));
-      populateSelect('char-talentBook', jpSort([...new Set(CHARACTERS.map(c => c.talentBook))].filter(Boolean)));
-      populateSelect('char-talentWeekly', jpSort([...new Set(CHARACTERS.map(c => c.talentWeekly))].filter(Boolean)));
-      populateSelect('char-specialDish', jpSort([...new Set(CHARACTERS.map(c => c.specialDish))].filter(Boolean)));
+      function sortVersions(list) {
+        return [...list].sort((a, b) => parseReleaseVersionNum(a) - parseReleaseVersionNum(b));
+      }
 
-      populateSelect('w-type', jpSort([...new Set(WEAPONS.map(w => w.weaponType))].filter(Boolean)));
-      populateSelect('w-rarity', [...new Set(WEAPONS.map(w => w.rarity))].filter(v => v !== undefined).sort((a, b) => b - a).map(String));
-      populateSelect('w-ascensionStat', jpSort([...new Set(WEAPONS.map(w => w.ascensionStat))].filter(Boolean)));
-      populateSelect('w-weaponBreakMaterial', jpSort([...new Set(WEAPONS.map(w => w.weaponBreakMaterial))].filter(Boolean)));
-      populateSelect('w-enemyMaterial', jpSort([...new Set(WEAPONS.map(w => w.enemyMaterial))].filter(Boolean)));
-      populateSelect('w-weaponEnemyMaterial', jpSort([...new Set(WEAPONS.map(w => w.weaponEnemyMaterial))].filter(Boolean)));
-      
-      const wVersions = [...new Set(WEAPONS.map(w => w.releaseVersionLabel))].filter(Boolean).sort((a, b) => parseReleaseVersionNum(a) - parseReleaseVersionNum(b));
-      populateSelect('w-releaseVersion', wVersions);
-    }
+      if (window.CHARACTERS && Array.isArray(window.CHARACTERS)) {
+        const c = window.CHARACTERS;
+        const populate = (id, list) => {
+          const el = document.getElementById(id);
+          if (!el) return;
+          el.innerHTML = '<option value="all">すべて</option>';
+          list.forEach(val => {
+            if (val !== undefined && val !== null && val !== '') {
+              const opt = document.createElement('option');
+              opt.value = val;
+              opt.textContent = val;
+              el.appendChild(opt);
+            }
+          });
+        };
 
-    function populateSelect(id, values) {
-      const select = document.getElementById(id);
-      if (!select) return;
-      select.innerHTML = '<option value="all">すべて</option>';
-      values.forEach(v => {
-        const opt = document.createElement('option');
-        opt.value = v;
-        opt.textContent = v.includes('★') ? v : (id.includes('rarity') || id.includes('Rarity') ? `★${v}` : v);
-        select.appendChild(opt);
-      });
+        populate('char-country', jpSort(new Set(c.map(x => x.country))));
+        populate('char-weapon', jpSort(new Set(c.map(x => x.weapon))));
+        populate('char-element', jpSort(new Set(c.map(x => x.element))));
+        populate('char-birthMonth', [...new Set(c.map(x => x.birthMonth))].filter(Boolean).sort((a,b)=>a-b));
+        populate('char-releaseVersion', sortVersions(new Set(c.map(x => x.releaseVersion))));
+        populate('char-rarity', [...new Set(c.map(x => x.rarity))].filter(Boolean).sort((a,b)=>b-a));
+        populate('char-body', jpSort(new Set(c.map(x => x.body))));
+        populate('char-role', jpSort(new Set(c.map(x => x.role))));
+        populate('char-energy', [...new Set(c.map(x => x.energy))].filter(Boolean).sort((a,b)=>a-b));
+        populate('char-talentBoss', jpSort(new Set(c.map(x => x.talentBoss))));
+        populate('char-localSpecialty', jpSort(new Set(c.map(x => x.localSpecialty))));
+        populate('char-enemyMaterial', jpSort(new Set(c.map(x => x.enemyMaterial))));
+        populate('char-ascensionStat', jpSort(new Set(c.map(x => x.ascensionStat))));
+        populate('char-talentBook', jpSort(new Set(c.map(x => x.talentBook))));
+        populate('char-talentWeekly', jpSort(new Set(c.map(x => x.talentWeekly))));
+        populate('char-specialDish', jpSort(new Set(c.map(x => x.specialDish))));
+      }
+
+      if (window.WEAPONS && Array.isArray(window.WEAPONS)) {
+        const w = window.WEAPONS;
+        const populate = (id, list) => {
+          const el = document.getElementById(id);
+          if (!el) return;
+          el.innerHTML = '<option value="all">すべて</option>';
+          list.forEach(val => {
+            if (val !== undefined && val !== null && val !== '') {
+              const opt = document.createElement('option');
+              opt.value = val;
+              opt.textContent = val;
+              el.appendChild(opt);
+            }
+          });
+        };
+        populate('w-type', jpSort(new Set(w.map(x => x.type))));
+        populate('w-rarity', [...new Set(w.map(x => x.rarity))].filter(Boolean).sort((a,b)=>b-a));
+        populate('w-ascensionStat', jpSort(new Set(w.map(x => x.ascensionStat))));
+        populate('w-weaponBreakMaterial', jpSort(new Set(w.map(x => x.weaponBreakMaterial))));
+        populate('w-enemyMaterial', jpSort(new Set(w.map(x => x.enemyMaterial))));
+        populate('w-weaponEnemyMaterial', jpSort(new Set(w.map(x => x.weaponEnemyMaterial))));
+        populate('w-releaseVersion', sortVersions(new Set(w.map(x => x.releaseVersion))));
+      }
     }
 
     function bindAdvancedFilters() {
-      document.getElementById('char-name-input')?.addEventListener('input', e => {
-        activeFilters.charName = e.target.value.trim().toLowerCase();
-        scheduleRenderGrid();
-      });
-      document.getElementById('w-name-input')?.addEventListener('input', e => {
-        activeFilters.wName = e.target.value.trim().toLowerCase();
-        scheduleRenderGrid();
-      });
-      document.getElementById('charQuery')?.addEventListener('input', e => {
-        activeFilters.charQuery = e.target.value.trim().toLowerCase();
-        scheduleRenderGrid();
-      });
-      document.getElementById('weaponQuery')?.addEventListener('input', e => {
-        activeFilters.wQuery = e.target.value.trim().toLowerCase();
-        scheduleRenderGrid();
-      });
-
-      const charFields = [
-        'country', 'weapon', 'element', 'birthMonth', 'releaseVersion',
-        'rarity', 'body', 'role', 'energy', 'talentBoss', 'localSpecialty',
-        'enemyMaterial', 'ascensionStat', 'talentBook', 'talentWeekly',
-        'specialDish', 'distributed', 'trainingRoad', 'trace', 'costume'
+      const charInputs = [
+        ['char-name-input', 'charName', 'input'],
+        ['char-country', 'charCountry', 'change'],
+        ['char-weapon', 'charWeapon', 'change'],
+        ['char-element', 'charElement', 'change'],
+        ['char-birthMonth', 'charBirthMonth', 'change'],
+        ['char-releaseVersion', 'charReleaseVersion', 'change'],
+        ['char-rarity', 'charRarity', 'change'],
+        ['char-body', 'charBody', 'change'],
+        ['char-role', 'charRole', 'change'],
+        ['char-energy', 'charEnergy', 'change'],
+        ['char-talentBoss', 'charTalentBoss', 'change'],
+        ['char-localSpecialty', 'charLocalSpecialty', 'change'],
+        ['char-enemyMaterial', 'charEnemyMaterial', 'change'],
+        ['char-ascensionStat', 'charAscensionStat', 'change'],
+        ['char-talentBook', 'charTalentBook', 'change'],
+        ['char-talentWeekly', 'charTalentWeekly', 'change'],
+        ['char-specialDish', 'charSpecialDish', 'change'],
+        ['char-distributed', 'charDistributed', 'change'],
+        ['char-trainingRoad', 'charTrainingRoad', 'change'],
+        ['char-trace', 'charTrace', 'change'],
+        ['char-costume', 'charCostume', 'change']
       ];
-      charFields.forEach(field => {
-        const id = 'char-' + field;
-        const el = document.getElementById(id);
-        el?.addEventListener('change', () => {
-          activeFilters['char' + field.charAt(0).toUpperCase() + field.slice(1)] = el.value;
+      charInputs.forEach(([id, key, evt]) => {
+        document.getElementById(id)?.addEventListener(evt, (e) => {
+          activeFilters[key] = e.target.value;
           renderGrid();
         });
       });
 
-      const wFields = ['type', 'rarity', 'ascensionStat', 'weaponBreakMaterial', 'enemyMaterial', 'weaponEnemyMaterial', 'releaseVersion', 'distributed'];
-      wFields.forEach(field => {
-        const id = 'w-' + field;
-        const el = document.getElementById(id);
-        el?.addEventListener('change', () => {
-          activeFilters['w' + field.charAt(0).toUpperCase() + field.slice(1)] = el.value;
+      const wInputs = [
+        ['w-name-input', 'wName', 'input'],
+        ['w-type', 'wType', 'change'],
+        ['w-rarity', 'wRarity', 'change'],
+        ['w-ascensionStat', 'wAscensionStat', 'change'],
+        ['w-weaponBreakMaterial', 'wWeaponBreakMaterial', 'change'],
+        ['w-enemyMaterial', 'wEnemyMaterial', 'change'],
+        ['w-weaponEnemyMaterial', 'wWeaponEnemyMaterial', 'change'],
+        ['w-releaseVersion', 'wReleaseVersion', 'change'],
+        ['w-distributed', 'wDistributed', 'change']
+      ];
+      wInputs.forEach(([id, key, evt]) => {
+        document.getElementById(id)?.addEventListener(evt, (e) => {
+          activeFilters[key] = e.target.value;
           renderGrid();
         });
       });
 
-      document.getElementById('char-reset-btn')?.addEventListener('click', () => resetAllFilters('character'));
-      document.getElementById('w-reset-btn')?.addEventListener('click', () => resetAllFilters('weapon'));
-    }
+      document.getElementById('charQuery')?.addEventListener('input', (e) => {
+        clearTimeout(queryDebounceTimer);
+        queryDebounceTimer = setTimeout(() => {
+          activeFilters.charQuery = e.target.value.trim().toLowerCase();
+          renderGrid();
+        }, QUERY_DEBOUNCE_MS);
+      });
 
-    function resetAllFilters(tab) {
-      if (tab === 'character') {
-        const charFields = [
-          'country', 'weapon', 'element', 'birthMonth', 'releaseVersion',
-          'rarity', 'body', 'role', 'energy', 'talentBoss', 'localSpecialty',
-          'enemyMaterial', 'ascensionStat', 'talentBook', 'talentWeekly',
-          'specialDish', 'distributed', 'trainingRoad', 'trace', 'costume'
-        ];
-        charFields.forEach(field => {
-          const id = 'char-' + field;
+      document.getElementById('weaponQuery')?.addEventListener('input', (e) => {
+        clearTimeout(queryDebounceTimer);
+        queryDebounceTimer = setTimeout(() => {
+          activeFilters.wQuery = e.target.value.trim().toLowerCase();
+          renderGrid();
+        }, QUERY_DEBOUNCE_MS);
+      });
+
+      document.getElementById('char-reset-btn')?.addEventListener('click', () => {
+        charInputs.forEach(([id, key]) => {
           const el = document.getElementById(id);
-          if (el) el.value = 'all';
-          activeFilters['char' + field.charAt(0).toUpperCase() + field.slice(1)] = 'all';
+          if (el) {
+            el.value = el.tagName === 'SELECT' ? 'all' : '';
+            activeFilters[key] = el.value;
+          }
         });
-        document.getElementById('char-name-input').value = '';
-        activeFilters.charName = '';
-        document.getElementById('charQuery').value = '';
+        const q = document.getElementById('charQuery');
+        if (q) q.value = '';
         activeFilters.charQuery = '';
-      } else {
-        const wFields = ['type', 'rarity', 'ascensionStat', 'weaponBreakMaterial', 'enemyMaterial', 'weaponEnemyMaterial', 'releaseVersion', 'distributed'];
-        wFields.forEach(field => {
-          const id = 'w-' + field;
-          const el = document.getElementById(id);
-          if (el) el.value = 'all';
-          activeFilters['w' + field.charAt(0).toUpperCase() + field.slice(1)] = 'all';
-        });
-        document.getElementById('w-name-input').value = '';
-        activeFilters.wName = '';
-        document.getElementById('weaponQuery').value = '';
-        activeFilters.wQuery = '';
-      }
-      renderGrid();
-    }
-
-    function scheduleRenderGrid() {
-      if (queryDebounceTimer) clearTimeout(queryDebounceTimer);
-      queryDebounceTimer = setTimeout(() => {
-        queryDebounceTimer = null;
         renderGrid();
-      }, QUERY_DEBOUNCE_MS);
+      });
+
+      document.getElementById('w-reset-btn')?.addEventListener('click', () => {
+        wInputs.forEach(([id, key]) => {
+          const el = document.getElementById(id);
+          if (el) {
+            el.value = el.tagName === 'SELECT' ? 'all' : '';
+            activeFilters[key] = el.value;
+          }
+        });
+        const q = document.getElementById('weaponQuery');
+        if (q) q.value = '';
+        activeFilters.wQuery = '';
+        renderGrid();
+      });
     }
 
     function renderGrid() {
       const grid = document.getElementById('dbGrid');
+      if (!grid) return;
       grid.innerHTML = '';
-      let items = [];
-      
+
       if (currentTab === 'character') {
-        items = CHARACTERS.filter(c => {
-          if (activeFilters.charName && !c.name.toLowerCase().includes(activeFilters.charName)) return false;
-          if (activeFilters.charCountry !== 'all' && c.country !== activeFilters.charCountry) return false;
-          if (activeFilters.charWeapon !== 'all' && c.weapon !== activeFilters.charWeapon) return false;
-          if (activeFilters.charElement !== 'all' && c.element !== activeFilters.charElement) return false;
-          if (activeFilters.charBirthMonth !== 'all' && c.birthMonth !== activeFilters.charBirthMonth) return false;
-          if (activeFilters.charReleaseVersion !== 'all' && c.releaseVersionLabel !== activeFilters.charReleaseVersion) return false;
-          if (activeFilters.charRarity !== 'all' && String(c.rarity) !== activeFilters.charRarity) return false;
-          if (activeFilters.charBody !== 'all' && c.bodyLabel !== activeFilters.charBody) return false;
-          if (activeFilters.charRole !== 'all' && !c.role.includes(activeFilters.charRole)) return false;
-          if (activeFilters.charEnergy !== 'all' && String(c.energy) !== activeFilters.charEnergy) return false;
-          if (activeFilters.charTalentBoss !== 'all' && c.talentBoss !== activeFilters.charTalentBoss) return false;
-          if (activeFilters.charLocalSpecialty !== 'all' && c.localSpecialty !== activeFilters.charLocalSpecialty) return false;
-          if (activeFilters.charEnemyMaterial !== 'all' && c.enemyMaterial !== activeFilters.charEnemyMaterial) return false;
-          if (activeFilters.charAscensionStat !== 'all' && c.ascensionStat !== activeFilters.charAscensionStat) return false;
-          if (activeFilters.charTalentBook !== 'all' && c.talentBook !== activeFilters.charTalentBook) return false;
-          if (activeFilters.charTalentWeekly !== 'all' && c.talentWeekly !== activeFilters.charTalentWeekly) return false;
-          if (activeFilters.charSpecialDish !== 'all' && c.specialDish !== activeFilters.charSpecialDish) return false;
-          if (activeFilters.charDistributed !== 'all' && String(c.distributed) !== activeFilters.charDistributed) return false;
-          if (activeFilters.charTrainingRoad !== 'all' && String(c.trainingRoad) !== activeFilters.charTrainingRoad) return false;
-          if (activeFilters.charTrace !== 'all' && String(c.trace) !== activeFilters.charTrace) return false;
-          if (activeFilters.charCostume !== 'all' && String(c.costume) !== activeFilters.charCostume) return false;
-          if (!matchesAllFields(c, activeFilters.charQuery)) return false;
+        const list = (window.CHARACTERS || []).filter(item => {
+          if (activeFilters.charName && !item.name.toLowerCase().includes(activeFilters.charName.toLowerCase())) return false;
+          if (activeFilters.charCountry !== 'all' && String(item.country) !== activeFilters.charCountry) return false;
+          if (activeFilters.charWeapon !== 'all' && String(item.weapon) !== activeFilters.charWeapon) return false;
+          if (activeFilters.charElement !== 'all' && String(item.element) !== activeFilters.charElement) return false;
+          if (activeFilters.charBirthMonth !== 'all' && String(item.birthMonth) !== activeFilters.charBirthMonth) return false;
+          if (activeFilters.charReleaseVersion !== 'all' && String(item.releaseVersion) !== activeFilters.charReleaseVersion) return false;
+          if (activeFilters.charRarity !== 'all' && String(item.rarity) !== activeFilters.charRarity) return false;
+          if (activeFilters.charBody !== 'all' && String(item.body) !== activeFilters.charBody) return false;
+          if (activeFilters.charRole !== 'all' && String(item.role) !== activeFilters.charRole) return false;
+          if (activeFilters.charEnergy !== 'all' && String(item.energy) !== activeFilters.charEnergy) return false;
+          if (activeFilters.charTalentBoss !== 'all' && String(item.talentBoss) !== activeFilters.charTalentBoss) return false;
+          if (activeFilters.charLocalSpecialty !== 'all' && String(item.localSpecialty) !== activeFilters.charLocalSpecialty) return false;
+          if (activeFilters.charEnemyMaterial !== 'all' && String(item.enemyMaterial) !== activeFilters.charEnemyMaterial) return false;
+          if (activeFilters.charAscensionStat !== 'all' && String(item.ascensionStat) !== activeFilters.charAscensionStat) return false;
+          if (activeFilters.charTalentBook !== 'all' && String(item.talentBook) !== activeFilters.charTalentBook) return false;
+          if (activeFilters.charTalentWeekly !== 'all' && String(item.talentWeekly) !== activeFilters.charTalentWeekly) return false;
+          if (activeFilters.charSpecialDish !== 'all' && String(item.specialDish) !== activeFilters.charSpecialDish) return false;
+          if (activeFilters.charDistributed !== 'all' && String(item.distributed) !== activeFilters.charDistributed) return false;
+          if (activeFilters.charTrainingRoad !== 'all' && String(item.trainingRoad) !== activeFilters.charTrainingRoad) return false;
+          if (activeFilters.charTrace !== 'all' && String(item.trace) !== activeFilters.charTrace) return false;
+          if (activeFilters.charCostume !== 'all' && String(item.costume) !== activeFilters.charCostume) return false;
+          if (activeFilters.charQuery) {
+            const vals = Object.values(item).map(v => String(v).toLowerCase()).join(' ');
+            if (!vals.includes(activeFilters.charQuery)) return false;
+          }
           return true;
         });
+
+        list.forEach(item => {
+          const card = document.createElement('div');
+          card.className = 'db-card';
+          card.innerHTML = `
+            <img class="db-card-img" src="${item.image || ''}" alt="${item.name}" loading="lazy" onerror="this.style.opacity='0.2'">
+            <div class="db-card-name">${item.name}</div>
+            <div class="db-card-sub">★${item.rarity || '?'} · ${item.element || ''}</div>
+          `;
+          card.addEventListener('click', () => openDetailModal(item, 'character'));
+          grid.appendChild(card);
+        });
       } else {
-        items = WEAPONS.filter(w => {
-          if (activeFilters.wName && !w.name.toLowerCase().includes(activeFilters.wName)) return false;
-          if (activeFilters.wType !== 'all' && w.weaponType !== activeFilters.wType) return false;
-          if (activeFilters.wRarity !== 'all' && String(w.rarity) !== activeFilters.wRarity) return false;
-          if (activeFilters.wAscensionStat !== 'all' && w.ascensionStat !== activeFilters.wAscensionStat) return false;
-          if (activeFilters.wWeaponBreakMaterial !== 'all' && w.weaponBreakMaterial !== activeFilters.wWeaponBreakMaterial) return false;
-          if (activeFilters.wEnemyMaterial !== 'all' && w.enemyMaterial !== activeFilters.wEnemyMaterial) return false;
-          if (activeFilters.wWeaponEnemyMaterial !== 'all' && w.weaponEnemyMaterial !== activeFilters.wWeaponEnemyMaterial) return false;
-          if (activeFilters.wReleaseVersion !== 'all' && w.releaseVersionLabel !== activeFilters.wReleaseVersion) return false;
-          if (activeFilters.wDistributed !== 'all' && String(w.isDistributed) !== activeFilters.wDistributed) return false;
-          if (!matchesAllFields(w, activeFilters.wQuery)) return false;
+        const list = (window.WEAPONS || []).filter(item => {
+          if (activeFilters.wName && !item.name.toLowerCase().includes(activeFilters.wName.toLowerCase())) return false;
+          if (activeFilters.wType !== 'all' && String(item.type) !== activeFilters.wType) return false;
+          if (activeFilters.wRarity !== 'all' && String(item.rarity) !== activeFilters.wRarity) return false;
+          if (activeFilters.wAscensionStat !== 'all' && String(item.ascensionStat) !== activeFilters.wAscensionStat) return false;
+          if (activeFilters.wWeaponBreakMaterial !== 'all' && String(item.weaponBreakMaterial) !== activeFilters.wWeaponBreakMaterial) return false;
+          if (activeFilters.wEnemyMaterial !== 'all' && String(item.enemyMaterial) !== activeFilters.wEnemyMaterial) return false;
+          if (activeFilters.wWeaponEnemyMaterial !== 'all' && String(item.weaponEnemyMaterial) !== activeFilters.wWeaponEnemyMaterial) return false;
+          if (activeFilters.wReleaseVersion !== 'all' && String(item.releaseVersion) !== activeFilters.wReleaseVersion) return false;
+          if (activeFilters.wDistributed !== 'all' && String(item.distributed) !== activeFilters.wDistributed) return false;
+          if (activeFilters.wQuery) {
+            const vals = Object.values(item).map(v => String(v).toLowerCase()).join(' ');
+            if (!vals.includes(activeFilters.wQuery)) return false;
+          }
           return true;
         });
-      }
 
-      if (items.length === 0) {
-        grid.innerHTML = '<p class="empty-msg">該当するデータがありません。</p>';
-        return;
-      }
-
-      items.forEach(item => {
-        const card = document.createElement('div');
-        card.className = 'db-card rarity-' + item.rarity;
-        card.setAttribute('role', 'button');
-        card.setAttribute('tabindex', '0');
-
-        const thumbWrap = document.createElement('div');
-        thumbWrap.className = 'card-thumb-wrap';
-        thumbWrap.appendChild(buildImageNode(item, 'card-thumb'));
-
-        const name = document.createElement('div');
-        name.className = 'card-name';
-        name.textContent = item.name;
-
-        card.appendChild(thumbWrap);
-        card.appendChild(name);
-        card.addEventListener('click', () => showDetail(item, card));
-        card.addEventListener('keydown', e => {
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault();
-            showDetail(item, card);
-          }
+        list.forEach(item => {
+          const card = document.createElement('div');
+          card.className = 'db-card';
+          card.innerHTML = `
+            <img class="db-card-img" src="${item.image || ''}" alt="${item.name}" loading="lazy" onerror="this.style.opacity='0.2'">
+            <div class="db-card-name">${item.name}</div>
+            <div class="db-card-sub">★${item.rarity || '?'} · ${item.type || ''}</div>
+          `;
+          card.addEventListener('click', () => openDetailModal(item, 'weapon'));
+          grid.appendChild(card);
         });
-        grid.appendChild(card);
-      });
+      }
     }
 
-    function isNumericField(key) {
-      return ['baseAtk', 'baseHp', 'baseDef', 'energy'].includes(key);
-    }
+    function openDetailModal(item, type) {
+      currentEditingItem = { item, type };
+      const modal = document.getElementById('detailModal');
+      const overlay = document.getElementById('detailOverlay');
+      if (!modal || !overlay) return;
 
-    function getFieldSelectOptions(key, tab) {
-      if (['distributed', 'costume', 'trace', 'trainingRoad', 'isDistributed'].includes(key)) {
-        return [{ value: 'true', label: 'あり / はい' }, { value: 'false', label: 'なし / いいえ' }];
-      }
-      if (key === 'rarity') {
-        if (tab === 'character') {
-          return [{ value: '5', label: '★5' }, { value: '4', label: '★4' }];
-        }
-        return [
-          { value: '5', label: '★5' },
-          { value: '4', label: '★4' },
-          { value: '3', label: '★3' },
-          { value: '2', label: '★2' },
-          { value: '1', label: '★1' },
-        ];
-      }
-      if (key === 'element') {
-        return ['炎', '水', '風', '雷', '草', '氷', '岩', 'その他'].map(v => ({ value: v, label: v }));
-      }
-      if (key === 'weapon' || key === 'weaponType') {
-        return ['片手剣', '両手剣', '長柄武器', '弓', '法器'].map(v => ({ value: v, label: v }));
-      }
-      if (key === 'country') {
-        return ['モンド', '璃月', '稲妻', 'スメール', 'フォンテーヌ', 'ナタ', 'ナドクライ', 'スネージナヤ', '例外'].map(v => ({ value: v, label: v }));
-      }
-      if (key === 'bodyLabel' || key === 'body') {
-        return ['中身女性', '中身男性', '長身女性', '長身男性', 'ロリ', '中身男性/中身女性'].map(v => ({ value: v, label: v }));
-      }
-      if (key === 'specialDish') {
-        return ['攻撃系', '防御系', '回復系', '継続回復系', '復活系', 'スタミナ軽減系', 'スタミナ回復系', 'シールド系', '治療効果系', 'HP強化系', ''].map(v => ({ value: v, label: v || 'なし' }));
-      }
-      if (key === 'role') {
-        const roles = [...new Set(CHARACTERS.map(c => (c.role || []).join(' / ')).filter(Boolean))].sort();
-        return roles.map(v => ({ value: v, label: v }));
-      }
-
-      let srcList = tab === 'character' ? CHARACTERS : WEAPONS;
-      let values = [];
-      if (key === 'releaseVersionLabel') {
-        values = [...new Set(srcList.map(item => item.releaseVersionLabel).filter(Boolean))].sort((a, b) => {
-          return (typeof parseReleaseVersion === 'function' ? parseReleaseVersion(a) : parseFloat(a) || 0) - (typeof parseReleaseVersion === 'function' ? parseReleaseVersion(b) : parseFloat(b) || 0);
-        });
+      document.getElementById('detailTitle').textContent = `${type === 'character' ? '👤' : '⚔'} ${item.name} の詳細`;
+      
+      const imgWrap = document.getElementById('detailImageWrap');
+      imgWrap.innerHTML = `<img src="${item.image || ''}" alt="${item.name}" onerror="this.style.opacity='0.2'">`;
+      
+      const summary = document.getElementById('detailSummary');
+      if (type === 'character') {
+        summary.innerHTML = `
+          <strong>${item.name}</strong> (★${item.rarity})<br>
+          ${item.element || '—'} / ${item.weapon || '—'} / ${item.country || '—'}<br>
+          実装Ver: ${item.releaseVersion || '—'}
+        `;
       } else {
-        values = [...new Set(srcList.map(item => item[key]).filter(v => v !== undefined && v !== null && v !== ''))].sort((a, b) => String(a).localeCompare(String(b), 'ja'));
+        summary.innerHTML = `
+          <strong>${item.name}</strong> (★${item.rarity})<br>
+          ${item.type || '—'} / 基礎攻撃力: ${item.baseAtk || '—'}<br>
+          実装Ver: ${item.releaseVersion || '—'}
+        `;
       }
-      return values.map(v => ({ value: v, label: v }));
-    }
 
-    function showDetail(item, selectedCard) {
-      currentEditingItem = item;
-      document.querySelectorAll('.db-card').forEach(card => card.classList.toggle('active', card === selectedCard));
-      document.getElementById('detailTitle').textContent = item.name + ' の詳細';
-      const detailGrid = document.getElementById('detailGrid');
-      const detailSummary = document.getElementById('detailSummary');
-      const detailImageWrap = document.getElementById('detailImageWrap');
-      detailGrid.innerHTML = '';
-      detailSummary.innerHTML = '';
-      detailImageWrap.innerHTML = '';
-      detailImageWrap.appendChild(buildImageNode(item, 'db-modal-image'));
+      const grid = document.getElementById('detailGrid');
+      grid.innerHTML = '';
 
-      const saveBtnRow = document.querySelector('.db-save-row');
-      if (saveBtnRow) saveBtnRow.style.display = isAdminMode ? 'flex' : 'none';
+      const charLabels = {
+        name: '名前', rarity: 'レアリティ', element: '元素', weapon: '武器種', country: '国',
+        body: '体型', role: '役割', releaseVersion: '実装バージョン', birthMonth: '誕生月',
+        energy: '元素エネルギー', talentBoss: '天賦ボス素材', localSpecialty: '特産品',
+        enemyMaterial: '通常敵素材', ascensionStat: '突破ステータス', talentBook: '天賦本',
+        talentWeekly: '週ボス素材', specialDish: 'オリジナル料理', distributed: '配布',
+        trainingRoad: '鍛錬の道', trace: '軌跡', costume: '別衣装', image: '画像URL'
+      };
 
-      const basicFields = [
-        ['name', '名前', item.name],
-        ['rarity', 'レアリティ', item.rarity],
-        [currentTab === 'character' ? 'element' : 'weaponType', currentTab === 'character' ? '元素' : '武器種', currentTab === 'character' ? item.element : item.weaponType]
-      ];
+      const weaponLabels = {
+        name: '名前', rarity: 'レアリティ', type: '武器種', baseAtk: '基礎攻撃力',
+        subStat: 'サブステータス種別', ascensionStat: '突破ステータス値', releaseVersion: '実装バージョン',
+        weaponBreakMaterial: '武器突破素材', enemyMaterial: '通常敵素材', weaponEnemyMaterial: '精鋭敵素材',
+        distributed: '配布', image: '画像URL'
+      };
 
-      basicFields.forEach(([key, label, val]) => {
-        const line = document.createElement('p');
-        if (isAdminMode) {
-          if (key === 'name') {
-            line.innerHTML = `<b>${label}:</b> <input type="text" class="db-edit-input" data-key="${key}" value="${val !== undefined ? val : ''}" style="display:inline-block; width:auto; margin-left:6px;">`;
-          } else {
-            const selectOptions = getFieldSelectOptions(key, currentTab);
-            const strVal = String(val !== undefined && val !== null ? val : '');
-            let optList = [...selectOptions];
-            if (!optList.some(opt => String(opt.value) === strVal) && strVal) {
-              optList.unshift({ value: strVal, label: strVal });
-            }
-            const optHtml = optList.map(opt => `<option value="${opt.value}" ${strVal === String(opt.value) ? 'selected' : ''}>${opt.label}</option>`).join('');
-            line.innerHTML = `<b>${label}:</b> <select class="db-edit-select" data-key="${key}" style="display:inline-block; width:auto; margin-left:6px;">${optHtml}</select>`;
-          }
-        } else {
-          line.textContent = `${label}: ${key === 'rarity' ? '★' + val : val}`;
+      const labels = type === 'character' ? charLabels : weaponLabels;
+
+      // 選択肢プリセット（選択式にするためのマスター一覧）
+      const optionsPreset = {
+        character: {
+          rarity: [4, 5],
+          element: ['炎', '水', '草', '雷', '風', '氷', '岩'],
+          weapon: ['片手剣', '両手剣', '長柄武器', '法器', '弓'],
+          country: ['モンド', '璃月', '稲妻', 'スメール', 'フォンテーヌ', 'ナタ', 'スネージナヤ', 'カーンルイア', '異世界'],
+          body: ['高身長男性', '中身長男性', '高身長女性', '中身長女性', '低身長女性'],
+          role: ['メインアタッカー', 'サブアタッカー', 'サポーター', 'ヒーラー', 'シールド'],
+          releaseVersion: ['1.0', '1.1', '1.2', '1.3', '1.4', '1.5', '1.6', '2.0', '2.1', '2.2', '2.3', '2.4', '2.5', '2.6', '2.7', '2.8', '3.0', '3.1', '3.2', '3.3', '3.4', '3.5', '3.6', '3.7', '3.8', '4.0', '4.1', '4.2', '4.3', '4.4', '4.5', '4.6', '4.7', '4.8', '5.0', '5.1', '5.2', '5.3', '5.4', '5.5'],
+          birthMonth: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+          energy: [40, 50, 60, 70, 80, 90],
+          distributed: [true, false],
+          trainingRoad: [true, false],
+          trace: [true, false],
+          costume: [true, false]
+        },
+        weapon: {
+          rarity: [1, 2, 3, 4, 5],
+          type: ['片手剣', '両手剣', '長柄武器', '法器', '弓'],
+          releaseVersion: ['1.0', '1.1', '1.2', '1.3', '1.4', '1.5', '1.6', '2.0', '2.1', '2.2', '2.3', '2.4', '2.5', '2.6', '2.7', '2.8', '3.0', '3.1', '3.2', '3.3', '3.4', '3.5', '3.6', '3.7', '3.8', '4.0', '4.1', '4.2', '4.3', '4.4', '4.5', '4.6', '4.7', '4.8', '5.0', '5.1', '5.2', '5.3', '5.4', '5.5'],
+          distributed: [true, false]
         }
-        detailSummary.appendChild(line);
-      });
+      };
 
-      const entries = getDetailEntries(item);
-      entries.forEach(([key, label, value]) => {
-        if (!key) return;
-        const box = document.createElement('div');
-        box.className = 'db-detail-item';
+      // 既存データからユニーク値を取得して選択肢を補強
+      const getUniqueValues = (key, t) => {
+        const dataset = t === 'character' ? (window.CHARACTERS || []) : (window.WEAPONS || []);
+        const set = new Set();
+        dataset.forEach(d => {
+          if (d[key] !== undefined && d[key] !== null && d[key] !== '') {
+            set.add(d[key]);
+          }
+        });
+        return [...set].sort((a, b) => String(a).localeCompare(String(b), 'ja'));
+      };
+
+      // 数値入力のみ許可するキー（自由入力）
+      const numericInputKeys = ['baseAtk', 'energy', 'birthMonth'];
+
+      Object.keys(labels).forEach(key => {
+        const group = document.createElement('div');
+        group.className = 'db-field-group';
         
-        if (isAdminMode) {
-          let inputHtml = '';
-          if (isNumericField(key)) {
-            inputHtml = `<input type="text" class="db-edit-input" data-key="${key}" value="${value !== undefined && value !== null ? value : ''}" placeholder="数値を入力">`;
-          } else if (key === 'birthday') {
-            inputHtml = `<input type="text" class="db-edit-input" data-key="${key}" value="${value !== undefined && value !== null ? value : ''}" placeholder="例: 3月14日">`;
-          } else {
-            const selectOptions = getFieldSelectOptions(key, currentTab);
-            const strVal = String(value !== undefined && value !== null ? value : '');
-            let optList = [...selectOptions];
-            if (!optList.some(opt => String(opt.value) === strVal) && strVal) {
-              optList.unshift({ value: strVal, label: strVal });
-            }
-            const optHtml = optList.map(opt => `<option value="${opt.value}" ${strVal === String(opt.value) ? 'selected' : ''}>${opt.label}</option>`).join('');
-            inputHtml = `<select class="db-edit-select" data-key="${key}">${optHtml}</select>`;
-          }
-          box.innerHTML = `<b>${label}</b>${inputHtml}`;
-        } else {
-          let displayVal = value;
-          if (typeof value === 'boolean') displayVal = value ? 'あり' : 'なし';
-          if (Array.isArray(value)) displayVal = value.filter(Boolean).join(' / ');
-          box.innerHTML = `<b>${label}</b><span>${displayVal !== undefined && displayVal !== null && displayVal !== '' ? displayVal : '—'}</span>`;
+        const lbl = document.createElement('label');
+        lbl.className = 'db-field-label';
+        lbl.textContent = labels[key];
+        
+        let valEl;
+        const currentVal = item[key];
+
+        // 1. 数値自由入力フィールド
+        if (numericInputKeys.includes(key)) {
+          valEl = document.createElement('input');
+          valEl.type = 'number';
+          valEl.className = 'db-field-val';
+          valEl.name = key;
+          valEl.value = currentVal !== undefined ? currentVal : '';
+          valEl.disabled = !isAdminMode;
+        } 
+        // 2. 名前・画像URLはテキスト自由入力
+        else if (key === 'name' || key === 'image') {
+          valEl = document.createElement('input');
+          valEl.type = 'text';
+          valEl.className = 'db-field-val';
+          valEl.name = key;
+          valEl.value = currentVal !== undefined ? currentVal : '';
+          valEl.disabled = !isAdminMode;
         }
-        detailGrid.appendChild(box);
+        // 3. その他は全て「選択式」（プルダウン）
+        else {
+          valEl = document.createElement('select');
+          valEl.className = 'db-field-val';
+          valEl.name = key;
+          valEl.disabled = !isAdminMode;
+
+          // 選択肢の候補リストを取得
+          let optList = (optionsPreset[type] && optionsPreset[type][key]) || getUniqueValues(key, type);
+          if (typeof currentVal === 'boolean' || key === 'distributed' || key === 'trainingRoad' || key === 'trace' || key === 'costume') {
+            optList = [true, false];
+          }
+
+          // 現在値が選択肢にない場合、先頭に追加して選択状態を維持
+          const strCurrentVal = String(currentVal);
+          const hasCurrent = optList.some(o => String(o) === strCurrentVal);
+          if (!hasCurrent && currentVal !== undefined && currentVal !== null) {
+            optList = [currentVal, ...optList];
+          }
+
+          optList.forEach(optVal => {
+            const opt = document.createElement('option');
+            opt.value = String(optVal);
+            opt.textContent = typeof optVal === 'boolean' ? (optVal ? 'あり (true)' : 'なし (false)') : String(optVal);
+            if (String(optVal) === strCurrentVal) {
+              opt.selected = true;
+            }
+            valEl.appendChild(opt);
+          });
+        }
+        
+        group.appendChild(lbl);
+        group.appendChild(valEl);
+        grid.appendChild(group);
       });
 
-      openDetailModal();
-    }
-
-    function getDetailEntries(item) {
-      if (currentTab === 'character') {
-        return [
-          ['country', '所属', item.country],
-          ['birthday', '誕生日', item.birthday],
-          ['bodyLabel', '体型', item.bodyLabel],
-          ['baseAtk', '基礎攻撃力', item.baseAtkLabel || item.baseAtk],
-          ['baseHp', '基礎HP', item.baseHpLabel || item.baseHp],
-          ['baseDef', '基礎防御力', item.baseDefLabel || item.baseDef],
-          ['role', '役割', (item.role || []).filter(Boolean).join(' / ')],
-          ['energy', '元素エネルギー', item.energy],
-          ['ascensionStat', '突破ステータス', item.ascensionStat],
-          ['localSpecialty', '特産品', item.localSpecialty],
-          ['talentBoss', '突破ボス素材', item.talentBoss],
-          ['talentBook', '天賦本', item.talentBook],
-          ['talentWeekly', '週ボス素材', item.talentWeekly],
-          ['enemyMaterial', '敵素材', item.enemyMaterial],
-          ['specialDish', 'オリジナル料理', item.specialDish],
-          ['distributed', '配布キャラ', item.distributed],
-          ['costume', '衣装', item.costume],
-          ['trace', '軌跡の有無', item.trace],
-          ['trainingRoad', '鍛錬の道', item.trainingRoad],
-          ['releaseVersionLabel', '実装バージョン', item.releaseVersionLabel],
-        ];
+      const saveRow = modal.querySelector('.db-save-row');
+      if (saveRow) {
+        saveRow.style.display = isAdminMode ? 'flex' : 'none';
       }
 
-      return [
-        ['weaponType', '武器種', item.weaponType],
-        ['baseAtk', '基礎攻撃力', item.baseAtk],
-        ['ascensionStat', '突破ステータス', item.ascensionStat],
-        ['isDistributed', '配布武器', item.isDistributed],
-        ['weaponBreakMaterial', '武器突破素材', item.weaponBreakMaterial],
-        ['enemyMaterial', '敵素材', item.enemyMaterial],
-        ['weaponEnemyMaterial', '精鋭素材', item.weaponEnemyMaterial],
-        ['releaseVersionLabel', '実装バージョン', item.releaseVersionLabel],
-      ];
-    }
-
-    function matchesAllFields(item, query) {
-      if (!query) return true;
-      const values = Object.values(item);
-      for (const value of values) {
-        if (value === null || value === undefined) continue;
-        if (Array.isArray(value)) {
-          for (const part of value) {
-            if (part === null || part === undefined) continue;
-            if (String(part).toLowerCase().includes(query)) return true;
-          }
-          continue;
-        }
-        if (typeof value === 'boolean') {
-          if ((value ? 'あり' : 'なし').includes(query)) return true;
-          if ((value ? 'true' : 'false').includes(query)) return true;
-          continue;
-        }
-        if (String(value).toLowerCase().includes(query)) return true;
-      }
-      return false;
-    }
-
-    function escapeRegex(string) {
-      return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    }
-
-    function b64DecodeUnicode(str) {
-      const binary = atob(str.replace(/\s/g, ''));
-      const bytes = new Uint8Array(binary.length);
-      for (let i = 0; i < binary.length; i++) {
-        bytes[i] = binary.charCodeAt(i);
-      }
-      return new TextDecoder('utf-8').decode(bytes);
-    }
-
-    function b64EncodeUnicode(str) {
-      const bytes = new TextEncoder().encode(str);
-      let binary = '';
-      for (let i = 0; i < bytes.byteLength; i++) {
-        binary += String.fromCharCode(bytes[i]);
-      }
-      return btoa(binary);
-    }
-
-    function findItemObjectRange(sourceCode, arrayName, itemName) {
-      const arrayStart = sourceCode.indexOf(arrayName);
-      if (arrayStart === -1) return null;
-
-      const regex = new RegExp(`{\\s*name:\\s*["']${escapeRegex(itemName)}["']`);
-      const searchPart = sourceCode.slice(arrayStart);
-      const match = searchPart.match(regex);
-      if (!match || match.index === undefined) return null;
-
-      const itemStart = arrayStart + match.index;
-      let depth = 0;
-      let inString = false;
-      let quoteChar = '';
-      let itemEnd = -1;
-
-      for (let i = itemStart; i < sourceCode.length; i++) {
-        const ch = sourceCode[i];
-        const prev = i > 0 ? sourceCode[i - 1] : '';
-
-        if (inString) {
-          if (ch === quoteChar && prev !== '\\') {
-            inString = false;
-          }
-        } else {
-          if (ch === '"' || ch === "'") {
-            inString = true;
-            quoteChar = ch;
-          } else if (ch === '{') {
-            depth++;
-          } else if (ch === '}') {
-            depth--;
-            if (depth === 0) {
-              itemEnd = i + 1;
-              break;
-            }
-          }
-        }
-      }
-
-      if (itemEnd === -1) return null;
-      return { start: itemStart, end: itemEnd, block: sourceCode.slice(itemStart, itemEnd) };
-    }
-
-    function updateFieldInBlock(block, rawKey, newValue) {
-      const keyRegex = new RegExp(`(${rawKey}\\s*:\\s*)([^,\\n}]+)`);
-      let formattedVal;
-      if (typeof newValue === 'boolean') {
-        formattedVal = newValue ? 'true' : 'false';
-      } else if (typeof newValue === 'number') {
-        formattedVal = String(newValue);
-      } else if (Array.isArray(newValue)) {
-        formattedVal = JSON.stringify(newValue);
-      } else if (newValue === null || newValue === undefined) {
-        formattedVal = 'null';
-      } else {
-        formattedVal = JSON.stringify(newValue);
-      }
-
-      if (keyRegex.test(block)) {
-        return block.replace(keyRegex, `$1${formattedVal}`);
-      } else {
-        const lastBrace = block.lastIndexOf('}');
-        if (lastBrace !== -1) {
-          const before = block.slice(0, lastBrace).trimEnd();
-          const needsComma = before.endsWith(',') ? '' : ', ';
-          return `${before}${needsComma}${rawKey}: ${formattedVal} }`;
-        }
-        return block;
-      }
-    }
-
-    function bindDetailModal() {
-      document.getElementById('detailClose').addEventListener('click', closeDetailModal);
-      document.getElementById('detailOverlay').addEventListener('click', closeDetailModal);
-      
-      document.getElementById('detailEditForm')?.addEventListener('submit', async e => {
-        e.preventDefault();
-        if (!currentEditingItem) return;
-        if (!githubToken) {
-          alert('GitHub Tokenが設定されていません。管理者に再認証してください。');
-          return;
-        }
-
-        const inputs = document.querySelectorAll('.db-edit-input, .db-edit-select');
-        const updates = {};
-        const rawUpdates = {};
-
-        const CHAR_KEY_MAP = {
-          name: 'name',
-          element: 'element',
-          country: 'country',
-          weapon: 'weapon',
-          birthday: 'birthday',
-          bodyLabel: 'body',
-          baseAtk: 'attack',
-          baseHp: 'hp',
-          baseDef: 'defense',
-          role: 'role',
-          energy: 'energy',
-          ascensionStat: 'ascension_stat',
-          localSpecialty: 'local_specialty',
-          talentBoss: 'talent_boss',
-          talentBook: 'talent_book',
-          talentWeekly: 'talent_weekly',
-          enemyMaterial: 'enemy_material',
-          specialDish: 'special_dish',
-          distributed: 'distributed',
-          costume: 'costume',
-          trace: 'trace',
-          trainingRoad: 'training_road',
-          releaseVersionLabel: 'release_version',
-        };
-
-        const WEAPON_KEY_MAP = {
-          name: 'name',
-          rarity: 'rarity',
-          weaponType: 'weapon_type',
-          baseAtk: 'base_atk',
-          ascensionStat: 'ascension_stat',
-          isDistributed: 'distributed',
-          weaponBreakMaterial: 'break_material',
-          enemyMaterial: 'enemy_material',
-          weaponEnemyMaterial: 'enemy_material',
-          releaseVersionLabel: 'release_version',
-        };
-
-        const currentMap = currentTab === 'character' ? CHAR_KEY_MAP : WEAPON_KEY_MAP;
-
-        inputs.forEach(el => {
-          const key = el.dataset.key;
-          if (!key) return;
-          let val = el.value.trim();
-          let parsedVal = val;
-
-          if (val === 'true') parsedVal = true;
-          else if (val === 'false') parsedVal = false;
-          else if (key === 'rarity' && !isNaN(val) && val !== '') parsedVal = Number(val);
-
-          updates[key] = parsedVal;
-
-          const rawKey = currentMap[key] || key;
-          let rawVal = parsedVal;
-
-          if (currentTab === 'weapon') {
-            if (rawKey === 'base_atk' || rawKey === 'rarity') {
-              rawVal = val === '' || val === 'null' ? null : Number(val);
-            }
-          } else {
-            if (rawKey === 'attack' || rawKey === 'defense' || rawKey === 'energy') {
-              rawVal = val === '' || val === 'null' ? 0 : Number(val);
-            } else if (rawKey === 'role') {
-              rawVal = val ? val.split(/[\/,、]/).map(s => s.trim()).filter(Boolean) : [];
-            } else if (rawKey === 'enemy_material') {
-              rawVal = val ? [val] : [];
-            } else if (rawKey === 'rarity') {
-              rawVal = Number(val) === 5 ? ['☆５'] : ['☆４'];
-            }
-          }
-
-          rawUpdates[rawKey] = rawVal;
-        });
-
-        Object.assign(currentEditingItem, updates);
-
-        try {
-          const submitBtn = document.querySelector('.db-save-btn');
-          submitBtn.disabled = true;
-          submitBtn.textContent = 'GitHubから取得・ピンポイント更新中...';
-
-          const fileRes = await fetch(`https://api.github.com/repos/${GITHUB_REPO_OWNER}/${GITHUB_REPO_NAME}/contents/${GITHUB_FILE_PATH}`, {
-            headers: { 'Authorization': `bearer ${githubToken}` }
-          });
-          if (!fileRes.ok) throw new Error('GitHubファイルの取得に失敗しました。トークン権限をご確認ください。');
-          const fileData = await fileRes.json();
-          const sha = fileData.sha;
-
-          const fileContentStr = b64DecodeUnicode(fileData.content);
-
-          const arrayName = currentTab === 'character' ? 'RAW_CHARACTERS' : 'WEAPONS_DATA';
-          const range = findItemObjectRange(fileContentStr, arrayName, currentEditingItem.name);
-          if (!range) {
-            throw new Error(`ファイル内に該当の${currentTab === 'character' ? 'キャラクター' : '武器'}「${currentEditingItem.name}」が見つかりませんでした。`);
-          }
-
-          let updatedBlock = range.block;
-          for (const [rawKey, rawVal] of Object.entries(rawUpdates)) {
-            updatedBlock = updateFieldInBlock(updatedBlock, rawKey, rawVal);
-          }
-
-          const newFileContentStr = fileContentStr.slice(0, range.start) + updatedBlock + fileContentStr.slice(range.end);
-          const base64Content = b64EncodeUnicode(newFileContentStr);
-
-          submitBtn.textContent = 'GitHubにコミット中...';
-          const putRes = await fetch(`https://api.github.com/repos/${GITHUB_REPO_OWNER}/${GITHUB_REPO_NAME}/contents/${GITHUB_FILE_PATH}`, {
-            method: 'PUT',
-            headers: {
-              'Authorization': `bearer ${githubToken}`,
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-              message: `Update ${currentEditingItem.name} (${Object.keys(rawUpdates).join(', ')}) via Admin Panel`,
-              content: base64Content,
-              sha: sha
-            })
-          });
-
-          if (putRes.ok) {
-            alert(`「${currentEditingItem.name}」の変更がGitHubリポジトリへピンポイントにコミットされました！\n他のコードは完全に維持されています。数分後に全ユーザーへ反映されます。`);
-            closeDetailModal();
-            renderGrid();
-          } else {
-            const errJson = await putRes.json();
-            alert('コミットに失敗しました: ' + (errJson.message || 'エラーが発生しました'));
-          }
-        } catch (err) {
-          alert('エラーが発生しました: ' + err.message);
-        } finally {
-          const submitBtn = document.querySelector('.db-save-btn');
-          if (submitBtn) {
-            submitBtn.disabled = false;
-            submitBtn.textContent = 'GitHubへコミット（全ユーザーに反映）';
-          }
-        }
-      });
-    }
-
-    function openDetailModal() {
-      document.getElementById('detailModal').classList.remove('hidden');
-      document.getElementById('detailOverlay').classList.remove('hidden');
-      document.getElementById('detailOverlay').setAttribute('aria-hidden', 'false');
+      modal.classList.remove('hidden');
+      overlay.classList.remove('hidden');
     }
 
     function closeDetailModal() {
-      document.getElementById('detailModal').classList.add('hidden');
-      document.getElementById('detailOverlay').classList.add('hidden');
-      document.getElementById('detailOverlay').setAttribute('aria-hidden', 'true');
-      currentEditingItem = null;
+      document.getElementById('detailModal')?.classList.add('hidden');
+      document.getElementById('detailOverlay')?.classList.add('hidden');
     }
 
-    function buildImageNode(item, className) {
-      const wrap = document.createElement('div');
-      wrap.className = className === 'card-thumb' ? 'card-thumb-fallback' : 'db-modal-fallback';
-      wrap.textContent = currentTab === 'character' ? '👤' : '⚔';
+    function bindDetailModal() {
+      document.getElementById('detailClose')?.addEventListener('click', closeDetailModal);
+      document.getElementById('detailOverlay')?.addEventListener('click', closeDetailModal);
 
-      if (!item.iconUrl) return wrap;
+      const form = document.getElementById('detailEditForm');
+      if (form) {
+        form.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          if (!isAdminMode) return;
+          if (!currentEditingItem) return;
 
-      const image = document.createElement('img');
-      image.className = className;
-      image.src = item.iconUrl;
-      image.alt = item.name;
-      image.addEventListener('error', () => image.replaceWith(wrap), { once: true });
-      return image;
+          const formData = new FormData(form);
+          const updatedObj = { ...currentEditingItem.item };
+          for (const [k, v] of formData.entries()) {
+            let parsedVal = v;
+            if (v === 'true') parsedVal = true;
+            else if (v === 'false') parsedVal = false;
+            else if (!isNaN(v) && v.trim() !== '') {
+              parsedVal = Number(v);
+            }
+            updatedObj[k] = parsedVal;
+          }
+
+          await saveItemToGitHub(updatedObj, currentEditingItem.type);
+        });
+      }
     }
 
-    let adminClickCount = 0;
-    let adminClickTimer = null;
-    const ADMIN_CLICK_THRESHOLD = 10;
-    const ADMIN_CLICK_WINDOW = 10000;
+    async function saveItemToGitHub(updatedItem, type) {
+      if (!githubToken) {
+        githubToken = prompt('GitHub Personal Access Token (PAT) を入力してください（repo権限が必要です）:');
+        if (!githubToken) {
+          alert('GitHub Tokenが設定されていないため反映できません。');
+          return;
+        }
+        localStorage.setItem('github_pat', githubToken);
+      }
+
+      const saveBtn = document.querySelector('.db-save-btn');
+      if (saveBtn) {
+        saveBtn.disabled = true;
+        saveBtn.textContent = 'GitHubへコミット中...';
+      }
+
+      try {
+        const getUrl = `https://api.github.com/repos/${GITHUB_REPO_OWNER}/${GITHUB_REPO_NAME}/contents/${GITHUB_FILE_PATH}`;
+        const fileRes = await fetch(getUrl, {
+          headers: {
+            'Authorization': `Bearer ${githubToken}`,
+            'Accept': 'application/vnd.github.v3+json'
+          }
+        });
+
+        if (!fileRes.ok) {
+          throw new Error(`GitHubからのファイル取得に失敗しました (Status: ${fileRes.status})`);
+        }
+
+        const fileData = await fileRes.json();
+        const currentSha = fileData.sha;
+        
+        // base64デコード（Unicode対応）
+        const binaryString = atob(fileData.content.replace(/\s/g, ''));
+        const bytes = Uint8Array.from(binaryString, c => c.charCodeAt(0));
+        const originalFileText = new TextDecoder('utf-8').decode(bytes);
+
+        // 対象データブロック（該当アイテムのオブジェクト部分）のみを安全に正規表現置換
+        const newFileText = replaceSingleItemInDataJs(originalFileText, updatedItem, type);
+
+        // UTF-8エンコード & Base64化
+        const newBytes = new TextEncoder().encode(newFileText);
+        let newBinary = '';
+        newBytes.forEach(b => { newBinary += String.fromCharCode(b); });
+        const newBase64 = btoa(newBinary);
+
+        const putRes = await fetch(getUrl, {
+          method: 'PUT',
+          headers: {
+            'Authorization': `Bearer ${githubToken}`,
+            'Accept': 'application/vnd.github.v3+json',
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            message: `Update ${type}: ${updatedItem.name} via Web Admin (Single Item)`,
+            content: newBase64,
+            sha: currentSha
+          })
+        });
+
+        if (!putRes.ok) {
+          const errBody = await putRes.text();
+          throw new Error(`GitHubへのコミットに失敗しました: ${errBody}`);
+        }
+
+        // ローカルのデータも更新
+        if (type === 'character') {
+          const idx = (window.CHARACTERS || []).findIndex(c => c.name === updatedItem.name);
+          if (idx !== -1) window.CHARACTERS[idx] = updatedItem;
+        } else {
+          const idx = (window.WEAPONS || []).findIndex(w => w.name === updatedItem.name);
+          if (idx !== -1) window.WEAPONS[idx] = updatedItem;
+        }
+
+        alert(`✅ 【${updatedItem.name}】のデータをGitHubへコミットしました！全ユーザーに反映されます。`);
+        closeDetailModal();
+        renderGrid();
+      } catch (err) {
+        console.error(err);
+        alert(`❌ エラー: ${err.message}`);
+      } finally {
+        if (saveBtn) {
+          saveBtn.disabled = false;
+          saveBtn.textContent = 'GitHubへコミット（全ユーザーに反映）';
+        }
+      }
+    }
+
+    /**
+     * data.js内の該当キャラクター/武器のオブジェクト部分のみを特定して置換する
+     */
+    function replaceSingleItemInDataJs(fileContent, updatedItem, type) {
+      const escapeRegex = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      const escapedName = escapeRegex(updatedItem.name);
+
+      // name: "xxx" または name: 'xxx' を含むオブジェクトブロックを探索
+      const pattern = new RegExp(`(\\{[\\s\\S]*?name\\s*:\\s*["']${escapedName}["'][\\s\\S]*?\\})`, 'm');
+      const match = fileContent.match(pattern);
+
+      if (!match) {
+        throw new Error(`data.js 内に対象データ「${updatedItem.name}」のブロックが見つかりませんでした。`);
+      }
+
+      // 置換用のフォーマット済みJSON風文字列（2スペースインデント）
+      const itemJson = JSON.stringify(updatedItem, null, 2)
+        .replace(/"([^"]+)":/g, '$1:') // オブジェクトのキーのクォート除去
+        .split('\n')
+        .map((line, i) => i === 0 ? line : '    ' + line)
+        .join('\n');
+
+      return fileContent.replace(match[1], itemJson);
+    }
 
     function bindAdminAuthTrigger() {
+      let adminClickCount = 0;
+      let adminClickTimer = null;
+      const ADMIN_CLICK_THRESHOLD = 10;
+      const ADMIN_CLICK_WINDOW = 3000;
+
       const trigger = document.getElementById('dbAdminTrigger');
       if (trigger) {
         trigger.addEventListener('click', () => {
@@ -966,7 +812,7 @@
       if (input) input.value = '';
       const tokenInput = document.getElementById('githubTokenInput');
       if (tokenInput) tokenInput.value = githubToken;
-      document.getElementById('adminAuthError')?.classList.remove('hidden');
+      document.getElementById('adminAuthError')?.classList.add('hidden');
       document.getElementById('adminAuthModal')?.classList.remove('hidden');
       document.getElementById('adminAuthOverlay')?.classList.remove('hidden');
       setTimeout(() => input?.focus(), 100);
