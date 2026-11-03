@@ -58,20 +58,35 @@
 
     <!-- エンドレス: ストリーク -->
     <div class="streak-info hidden" id="streakInfo">
-      🔥 連続正解: <strong id="streakCount">0</strong> 問
+      <span>🔥 連勝: <strong id="streakCount">0</strong></span>
+      <span class="sep">|</span>
+      <span>最高: <strong id="bestStreakCount">0</strong></span>
     </div>
 
-    <!-- 対戦モード専用: ステータスパネル -->
-    <section class="versus-panel hidden" id="versusPanel" aria-label="オンライン対戦状況">
-      <div class="versus-status-bar">
-        <span class="versus-room-tag">ROOM: <strong id="versusRoomDisplay">—</strong></span>
-        <button class="versus-leave-btn" id="leaveVersusBtn" type="button">退室</button>
+    <!-- 対戦: ターン情報 -->
+    <div class="streak-info hidden" id="versusInfo">
+      <span id="versusPlayers">プレイヤー1 vs プレイヤー2</span>
+      <span class="sep">|</span>
+      <span id="versusCurrentTurn">プレイヤー1 のターン</span>
+    </div>
+
+    <section class="versus-panel hidden" id="versusPanel" aria-label="オンライン対戦情報">
+      <div class="versus-room-tools">
+        <div class="versus-room-meta">
+          <span class="versus-room-label">ルームコード</span>
+          <strong id="versusRoomCodeValue">------</strong>
+        </div>
+        <button class="icon-btn" id="copyRoomCodeBtn" data-original-label="コードをコピー">コードをコピー</button>
+        <button class="icon-btn" id="copyInviteLinkBtn" data-original-label="招待リンクをコピー">招待リンクをコピー</button>
+        <button class="icon-btn" id="versusLeaveBtn" type="button">ルームを退出</button>
       </div>
 
-      <div class="versus-scoreboard">
+      <input class="versus-input versus-invite-input" id="versusInviteLink" type="text" readonly aria-label="招待リンク">
+
+      <div class="versus-status-grid">
         <div class="versus-player-card" id="versusPlayerCard0">
-          <div class="versus-player-heading">Player 1 (ホスト)</div>
-          <div class="versus-player-name" id="versusPlayerName0">ホスト</div>
+          <div class="versus-player-heading">Player 1</div>
+          <div class="versus-player-name" id="versusPlayerName0">プレイヤー1</div>
           <div class="versus-player-status" id="versusPlayerStatus0">接続待ち</div>
         </div>
         <div class="versus-timer-card">
@@ -125,23 +140,23 @@
         <input
           type="text"
           id="guessInput"
-          placeholder="キャラクター名を入力..."
+          placeholder="キャラクター/武器名を入力…"
           autocomplete="off"
           autocorrect="off"
           autocapitalize="off"
           spellcheck="false"
-          aria-label="キャラクター名を入力"
+          aria-label="キャラクター/武器名"
           aria-autocomplete="list"
-          aria-controls="autocompleteList"
+          aria-controls="suggestList"
         >
-        <!-- オートコンプリートリスト -->
-        <ul id="autocompleteList" class="autocomplete-list hidden" role="listbox" aria-label="候補一覧"></ul>
+        <button class="submit-btn" id="submitBtn" aria-label="回答を送信">決定</button>
+        <div id="suggestList" class="hidden" role="listbox" aria-label="候補一覧"></div>
       </div>
-      <button class="submit-btn" id="submitBtn">回答</button>
+      <p class="input-error hidden" id="inputError" role="alert" aria-live="assertive"></p>
     </section>
 
-    <!-- メッセージ表示 -->
-    <div class="message" id="message" role="alert" aria-live="polite"></div>
+    <!-- 結果バナー -->
+    <div id="resultBanner" class="result-banner hidden" role="status" aria-live="polite"></div>
 
     <!-- 正解時演出 -->
     <div class="win-overlay hidden" id="winOverlay" aria-hidden="true">
@@ -195,12 +210,13 @@
         <button class="versus-action-btn" id="versusCreateBtn">🏠 ルームを作成</button>
         <button class="versus-action-btn" id="versusJoinBtn">🚪 ルームに参加</button>
       </div>
+      <button class="modal-close versus-cancel-btn" id="versusModalClose" aria-label="キャンセル">✕ キャンセル</button>
     </div>
 
     <!-- ② ルーム作成画面 -->
     <div id="versusCreate" class="hidden">
       <label class="versus-field-label" for="hostNameInput">あなたの名前</label>
-      <input class="versus-input" type="text" id="hostNameInput" maxlength="20" placeholder="ホスト" autocomplete="off">
+      <input class="versus-input" type="text" id="hostNameInput" maxlength="20" placeholder="プレイヤー1" autocomplete="off">
       <label class="versus-field-label" for="createTurnTimeSelect">ターン時間</label>
       <select class="versus-input" id="createTurnTimeSelect">
         <option value="30">30秒</option>
@@ -243,36 +259,43 @@
       
       <!-- ステップ1 -->
       <div style="border-bottom: 1px solid #333; padding-bottom: 15px; text-align: left;">
-        <p style="font-weight: bold; margin-bottom: 8px; color: #ffd700; text-align: center;">① 最初の推測を入力</p>
+        <p style="font-weight: bold; margin-bottom: 8px; color: #ffd700; text-align: center;">① プレイモードを選ぶ</p>
         <div style="text-align: center; margin-bottom: 10px;">
           <img src="../files/tutorial/tutorial1.png" alt="チュートリアル 1" style="max-width: 100%; height: auto; border-radius: 8px; border: 1px solid #444;">
         </div>
         <p style="font-size: 0.85rem; line-height: 1.5; color: #eee; padding: 0 10px;">
-          まずは好きなキャラクター（例：旅人（風））を入力してみます。
+          「デイリー」「エンドレス」「チャレンジ」「オンライン対戦」から好きなモードを選んでゲームを開始します。チャレンジモードは5ミスで終了となる競技用の硬派なルールです。
         </p>
       </div>
 
       <!-- ステップ2 -->
       <div style="border-bottom: 1px solid #333; padding-bottom: 15px; text-align: left;">
-        <p style="font-weight: bold; margin-bottom: 8px; color: #ffd700; text-align: center;">② ヒントから情報を読み取る</p>
+        <p style="font-weight: bold; margin-bottom: 8px; color: #ffd700; text-align: center;">② キャラクター名を入力して推測</p>
         <div style="text-align: center; margin-bottom: 10px;">
           <img src="../files/tutorial/tutorial2.png" alt="チュートリアル 2" style="max-width: 100%; height: auto; border-radius: 8px; border: 1px solid #444;">
         </div>
         <p style="font-size: 0.85rem; line-height: 1.5; color: #eee; padding: 0 10px;">
-          判定結果が表示されます。矢印（▲/▼）は数値の高低を表し、黄色は「惜しい（同じカテゴリ）」を表します。<br>
-          ※例：実装Ver 1.0に「▲」が付いていれば、正解はVer 1.0より後に実装されたキャラクターです。
+          入力欄にキャラクター名（例：「煙緋」）を入力して決定を押すと、そのキャラクターの属性（ステータス）が表示され、正解との一致判定が行われます。
         </p>
       </div>
 
       <!-- ステップ3 -->
       <div style="border-bottom: 1px solid #333; padding-bottom: 15px; text-align: left;">
-        <p style="font-weight: bold; margin-bottom: 8px; color: #ffd700; text-align: center;">③ さらに絞り込む</p>
+        <p style="font-weight: bold; margin-bottom: 8px; color: #ffd700; text-align: center;">③ 「色」と「矢印」を分析する</p>
         <div style="text-align: center; margin-bottom: 10px;">
           <img src="../files/tutorial/tutorial3.png" alt="チュートリアル 3" style="max-width: 100%; height: auto; border-radius: 8px; border: 1px solid #444;">
         </div>
-        <p style="font-size: 0.85rem; line-height: 1.5; color: #eee; padding: 0 10px;">
-          得られた情報（片手剣ではない、風元素ではないなど）をもとに、別のキャラを入力して徐々に条件を絞り込んでいきます。
+        <p style="font-size: 0.85rem; line-height: 1.5; color: #eee; padding: 0 10px; margin-bottom: 10px;">
+          表示された色のヒントから、正解の範囲をさらに絞り込んでいきましょう。
         </p>
+        <div style="background: #222; padding: 12px; border-radius: 8px; font-size: 0.8rem; line-height: 1.6; margin: 0 10px; color: #ccc;">
+          <strong>💡 画像のヒントから分かることの例：</strong><br>
+          ・<strong>レアリティ（★4）が緑色</strong>：正解は「★4」のキャラクターです。<br>
+          ・<strong>エネルギーの矢印（▲/▼）</strong>：<br>
+          　アイノ（50 <span style="color: #539ffd;">▲</span>）＝ 正解は50より大きい。<br>
+          　煙緋（80 <span style="color: #ff5757;">▼</span>）＝ 正解は80より小さい。<br>
+          　つまり、<strong>正解のエネルギーは「60か70」</strong>だと推測できます！
+        </div>
       </div>
 
       <!-- ステップ4 -->
