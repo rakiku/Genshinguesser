@@ -468,6 +468,58 @@
       });
     }
 
+    function isNumericField(key) {
+      return ['baseAtk', 'baseHp', 'baseDef', 'energy'].includes(key);
+    }
+
+    function getFieldSelectOptions(key, tab) {
+      if (['distributed', 'costume', 'trace', 'trainingRoad', 'isDistributed'].includes(key)) {
+        return [{ value: 'true', label: 'あり / はい' }, { value: 'false', label: 'なし / いいえ' }];
+      }
+      if (key === 'rarity') {
+        if (tab === 'character') {
+          return [{ value: '5', label: '★5' }, { value: '4', label: '★4' }];
+        }
+        return [
+          { value: '5', label: '★5' },
+          { value: '4', label: '★4' },
+          { value: '3', label: '★3' },
+          { value: '2', label: '★2' },
+          { value: '1', label: '★1' },
+        ];
+      }
+      if (key === 'element') {
+        return ['炎', '水', '風', '雷', '草', '氷', '岩', 'その他'].map(v => ({ value: v, label: v }));
+      }
+      if (key === 'weapon' || key === 'weaponType') {
+        return ['片手剣', '両手剣', '長柄武器', '弓', '法器'].map(v => ({ value: v, label: v }));
+      }
+      if (key === 'country') {
+        return ['モンド', '璃月', '稲妻', 'スメール', 'フォンテーヌ', 'ナタ', 'ナドクライ', 'スネージナヤ', '例外'].map(v => ({ value: v, label: v }));
+      }
+      if (key === 'bodyLabel' || key === 'body') {
+        return ['中身女性', '中身男性', '長身女性', '長身男性', 'ロリ', '中身男性/中身女性'].map(v => ({ value: v, label: v }));
+      }
+      if (key === 'specialDish') {
+        return ['攻撃系', '防御系', '回復系', '継続回復系', '復活系', 'スタミナ軽減系', 'スタミナ回復系', 'シールド系', '治療効果系', 'HP強化系', ''].map(v => ({ value: v, label: v || 'なし' }));
+      }
+      if (key === 'role') {
+        const roles = [...new Set(CHARACTERS.map(c => (c.role || []).join(' / ')).filter(Boolean))].sort();
+        return roles.map(v => ({ value: v, label: v }));
+      }
+
+      let srcList = tab === 'character' ? CHARACTERS : WEAPONS;
+      let values = [];
+      if (key === 'releaseVersionLabel') {
+        values = [...new Set(srcList.map(item => item.releaseVersionLabel).filter(Boolean))].sort((a, b) => {
+          return (typeof parseReleaseVersion === 'function' ? parseReleaseVersion(a) : parseFloat(a) || 0) - (typeof parseReleaseVersion === 'function' ? parseReleaseVersion(b) : parseFloat(b) || 0);
+        });
+      } else {
+        values = [...new Set(srcList.map(item => item[key]).filter(v => v !== undefined && v !== null && v !== ''))].sort((a, b) => String(a).localeCompare(String(b), 'ja'));
+      }
+      return values.map(v => ({ value: v, label: v }));
+    }
+
     function showDetail(item, selectedCard) {
       currentEditingItem = item;
       document.querySelectorAll('.db-card').forEach(card => card.classList.toggle('active', card === selectedCard));
@@ -492,7 +544,18 @@
       basicFields.forEach(([key, label, val]) => {
         const line = document.createElement('p');
         if (isAdminMode) {
-          line.innerHTML = `<b>${label}:</b> <input type="text" class="db-edit-input" data-key="${key}" value="${val !== undefined ? val : ''}" style="display:inline-block; width:auto; margin-left:6px;">`;
+          if (key === 'name') {
+            line.innerHTML = `<b>${label}:</b> <input type="text" class="db-edit-input" data-key="${key}" value="${val !== undefined ? val : ''}" style="display:inline-block; width:auto; margin-left:6px;">`;
+          } else {
+            const selectOptions = getFieldSelectOptions(key, currentTab);
+            const strVal = String(val !== undefined && val !== null ? val : '');
+            let optList = [...selectOptions];
+            if (!optList.some(opt => String(opt.value) === strVal) && strVal) {
+              optList.unshift({ value: strVal, label: strVal });
+            }
+            const optHtml = optList.map(opt => `<option value="${opt.value}" ${strVal === String(opt.value) ? 'selected' : ''}>${opt.label}</option>`).join('');
+            line.innerHTML = `<b>${label}:</b> <select class="db-edit-select" data-key="${key}" style="display:inline-block; width:auto; margin-left:6px;">${optHtml}</select>`;
+          }
         } else {
           line.textContent = `${label}: ${key === 'rarity' ? '★' + val : val}`;
         }
@@ -507,15 +570,19 @@
         
         if (isAdminMode) {
           let inputHtml = '';
-          if (typeof value === 'boolean' || ['distributed', 'costume', 'trace', 'trainingRoad', 'isDistributed'].includes(key)) {
-            const boolVal = Boolean(value);
-            inputHtml = `
-              <select class="db-edit-select" data-key="${key}">
-                <option value="true" ${boolVal ? 'selected' : ''}>あり / はい</option>
-                <option value="false" ${!boolVal ? 'selected' : ''}>なし / いいえ</option>
-              </select>`;
+          if (isNumericField(key)) {
+            inputHtml = `<input type="text" class="db-edit-input" data-key="${key}" value="${value !== undefined && value !== null ? value : ''}" placeholder="数値を入力">`;
+          } else if (key === 'birthday') {
+            inputHtml = `<input type="text" class="db-edit-input" data-key="${key}" value="${value !== undefined && value !== null ? value : ''}" placeholder="例: 3月14日">`;
           } else {
-            inputHtml = `<input type="text" class="db-edit-input" data-key="${key}" value="${value !== undefined && value !== null ? value : ''}">`;
+            const selectOptions = getFieldSelectOptions(key, currentTab);
+            const strVal = String(value !== undefined && value !== null ? value : '');
+            let optList = [...selectOptions];
+            if (!optList.some(opt => String(opt.value) === strVal) && strVal) {
+              optList.unshift({ value: strVal, label: strVal });
+            }
+            const optHtml = optList.map(opt => `<option value="${opt.value}" ${strVal === String(opt.value) ? 'selected' : ''}>${opt.label}</option>`).join('');
+            inputHtml = `<select class="db-edit-select" data-key="${key}">${optHtml}</select>`;
           }
           box.innerHTML = `<b>${label}</b>${inputHtml}`;
         } else {
