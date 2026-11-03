@@ -90,7 +90,7 @@
   <header class="app-header">
     <h1 class="app-title">📚 データベース</h1>
     <nav class="header-actions">
-      <a href="../index.html" class="back-link icon-btn">← メニュー</a>
+      <a href="index.html" class="back-link icon-btn">← ゲームに戻る</a>
     </nav>
   </header>
 
@@ -155,7 +155,7 @@
   </main>
 
   <footer class="app-footer">
-    <p><a href="../index.html">← メニューへ戻る</a></p>
+    <p><a href="index.html">← ゲームに戻る</a></p>
   </footer>
 
   <!-- 詳細・編集モーダル -->
@@ -590,6 +590,99 @@
       return false;
     }
 
+    function escapeRegex(string) {
+      return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    }
+
+    function b64DecodeUnicode(str) {
+      const binary = atob(str.replace(/\s/g, ''));
+      const bytes = new Uint8Array(binary.length);
+      for (let i = 0; i < binary.length; i++) {
+        bytes[i] = binary.charCodeAt(i);
+      }
+      return new TextDecoder('utf-8').decode(bytes);
+    }
+
+    function b64EncodeUnicode(str) {
+      const bytes = new TextEncoder().encode(str);
+      let binary = '';
+      for (let i = 0; i < bytes.byteLength; i++) {
+        binary += String.fromCharCode(bytes[i]);
+      }
+      return btoa(binary);
+    }
+
+    function findItemObjectRange(sourceCode, arrayName, itemName) {
+      const arrayStart = sourceCode.indexOf(arrayName);
+      if (arrayStart === -1) return null;
+
+      const regex = new RegExp(`{\\s*name:\\s*["']${escapeRegex(itemName)}["']`);
+      const searchPart = sourceCode.slice(arrayStart);
+      const match = searchPart.match(regex);
+      if (!match || match.index === undefined) return null;
+
+      const itemStart = arrayStart + match.index;
+      let depth = 0;
+      let inString = false;
+      let quoteChar = '';
+      let itemEnd = -1;
+
+      for (let i = itemStart; i < sourceCode.length; i++) {
+        const ch = sourceCode[i];
+        const prev = i > 0 ? sourceCode[i - 1] : '';
+
+        if (inString) {
+          if (ch === quoteChar && prev !== '\\') {
+            inString = false;
+          }
+        } else {
+          if (ch === '"' || ch === "'") {
+            inString = true;
+            quoteChar = ch;
+          } else if (ch === '{') {
+            depth++;
+          } else if (ch === '}') {
+            depth--;
+            if (depth === 0) {
+              itemEnd = i + 1;
+              break;
+            }
+          }
+        }
+      }
+
+      if (itemEnd === -1) return null;
+      return { start: itemStart, end: itemEnd, block: sourceCode.slice(itemStart, itemEnd) };
+    }
+
+    function updateFieldInBlock(block, rawKey, newValue) {
+      const keyRegex = new RegExp(`(${rawKey}\\s*:\\s*)([^,\\n}]+)`);
+      let formattedVal;
+      if (typeof newValue === 'boolean') {
+        formattedVal = newValue ? 'true' : 'false';
+      } else if (typeof newValue === 'number') {
+        formattedVal = String(newValue);
+      } else if (Array.isArray(newValue)) {
+        formattedVal = JSON.stringify(newValue);
+      } else if (newValue === null || newValue === undefined) {
+        formattedVal = 'null';
+      } else {
+        formattedVal = JSON.stringify(newValue);
+      }
+
+      if (keyRegex.test(block)) {
+        return block.replace(keyRegex, `$1${formattedVal}`);
+      } else {
+        const lastBrace = block.lastIndexOf('}');
+        if (lastBrace !== -1) {
+          const before = block.slice(0, lastBrace).trimEnd();
+          const needsComma = before.endsWith(',') ? '' : ', ';
+          return `${before}${needsComma}${rawKey}: ${formattedVal} }`;
+        }
+        return block;
+      }
+    }
+
     function bindDetailModal() {
       document.getElementById('detailClose').addEventListener('click', closeDetailModal);
       document.getElementById('detailOverlay').addEventListener('click', closeDetailModal);
@@ -604,15 +697,81 @@
 
         const inputs = document.querySelectorAll('.db-edit-input, .db-edit-select');
         const updates = {};
+        const rawUpdates = {};
+
+        const CHAR_KEY_MAP = {
+          name: 'name',
+          element: 'element',
+          country: 'country',
+          weapon: 'weapon',
+          birthday: 'birthday',
+          bodyLabel: 'body',
+          baseAtk: 'attack',
+          baseHp: 'hp',
+          baseDef: 'defense',
+          role: 'role',
+          energy: 'energy',
+          ascensionStat: 'ascension_stat',
+          localSpecialty: 'local_specialty',
+          talentBoss: 'talent_boss',
+          talentBook: 'talent_book',
+          talentWeekly: 'talent_weekly',
+          enemyMaterial: 'enemy_material',
+          specialDish: 'special_dish',
+          distributed: 'distributed',
+          costume: 'costume',
+          trace: 'trace',
+          trainingRoad: 'training_road',
+          releaseVersionLabel: 'release_version',
+        };
+
+        const WEAPON_KEY_MAP = {
+          name: 'name',
+          rarity: 'rarity',
+          weaponType: 'weapon_type',
+          baseAtk: 'base_atk',
+          ascensionStat: 'ascension_stat',
+          isDistributed: 'distributed',
+          weaponBreakMaterial: 'break_material',
+          enemyMaterial: 'enemy_material',
+          weaponEnemyMaterial: 'enemy_material',
+          releaseVersionLabel: 'release_version',
+        };
+
+        const currentMap = currentTab === 'character' ? CHAR_KEY_MAP : WEAPON_KEY_MAP;
 
         inputs.forEach(el => {
           const key = el.dataset.key;
           if (!key) return;
-          let val = el.value;
-          if (val === 'true') val = true;
-          else if (val === 'false') val = false;
-          else if (!isNaN(val) && val !== '' && key === 'rarity') val = Number(val);
-          updates[key] = val;
+          let val = el.value.trim();
+          let parsedVal = val;
+
+          if (val === 'true') parsedVal = true;
+          else if (val === 'false') parsedVal = false;
+          else if (key === 'rarity' && !isNaN(val) && val !== '') parsedVal = Number(val);
+
+          updates[key] = parsedVal;
+
+          const rawKey = currentMap[key] || key;
+          let rawVal = parsedVal;
+
+          if (currentTab === 'weapon') {
+            if (rawKey === 'base_atk' || rawKey === 'rarity') {
+              rawVal = val === '' || val === 'null' ? null : Number(val);
+            }
+          } else {
+            if (rawKey === 'attack' || rawKey === 'defense' || rawKey === 'energy') {
+              rawVal = val === '' || val === 'null' ? 0 : Number(val);
+            } else if (rawKey === 'role') {
+              rawVal = val ? val.split(/[\/,、]/).map(s => s.trim()).filter(Boolean) : [];
+            } else if (rawKey === 'enemy_material') {
+              rawVal = val ? [val] : [];
+            } else if (rawKey === 'rarity') {
+              rawVal = Number(val) === 5 ? ['☆５'] : ['☆４'];
+            }
+          }
+
+          rawUpdates[rawKey] = rawVal;
         });
 
         Object.assign(currentEditingItem, updates);
@@ -620,7 +779,7 @@
         try {
           const submitBtn = document.querySelector('.db-save-btn');
           submitBtn.disabled = true;
-          submitBtn.textContent = 'GitHubにコミット中...';
+          submitBtn.textContent = 'GitHubから取得・ピンポイント更新中...';
 
           const fileRes = await fetch(`https://api.github.com/repos/${GITHUB_REPO_OWNER}/${GITHUB_REPO_NAME}/contents/${GITHUB_FILE_PATH}`, {
             headers: { 'Authorization': `bearer ${githubToken}` }
@@ -629,9 +788,23 @@
           const fileData = await fileRes.json();
           const sha = fileData.sha;
 
-          const fileContentStr = `const CHARACTERS = ${JSON.stringify(CHARACTERS, null, 2)};\n\nconst WEAPONS = ${JSON.stringify(WEAPONS, null, 2)};`;
-          const base64Content = btoa(unescape(encodeURIComponent(fileContentStr)));
+          const fileContentStr = b64DecodeUnicode(fileData.content);
 
+          const arrayName = currentTab === 'character' ? 'RAW_CHARACTERS' : 'WEAPONS_DATA';
+          const range = findItemObjectRange(fileContentStr, arrayName, currentEditingItem.name);
+          if (!range) {
+            throw new Error(`ファイル内に該当の${currentTab === 'character' ? 'キャラクター' : '武器'}「${currentEditingItem.name}」が見つかりませんでした。`);
+          }
+
+          let updatedBlock = range.block;
+          for (const [rawKey, rawVal] of Object.entries(rawUpdates)) {
+            updatedBlock = updateFieldInBlock(updatedBlock, rawKey, rawVal);
+          }
+
+          const newFileContentStr = fileContentStr.slice(0, range.start) + updatedBlock + fileContentStr.slice(range.end);
+          const base64Content = b64EncodeUnicode(newFileContentStr);
+
+          submitBtn.textContent = 'GitHubにコミット中...';
           const putRes = await fetch(`https://api.github.com/repos/${GITHUB_REPO_OWNER}/${GITHUB_REPO_NAME}/contents/${GITHUB_FILE_PATH}`, {
             method: 'PUT',
             headers: {
@@ -639,14 +812,14 @@
               'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-              message: `Update ${currentEditingItem.name} via Admin Panel`,
+              message: `Update ${currentEditingItem.name} (${Object.keys(rawUpdates).join(', ')}) via Admin Panel`,
               content: base64Content,
               sha: sha
             })
           });
 
           if (putRes.ok) {
-            alert('GitHubリポジトリへ正常にコミットされました！数分後に全ユーザーへ反映されます。');
+            alert(`「${currentEditingItem.name}」の変更がGitHubリポジトリへピンポイントにコミットされました！\n他のコードは完全に維持されています。数分後に全ユーザーへ反映されます。`);
             closeDetailModal();
             renderGrid();
           } else {
@@ -726,7 +899,7 @@
       if (input) input.value = '';
       const tokenInput = document.getElementById('githubTokenInput');
       if (tokenInput) tokenInput.value = githubToken;
-      document.getElementById('adminAuthError')?.classList.add('hidden');
+      document.getElementById('adminAuthError')?.classList.remove('hidden');
       document.getElementById('adminAuthModal')?.classList.remove('hidden');
       document.getElementById('adminAuthOverlay')?.classList.remove('hidden');
       setTimeout(() => input?.focus(), 100);
