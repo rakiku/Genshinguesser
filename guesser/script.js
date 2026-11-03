@@ -1039,14 +1039,20 @@ function saveStreakData() {
 let suggestSelected = -1;
 let currentSuggestions = [];
 
+function getSuggestListEl() {
+  return document.getElementById('suggestList') || document.getElementById('autocompleteList');
+}
+
 function onInputChange() {
-  const q = document.getElementById('guessInput').value.trim();
+  const input = document.getElementById('guessInput');
+  if (!input) return;
+  const q = input.value.trim();
   if (!q) { closeSuggest(); return; }
-  showSuggest(searchItems(q));
+  showSuggest(searchItems(q), q);
 }
 
 function onInputKeydown(e) {
-  const list = document.getElementById('suggestList');
+  const list = getSuggestListEl();
   if (!list || list.classList.contains('hidden')) {
     if (e.key === 'Enter') submitGuess();
     return;
@@ -1063,7 +1069,7 @@ function onInputKeydown(e) {
   } else if (e.key === 'Enter') {
     e.preventDefault();
     if (suggestSelected >= 0 && items[suggestSelected]) {
-      selectSuggestItem(currentSuggestions[suggestSelected]);
+      selectSuggestItem(currentSuggestions[suggestSelected].item);
     } else {
       submitGuess();
     }
@@ -1072,6 +1078,113 @@ function onInputKeydown(e) {
   }
 }
 
+/** カタカナをひらがなに変換するヘルパー関数 */
+function katakanaToHiragana(src) {
+  if (!src) return '';
+  return String(src).replace(/[\u30a1-\u30f6]/g, match => {
+    return String.fromCharCode(match.charCodeAt(0) - 0x60);
+  });
+}
+
+function searchItems(query) {
+  const q = katakanaToHiragana(query.toLowerCase()); // 入力をひらがなに統一
+  const guessedIds = new Set(guesses.map(g => g.item.id));
+  const pool = getPool();
+
+  const results = [];
+  for (const item of pool) {
+    if (guessedIds.has(item.id)) continue;
+    const names = item.displayNames && item.displayNames.length > 0 ? item.displayNames : [item.name];
+    
+    // 登録された名称（正式名称・読み仮名・あだ名・別名）を探索
+    let matchedName = null;
+    let priority = 99; // 1: 完全一致, 2: 前方一致, 3: 部分一致
+
+    for (const dName of names) {
+      const hira = katakanaToHiragana(dName.toLowerCase());
+      if (hira === q) {
+        matchedName = dName;
+        priority = 1;
+        break;
+      } else if (hira.startsWith(q)) {
+        if (priority > 2) {
+          matchedName = dName;
+          priority = 2;
+        }
+      } else if (hira.includes(q)) {
+        if (priority > 3) {
+          matchedName = dName;
+          priority = 3;
+        }
+      }
+    }
+
+    if (matchedName) {
+      results.push({ item, matchedName, priority });
+    }
+  }
+
+  // 優先度順、その次は名前順でソートして上位8件を返す
+  results.sort((a, b) => {
+    if (a.priority !== b.priority) return a.priority - b.priority;
+    return a.item.name.localeCompare(b.item.name, 'ja');
+  });
+
+  return results.slice(0, 8);
+}
+
+function showSuggest(results, query) {
+  const list = getSuggestListEl();
+  if (!list) return;
+  currentSuggestions = results;
+  suggestSelected = -1;
+  if (!results || results.length === 0) { closeSuggest(); return; }
+
+  list.innerHTML = '';
+  results.forEach(({ item, matchedName }, i) => {
+    const el = document.createElement('div');
+    el.className = 'suggest-item';
+    el.dataset.index = i;
+
+    const img = document.createElement('img');
+    img.src = item.iconUrl || item.image || '';
+    img.alt = item.name;
+    img.className = 'suggest-icon';
+    img.onerror = () => { img.style.display = 'none'; };
+
+    const span = document.createElement('span');
+    // 登録された名称（読み仮名・別名）でヒットした場合は補助表示する
+    if (matchedName && matchedName !== item.name) {
+      span.innerHTML = `${item.name} <span style="font-size: 0.8em; opacity: 0.7; margin-left: 4px;">(${matchedName})</span>`;
+    } else {
+      span.textContent = item.name;
+    }
+
+    el.appendChild(img);
+    el.appendChild(span);
+    el.addEventListener('mousedown', e => { e.preventDefault(); selectSuggestItem(item); });
+    list.appendChild(el);
+  });
+  list.classList.remove('hidden');
+}
+
+function closeSuggest() {
+  const list = getSuggestListEl();
+  if (list) list.classList.add('hidden');
+  suggestSelected = -1;
+}
+
+function updateSuggestHighlight(items) {
+  items.forEach((item, i) => item.classList.toggle('highlighted', i === suggestSelected));
+  if (suggestSelected >= 0) items[suggestSelected]?.scrollIntoView({ block: 'nearest' });
+}
+
+function selectSuggestItem(item) {
+  const input = document.getElementById('guessInput');
+  if (input) input.value = item.name;
+  closeSuggest();
+  submitGuess();
+}
 /** カタカナをひらがなに変換するヘルパー関数 */
 function katakanaToHiragana(src) {
   return src.replace(/[\u30a1-\u30f6]/g, match => {
