@@ -798,7 +798,7 @@ const WEAPONS_DATA = [
   { name: "星鋒の剣", rarity: 5, weapon_type: "片手剣", base_atk: 608, ascension_stat: "会心ダメージ", enemy_material: null, break_material: null, distributed: false, release_version: "7.0" },
   { name: "超越の鍵", rarity: 5, weapon_type: "両手剣", base_atk: null, ascension_stat: "会心ダメージ", enemy_material: "欠損した月の鉄", break_material: "極北の末裔の煌光", distributed: false, release_version: "Luna VIII (6.7)" },
   { name: "塵と光の七つの誓約", rarity: 5, weapon_type: "法器", base_atk: null, ascension_stat: "攻撃力", enemy_material: "光を失った焔剣の柄", break_material: null, distributed: false, release_version: "Luna VII (6.6)" },
-  { name: "秘星の聖典", rarity: 5, weapon_type: "法器", base_atk: 510, ascension_stat: "会心ダメージ", enemy_material: "", break_material: "", distributed: false, release_version: "7.2"},
+  { name: "秘星の聖典", rarity: 5, weapon_type: "法器", base_atk: 510, ascension_stat: "会心ダメージ", enemy_material: "キノコンの衰菌核", break_material: "氷の皇帝の訣別", distributed: false, release_version: "7.2"},
   { name: "黒岩の長剣", rarity: 4, weapon_type: "片手剣", base_atk: 565, ascension_stat: "会心ダメージ", enemy_material: "猟兵の刀", break_material: null, distributed: false, release_version: "1.0" },
   { name: "原木刀", rarity: 4, weapon_type: "片手剣", base_atk: null, ascension_stat: "元素チャージ効率", enemy_material: "混沌ストレージ", break_material: "静謐な森のしずくの金符", distributed: false, release_version: "3.0" },
   { name: "異端を狩る熔刃", rarity: 4, weapon_type: "片手剣", base_atk: null, ascension_stat: "会心率", enemy_material: "冷えた鱗甲の欠片", break_material: null, distributed: false, release_version: "7.0" },
