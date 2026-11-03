@@ -16,7 +16,7 @@
   <header class="app-header">
     <h1 class="app-title">⚔ 原神 Guesser</h1>
     <nav class="header-actions">
-      <a href="database.html" class="back-link icon-btn" aria-label="データベース">📚 データベース</a>
+      <a href="../index.html" class="back-link icon-btn" aria-label="メニューへ戻る">← メニュー</a>
     </nav>
   </header>
 
@@ -30,9 +30,9 @@
     <section aria-label="ゲームモード選択">
       <div class="mode-switcher" role="group" aria-label="モード切替">
         <button class="mode-btn" data-mode="daily"     aria-pressed="false">📅 デイリー</button>
-        <button class="mode-btn" data-mode="endless"   aria-pressed="false">🔁 エンドレス</button>
+        <button class="mode-btn" data-mode="endless" aria-pressed="false">🔁 エンドレス</button>
         <button class="mode-btn" data-mode="challenge" aria-pressed="false">🏆 チャレンジ</button>
-        <button class="mode-btn" data-mode="versus"    aria-pressed="false">🌐 オンライン対戦</button>
+        <button class="mode-btn" data-mode="versus" aria-pressed="false">🌐 オンライン対戦</button>
       </div>
 
       <div class="overlay hidden" id="settingsOverlay" aria-hidden="true"></div>
@@ -58,35 +58,20 @@
 
     <!-- エンドレス: ストリーク -->
     <div class="streak-info hidden" id="streakInfo">
-      <span>🔥 連勝: <strong id="streakCount">0</strong></span>
-      <span class="sep">|</span>
-      <span>最高: <strong id="bestStreakCount">0</strong></span>
+      🔥 連続正解: <strong id="streakCount">0</strong> 問
     </div>
 
-    <!-- 対戦: ターン情報 -->
-    <div class="streak-info hidden" id="versusInfo">
-      <span id="versusPlayers">プレイヤー1 vs プレイヤー2</span>
-      <span class="sep">|</span>
-      <span id="versusCurrentTurn">プレイヤー1 のターン</span>
-    </div>
-
-    <section class="versus-panel hidden" id="versusPanel" aria-label="オンライン対戦情報">
-      <div class="versus-room-tools">
-        <div class="versus-room-meta">
-          <span class="versus-room-label">ルームコード</span>
-          <strong id="versusRoomCodeValue">------</strong>
-        </div>
-        <button class="icon-btn" id="copyRoomCodeBtn" data-original-label="コードをコピー">コードをコピー</button>
-        <button class="icon-btn" id="copyInviteLinkBtn" data-original-label="招待リンクをコピー">招待リンクをコピー</button>
-        <button class="icon-btn" id="versusLeaveBtn" type="button">ルームを退出</button>
+    <!-- 対戦モード専用: ステータスパネル -->
+    <section class="versus-panel hidden" id="versusPanel" aria-label="オンライン対戦状況">
+      <div class="versus-status-bar">
+        <span class="versus-room-tag">ROOM: <strong id="versusRoomDisplay">—</strong></span>
+        <button class="versus-leave-btn" id="leaveVersusBtn" type="button">退室</button>
       </div>
 
-      <input class="versus-input versus-invite-input" id="versusInviteLink" type="text" readonly aria-label="招待リンク">
-
-      <div class="versus-status-grid">
+      <div class="versus-scoreboard">
         <div class="versus-player-card" id="versusPlayerCard0">
-          <div class="versus-player-heading">Player 1</div>
-          <div class="versus-player-name" id="versusPlayerName0">プレイヤー1</div>
+          <div class="versus-player-heading">Player 1 (ホスト)</div>
+          <div class="versus-player-name" id="versusPlayerName0">ホスト</div>
           <div class="versus-player-status" id="versusPlayerStatus0">接続待ち</div>
         </div>
         <div class="versus-timer-card">
@@ -128,7 +113,7 @@
       </div>
     </section>
 
-    <!-- スタートボタンセクション -->
+<!-- 👇 ゲームスタートボタンセクション -->
     <section id="startSection" class="start-section" style="text-align: center; margin-bottom: 0.75rem;">
       <button class="submit-btn" id="startGameBtn" style="width: 100%; padding: 0.8rem; font-size: 1rem;">🎮 ゲームスタート</button>
     </section>
@@ -140,23 +125,23 @@
         <input
           type="text"
           id="guessInput"
-          placeholder="キャラクター/武器名を入力…"
+          placeholder="キャラクター名を入力..."
           autocomplete="off"
           autocorrect="off"
           autocapitalize="off"
           spellcheck="false"
-          aria-label="キャラクター/武器名"
+          aria-label="キャラクター名を入力"
           aria-autocomplete="list"
-          aria-controls="suggestList"
+          aria-controls="autocompleteList"
         >
-        <button class="submit-btn" id="submitBtn" aria-label="回答を送信">決定</button>
-        <div id="suggestList" class="hidden" role="listbox" aria-label="候補一覧"></div>
+        <!-- オートコンプリートリスト -->
+        <ul id="autocompleteList" class="autocomplete-list hidden" role="listbox" aria-label="候補一覧"></ul>
       </div>
-      <p class="input-error hidden" id="inputError" role="alert" aria-live="assertive"></p>
+      <button class="submit-btn" id="submitBtn">回答</button>
     </section>
 
-    <!-- 結果バナー -->
-    <div id="resultBanner" class="result-banner hidden" role="status" aria-live="polite"></div>
+    <!-- メッセージ表示 -->
+    <div class="message" id="message" role="alert" aria-live="polite"></div>
 
     <!-- 正解時演出 -->
     <div class="win-overlay hidden" id="winOverlay" aria-hidden="true">
@@ -186,10 +171,10 @@
   <!-- フッター -->
   <footer class="app-footer">
     <p>Genshin Guesser — ファンメイド。原神は miHoYo / HoYoverse の登録商標です。</p>
-    <p style="margin-top:.3rem;"><a href="database.html">📚 データベース</a></p>
+    <p style="margin-top:.3rem;"><a href="../index.html">← メニューへ戻る</a></p>
   </footer>
 
-  <!-- データ・ロジック -->
+<!-- データ・ロジック -->
   <script src="data.js"></script>
   <script src="game-logic.js"></script>
   <!-- P2Pオンライン対戦（完全無料・サーバー不要） -->
@@ -198,133 +183,133 @@
   <script src="multiplayer.js"></script>
   <script src="script.js"></script>
 
-  <!-- オンライン対戦モーダル -->
-  <div class="modal hidden" id="versusModal" role="dialog" aria-modal="true" aria-labelledby="versusModalTitle">
-    <div class="modal-content versus-modal-content">
-      <h3 id="versusModalTitle">🌐 オンライン対戦</h3>
+<!-- オンライン対戦モーダル -->
+<div class="modal hidden" id="versusModal" role="dialog" aria-modal="true" aria-labelledby="versusModalTitle">
+  <div class="modal-content versus-modal-content">
+    <h3 id="versusModalTitle">🌐 オンライン対戦</h3>
 
-      <!-- ① 選択画面 -->
-      <div id="versusChoice">
-        <p class="versus-desc">ルームを作成して6桁のコードを相手に教えるか、相手から受け取ったコードを入力して参加してください。</p>
-        <div class="versus-btn-row">
-          <button class="versus-action-btn" id="versusCreateBtn">🏠 ルームを作成</button>
-          <button class="versus-action-btn" id="versusJoinBtn">🚪 ルームに参加</button>
-        </div>
-        <button class="modal-close versus-cancel-btn" id="versusModalClose" aria-label="キャンセル">✕ キャンセル</button>
+    <!-- ① 選択画面 -->
+    <div id="versusChoice">
+      <p class="versus-desc">ルームを作成して6桁のコードを相手に教えるか、相手から受け取ったコードを入力して参加してください。</p>
+      <div class="versus-btn-row">
+        <button class="versus-action-btn" id="versusCreateBtn">🏠 ルームを作成</button>
+        <button class="versus-action-btn" id="versusJoinBtn">🚪 ルームに参加</button>
       </div>
-
-      <!-- ② ルーム作成画面 -->
-      <div id="versusCreate" class="hidden">
-        <label class="versus-field-label" for="hostNameInput">あなたの名前</label>
-        <input class="versus-input" type="text" id="hostNameInput" maxlength="20" placeholder="プレイヤー1" autocomplete="off">
-        <label class="versus-field-label" for="createTurnTimeSelect">ターン時間</label>
-        <select class="versus-input" id="createTurnTimeSelect">
-          <option value="30">30秒</option>
-          <option value="60" selected>60秒</option>
-          <option value="90">90秒</option>
-        </select>
-        <button class="versus-action-btn" id="doCreateRoomBtn">ルームを作成する</button>
-        <button class="versus-back-btn" id="backFromCreateBtn">← 戻る</button>
-      </div>
-
-      <!-- ③ ルーム参加画面 -->
-      <div id="versusJoin" class="hidden">
-        <label class="versus-field-label" for="guestNameInput">あなたの名前</label>
-        <input class="versus-input" type="text" id="guestNameInput" maxlength="20" placeholder="プレイヤー2" autocomplete="off">
-        <label class="versus-field-label" for="roomCodeInput">ルームコード（6桁英数字）</label>
-        <input class="versus-input versus-code-input" type="text" id="roomCodeInput" maxlength="6" pattern="[A-Za-z0-9]{6}" placeholder="ABC123" autocomplete="off">
-        <button class="versus-action-btn" id="doJoinRoomBtn">参加する</button>
-        <button class="versus-back-btn" id="backFromJoinBtn">← 戻る</button>
-      </div>
-
-      <!-- エラー表示 -->
-      <p class="versus-error hidden" id="versusModalError" role="alert" aria-live="assertive"></p>
     </div>
-  </div>
-  <div class="modal-overlay hidden" id="versusModalOverlay"></div>
 
-  <!-- 遊び方モーダル -->
-  <div class="modal hidden" id="howToModal">
-    <div class="modal-content" style="max-height: 85vh; overflow-y: auto; text-align: center;">
-      <h3>📖 ゲッサーの遊び方</h3>
+    <!-- ② ルーム作成画面 -->
+    <div id="versusCreate" class="hidden">
+      <label class="versus-field-label" for="hostNameInput">あなたの名前</label>
+      <input class="versus-input" type="text" id="hostNameInput" maxlength="20" placeholder="ホスト" autocomplete="off">
+      <label class="versus-field-label" for="createTurnTimeSelect">ターン時間</label>
+      <select class="versus-input" id="createTurnTimeSelect">
+        <option value="30">30秒</option>
+        <option value="60" selected>60秒</option>
+        <option value="90">90秒</option>
+      </select>
+      <button class="versus-action-btn" id="doCreateRoomBtn">ルームを作成する</button>
+      <button class="versus-back-btn" id="backFromCreateBtn">← 戻る</button>
+    </div>
+
+    <!-- ③ ルーム参加画面 -->
+    <div id="versusJoin" class="hidden">
+      <label class="versus-field-label" for="guestNameInput">あなたの名前</label>
+      <input class="versus-input" type="text" id="guestNameInput" maxlength="20" placeholder="プレイヤー2" autocomplete="off">
+      <label class="versus-field-label" for="roomCodeInput">ルームコード（6桁英数字）</label>
+      <input class="versus-input versus-code-input" type="text" id="roomCodeInput" maxlength="6" pattern="[A-Za-z0-9]{6}" placeholder="ABC123" autocomplete="off">
+      <button class="versus-action-btn" id="doJoinRoomBtn">参加する</button>
+      <button class="versus-back-btn" id="backFromJoinBtn">← 戻る</button>
+    </div>
+
+    <!-- エラー表示 -->
+    <p class="versus-error hidden" id="versusModalError" role="alert" aria-live="assertive"></p>
+  </div>
+</div>
+<div class="modal-overlay hidden" id="versusModalOverlay"></div>
+
+<!-- 遊び方モーダル（チュートリアル画像5枚入り・完全論理整合版） -->
+<div class="modal hidden" id="howToModal">
+  <!-- スマホでも最後までスクロールできるように高さを制御しています -->
+  <div class="modal-content" style="max-height: 85vh; overflow-y: auto; text-align: center;">
+    <h3>📖 ゲッサーの遊び方</h3>
+    
+    <p style="font-size: 0.9rem; color: #ccc; margin-bottom: 15px;">
+      キャラクター（または武器）の名前を入力して、正解を推測しましょう！<br>
+      回答を送信するたびに、正解との一致度が表示されます。
+    </p>
+
+    <!-- チュートリアル画像エリア（縦並びステップ順） -->
+    <div class="tutorial-gallery" style="display: flex; flex-direction: column; gap: 20px; margin: 20px 0;">
       
-      <p style="font-size: 0.9rem; color: #ccc; margin-bottom: 15px;">
-        キャラクター（または武器）の名前を入力して、正解を推測しましょう！<br>
-        回答を送信するたびに、正解との一致度が表示されます。
-      </p>
-
-      <!-- チュートリアル画像エリア -->
-      <div class="tutorial-gallery" style="display: flex; flex-direction: column; gap: 20px; margin: 20px 0;">
-        <div style="border-bottom: 1px solid #333; padding-bottom: 15px; text-align: left;">
-          <p style="font-weight: bold; margin-bottom: 8px; color: #ffd700; text-align: center;">① プレイモードを選ぶ</p>
-          <div style="text-align: center; margin-bottom: 10px;">
-            <img src="../files/tutorial/tutorial1.png" alt="チュートリアル 1" style="max-width: 100%; height: auto; border-radius: 8px; border: 1px solid #444;">
-          </div>
-          <p style="font-size: 0.85rem; line-height: 1.5; color: #eee; padding: 0 10px;">
-            「デイリー」「エンドレス」「チャレンジ」「オンライン対戦」から好きなモードを選んでゲームを開始します。チャレンジモードは5ミスで終了となる競技用の硬派なルールです。
-          </p>
+      <!-- ステップ1 -->
+      <div style="border-bottom: 1px solid #333; padding-bottom: 15px; text-align: left;">
+        <p style="font-weight: bold; margin-bottom: 8px; color: #ffd700; text-align: center;">① 最初の推測を入力</p>
+        <div style="text-align: center; margin-bottom: 10px;">
+          <img src="../files/tutorial/tutorial1.png" alt="チュートリアル 1" style="max-width: 100%; height: auto; border-radius: 8px; border: 1px solid #444;">
         </div>
-
-        <div style="border-bottom: 1px solid #333; padding-bottom: 15px; text-align: left;">
-          <p style="font-weight: bold; margin-bottom: 8px; color: #ffd700; text-align: center;">② キャラクター名を入力して推測</p>
-          <div style="text-align: center; margin-bottom: 10px;">
-            <img src="../files/tutorial/tutorial2.png" alt="チュートリアル 2" style="max-width: 100%; height: auto; border-radius: 8px; border: 1px solid #444;">
-          </div>
-          <p style="font-size: 0.85rem; line-height: 1.5; color: #eee; padding: 0 10px;">
-            入力欄にキャラクター名（例：「煙緋」）を入力して決定を押すと、そのキャラクターの属性（ステータス）が表示され、正解との一致判定が行われます。
-          </p>
-        </div>
-
-        <div style="border-bottom: 1px solid #333; padding-bottom: 15px; text-align: left;">
-          <p style="font-weight: bold; margin-bottom: 8px; color: #ffd700; text-align: center;">③ 「色」と「矢印」を分析する</p>
-          <div style="text-align: center; margin-bottom: 10px;">
-            <img src="../files/tutorial/tutorial3.png" alt="チュートリアル 3" style="max-width: 100%; height: auto; border-radius: 8px; border: 1px solid #444;">
-          </div>
-          <p style="font-size: 0.85rem; line-height: 1.5; color: #eee; padding: 0 10px; margin-bottom: 10px;">
-            表示された色のヒントから、正解の範囲をさらに絞り込んでいきましょう。
-          </p>
-          <div style="background: #222; padding: 12px; border-radius: 8px; font-size: 0.8rem; line-height: 1.6; margin: 0 10px; color: #ccc;">
-            <strong>💡 画像のヒントから分かることの例：</strong><br>
-            ・<strong>レアリティ（★4）が緑色</strong>：正解は「★4」のキャラクターです。<br>
-            ・<strong>エネルギーの矢印（▲/▼）</strong>：<br>
-            　アイノ（50 <span style="color: #539ffd;">▲</span>）＝ 正解は50より大きい。<br>
-            　煙緋（80 <span style="color: #ff5757;">▼</span>）＝ 正解は80より小さい。<br>
-            　つまり、<strong>正解のエネルギーは「60か70」</strong>だと推測できます！
-          </div>
-        </div>
-
-        <div style="border-bottom: 1px solid #333; padding-bottom: 15px; text-align: left;">
-          <p style="font-weight: bold; margin-bottom: 8px; color: #ffd700; text-align: center;">④ 絞り込んだ情報から正解を導く！</p>
-          <div style="text-align: center; margin-bottom: 10px;">
-            <img src="../files/tutorial/tutorial4.png" alt="チュートリアル 4" style="max-width: 100%; height: auto; border-radius: 8px; border: 1px solid #444;">
-          </div>
-          <p style="font-size: 0.85rem; line-height: 1.5; color: #eee; padding: 0 10px;">
-            集めた情報から情報（雷元素、長柄武器、★4、ナタ、エネルギー70など）を完璧に満たすキャラクター「イアンサ」を入力し、見事正解！正解すると全ての項目が緑色に変化します。
-          </p>
-        </div>
-
-        <div style="text-align: left;">
-          <p style="font-weight: bold; margin-bottom: 8px; color: #ffd700; text-align: center;">⑤ 設定のカスタマイズとルール</p>
-          <div style="text-align: center; margin-bottom: 10px;">
-            <img src="../files/tutorial/tutorial5.png" alt="チュートリアル 5" style="max-width: 100%; height: auto; border-radius: 8px; border: 1px solid #444;">
-          </div>
-          <p style="font-size: 0.85rem; line-height: 1.5; color: #eee; padding: 0 10px;">
-            デイリーやエンドレスでは、ギアマーク（⚙設定）から表示させたいヒント項目を自由にカスタマイズできます。※チャレンジモードは競技性向上のため固定となります。
-          </p>
-        </div>
+        <p style="font-size: 0.85rem; line-height: 1.5; color: #eee; padding: 0 10px;">
+          まずは好きなキャラクター（例：旅人（風））を入力してみます。
+        </p>
       </div>
 
-      <!-- 判定ルール凡例 -->
-      <div style="text-align: left; background: #222; padding: 15px; border-radius: 8px; margin-bottom: 20px; font-size: 0.85rem; line-height: 1.6;">
-        <p>🟢 <strong>緑色</strong>：完全一致！正解と同じ属性です。</p>
-        <p>🟡 <strong>黄色</strong>：グループ一致（同じ国の特産品、天賦本、週ボス素材など、惜しい状態です）。</p>
-        <p>⚪ <strong>灰色</strong>：一致していません。</p>
-        <p>▲ / ▼：数値が正解よりも「高い」か「低い」かを示します。</p>
+      <!-- ステップ2 -->
+      <div style="border-bottom: 1px solid #333; padding-bottom: 15px; text-align: left;">
+        <p style="font-weight: bold; margin-bottom: 8px; color: #ffd700; text-align: center;">② ヒントから情報を読み取る</p>
+        <div style="text-align: center; margin-bottom: 10px;">
+          <img src="../files/tutorial/tutorial2.png" alt="チュートリアル 2" style="max-width: 100%; height: auto; border-radius: 8px; border: 1px solid #444;">
+        </div>
+        <p style="font-size: 0.85rem; line-height: 1.5; color: #eee; padding: 0 10px;">
+          判定結果が表示されます。矢印（▲/▼）は数値の高低を表し、黄色は「惜しい（同じカテゴリ）」を表します。<br>
+          ※例：実装Ver 1.0に「▲」が付いていれば、正解はVer 1.0より後に実装されたキャラクターです。
+        </p>
       </div>
 
-      <button id="howToClose" type="button" class="btn" style="width: 100%; max-width: 200px; margin: 10px auto 0 auto;">閉じる</button>
+      <!-- ステップ3 -->
+      <div style="border-bottom: 1px solid #333; padding-bottom: 15px; text-align: left;">
+        <p style="font-weight: bold; margin-bottom: 8px; color: #ffd700; text-align: center;">③ さらに絞り込む</p>
+        <div style="text-align: center; margin-bottom: 10px;">
+          <img src="../files/tutorial/tutorial3.png" alt="チュートリアル 3" style="max-width: 100%; height: auto; border-radius: 8px; border: 1px solid #444;">
+        </div>
+        <p style="font-size: 0.85rem; line-height: 1.5; color: #eee; padding: 0 10px;">
+          得られた情報（片手剣ではない、風元素ではないなど）をもとに、別のキャラを入力して徐々に条件を絞り込んでいきます。
+        </p>
+      </div>
+
+      <!-- ステップ4 -->
+      <div style="border-bottom: 1px solid #333; padding-bottom: 15px; text-align: left;">
+        <p style="font-weight: bold; margin-bottom: 8px; color: #ffd700; text-align: center;">④ 絞り込んだ情報から正解を導く！</p>
+        <div style="text-align: center; margin-bottom: 10px;">
+          <img src="../files/tutorial/tutorial4.png" alt="チュートリアル 4" style="max-width: 100%; height: auto; border-radius: 8px; border: 1px solid #444;">
+        </div>
+        <p style="font-size: 0.85rem; line-height: 1.5; color: #eee; padding: 0 10px;">
+          集めた情報から情報（雷元素、長柄武器、★4、ナタ、エネルギー70など）を完璧に満たすキャラクター「イアンサ」を入力し、見事正解！正解すると全ての項目が緑色に変化します。
+        </p>
+      </div>
+
+      <!-- ステップ5 -->
+      <div style="text-align: left;">
+        <p style="font-weight: bold; margin-bottom: 8px; color: #ffd700; text-align: center;">⑤ 設定のカスタマイズとルール</p>
+        <div style="text-align: center; margin-bottom: 10px;">
+          <img src="../files/tutorial/tutorial5.png" alt="チュートリアル 5" style="max-width: 100%; height: auto; border-radius: 8px; border: 1px solid #444;">
+        </div>
+        <p style="font-size: 0.85rem; line-height: 1.5; color: #eee; padding: 0 10px;">
+          デイリーやエンドレスでは、ギアマーク（⚙設定）から表示させたいヒント項目を自由にカスタマイズできます。※チャレンジモードは競技性向上のため固定となります。
+        </p>
+      </div>
+
     </div>
+
+    <!-- 判定ルール凡例 -->
+    <div style="text-align: left; background: #222; padding: 15px; border-radius: 8px; margin-bottom: 20px; font-size: 0.85rem; line-height: 1.6;">
+      <p>🟢 <strong>緑色</strong>：完全一致！正解と同じ属性です。</p>
+      <p>🟡 <strong>黄色</strong>：グループ一致（同じ国の特産品、天賦本、週ボス素材など、惜しい状態です）。</p>
+      <p>⚪ <strong>灰色</strong>：一致していません。</p>
+      <p>▲ / ▼：数値が正解よりも「高い」か「低い」かを示します。</p>
+    </div>
+
+    <button id="howToClose" type="button" class="btn" style="width: 100%; max-width: 200px; margin: 10px auto 0 auto;">閉じる</button>
   </div>
-  <div class="modal-overlay hidden" id="howToOverlay"></div>
+</div>
+<div class="modal-overlay hidden" id="howToOverlay"></div>
 </body>
 </html>
