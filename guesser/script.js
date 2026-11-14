@@ -1603,7 +1603,8 @@ function buildMaterialIcon(fieldKey, item) {
     enemyMaterial:() => `${IMAGE_BASE}/enemy material/${encodeURIComponent(item.enemyMaterial)}.png`,
     
     // 🟢 変更：武器突破素材のパスを WEAPON_BREAK に修正
-    weaponBreakMaterial: () => `${IMAGE_BASE}/WEAPON_BREAK/${encodeURIComponent(item.weaponBreakMaterial)}.png`,
+  weaponBreakMaterial: () => `${IMAGE_BASE}/WEAPON_BREAK/${encodeURIComponent(item.weaponBreakMaterial)}.png`,
+    eliteMaterial:       () => `${IMAGE_BASE}/weapons Enemy material/${encodeURIComponent(item.eliteMaterial)}.png`,
     weaponEnemyMaterial: () => `${IMAGE_BASE}/weapons Enemy material/${encodeURIComponent(item.weaponEnemyMaterial)}.png`,
   };
 
