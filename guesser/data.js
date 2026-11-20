@@ -584,7 +584,7 @@ const WEAPONS_DATA = [
   { name: "蒼耀", rarity: 5, weapon_type: "片手剣", base_atk: 674, ascension_stat: "会心率", elite_material: "折光の胚芽", enemy_material: "従戦士の木笛", break_material: "神秘なる煙の啓示", distributed: false, release_version: "5.7" },
   { name: "黒蝕", rarity: 5, weapon_type: "片手剣", base_atk: 608, ascension_stat: "会心率", elite_material: "霜夜の残光", enemy_material: "破損した駆動軸", break_material: "高塔の王の砕けた夢", distributed: false, release_version: "Luna III (6.2)" },
   { name: "三日月の含光", rarity: 5, weapon_type: "片手剣", base_atk: 542, ascension_stat: "会心ダメージ", elite_material: "暗き霧の欠片", enemy_material: "破損した駆動軸", break_material: "漆黒の隕鉄の塊", distributed: false, release_version: "Luna IV (6.3)" },
-  { name: "白銀の湖を舞う翼", rarity: 5, weapon_type: "片手剣", base_atk: 674, ascension_stat: "会心ダメージ", elite_material: "生命の虚ろな根", enemy_material: "合成獣のコア", break_material: "蔵に眠る霊薬の狂宴", distributed: false, release_version: "7.0" },
+  { name: "白銀の湖を舞う翼", rarity: 5, weapon_type: "片手剣", base_atk: 674, ascension_stat: "会心率", elite_material: "生命の虚ろな根", enemy_material: "合成獣のコア", break_material: "蔵に眠る霊薬の狂宴", distributed: false, release_version: "7.0"},
   { name: "蝶の羽化", rarity: 5, weapon_type: "片手剣", base_atk: 674, ascension_stat: "会心ダメージ", elite_material: "生命の虚ろな根", enemy_material: "合成獣のコア", break_material: "蒼星軍勢の征服", distributed: false, release_version: "7.1" },
   { name: "天空の傲", rarity: 5, weapon_type: "両手剣", base_atk: 674, ascension_stat: "元素チャージ効率", elite_material: "地脈の旧枝", enemy_material: "スライムの液体", break_material: "凛風奔狼の郷愁", distributed: false, release_version: "1.0" },
   { name: "狼の末路", rarity: 5, weapon_type: "両手剣", base_atk: 608, ascension_stat: "攻撃力", elite_material: "混沌の装置", enemy_material: "占いの絵巻", break_material: "獅牙戦士の理想", distributed: false, release_version: "1.0" },
