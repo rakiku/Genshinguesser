@@ -818,7 +818,7 @@ const WEAPONS_DATA = [
   { name: "無鋒の剣", rarity: 1, weapon_type: "片手剣", base_atk: 185, ascension_stat: "HP", elite_material: "重い角笛", enemy_material: "牢固な矢先", break_material: "高塔の王の砕けた夢", distributed: false, release_version: "1.0"},
   { name: "訓練用大剣", rarity: 1, weapon_type: "両手剣", base_atk: 185, ascension_stat: "HP", elite_material: "地脈の旧枝", enemy_material: "スライムの液体", break_material: "凛風奔狼の郷愁", distributed: false, release_version: "1.0"},
   { name: "新米の長槍", rarity: 1, weapon_type: "長柄武器", base_atk: 185, ascension_stat: null, elite_material: "混沌の装置", enemy_material: null, break_material: "獅牙戦士の理想", distributed: false, release_version: "1.0" },
-  { name: "狩猟弓", rarity: 1, weapon_type: "弓", base_atk: 185, ascension_stat: null, elite_material: "地脈の旧枝", enemy_material: null, break_material: "凛風奔狼の郷愁", distributed: false, release_version: "1.0" },
+  { name: "狩猟弓", rarity: 1, weapon_type: "弓", base_atk: 185, ascension_stat: "HP", elite_material: "地脈の旧枝", enemy_material: "宝探しの鴉マーク", break_material: "凛風奔狼の郷愁", distributed: false, release_version: "1.0"},
   { name: "生徒ノート", rarity: 1, weapon_type: "法器", base_atk: 185, ascension_stat: null, elite_material: "重い角笛", enemy_material: null, break_material: "高塔の王の砕けた夢", distributed: false, release_version: "1.0" },
 ];
 
