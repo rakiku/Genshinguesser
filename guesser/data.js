@@ -668,7 +668,7 @@ const WEAPONS_DATA = [
   { name: "静謐の笛", rarity: 4, weapon_type: "片手剣", base_atk: 454, ascension_stat: "元素チャージ効率", elite_material: "霜夜の残光", enemy_material: "破損した徽章", break_material: "奇妙な装置の宿願", distributed: false, release_version: "Luna I (6.0)" },
   { name: "導炎の源", rarity: 4, weapon_type: "片手剣", base_atk: 510, ascension_stat: "元素熟知", elite_material: "沈積増生物", enemy_material: "幻光の屑", break_material: "蒼星軍勢の征服", distributed: false, release_version: "7.0" },
   { name: "新たなる枝", rarity: 4, weapon_type: "片手剣", base_atk: 510, ascension_stat: "会心ダメージ", elite_material: "生命の虚ろな根", enemy_material: "合成獣のコア", break_material: "蔵に眠る霊薬の狂宴", distributed: false, release_version: "7.1" },
-  { name: "銀灯", rarity: 4, weapon_type: "片手剣", base_atk: 510, ascension_stat: "会心ダメージ", elite_material: "脆い骨片", enemy_material: "新兵の記章", break_material: "漆黒の隕鉄の塊", distributed: true, release_version: "7.1" },
+  { name: "銀灯", rarity: 4, weapon_type: "片手剣", base_atk: 510, ascension_stat: "攻撃力", elite_material: "脆い骨片", enemy_material: "新兵の記章", break_material: "漆黒の隕鉄の塊", distributed: true, release_version: "7.1"},
   { name: "古華・試作", rarity: 4, weapon_type: "両手剣", base_atk: 565, ascension_stat: "攻撃力", elite_material: "脆い骨片", enemy_material: "破損した仮面", break_material: "漆黒の隕鉄の塊", distributed: false, release_version: "1.0" },
   { name: "旧貴族大剣", rarity: 4, weapon_type: "両手剣", base_atk: 565, ascension_stat: "攻撃力", elite_material: "混沌の装置", enemy_material: "スライムの液体", break_material: "獅牙戦士の理想", distributed: false, release_version: "1.0" },
   { name: "白影の剣", rarity: 4, weapon_type: "両手剣", base_atk: 510, ascension_stat: "防御力", elite_material: "猟兵の刀", enemy_material: "宝探しの鴉マーク", break_material: "孤雲寒林の神体", distributed: false, release_version: "1.0" },
