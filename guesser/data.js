@@ -598,7 +598,7 @@ const WEAPONS_DATA = [
   { name: "狼の武勲詩", rarity: 5, weapon_type: "両手剣", base_atk: 608, ascension_stat: "会心率", elite_material: "暗黒の裂眼", enemy_material: "新兵の記章", break_material: "凛風奔狼の郷愁", distributed: false, release_version: "Luna V (6.4)" },
   { name: "和璞鳶", rarity: 5, weapon_type: "長柄武器", base_atk: 674, ascension_stat: "会心率", elite_material: "猟兵の刀", enemy_material: "新兵の記章", break_material: "孤雲寒林の神体", distributed: false, release_version: "1.0" },
   { name: "天空の脊", rarity: 5, weapon_type: "長柄武器", base_atk: 674, ascension_stat: "元素チャージ効率", elite_material: "混沌の装置", enemy_material: "占いの絵巻", break_material: "獅牙戦士の理想", distributed: false, release_version: "1.0" },
-  { name: "破天の槍", rarity: 5, weapon_type: "長柄武器", base_atk: 608, ascension_stat: "攻撃力", elite_material: "脆い骨片", enemy_material: null, break_material: "漆黒の隕鉄の塊", distributed: false, release_version: "1.1" },
+  { name: "破天の槍", rarity: 5, weapon_type: "長柄武器", base_atk: 608, ascension_stat: "攻撃力", elite_material: "脆い骨片", enemy_material: "宝探しの鴉マーク", break_material: "漆黒の隕鉄の塊", distributed: false, release_version: "1.1"},
   { name: "護摩の杖", rarity: 5, weapon_type: "長柄武器", base_atk: 608, ascension_stat: "会心ダメージ", elite_material: "地脈の旧枝", enemy_material: "スライムの液体", break_material: "漆黒の隕鉄の塊", distributed: false, release_version: "1.3" },
   { name: "草薙の稲光", rarity: 5, weapon_type: "長柄武器", base_atk: 608, ascension_stat: "元素チャージ効率", elite_material: "混沌の機関", enemy_material: "古びた鍔", break_material: "今昔劇画の鬼人", distributed: false, release_version: "2.1" },
   { name: "息災", rarity: 5, weapon_type: "長柄武器", base_atk: 741, ascension_stat: "攻撃力", elite_material: "霧虚ろの花粉", enemy_material: "トリックフラワーの蜜", break_material: "霧海雲間の転還", distributed: false, release_version: "2.4" },
