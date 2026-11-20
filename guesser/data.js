@@ -754,7 +754,7 @@ const WEAPONS_DATA = [
   { name: "西風秘典", rarity: 4, weapon_type: "法器", base_atk: 510, ascension_stat: "元素チャージ効率", elite_material: "重い角笛", enemy_material: "占いの絵巻", break_material: "高塔の王の砕けた夢", distributed: false, release_version: "1.0" },
   { name: "金珀・試作", rarity: 4, weapon_type: "法器", base_atk: 510, ascension_stat: "HP", elite_material: "霧虚ろの花粉", enemy_material: "牢固な矢先", break_material: "霧海雲間の転還", distributed: false, release_version: "1.0" },
   { name: "黒岩の緋玉", rarity: 4, weapon_type: "法器", base_atk: 510, ascension_stat: "会心ダメージ", elite_material: "猟兵の刀", enemy_material: "占いの絵巻", break_material: "孤雲寒林の神体", distributed: false, release_version: "1.0" },
-  { name: "万国諸海の図譜", rarity: 4, weapon_type: "法器", base_atk: 565, ascension_stat: "元素熟知", elite_material: "キノコンの衰菌核", enemy_material: "キノコンの胞子", break_material: "漆黒の隕鉄の塊", distributed: false, release_version: "1.0" },
+  { name: "万国諸海の図譜", rarity: 4, weapon_type: "法器", base_atk: 565, ascension_stat: "元素熟知", elite_material: "脆い骨片", enemy_material: "スライムの液体", break_material: "漆黒の隕鉄の塊", distributed: false, release_version: "1.0"},
   { name: "冬忍びの実", rarity: 4, weapon_type: "法器", base_atk: 510, ascension_stat: "攻撃力", elite_material: "混沌の装置", enemy_material: "トリックフラワーの蜜", break_material: "獅牙戦士の理想", distributed: false, release_version: "1.2" },
   { name: "ダークアレイの酒と詩", rarity: 4, weapon_type: "法器", base_atk: 565, ascension_stat: "元素チャージ効率", elite_material: "地脈の旧枝", enemy_material: "宝探しの鴉マーク", break_material: "凛風奔狼の郷愁", distributed: false, release_version: "1.4" },
   { name: "ドドコの物語", rarity: 4, weapon_type: "法器", base_atk: 454, ascension_stat: "攻撃力", elite_material: "地脈の旧枝", enemy_material: "破損した仮面", break_material: "凛風奔狼の郷愁", distributed: true, release_version: "1.6" },
