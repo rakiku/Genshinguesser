@@ -71,7 +71,7 @@ const LOCAL_SPECIALTY_GROUPS = {
   '蛍光ツノキノコ': 'natlan', 'サウリアンサキュレント': 'natlan', 'ケネパベリー': 'natlan',
   '岩裂の花': 'natlan', 'シャクギク': 'natlan',
   // ナドクライ
-  '月落銀': 'nodkrai', '携行型ベアリング': 'nodkrai', '琥珀香': 'nodkrai','ヴィンテル草': 'nodkrai','フロストランプ': 'nodkrai',
+  '月落銀': 'nodkrai', '携行型ベアリング': 'nodkrai', '琥珀香': 'nodkrai','ヴィンテル草': 'nodkrai','フロストランプ': 'nodkrai','月の涙': 'nodkrai',
   // スネージナヤ
   'フロストフラワー': 'Snezhnaya', 'フロック草': 'Snezhnaya', 'ザラトイアリャーク': 'Snezhnaya','フェイヨモギ': 'Snezhnaya', '晶石カサキノコ': 'Snezhnaya', 
 };
