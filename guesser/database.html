@@ -232,7 +232,6 @@
     let queryDebounceTimer = null;
     const jpSort = (list) => [...list].sort((a, b) => String(a).localeCompare(String(b), 'ja'));
 
-    
     const CHAR_COUNTRY_ORDER = [
       'モンド', '璃月', '稲妻', 'スメール', 'フォンテーヌ',
       'ナタ', 'ナドクライ', 'スネージナヤ', '例外'
@@ -406,7 +405,7 @@
       }, QUERY_DEBOUNCE_MS);
     }
 
-   function renderGrid() {
+  function renderGrid() {
       const grid = document.getElementById('dbGrid');
       grid.innerHTML = '';
       let items = [];
@@ -437,14 +436,17 @@
           if (!matchesAllFields(c, activeFilters.charQuery)) return false;
           return true;
         }).sort((a, b) => {
+          // 1. 国順
           const idxA = CHAR_COUNTRY_ORDER.indexOf(a.country);
           const idxB = CHAR_COUNTRY_ORDER.indexOf(b.country);
           const countryA = idxA === -1 ? CHAR_COUNTRY_ORDER.length : idxA;
           const countryB = idxB === -1 ? CHAR_COUNTRY_ORDER.length : idxB;
           if (countryA !== countryB) return countryA - countryB;
 
+          // 2. レアリティ順（★5 → ★4）
           if (b.rarity !== a.rarity) return b.rarity - a.rarity;
 
+          // 3. 実装順（昇順、同Ver内は data.js の順を維持）
           return (a.releaseVersionNum || 0) - (b.releaseVersionNum || 0);
         });
       } else {
@@ -461,14 +463,17 @@
           if (!matchesAllFields(w, activeFilters.wQuery)) return false;
           return true;
         }).sort((a, b) => {
+          // 1. レアリティ順（★5 → ★4 → ★3 → ★2 → ★1）
+          if (b.rarity !== a.rarity) return b.rarity - a.rarity;
+
+          // 2. 武器種順（片手剣 → 両手剣 → 長柄武器 → 弓 → 法器）
           const idxA = WEAPON_TYPE_ORDER.indexOf(a.weaponType);
           const idxB = WEAPON_TYPE_ORDER.indexOf(b.weaponType);
           const typeA = idxA === -1 ? WEAPON_TYPE_ORDER.length : idxA;
           const typeB = idxB === -1 ? WEAPON_TYPE_ORDER.length : idxB;
           if (typeA !== typeB) return typeA - typeB;
 
-          if (b.rarity !== a.rarity) return b.rarity - a.rarity;
-
+          // 3. 実装順（昇順、同Ver内は data.js の順を維持）
           return (a.releaseVersionNum || 0) - (b.releaseVersionNum || 0);
         });
       }
