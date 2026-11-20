@@ -618,7 +618,7 @@ const WEAPONS_DATA = [
   { name: "狩人の道", rarity: 5, weapon_type: "弓", base_atk: 542, ascension_stat: "会心率", elite_material: "キノコンの衰菌核", enemy_material: "色褪せた赤い絹", break_material: "烈日権威の往日", distributed: false, release_version: "3.0" },
   { name: "始まりの大魔術", rarity: 5, weapon_type: "弓", base_atk: 608, ascension_stat: "会心ダメージ", elite_material: "濁水のひとしずく", enemy_material: "異海の露", break_material: "悠久の弦の響き", distributed: false, release_version: "4.0" },
   { name: "白雨心弦", rarity: 5, weapon_type: "弓", base_atk: 542, ascension_stat: "HP", elite_material: "翼状の羽鰭", enemy_material: "異海の露", break_material: "純聖な雫の精髄", distributed: false, release_version: "4.7" },
-  { name: "星鷲の紅き羽", rarity: 5, weapon_type: "弓", base_atk: 608, ascension_stat: "会心ダメージ", elite_material: "折光の胚芽", enemy_material: null, break_material: "神秘なる煙の啓示", distributed: false, release_version: "5.2" },
+  { name: "星鷲の紅き羽", rarity: 5, weapon_type: "弓", base_atk: 608, ascension_stat: "会心ダメージ", elite_material: "折光の胚芽", enemy_material: "従戦士の木笛", break_material: "神秘なる煙の啓示", distributed: false, release_version: "5.2"},
   { name: "暁を告げる歴史", rarity: 5, weapon_type: "弓", base_atk: 674, ascension_stat: "会心ダメージ", elite_material: "重い角笛", enemy_material: "宝探しの鴉マーク", break_material: "獅牙戦士の理想", distributed: false, release_version: "Luna III (6.2)" },
   { name: "霜契の金枝", rarity: 5, weapon_type: "弓", base_atk: 542, ascension_stat: "会心ダメージ", elite_material: "光を失った焔剣の柄", enemy_material: "破損した徽章", break_material: "長夜の灯火の輝光", distributed: false, release_version: "Luna VI (6.5)" },
   { name: "四風原典", rarity: 5, weapon_type: "法器", base_atk: 608, ascension_stat: "会心率", elite_material: "混沌の装置", enemy_material: "スライムの液体", break_material: "獅牙戦士の理想", distributed: false, release_version: "1.0" },
