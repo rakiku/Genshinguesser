@@ -805,7 +805,7 @@ const WEAPONS_DATA = [
   { name: "旧貴族猟槍", rarity: 4, weapon_type: "長柄武器", base_atk: 565, ascension_stat: "攻撃力", elite_material: "霧虚ろの花粉", enemy_material: "新兵の記章", break_material: "霧海雲間の転還", distributed: false, release_version: "1.1"},
   { name: "金掘りのシャベル", rarity: 4, weapon_type: "長柄武器", base_atk: 510, ascension_stat: "攻撃力", elite_material: "暗き霧の欠片", enemy_material: "破損した駆動軸", break_material: "長夜の灯火の輝光", distributed: false, release_version: "Luna I (6.0)"},
   { name: "旧貴族長弓", rarity: 4, weapon_type: "弓", base_atk: 510, ascension_stat: "攻撃力", elite_material: "混沌の装置", enemy_material: "占いの絵巻", break_material: "獅牙戦士の理想", distributed: false, release_version: "1.0"},
-  { name: "竭沢", rarity: 4, weapon_type: "弓", base_atk: 510, ascension_stat: "元素チャージ効率", elite_material: "キノコンの衰菌核", enemy_material: "キノコンの胞子", break_material: null, distributed: false, release_version: "3.0" },
+  { name: "竭沢", rarity: 4, weapon_type: "弓", base_atk: 510, ascension_stat: "元素チャージ効率", elite_material: "キノコンの衰菌核", enemy_material: "キノコンの胞子", break_material: "烈日権威の往日", distributed: false, release_version: "3.0"},
   { name: "チェーンブレイカー", rarity: 4, weapon_type: "弓", base_atk: 565, ascension_stat: null, elite_material: "翼状の羽鰭", enemy_material: "未熟な牙", break_material: "神秘なる煙の啓示", distributed: false, release_version: "5.0" },
   { name: "誓いの明瞳", rarity: 4, weapon_type: "法器", base_atk: null, ascension_stat: "攻撃力", elite_material: "隠獣の指爪", enemy_material: "フライムの乾核", break_material: null, distributed: true, release_version: "2.5" },
   { name: "冷刃", rarity: 3, weapon_type: "片手剣", base_atk: 401, ascension_stat: "攻撃力", elite_material: "重い角笛", enemy_material: "牢固な矢先", break_material: "高塔の王の砕けた夢", distributed: false, release_version: "1.0"},
