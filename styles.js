@@ -480,15 +480,37 @@ function initHomeDailyQuiz() {
     }
   } catch (e) { /* noop */ }
 
+  const items = (q.choiceDetails && q.choiceDetails.length > 0)
+    ? q.choiceDetails
+    : q.choices.map(c => ({ label: c, iconUrl: '' }));
+
   choicesEl.innerHTML = '';
-  q.choices.forEach(choice => {
+  items.forEach(choiceObj => {
     const btn = document.createElement('button');
     btn.type = 'button';
     btn.className = 'daily-quiz-choice-btn';
-    btn.textContent = choice;
+    btn.dataset.value = choiceObj.label;
+
+    if (choiceObj.iconUrl) {
+      btn.classList.add('has-icon');
+      const img = document.createElement('img');
+      img.src = choiceObj.iconUrl;
+      img.alt = choiceObj.label;
+      img.className = 'daily-quiz-choice-icon';
+      img.onerror = () => {
+        img.remove();
+        btn.classList.remove('has-icon');
+      };
+      btn.appendChild(img);
+    }
+
+    const span = document.createElement('span');
+    span.textContent = choiceObj.label;
+    btn.appendChild(span);
+
     btn.addEventListener('click', () => {
-      localStorage.setItem(LS_HOME_DAILY_QUIZ, JSON.stringify({ date: today, choice }));
-      applyHomeDailyQuizResult(q, choice, choicesEl, fbEl);
+      localStorage.setItem(LS_HOME_DAILY_QUIZ, JSON.stringify({ date: today, choice: choiceObj.label }));
+      applyHomeDailyQuizResult(q, choiceObj.label, choicesEl, fbEl);
     });
     choicesEl.appendChild(btn);
   });
@@ -502,8 +524,9 @@ function applyHomeDailyQuizResult(q, chosen, choicesEl, fbEl) {
   const isCorrect = chosen === q.answer;
   choicesEl.querySelectorAll('.daily-quiz-choice-btn').forEach(btn => {
     btn.disabled = true;
-    if (btn.textContent === q.answer) btn.classList.add('is-correct');
-    else if (btn.textContent === chosen && !isCorrect) btn.classList.add('is-wrong');
+    const val = btn.dataset.value || btn.textContent;
+    if (val === q.answer) btn.classList.add('is-correct');
+    else if (val === chosen && !isCorrect) btn.classList.add('is-wrong');
   });
   fbEl.textContent = `${isCorrect ? '⭕ 正解！' : '❌ 不正解…'} ${q.explanation}`;
   fbEl.classList.remove('hidden');
