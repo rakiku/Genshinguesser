@@ -500,3 +500,102 @@ body {
   .sub-buttons { grid-template-columns: 1fr; }
   .btn-desc { display: none; }
 }
+
+/* ---- QUIZ MODE BUTTONS & HOME DAILY QUIZ ---- */
+.dataquiz-btn    { background: linear-gradient(135deg, #2d8a8a, #1d6464); }
+.varietyquiz-btn { background: linear-gradient(135deg, #c95b8b, #993864); }
+
+.daily-quiz-section {
+  margin-bottom: 2rem;
+}
+.daily-quiz-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: .6rem;
+}
+.daily-quiz-more {
+  color: var(--mint-mid);
+  font-size: .84rem;
+  text-decoration: none;
+}
+.daily-quiz-more:hover { text-decoration: underline; }
+
+.daily-quiz-box {
+  background: #111a11;
+  border: 2px solid var(--border-dark);
+  border-radius: 10px;
+  padding: 1rem;
+}
+.daily-quiz-icons {
+  display: flex;
+  gap: .5rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: .6rem;
+}
+.daily-quiz-chip {
+  display: flex;
+  align-items: center;
+  gap: .35rem;
+  background: rgba(255,255,255,.06);
+  border: 1px solid var(--border-dark);
+  border-radius: 6px;
+  padding: .25rem .5rem;
+  font-size: .78rem;
+}
+.daily-quiz-chip img {
+  width: 26px;
+  height: 26px;
+  object-fit: contain;
+}
+.daily-quiz-q {
+  font-size: .98rem;
+  font-weight: 700;
+  margin-bottom: .8rem;
+  line-height: 1.5;
+  text-align: center;
+}
+.daily-quiz-choices {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: .5rem;
+}
+@media (max-width: 500px) {
+  .daily-quiz-choices { grid-template-columns: 1fr; }
+}
+.daily-quiz-choice-btn {
+  padding: .65rem .75rem;
+  border-radius: 8px;
+  border: 1.5px solid var(--border-dark);
+  background: rgba(255,255,255,.06);
+  color: var(--text-light);
+  font-family: inherit;
+  font-size: .88rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background .15s, border-color .15s;
+}
+.daily-quiz-choice-btn:hover:not(:disabled) {
+  background: rgba(168,213,188,.15);
+  border-color: var(--mint-mid);
+}
+.daily-quiz-choice-btn.is-correct {
+  background: #1a3a20;
+  border-color: #3aaa5a;
+  color: #56d364;
+}
+.daily-quiz-choice-btn.is-wrong {
+  background: #3a1a1a;
+  border-color: #e05555;
+  color: #ff8888;
+}
+.daily-quiz-feedback {
+  margin-top: .75rem;
+  padding: .65rem .8rem;
+  border-radius: 8px;
+  font-size: .85rem;
+  line-height: 1.5;
+  background: rgba(255,255,255,.06);
+}
+
