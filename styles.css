@@ -565,7 +565,11 @@ body {
   .daily-quiz-choices { grid-template-columns: 1fr; }
 }
 .daily-quiz-choice-btn {
-  padding: .65rem .75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: .55rem;
+  padding: .55rem .75rem;
   border-radius: 8px;
   border: 1.5px solid var(--border-dark);
   background: rgba(255,255,255,.06);
@@ -575,6 +579,20 @@ body {
   font-weight: 700;
   cursor: pointer;
   transition: background .15s, border-color .15s;
+  text-align: left;
+  min-height: 48px;
+}
+.daily-quiz-choice-btn.has-icon {
+  justify-content: flex-start;
+}
+.daily-quiz-choice-icon {
+  width: 34px;
+  height: 34px;
+  object-fit: contain;
+  border-radius: 6px;
+  background: rgba(0,0,0,.3);
+  padding: 2px;
+  flex-shrink: 0;
 }
 .daily-quiz-choice-btn:hover:not(:disabled) {
   background: rgba(168,213,188,.15);
@@ -598,4 +616,3 @@ body {
   line-height: 1.5;
   background: rgba(255,255,255,.06);
 }
-
