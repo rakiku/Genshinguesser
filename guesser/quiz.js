@@ -293,16 +293,39 @@ function renderQuestionCard() {
   const choicesGrid = document.getElementById('quizChoicesGrid');
   const inputWrap = document.getElementById('quizInputWrap');
 
-  if (quizDiff === 'easy') {
+if (quizDiff === 'easy') {
     inputWrap.classList.add('hidden');
     choicesGrid.classList.remove('hidden');
     choicesGrid.innerHTML = '';
-    currentQuestion.choices.forEach(choice => {
+
+    const items = (currentQuestion.choiceDetails && currentQuestion.choiceDetails.length > 0)
+      ? currentQuestion.choiceDetails
+      : currentQuestion.choices.map(c => ({ label: c, iconUrl: '' }));
+
+    items.forEach(choiceObj => {
       const btn = document.createElement('button');
       btn.type = 'button';
       btn.className = 'quiz-choice-btn';
-      btn.textContent = choice;
-      btn.addEventListener('click', () => submitAnswer(choice, btn));
+      btn.dataset.value = choiceObj.label;
+
+      if (choiceObj.iconUrl) {
+        btn.classList.add('has-icon');
+        const img = document.createElement('img');
+        img.src = choiceObj.iconUrl;
+        img.alt = choiceObj.label;
+        img.className = 'quiz-choice-icon';
+        img.onerror = () => {
+          img.remove();
+          btn.classList.remove('has-icon');
+        };
+        btn.appendChild(img);
+      }
+
+      const span = document.createElement('span');
+      span.textContent = choiceObj.label;
+      btn.appendChild(span);
+
+      btn.addEventListener('click', () => submitAnswer(choiceObj.label, btn));
       choicesGrid.appendChild(btn);
     });
   } else {
@@ -456,6 +479,32 @@ function submitAnswer(value, clickedBtn = null) {
     isCorrect,
   });
 
+  // UI更新（★ここが変更箇所です）
+  if (quizDiff === 'easy') {
+    document.querySelectorAll('.quiz-choice-btn').forEach(btn => {
+      btn.disabled = true;
+      const val = btn.dataset.value || btn.textContent;
+      if (val === currentQuestion.answer) btn.classList.add('is-correct');
+      else if (btn === clickedBtn && !isCorrect) btn.classList.add('is-wrong');
+    });
+  } else {
+    document.getElementById('quizAnswerInput').disabled = true;
+    document.getElementById('quizAnswerSubmit').disabled = true;
+  }
+
+  updateHud();
+
+  const fb = document.getElementById('quizFeedback');
+  fb.className = `quiz-feedback ${isCorrect ? 'correct' : 'wrong'}`;
+  fb.innerHTML = isCorrect
+    ? `<strong>⭕ 正解！</strong><br>${escapeHtml(currentQuestion.explanation)}`
+    : `<strong>❌ 不正解… 正解は「${escapeHtml(currentQuestion.answer)}」</strong><br>${escapeHtml(currentQuestion.explanation)}`;
+  fb.classList.remove('hidden');
+
+  const nextBtn = document.getElementById('quizNextBtn');
+  nextBtn.textContent = shouldEndSession() ? '結果を見る →' : '次の問題へ →';
+  nextBtn.classList.remove('hidden');
+}
   // UI更新
   if (quizDiff === 'easy') {
     document.querySelectorAll('.quiz-choice-btn').forEach(btn => {
