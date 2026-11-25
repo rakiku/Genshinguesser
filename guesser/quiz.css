@@ -160,7 +160,7 @@
   .quiz-choices-grid { grid-template-columns: 1fr; }
 }
 
-.quiz-choice-btn {
+ {
   padding: .85rem .9rem;
   border: 1.5px solid var(--border);
   border-radius: 10px;
@@ -174,21 +174,37 @@
   text-align: center;
 }
 
-.quiz-choice-btn:hover:not(:disabled) {
-  border-color: var(--accent);
-  background: #283241;
+.quiz-choice-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: .65rem;
+  padding: .65rem .85rem;
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface2);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: .95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all .15s;
+  text-align: left;
+  min-height: 58px;
 }
 
-.quiz-choice-btn.is-correct {
-  background: var(--green-bg);
-  border-color: var(--green);
-  color: #56d364;
+.quiz-choice-btn.has-icon {
+  justify-content: flex-start;
 }
 
-.quiz-choice-btn.is-wrong {
-  background: #2d1515;
-  border-color: var(--error);
-  color: var(--error);
+.quiz-choice-icon {
+  width: 42px;
+  height: 42px;
+  object-fit: contain;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.3);
+  padding: 2px;
+  flex-shrink: 0;
 }
 
 /* ---- 入力（ノーマル・ハード） ---- */
