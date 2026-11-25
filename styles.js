@@ -432,3 +432,79 @@ function renderAdminNewsList() {
     list.appendChild(row);
   });
 }
+
+// ---------------------------------------------------------------------------
+// Home Daily Quiz (今日の一問)
+// ---------------------------------------------------------------------------
+const LS_HOME_DAILY_QUIZ = 'genshin-guesser-home-daily-quiz-v1';
+
+function initHomeDailyQuiz() {
+  if (!window.GenshinQuizEngine) return;
+  const now = new Date();
+  const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+  const q = window.GenshinQuizEngine.getDailyQuizQuestion(today, 'files');
+  if (!q) return;
+
+  const qEl = document.getElementById('homeQuizQuestion');
+  const iconsEl = document.getElementById('homeQuizIcons');
+  const choicesEl = document.getElementById('homeQuizChoices');
+  const fbEl = document.getElementById('homeQuizFeedback');
+  if (!qEl || !choicesEl || !fbEl) return;
+
+  qEl.textContent = q.question;
+
+  if (iconsEl && q.hintIcons && q.hintIcons.length > 0) {
+    iconsEl.innerHTML = '';
+    q.hintIcons.forEach(icon => {
+      const chip = document.createElement('div');
+      chip.className = 'daily-quiz-chip';
+      const img = document.createElement('img');
+      img.src = icon.url;
+      img.alt = icon.label;
+      img.onerror = () => chip.remove();
+      const span = document.createElement('span');
+      span.textContent = icon.label;
+      chip.append(img, span);
+      iconsEl.appendChild(chip);
+    });
+    iconsEl.classList.remove('hidden');
+  }
+
+  // 本日の回答済み状態を確認
+  let savedChoice = null;
+  try {
+    const raw = localStorage.getItem(LS_HOME_DAILY_QUIZ);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (parsed.date === today) savedChoice = parsed.choice;
+    }
+  } catch (e) { /* noop */ }
+
+  choicesEl.innerHTML = '';
+  q.choices.forEach(choice => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'daily-quiz-choice-btn';
+    btn.textContent = choice;
+    btn.addEventListener('click', () => {
+      localStorage.setItem(LS_HOME_DAILY_QUIZ, JSON.stringify({ date: today, choice }));
+      applyHomeDailyQuizResult(q, choice, choicesEl, fbEl);
+    });
+    choicesEl.appendChild(btn);
+  });
+
+  if (savedChoice) {
+    applyHomeDailyQuizResult(q, savedChoice, choicesEl, fbEl);
+  }
+}
+
+function applyHomeDailyQuizResult(q, chosen, choicesEl, fbEl) {
+  const isCorrect = chosen === q.answer;
+  choicesEl.querySelectorAll('.daily-quiz-choice-btn').forEach(btn => {
+    btn.disabled = true;
+    if (btn.textContent === q.answer) btn.classList.add('is-correct');
+    else if (btn.textContent === chosen && !isCorrect) btn.classList.add('is-wrong');
+  });
+  fbEl.textContent = `${isCorrect ? '⭕ 正解！' : '❌ 不正解…'} ${q.explanation}`;
+  fbEl.classList.remove('hidden');
+}
