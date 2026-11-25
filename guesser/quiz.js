@@ -505,31 +505,6 @@ function submitAnswer(value, clickedBtn = null) {
   nextBtn.textContent = shouldEndSession() ? '結果を見る →' : '次の問題へ →';
   nextBtn.classList.remove('hidden');
 }
-  // UI更新
-  if (quizDiff === 'easy') {
-    document.querySelectorAll('.quiz-choice-btn').forEach(btn => {
-      btn.disabled = true;
-      if (btn.textContent === currentQuestion.answer) btn.classList.add('is-correct');
-      else if (btn === clickedBtn && !isCorrect) btn.classList.add('is-wrong');
-    });
-  } else {
-    document.getElementById('quizAnswerInput').disabled = true;
-    document.getElementById('quizAnswerSubmit').disabled = true;
-  }
-
-  updateHud();
-
-  const fb = document.getElementById('quizFeedback');
-  fb.className = `quiz-feedback ${isCorrect ? 'correct' : 'wrong'}`;
-  fb.innerHTML = isCorrect
-    ? `<strong>⭕ 正解！</strong><br>${escapeHtml(currentQuestion.explanation)}`
-    : `<strong>❌ 不正解… 正解は「${escapeHtml(currentQuestion.answer)}」</strong><br>${escapeHtml(currentQuestion.explanation)}`;
-  fb.classList.remove('hidden');
-
-  const nextBtn = document.getElementById('quizNextBtn');
-  nextBtn.textContent = shouldEndSession() ? '結果を見る →' : '次の問題へ →';
-  nextBtn.classList.remove('hidden');
-}
 
 function shouldEndSession() {
   if (quizRule === 'ten' && questionNumber >= 10) return true;
