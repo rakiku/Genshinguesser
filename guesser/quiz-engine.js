@@ -1,6 +1,5 @@
 /**
- * quiz-engine.js — データクイズ自動生成 & 判定エンジン
- * guesser/data.js (CHARACTERS, WEAPONS) を利用して一意の複合条件問題と派生問題を生成する。
+ * quiz-engine.js — データクイズ自動生成 & 判定エンジン（選択肢画像対応版）
  */
 (function (root, factory) {
   if (typeof module !== 'undefined' && module.exports) {
@@ -14,11 +13,35 @@
   const getChars = () => source.CHARACTERS || (typeof CHARACTERS !== 'undefined' ? CHARACTERS : []);
   const getWeapons = () => source.WEAPONS || (typeof WEAPONS !== 'undefined' ? WEAPONS : []);
 
+  // 属性キーごとの画像ディレクトリ対応表（files/ 配下）
+  const ATTR_ICON_DIRS = {
+    element: 'elements',
+    country: 'country',
+    talentBook: 'talentBook',
+    talentBoss: 'materials/boss',
+    talentWeekly: 'talent_weekly',
+    localSpecialty: 'local_specialty',
+    enemyMaterial: 'enemy material',
+    weaponBreakMaterial: 'WEAPON_BREAK',
+    eliteMaterial: 'weapons Enemy material',
+    weaponEnemyMaterial: 'weapons Enemy material',
+  };
+
+  function resolveIconUrl(rawUrl, imageBase) {
+    if (!rawUrl) return '';
+    return imageBase === 'files' ? rawUrl.replace(/^\.\.\//, '') : rawUrl;
+  }
+
+  function getAttrIconUrl(attrKey, value, imageBase = '../files') {
+    const dir = ATTR_ICON_DIRS[attrKey];
+    if (!dir || !value) return '';
+    return `${imageBase}/${dir}/${encodeURIComponent(value)}.png`;
+  }
+
   // -------------------------------------------------------------------------
   // ハードモード用：属性値（素材・元素・国など）の読み仮名辞書
   // -------------------------------------------------------------------------
   const ATTR_READINGS = {
-    // 元素
     '炎': ['ほのお', '炎元素', 'ほのおげんそ'],
     '水': ['みず', '水元素', 'みずげんそ'],
     '風': ['かぜ', '風元素', 'かぜげんそ'],
@@ -26,13 +49,11 @@
     '草': ['くさ', '草元素', 'くさげんそ'],
     '氷': ['こおり', '氷元素', 'こおりげんそ'],
     '岩': ['いわ', '岩元素', 'いわげんそ'],
-    // 武器種
     '片手剣': ['かたてけん'],
     '両手剣': ['りょうてけん'],
     '長柄武器': ['ながえぶき', 'やり', '槍'],
     '弓': ['ゆみ'],
     '法器': ['ほうき'],
-    // 国
     'モンド': ['もんど'],
     '璃月': ['りーゆえ', 'りゆえ'],
     '稲妻': ['いなずま'],
@@ -41,7 +62,6 @@
     'ナタ': ['なた'],
     'ナドクライ': ['などくらい', 'など・くらい'],
     'スネージナヤ': ['すねーじなや'],
-    // 天賦本
     '自由': ['じゆう'], '詩文': ['しぶん'], '抗争': ['こうそう'],
     '繁栄': ['はんえい'], '勤労': ['きんろう'], '黄金': ['おうごん'],
     '浮世': ['うきよ'], '風雅': ['ふうが'], '天光': ['てんこう'],
@@ -50,7 +70,6 @@
     '焚燼': ['ふんじん'], '紛争': ['ふんそう'], '角逐': ['かくちく'],
     '流浪': ['るろう'], '楽園': ['らくえん'], '月光': ['げっこう'],
     '堅忍': ['けんにん'], '慈愛': ['じあい'], '栄光': ['えいこう'], '不屈': ['ふくつ'],
-    // 週ボス素材
     '東風の吐息': ['とうふうのといき'], '東風の爪': ['とうふうのつめ'], '東風の羽根': ['とうふうのはね'],
     '北風のしっぽ': ['きたかぜのしっぽ'], '北風のリング': ['きたかぜのりんぐ'], '北風の魂箱': ['きたかぜのこんばこ', 'きたかぜのたましいばこ'],
     '魔王の刃・残片': ['まおうのやいばざんぺん'], '吞天の鯨・只角': ['どんてんのくじらただつの', 'どんてんのくじら'], '武煉の魂・孤影': ['ぶれんのたましいこえい'],
@@ -65,7 +84,6 @@
     '蝕滅の羽鱗': ['しょくめつのうりん'], '蝕滅の陽炎': ['しょくめつのかげろう'], '蝕滅の焔角': ['しょくめつのえんかく'],
     '狂人の誓約': ['きょうじんのせいやく'], '賢医の仮面': ['けんいのかめん'], '異端の薬瓶': ['いたんのくすりびん'],
     '偽りの樹脂': ['いつわりのじゅし'], '歪曲した枯れ枝': ['わいきょくしたかれえだ'], '冒涜の新芽': ['ぼうとくのしんめ'],
-    // 突破ボス
     '無相の風': ['むそうのかぜ'], '爆炎樹': ['ばくえんじゅ'], '無相の雷': ['むそうのかみなり'],
     '急凍樹': ['きゅうとうじゅ'], '純水精霊': ['じゅんすいせいれい'], '無相の岩': ['むそうのいわ'],
     '無相の氷': ['むそうのこおり'], '風食ウェネト': ['ふうしょくうぇねと'],
@@ -85,7 +103,6 @@
     '輝ける溶岩の龍像': ['かがやけるようがんのりゅうぞう'], 'ボコボコダック': ['ぼこぼこだっく'], '集光の幻月蝶': ['しゅうこうのげんげつちょう'],
     '守護者・堕天': ['しゅごしゃだてん'], '合成獣・フリューゲルレーヴェ': ['ごうせいじゅうふりゅーげるれーヴぇ'],
     '不滅の副産物': ['ふめつのふくさんぶつ'], '游雪のブレードガーディアン': ['ゆうせつのぶれーどがーでぃあん'], '波濤の投錨者': ['はとうのとうびょうしゃ'],
-    // 特産品
     '蒲公英の種': ['たんぽぽのたね'], 'セシリアの花': ['せしりあのはな'], '風車アスター': ['ふうしゃあすたー'],
     'イグサ': ['いぐさ'], 'ヴァルベリー': ['ヴぁるべりー'], '慕風のマッシュルーム': ['ぼふうのまっしゅるーむ'],
     'ドドリアン': ['どどりあん'], 'ググプラム': ['ぐぐぷらむ'], 'フェザーモス': ['ふぇざーもす'],
@@ -106,7 +123,6 @@
     '琥珀香': ['こはくこう'], 'ヴィンテル草': ['ヴぃんてるそう'], 'フロストランプ': ['ふろすとらんぷ'],
     'フロック草': ['ふろっくそう'], 'フロストフラワー': ['ふろすとふらわー'], 'ザラトイアリャーク': ['ざらといありゃーく'],
     '晶石カサキノコ': ['しょうせきかさきのこ'], 'フェイヨモギ': ['ふぇいよもぎ'],
-    // 一般敵素材
     '破損した仮面': ['はそんしたかめん'], '牢固な矢先': ['ろうこなやさき'], 'スライムの液体': ['すらいむのえきたい'],
     '宝探しの鴉マーク': ['たからさがしのからすまーく'], '新兵の記章': ['しんぺいのきしょう'], '占いの絵巻': ['うらないのえまき'],
     'トリックフラワーの蜜': ['とりっくふらわーのみつ'], '破損した徽章': ['はそんしたきしょう'], '破損した駆動軸': ['はそんしたくどうじく'],
@@ -114,7 +130,6 @@
     '色褪せた赤い絹': ['いろあせたあかいきぬ'], '整合の歯車': ['せいごうのはぐるま'], '異海の露': ['いかいのつゆ'],
     '従戦士の木笛': ['じゅうせんしのきぶえ'], '未熟な牙': ['みじゅくなきば'], '異種合成魔獣': ['いしゅごうせいまじゅう'],
     '幻造蛍屑': ['げんぞうけいせつ'], '幻光の屑': ['げんこうのくず'], '合成獣のコア': ['ごうせいじゅうのこあ'],
-    // 武器突破素材
     '今昔劇画の鬼人': ['こんじゃくげきがのきじん'], '凛風奔狼の郷愁': ['りんぷうほんろうのきょうしゅう'],
     '孤雲寒林の神体': ['こうんかんりんのしんたい'], '漆黒の隕鉄の塊': ['しっこくのいんてつのかたまり'],
     '獅牙戦士の理想': ['しさせんしのりそう'], '遠海夷地の金枝': ['えんかいいちのきんし'],
@@ -127,7 +142,6 @@
     '奇妙な装置の宿願': ['きみょうなそうちのしゅくがん'], '長夜の灯火の輝光': ['ちょうやのとうかのきこう'],
     '極北の末裔の煌光': ['きょくほくのまつえいのこうこう'], '蔵に眠る霊薬の狂宴': ['くらにねむるれいやくのきょうえん'],
     '蒼星軍勢の征服': ['そうせいぐんぜいのせいふく'], '氷の皇帝の訣別': ['こおりのこうていのけつべつ'],
-    // 精鋭敵素材
     '地脈の旧枝': ['ちみゃくのきゅうし'], '重い角笛': ['おもいつのぶえ'], '猟兵の刀': ['りょうへいのかたな'],
     '霧虚ろの花粉': ['きりうつろのかふん'], '混沌の装置': ['こんとんのそうち'], '混沌の機関': ['こんとんのきかん'],
     '暗晦の彫刻': ['あんかいのちょうこく'], '壊れたプリズム': ['こわれたぷりずむ'], '毀れた背骨': ['こわれたせぼね'],
@@ -140,7 +154,6 @@
     'キノコンの衰菌核': ['きのこんのすいきんかく'], '翼状の羽鰭': ['よくじょうのはねびれ'], '光を失った焔剣の柄': ['ひかりをうしなったえんけんのつか'],
     '何処かで摘まれた咲きかけの花': ['どこかでつまれたさきかけのはな'], '砕けた意志の欠片': ['くだけたいしのかけら'],
     '沈積増生物': ['ちんせきぞうせいぶつ'], '欠損した月の鉄': ['けっそんしたつきのてつ'], '氷雪の欠片': ['ひょうせつのかけら'],
-    // 突破ステータス
     '会心率': ['かいしんりつ'], '会心ダメージ': ['かいしんだめーじ'], '攻撃力': ['こうげきりょく'],
     'HP': ['hp', 'えいちぴー'], '防御力': ['ぼうぎょりょく'], '元素熟知': ['げんそじゅくち'],
     '元素チャージ効率': ['げんそちゃーじこうりつ', 'ちゃーじこうりつ'], '与える治療効果': ['あたえるちりょうこうか', 'ちりょうこうか'],
@@ -149,9 +162,6 @@
     '岩元素ダメージ': ['いわげんそだめーじ'], '物理ダメージ': ['ぶつりだめーじ'],
   };
 
-  // -------------------------------------------------------------------------
-  // ユーティリティ
-  // -------------------------------------------------------------------------
   function katakanaToHiragana(src) {
     return String(src || '').replace(/[\u30a1-\u30f6]/g, m => String.fromCharCode(m.charCodeAt(0) - 0x60));
   }
@@ -195,9 +205,6 @@
     return val !== null && val !== undefined && val !== '' && val !== 'なし' && val !== 'その他' && val !== '例外';
   }
 
-  // -------------------------------------------------------------------------
-  // 属性定義（複合条件問題 & 派生問題）
-  // -------------------------------------------------------------------------
   const CHAR_CONDITION_ATTRS = [
     { key: 'element', label: '元素', format: v => `${v}元素`, iconDir: 'elements' },
     { key: 'weapon', label: '武器種', format: v => `武器種が「${v}」` },
@@ -224,7 +231,6 @@
     { key: 'enemyMaterial', label: '一般敵素材', format: v => `一般敵素材が「${v}」`, iconDir: 'enemy material' },
   ];
 
-  // 派生（逆引き）問題テンプレート
   const CHAR_DERIVED_TEMPLATES = [
     { key: 'talentBook', ask: '天賦本（シリーズ名）', iconDir: 'talentBook' },
     { key: 'talentBoss', ask: '突破ボス素材', iconDir: 'materials/boss' },
@@ -245,9 +251,6 @@
     { key: 'weaponType', ask: '武器種' },
   ];
 
-  // -------------------------------------------------------------------------
-  // 複合条件 → 一意のキャラ/武器を当てる問題
-  // -------------------------------------------------------------------------
   function generateUniqueFilterQuestion(entityType, rng = Math.random, imageBase = '../files') {
     const pool = entityType === 'weapon'
       ? getWeapons().filter(w => w.rarity >= 3)
@@ -266,7 +269,6 @@
         chosen.every(a => String(item[a.key]) === String(target[a.key]))
       );
 
-      // 2条件で1人に絞れなければ3条件目を試す
       if (matches.length !== 1 && shuffledAttrs.length >= 3) {
         chosen = [shuffledAttrs[0], shuffledAttrs[1], shuffledAttrs[2]];
         matches = pool.filter(item =>
@@ -276,7 +278,6 @@
 
       if (matches.length !== 1) continue;
 
-      // 惜しいダミー（最初の条件のみ一致する他候補）を優先収集
       const nearMisses = shuffle(
         pool.filter(item => item.id !== target.id && String(item[chosen[0].key]) === String(target[chosen[0].key])),
         rng
@@ -296,16 +297,22 @@
           url: `${imageBase}/${a.iconDir}/${encodeURIComponent(target[a.key])}.png`,
         }));
 
+      const choiceDetails = shuffle([target, ...dummyItems], rng).map(item => ({
+        label: item.name,
+        iconUrl: resolveIconUrl(item.iconUrl, imageBase),
+      }));
+
       return {
         kind: 'data',
         subType: 'filter',
         entityType,
-        answerType: 'entity', // 正解がキャラ/武器名
+        answerType: 'entity',
         question: `${condText} の${entityLabel}はどれ？`,
         answer: target.name,
         answerItem: target,
         dummyChoices: dummyItems.map(d => d.name),
-        choices: shuffle([target.name, ...dummyItems.map(d => d.name)], rng),
+        choices: choiceDetails.map(c => c.label),
+        choiceDetails,
         hintIcons,
         explanation: `正解は「${target.name}」です（${chosen.map(a => `${a.label}:${target[a.key]}`).join(' / ')}）。`,
       };
@@ -313,9 +320,6 @@
     return null;
   }
 
-  // -------------------------------------------------------------------------
-  // 派生（逆引き）問題：○○の天賦素材は？ など
-  // -------------------------------------------------------------------------
   function generateDerivedQuestion(entityType, rng = Math.random, imageBase = '../files') {
     const pool = entityType === 'weapon'
       ? getWeapons().filter(w => w.rarity >= 3)
@@ -332,25 +336,29 @@
       const wrongValues = shuffle(allValues.filter(v => v !== ansVal), rng).slice(0, 3);
       if (wrongValues.length < 3) continue;
 
-      const iconPath = target.iconUrl
-        ? (imageBase === 'files' ? target.iconUrl.replace(/^\.\.\//, '') : target.iconUrl)
-        : '';
+      const iconPath = resolveIconUrl(target.iconUrl, imageBase);
+      const choiceDetails = shuffle([String(ansVal), ...wrongValues.map(String)], rng).map(val => ({
+        label: val,
+        iconUrl: getAttrIconUrl(tpl.key, val, imageBase),
+      }));
 
       return {
         kind: 'data',
         subType: 'derived',
         entityType,
-        answerType: 'attribute', // 正解が素材・属性名
+        answerType: 'attribute',
         attrKey: tpl.key,
         attrPool: allValues.map(v => ({
           name: String(v),
           readings: ATTR_READINGS[v] || [],
+          iconUrl: getAttrIconUrl(tpl.key, v, imageBase),
         })),
         question: `「${target.name}」の ${tpl.ask} はどれ？`,
         answer: String(ansVal),
         acceptAnswers: ATTR_READINGS[ansVal] || [],
         dummyChoices: wrongValues.map(String),
-        choices: shuffle([String(ansVal), ...wrongValues.map(String)], rng),
+        choices: choiceDetails.map(c => c.label),
+        choiceDetails,
         hintIcons: iconPath ? [{ label: target.name, url: iconPath }] : [],
         explanation: `${target.name} の${tpl.ask}は「${ansVal}」です。`,
       };
@@ -358,15 +366,11 @@
     return null;
   }
 
-  // -------------------------------------------------------------------------
-  // 総合問題生成 API
-  // -------------------------------------------------------------------------
   function generateDataQuestion(genreMode = 'mix', rng = Math.random, imageBase = '../files') {
     let entityType = genreMode;
     if (genreMode !== 'character' && genreMode !== 'weapon') {
       entityType = rng() < 0.6 ? 'character' : 'weapon';
     }
-    // 60% 複合絞り込み問題 / 40% 派生（逆引き）問題
     const q = rng() < 0.6
       ? generateUniqueFilterQuestion(entityType, rng, imageBase)
       : generateDerivedQuestion(entityType, rng, imageBase);
@@ -374,15 +378,11 @@
     return q || generateUniqueFilterQuestion(entityType, rng, imageBase) || generateDerivedQuestion(entityType, rng, imageBase);
   }
 
-  /** 今日の一問（トップページ用）を日付シードで1問生成 */
   function getDailyQuizQuestion(dateStr, imageBase = 'files') {
     const rng = seededRandom('daily-home-quiz-' + dateStr);
     return generateDataQuestion('mix', rng, imageBase);
   }
 
-  // -------------------------------------------------------------------------
-  // 解答チェック（イージー / ノーマル / ハード）
-  // -------------------------------------------------------------------------
   function checkQuizAnswer(questionObj, userInput, difficulty) {
     const raw = String(userInput || '').trim();
     if (!raw) return false;
@@ -391,26 +391,19 @@
       return raw === questionObj.answer;
     }
 
-    // ハードモード（入力オンリー）
     if (questionObj.kind === 'data' && questionObj.answerType === 'entity') {
-      // キャラ/武器名：愛称除外・正式名称のみ
       return normalizeText(raw) === normalizeText(questionObj.answer);
     }
 
-    // 派生問題（属性当て）またはバラエティクイズ：正式名称＋ひらがな読み／許容表記を許可
     const normInput = katakanaToHiragana(normalizeText(raw));
     const candidates = [questionObj.answer, ...(questionObj.acceptAnswers || [])];
     return candidates.some(c => katakanaToHiragana(normalizeText(c)) === normInput);
   }
 
-  // -------------------------------------------------------------------------
-  // サジェスト候補検索（ノーマルモード用）
-  // -------------------------------------------------------------------------
   function searchQuizSuggestions(questionObj, query) {
     const qHira = katakanaToHiragana(String(query || '').trim().toLowerCase());
     if (!qHira) return [];
 
-    // キャラ or 武器が答えの問題
     if (questionObj.kind === 'data' && questionObj.answerType === 'entity') {
       const pool = questionObj.entityType === 'weapon' ? getWeapons() : getChars();
       const matched = [];
@@ -432,7 +425,6 @@
       return matched.slice(0, 8);
     }
 
-    // 派生問題（素材・属性名など）
     if (questionObj.kind === 'data' && questionObj.answerType === 'attribute') {
       const pool = questionObj.attrPool || [];
       return pool
@@ -440,11 +432,10 @@
           const all = [entry.name, ...(entry.readings || [])];
           return all.some(n => katakanaToHiragana(n.toLowerCase()).includes(qHira));
         })
-        .map(entry => ({ name: entry.name, sub: '', iconUrl: '' }))
+        .map(entry => ({ name: entry.name, sub: '', iconUrl: entry.iconUrl || '' }))
         .slice(0, 8);
     }
 
-    // バラエティクイズのノーマルモード用（全登録問題の正解一覧からサジェスト）
     if (questionObj.kind === 'variety') {
       const pool = questionObj.varietyAnswerPool || [];
       return pool
