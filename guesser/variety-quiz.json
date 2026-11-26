@@ -40,7 +40,7 @@
     ],
     "explanation": "岩神モラクス（鍾離）の名前にちなんで「モラ」と呼ばれています。"
   },
-[
+
   {"id":"v283a","question":"無相の雷の名前は？","answer":"アレフ","acceptAnswers":["あれふ"],"dummyChoices":["ベト","ギメル","ダレット"],"explanation":"無相の雷の固有名称は「アレフ」です。"},
   {"id":"v283b","question":"無相の風の名前は？","answer":"ベト","acceptAnswers":["べと"],"dummyChoices":["アレフ","ギメル","ダレット"],"explanation":"無相の風の固有名称は「ベト」です。"},
   {"id":"v284","question":"無相の岩の名前は？","answer":"ギメル","acceptAnswers":["ぎめる"],"dummyChoices":["アレフ","ベト","ザイン"],"explanation":"無相の岩の固有名称は「ギメル」です。"},
