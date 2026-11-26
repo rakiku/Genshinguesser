@@ -998,3 +998,22 @@ a:hover { text-decoration: underline; }
 .start-section.hidden {
   display: none !important;
 }
+/* ---- ノーマル/ハード用：問題文内の選択肢テキスト表示 ---- */
+.quiz-text-choices {
+  margin-top: .85rem;
+  padding-top: .75rem;
+  border-top: 1px dashed var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: .35rem;
+  font-size: .9rem;
+  color: #d0d7de;
+  text-align: left;
+}
+
+.quiz-text-choice-item {
+  background: rgba(255, 255, 255, 0.04);
+  padding: .35rem .65rem;
+  border-radius: 6px;
+  line-height: 1.45;
+}
