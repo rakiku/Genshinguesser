@@ -437,6 +437,11 @@
     }
 
     if (questionObj.kind === 'variety') {
+      if (questionObj.forceChoice && Array.isArray(questionObj.choices)) {
+        return questionObj.choices
+          .filter(c => katakanaToHiragana(String(c).toLowerCase()).includes(qHira))
+          .map(c => ({ name: c, sub: '', iconUrl: '' }));
+      }
       const pool = questionObj.varietyAnswerPool || [];
       return pool
         .filter(entry => {
