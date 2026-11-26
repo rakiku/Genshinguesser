@@ -220,6 +220,7 @@ function buildNextQuestion() {
     kind: 'variety',
     question: v.question,
     answer: v.answer,
+    forceChoice: Boolean(v.forceChoice), 
     acceptAnswers: v.acceptAnswers || [],
     choices: shuffleArray([v.answer, ...dummies]),
     varietyAnswerPool: varietyQuestions,
