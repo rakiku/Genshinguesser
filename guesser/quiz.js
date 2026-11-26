@@ -216,11 +216,16 @@ function buildNextQuestion() {
   }
   const v = varietyQueue.pop();
   const dummies = (v.dummyChoices || []).filter(Boolean).slice(0, 3);
+  const isForceChoice = Boolean(
+    v.forceChoice ||
+    dummies.length === 1 ||
+    /次のうち|どれ[？?]?$|間違っているのは|正しいのは/.test(v.question)
+  );
   return {
     kind: 'variety',
     question: v.question,
     answer: v.answer,
-    forceChoice: Boolean(v.forceChoice), 
+    forceChoice: isForceChoice,
     acceptAnswers: v.acceptAnswers || [],
     choices: shuffleArray([v.answer, ...dummies]),
     varietyAnswerPool: varietyQuestions,
@@ -264,6 +269,23 @@ function updateHud() {
 function renderQuestionCard() {
   document.getElementById('quizQuestionText').textContent = currentQuestion.question;
 
+  // ノーマル/ハード用：選択式問題の選択肢テキスト表示
+  const textChoicesEl = document.getElementById('quizTextChoices');
+  if (textChoicesEl) {
+    textChoicesEl.innerHTML = '';
+    if (quizDiff !== 'easy' && currentQuestion.forceChoice && Array.isArray(currentQuestion.choices)) {
+      currentQuestion.choices.forEach((choice, idx) => {
+        const div = document.createElement('div');
+        div.className = 'quiz-text-choice-item';
+        div.textContent = `${idx + 1}. ${choice}`;
+        textChoicesEl.appendChild(div);
+      });
+      textChoicesEl.classList.remove('hidden');
+    } else {
+      textChoicesEl.classList.add('hidden');
+    }
+  }
+
   // アイコンヒント
   const iconsRow = document.getElementById('quizIconsRow');
   iconsRow.innerHTML = '';
@@ -294,7 +316,7 @@ function renderQuestionCard() {
   const choicesGrid = document.getElementById('quizChoicesGrid');
   const inputWrap = document.getElementById('quizInputWrap');
 
-if (quizDiff === 'easy') {
+  if (quizDiff === 'easy') {
     inputWrap.classList.add('hidden');
     choicesGrid.classList.remove('hidden');
     choicesGrid.innerHTML = '';
@@ -350,7 +372,6 @@ if (quizDiff === 'easy') {
     setTimeout(() => input.focus(), 50);
   }
 }
-
 // ---------------------------------------------------------------------------
 // プレイ画面イベント（入力・サジェスト・次へ）
 // ---------------------------------------------------------------------------
@@ -480,7 +501,7 @@ function submitAnswer(value, clickedBtn = null) {
     isCorrect,
   });
 
-  // UI更新（★ここが変更箇所です）
+  // UI更新
   if (quizDiff === 'easy') {
     document.querySelectorAll('.quiz-choice-btn').forEach(btn => {
       btn.disabled = true;
@@ -506,7 +527,6 @@ function submitAnswer(value, clickedBtn = null) {
   nextBtn.textContent = shouldEndSession() ? '結果を見る →' : '次の問題へ →';
   nextBtn.classList.remove('hidden');
 }
-
 function shouldEndSession() {
   if (quizRule === 'ten' && questionNumber >= 10) return true;
   if (quizRule === 'challenge' && challengeLives <= 0) return true;
