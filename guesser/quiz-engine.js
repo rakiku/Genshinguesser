@@ -170,7 +170,7 @@
     return String(src || '')
       .trim()
       .replace(/[Ａ-Ｚａ-ｚ０-９]/g, s => String.fromCharCode(s.charCodeAt(0) - 0xFEE0))
-      .replace(/[\s　・･「」『』]/g, '')
+      .replace(/[\s　・･「」『』()（）.,。、!！?？]/g, '')
       .toLowerCase();
   }
 
